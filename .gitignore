@@ -1,0 +1,59 @@
+# intent-eval-lab umbrella .gitignore
+# Constituent projects (in projects/) have their own .gitignore — those are symlinks, ignored at this level
+
+# Private operational notes (engagement details, patent-sensitive cross-refs, sock-puppet observations)
+.private/
+
+# Symlinks to constituent projects — they live at their original paths, no need to track here
+projects/
+
+# Evidence artifacts — generally too large / ephemeral / contain raw OTEL traces with potential PII
+evidence/**/*.json
+evidence/**/*.png
+evidence/**/*.html
+evidence/**/*.zip
+evidence/**/*.log
+# But DO track REPORT.md and the structure
+!evidence/**/REPORT.md
+!evidence/**/.gitkeep
+
+# Sandbox docker volumes + ephemeral state
+sandboxes/**/data/
+sandboxes/**/volumes/
+sandboxes/**/.env
+sandboxes/**/cookies.json
+sandboxes/**/postgres-data/
+
+# OS / editor noise
+.DS_Store
+._*
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node
+node_modules/
+.pnpm-store/
+
+# Direnv / local env
+.envrc
+.env.local
+.env.*.local
+
+# Test caches
+.pytest_cache/
+.eslintcache
+coverage/
+*.lcov
+
+# Build outputs
+dist/
+build/
+out/
