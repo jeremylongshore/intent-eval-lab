@@ -11,12 +11,16 @@ This repo is the working surface for that work.
 ```
 intent-eval-lab/
 ├── 000-docs/        ← numbered docs (research summaries, methodology, plans, AAR)
+├── specs/           ← normative methodology output — versioned, testable specs
+│                       per class of inference system, with case studies
 ├── research/        ← literature surveys, paper notes, competitive landscape
 ├── sandboxes/       ← per-experiment dirs (one dated subdir per run)
 ├── evidence/        ← captured telemetry, OTEL traces, JSON evidence (mostly gitignored)
 ├── scripts/         ← reusable test harness, OTEL probes, prompt-suite runners
 └── projects/        ← symlinks to constituent project repos (gitignored — see below)
 ```
+
+`specs/` is the **normative output** of the lab — currently shipping module 1 ([`mcp-plugin-observability/`](./specs/mcp-plugin-observability/)) at `v0.1.0-draft`, with placeholder modules for `validator-contract-reliability/`, `forecasting-drift-detection/`, and `decentralized-crypto-evaluation/` reserving the structural slots for future engagements. See [`specs/README.md`](./specs/README.md) for the module index and authoring conventions.
 
 `projects/` is filesystem-only — the constituent projects keep their own GitHub remotes. The lab is a research umbrella over them, not a monorepo.
 
