@@ -1,6 +1,6 @@
 # CLAUDE.md — Intent Eval Lab
 
-Guidance for Claude Code when working in `/home/jeremy/000-projects/intent-eval-lab/`.
+Guidance for Claude Code when working in `/home/jeremy/000-projects/intent-eval-platform/intent-eval-lab/`.
 
 ## What this is
 
@@ -43,8 +43,8 @@ The lab and j-rig-binary-eval are **coordinated repos with different scopes**. O
 
 | You're working on | Open Claude Code in |
 |---|---|
-| Methodology, research, literature review, sandbox experiments, evidence analysis, blog drafts | **`~/000-projects/intent-eval-lab/`** (this dir) |
-| Implementing eval harness code (workspace packages, executor adapters per artifact type, CLI surface, schemas) | **`~/000-projects/j-rig-binary-eval/`** |
+| Methodology, research, literature review, sandbox experiments, evidence analysis, blog drafts | **`~/000-projects/intent-eval-platform/intent-eval-lab/`** (this dir) |
+| Implementing eval harness code (workspace packages, executor adapters per artifact type, CLI surface, schemas) | **`~/000-projects/intent-eval-platform/j-rig-binary-eval/`** |
 | A constituent project's own work (semantic-flux internals, audit-harness changes) | That project's own dir |
 
 The lab session has full context for cross-project synthesis. The JRig session has full context for the harness code itself. They reference each other but stay scoped.
@@ -53,12 +53,13 @@ The lab session has full context for cross-project synthesis. The JRig session h
 
 ## Constituent projects
 
-`projects/` contains symlinks (gitignored) to constituent project repos at `~/000-projects/<name>/`. Don't move or clone them. Each keeps its own git, README, and CLAUDE.md.
+`projects/` contains symlinks (gitignored) to constituent project repos. Sibling repos under the `intent-eval-platform/` umbrella resolve as `../<sibling>/`; cross-cutting projects outside the umbrella keep their absolute path. Don't move or clone them. Each keeps its own git, README, and CLAUDE.md.
 
 | Symlink | Real path | Public? |
 |---|---|---|
-| `projects/j-rig-binary-eval` | `~/000-projects/j-rig-binary-eval` | yes — github.com/jeremylongshore/j-rig-binary-eval |
-| `projects/audit-harness` | `~/000-projects/audit-harness` | yes — github.com/jeremylongshore/audit-harness |
+| `projects/j-rig-binary-eval` | `~/000-projects/intent-eval-platform/j-rig-binary-eval` (sibling) | yes — github.com/jeremylongshore/j-rig-binary-eval |
+| `projects/audit-harness` | `~/000-projects/intent-eval-platform/audit-harness` (sibling) | yes — github.com/jeremylongshore/audit-harness |
+| `projects/semantic-flux` | `~/000-projects/semantic-flux` (outside platform; cross-cutting reference) | varies |
 | (additional projects added by symlink as the lab grows) | | |
 
 When working IN a constituent project (via symlink or direct path), defer to that project's own CLAUDE.md. The lab's CLAUDE.md governs lab-level work only (`000-docs/`, `research/`, `sandboxes/`, `scripts/`, `evidence/`).
