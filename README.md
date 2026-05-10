@@ -39,7 +39,7 @@ intent-eval-lab/
 | Project | Role |
 |---|---|
 | [`jeremylongshore/j-rig-binary-eval`](https://github.com/jeremylongshore/j-rig-binary-eval) | 7-layer binary-criteria evaluation harness for SKILL.md artifacts. Natural extension target — the layers are artifact-type-polymorphic; specializing executor + judgment for plugin/agent/MCP is the core build axis. |
-| [`jeremylongshore/audit-harness`](https://github.com/jeremylongshore/audit-harness) | `@intentsolutions/audit-harness` — source-code test-policy containment. Composes with the lab's L4-L7 sandbox work. JRig already pulls it as a dev dep. |
+| [`jeremylongshore/audit-harness`](https://github.com/jeremylongshore/audit-harness) | `@intentsolutions/audit-harness` — source-code test-policy containment. Composes with the lab's L4-L7 sandbox work. JRig vendors it via a copied `.audit-harness/` directory for self-validation in its own CI (not an npm dep). The three-repo convergence integrates these at the shared Evidence Bundle schema layer rather than via package coupling — see [`000-docs/003-PP-PLAN-phase-b-scope-refinement.md`](./000-docs/003-PP-PLAN-phase-b-scope-refinement.md). |
 
 ## Working pattern
 
