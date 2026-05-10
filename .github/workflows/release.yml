@@ -1,6 +1,10 @@
 name: Release
 
 on:
+  # workflow_dispatch only — releases are intentional, not byproducts of merges.
+  # Removed `push: branches: [main]` because docs-only merges shouldn't auto-cut
+  # releases. To cut a release, trigger this workflow manually from the GitHub
+  # Actions UI (or via `gh workflow run Release`).
   workflow_dispatch:
     inputs:
       bump:
@@ -18,8 +22,6 @@ on:
         required: false
         default: false
         type: boolean
-  push:
-    branches: [main]
 
 permissions:
   contents: write
