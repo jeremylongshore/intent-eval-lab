@@ -105,7 +105,7 @@ All three landscape docs converge on the same architectural keystone, and gettin
 {
   "_type": "https://in-toto.io/Statement/v1",
   "subject": [{"name": "<pipeline-hop-id>", "digest": {"sha256": "..."}}],
-  "predicateType": "https://intent-eval.dev/gate-result/v1",
+  "predicateType": "https://evals.intentsolutions.io/gate-result/v1",
   "predicate": { <current envelope contents per AH-4 design notes> }
 }
 ```
@@ -128,7 +128,7 @@ The industry-standard ambition becomes concrete in this split. Some Phase B work
 
 | Phase B output | Where it lives | What kind of artifact | Why standards-track |
 |---|---|---|---|
-| **Evidence Bundle gate-result-row schema (in-toto-wrapped)** | `intent-eval-lab/specs/evidence-bundle/v0.1.0-draft/schema/gate-result.json` + filed as an in-toto **predicate type** at `https://github.com/in-toto/attestation` (predicate name: `https://intent-eval.dev/gate-result/v1`) | Public standards-track (in-toto predicate) | Same shape SCAI, SLSA Provenance, VSA use. Standardizing the predicate URI lets non-Intent-Solutions emitters publish compatible rows. |
+| **Evidence Bundle gate-result-row schema (in-toto-wrapped)** | `intent-eval-lab/specs/evidence-bundle/v0.1.0-draft/schema/gate-result.json` + filed as an in-toto **predicate type** at `https://github.com/in-toto/attestation` (predicate name: `https://evals.intentsolutions.io/gate-result/v1`) | Public standards-track (in-toto predicate) | Same shape SCAI, SLSA Provenance, VSA use. Standardizing the predicate URI lets non-Intent-Solutions emitters publish compatible rows. |
 | **OTel `agent.rollout.gate.*` semantic conventions** | RFC text already drafted at `intent-eval-lab/000-docs/001-DR-RFC-otel-agent-rollout-gate-signals-draft.md` → filed at `open-telemetry/semantic-conventions` | Public standards-track (OTel SIG-GenAI RFC) | Same scope as the `gen_ai.*` semantic conventions OpenLLMetry upstreamed. Adoption by every CLI vendor (Claude Code, Codex CLI, Gemini CLI) makes cross-vendor observability possible. |
 | **Matcher-map signal vocabulary (MM-1..MM-6 categories as OTel semantic conventions)** | Sibling RFC, filed at `open-telemetry/semantic-conventions` SIG-GenAI track | Public standards-track (OTel SIG-GenAI RFC) | C-doc's § 8 cross-cutting gap. Today, MM-1..MM-6 are markdown-table prose; standardizing them as named OTel signals makes every collector + downstream tool able to filter on them by name. |
 | **AGENTS.md normative parser shape** | Reference parser at `j-rig-binary-eval/packages/core/src/parsers/agents-md-parser.ts` + filed as a parser-contract reference against `agents.md` open standard | Public standards-track (agents.md ecosystem contribution) | ~20 vendors recognize AGENTS.md. A reference parser shape settles ambiguity (heading conventions, nesting precedence, programmatic-check extraction). |
@@ -176,7 +176,7 @@ Each work item carries: ID, title, source workstream(s), arena-surfaces covered 
 - **Side:** **the work item exists to make the side dimension explicit** in the schema.
 - **Pipeline hop:** orthogonal.
 - **Partial-attestation effect:** **enabling** — the discriminator means a bundle with only client-side rows is unambiguously partial-coverage-by-design, not ambiguous-coverage.
-- **Effort:** XS (naming convention doc + JSON Schema regex pattern + register `https://intent-eval.dev/gate-result/v1` URI).
+- **Effort:** XS (naming convention doc + JSON Schema regex pattern + register `https://evals.intentsolutions.io/gate-result/v1` URI).
 - **Primary sources:** § 2.2 of this doc.
 - **Dependency:** PB-1.
 
@@ -317,7 +317,7 @@ Each work item carries: ID, title, source workstream(s), arena-surfaces covered 
 1. **CONFLICT: B-doc PB-8 (MCP-conformance check bundle in j-rig) overlaps with C-doc Phase B B-2 (Pact-style MCP plugin contract).**
    - **Reconciliation:** consolidate. PB-12 (Pact-extension + Gherkin) is the canonical Phase B MCP-conformance work. j-rig's role is to *emit rows that reference* the Pact verifier's output, not to embed its own MCP checker. B-doc PB-8 is dropped from Phase B; its semantic content is absorbed by PB-7 (provider adapters can drive an MCP server through the Pact verifier as part of a j-rig eval).
 2. **CONFLICT: A-doc's `IEL-CONV-2` reference (PB-1) and C-doc's B-5 (Conformance Provenance predicate) both define new in-toto predicates.**
-   - **Reconciliation:** they are **two complementary predicate types**, not one. PB-1 codifies `https://intent-eval.dev/gate-result/v1` (a single gate's row, audit-harness + j-rig emit these). The Conformance Provenance predicate from C-doc B-5 codifies `https://intent-eval.dev/conformance-provenance/v1` (a *run* of a matcher-map harness against a plugin, with aggregated PASS/PARTIAL/FAIL per row). Different scope. **Both are Phase B work**; PB-1 ships the gate-result predicate (Wave 1), and the Conformance Provenance predicate ships as **a sub-task of PB-12** (because it wraps the Pact/Gherkin verifier output). The naming + scope distinction goes in the PB-1 schema docstring + PB-12 spec.
+   - **Reconciliation:** they are **two complementary predicate types**, not one. PB-1 codifies `https://evals.intentsolutions.io/gate-result/v1` (a single gate's row, audit-harness + j-rig emit these). The Conformance Provenance predicate from C-doc B-5 codifies `https://evals.intentsolutions.io/conformance-provenance/v1` (a *run* of a matcher-map harness against a plugin, with aggregated PASS/PARTIAL/FAIL per row). Different scope. **Both are Phase B work**; PB-1 ships the gate-result predicate (Wave 1), and the Conformance Provenance predicate ships as **a sub-task of PB-12** (because it wraps the Pact/Gherkin verifier output). The naming + scope distinction goes in the PB-1 schema docstring + PB-12 spec.
 3. **NO CONFLICT (positive confirmation): B-doc's vendor-namespacing (`vendor:anthropic:*`) and PB-1's in-toto-Statement subject naming are orthogonal.** The `gate_id` field in the predicate (PB-2) follows vendor-namespacing convention; the in-toto `subject` field (PB-1) names the pipeline hop being attested. They don't collide.
 4. **NO CONFLICT (positive confirmation): A-doc's `policy_hash` + `input_hash` fields and C-doc's MM-1..MM-6 signal vocabulary do not contradict.** `policy_hash` hashes the gate's policy; MM-N names the failure-shape category. Both can appear in one in-toto Statement — `predicate.policy_hash` for the policy artifact, `predicate.matcher_map_category: "MM-1"` for the shape — without ambiguity.
 5. **POTENTIAL ASSUMPTION CONFLICT: B-doc Lens-1 silence on vendor priority.** B-doc does not pre-rank vendors beyond the matrix; A-doc assumes "audit-harness must work everywhere" (per `--json` on all subcommands). The composable-partial lens (Lens 4) resolves this: no vendor must be prioritized — partial vendor coverage is fine. **Reconciliation:** PB-9 ships *all six* vendor snapshots as a batch, not gating on a "primary" vendor.
@@ -366,7 +366,7 @@ These do NOT lock during Phase B. Each has a trigger condition that justifies re
 | **Vendor priority beyond what landscape data justifies** | If a customer wants Cursor / Windsurf / Cline support before AGENTS.md baseline, B-doc's PB-9 batch sequencing might split | A specific vendor request from a paying customer |
 | **MM-7 disposition** | See § 7 — held until a real failure-in-the-wild | A partner engagement surfaces a non-MM-1..6 failure-shape |
 | **LiteLLM vs Vercel AI SDK adapter choice (PB-7)** | B-doc explicitly punts on the framework choice | First Phase B PR-cycle prototype with both, measured on type-safety + DX |
-| **In-toto predicate type URI ownership** | Whether `https://intent-eval.dev/gate-result/v1` resolves to a public spec page Intent Solutions hosts, or to an in-toto-predicate-types-registry entry | When the in-toto community + first external adopter weigh in on the URI |
+| **In-toto predicate type URI ownership** | **RESOLVED 2026-05-10 (ISEDC Q1):** namespace is `evals.intentsolutions.io`. Whether the URI also lands in an in-toto-predicate-types-registry entry (in addition to the canonical hosted-spec page) remains open. | When the in-toto community + first external adopter weigh in on registry submission |
 | **OTel namespace contention** | RFC open question: `agent.rollout.gate.*` vs `gen-ai.gate.*` vs `ci.gate.*` (per Phase A RFC § "Open questions") | OTel SIG-GenAI community feedback during PB-10 review |
 | **Decision-enum tri-state** | Phase A RFC open question 2: `"ship" \| "no-ship"` vs adding `"indeterminate"` | First real "policy cannot conclude" case observed in production reference impl |
 | **Reasons cardinality structure** | Phase A RFC open question 3: free-text `reasons[]` vs structured `{reason_id, severity}` | First dashboard / alerting consumer expressing pain on free-text |
@@ -379,7 +379,7 @@ These do NOT lock during Phase B. Each has a trigger condition that justifies re
 Per Workstream C's unresolved-questions list and surfacing during synthesis:
 
 1. **Phase A RFC `agent.evidence_bundle.*` events vs Phase B-codified `agent.rollout.gate.*` events vs Phase C in-toto Conformance Provenance predicate — where does the boundary go?**
-   - **Reconciliation:** the events fire at *evaluation time*; the predicate is the *signed-and-stored result*. Concretely: when a CI gate evaluates, it emits `agent.rollout.gate.evaluated` (event), then `agent.rollout.gate.decision` (event), then `agent.evidence_bundle.signature_verified` (event), then writes an in-toto Statement (predicateType: `https://intent-eval.dev/gate-result/v1` for the row, `https://intent-eval.dev/conformance-provenance/v1` for the run) for durable record. **Events are ephemeral; predicates are durable.** Codify this in PB-1's SPEC.md text.
+   - **Reconciliation:** the events fire at *evaluation time*; the predicate is the *signed-and-stored result*. Concretely: when a CI gate evaluates, it emits `agent.rollout.gate.evaluated` (event), then `agent.rollout.gate.decision` (event), then `agent.evidence_bundle.signature_verified` (event), then writes an in-toto Statement (predicateType: `https://evals.intentsolutions.io/gate-result/v1` for the row, `https://evals.intentsolutions.io/conformance-provenance/v1` for the run) for durable record. **Events are ephemeral; predicates are durable.** Codify this in PB-1's SPEC.md text.
 
 2. **OTel SIG-GenAI agent-level conventions timing — may need new sub-group.**
    - **Status:** SIG-GenAI's current scope is LLM-internal signals (`gen_ai.*`). The proposed `agent.rollout.gate.*` and `agent.matcher_map.*` are agent-level / CI-level, not LLM-internal. The Phase A RFC's "Open questions" already flag this.
@@ -406,7 +406,7 @@ To prevent scope drift in Phase B / C planning that consumes this synthesis:
 - **Not implementation.** No code is being written. The first PR is whichever Phase B work item lands first (PB-1 per § 5 sequencing).
 - **Not customer acquisition strategy.** § 8 names the customer-signal trigger conditions for several decisions, but does not propose a go-to-market.
 - **Not packaging / distribution decisions.** § 8 leaves CLI distribution open.
-- **Not naming.** "intent-eval-lab" / "audit-harness" / "j-rig-binary-eval" repo names are inputs; the URI `https://intent-eval.dev/gate-result/v1` is a placeholder; final names land with the first standards-body submission.
+- **Not naming.** "intent-eval-lab" / "audit-harness" / "j-rig-binary-eval" repo names are inputs. The predicate URI namespace `https://evals.intentsolutions.io/<predicate-type>/v<version>` was decision-locked by ISEDC Q1 (2026-05-10) — see `004-AT-DECR-isedc-council-record-2026-05-10.md` § 6 Q1. Repo names themselves stay as inputs.
 - **Not LAB-6 update.** § "Mission" of the parent task: the parent agent updates LAB-6 after reviewing this synthesis.
 - **Not OPS-nfx update.** Same — parent agent handles.
 - **Not Plane backlog grooming.** Phase B work items in § 5 are not yet filed as LAB-N children. The parent agent decides which become first-class Plane issues vs which are sub-tasks of existing IEL-CONV-N children.
