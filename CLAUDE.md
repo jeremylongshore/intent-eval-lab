@@ -51,18 +51,33 @@ The lab session has full context for cross-project synthesis. The JRig session h
 
 **Rule of thumb**: if your output is a markdown doc, a sandbox dir, or a research artifact → lab session. If your output is TypeScript code that ends up in a workspace package → JRig session.
 
-## Constituent projects
+## Constituent projects (two tiers)
 
-`projects/` contains symlinks (gitignored) to constituent project repos. Sibling repos under the `intent-eval-platform/` umbrella resolve as `../<sibling>/`; cross-cutting projects outside the umbrella keep their absolute path. Don't move or clone them. Each keeps its own git, README, and CLAUDE.md.
+`projects/` contains symlinks (gitignored) to two kinds of constituent project. **The tier-1 vs tier-2 distinction is load-bearing — don't lump them together.**
 
-| Symlink | Real path | Public? |
+### Tier 1 — Testing-platform convergence (sibling under `intent-eval-platform/`)
+
+Repos that **compose into one evaluation platform via the Evidence Bundle schema** (per LAB-6 / `IEL-CONV-1`). They share architectural coupling and live as siblings under the same umbrella dir.
+
+| Symlink | Real path | Convergence role |
 |---|---|---|
-| `projects/j-rig-binary-eval` | `~/000-projects/intent-eval-platform/j-rig-binary-eval` (sibling) | yes — github.com/jeremylongshore/j-rig-binary-eval |
-| `projects/audit-harness` | `~/000-projects/intent-eval-platform/audit-harness` (sibling) | yes — github.com/jeremylongshore/audit-harness |
-| `projects/semantic-flux` | `~/000-projects/semantic-flux` (outside platform; cross-cutting reference) | varies |
-| (additional projects added by symlink as the lab grows) | | |
+| `projects/audit-harness` | `~/000-projects/intent-eval-platform/audit-harness` (sibling) | Deterministic gates — emits Evidence Bundle gate-result rows |
+| `projects/j-rig-binary-eval` | `~/000-projects/intent-eval-platform/j-rig-binary-eval` (sibling) | 7-layer judgment harness — consumes + emits Evidence Bundle rows |
 
-When working IN a constituent project (via symlink or direct path), defer to that project's own CLAUDE.md. The lab's CLAUDE.md governs lab-level work only (`000-docs/`, `research/`, `sandboxes/`, `scripts/`, `evidence/`).
+### Tier 2 — Independent lab research projects (outside the umbrella)
+
+Research-stage work the lab oversees **methodologically** but that runs on its own architecturally. Often patent-sensitive. Lives at `~/000-projects/<name>/` (NOT inside `intent-eval-platform/`).
+
+| Symlink | Real path | Why it's outside the umbrella |
+|---|---|---|
+| `projects/semantic-flux` | `~/000-projects/semantic-flux` | Query-Compiled Semantic Scan (QCSS), patent provisional clock 2026-06-12. No Evidence Bundle dependency. Has its own Plane project (SFX), separate from LAB + JRIG. |
+| (additional research projects added by symlink as the lab grows) | | |
+
+### Rules
+
+- **Don't move tier-2 projects into the platform umbrella.** Patent isolation + architectural honesty + Plane parity. The lab oversees them methodologically; they don't share architecture with the testing platform.
+- **When working IN a constituent project** (via symlink or direct path), defer to that project's own CLAUDE.md. The lab's CLAUDE.md governs lab-level work only (`000-docs/`, `research/`, `sandboxes/`, `scripts/`, `evidence/`).
+- **New constituent project?** Decide its tier first: does it compose via Evidence Bundle (→ tier 1, lives under `intent-eval-platform/`) or is it independent research the lab covers (→ tier 2, lives at `~/000-projects/<name>/`)?
 
 ## Lab-level conventions
 
