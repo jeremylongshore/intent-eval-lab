@@ -1,6 +1,6 @@
 # Conformance Test Suite — placeholder
 
-This directory will hold the reference test suite for [SPEC.md v0.1.0-draft](../SPEC.md). It's currently a placeholder; the test harness lands as part of the post-M3 work tied to the first case-study implementation ([`../case-studies/kobiton-automate.md`](../case-studies/kobiton-automate.md)).
+This directory will hold the reference test suite for [SPEC.md v0.1.0-draft](../SPEC.md). It's currently a placeholder; the test harness lands as part of the work tied to the first case-study implementation (engagement-private until the plugin maintainer consents to public release).
 
 ## Planned shape
 
@@ -19,7 +19,7 @@ If a Python-first or TypeScript-first runner reference is later useful for the c
 
 ## Why it's not here yet
 
-A test suite asserting on `claude_code.hook` spans (deeper-beta) requires an OTel collector to be standing up. Standing up the collector is parked under the engagement-internal post-M3 bead `kobiton-5cj.6` (rationale: pre-R3 the spans are referenced as architectural primitives, not as a measurement claim — no published numbers without the collector standup having actually happened).
+A test suite asserting on `claude_code.hook` spans (deeper-beta) requires an OTel collector to be standing up. Collector standup is engagement-private work; pre-public-release, the spans are referenced as architectural primitives, not as a measurement claim — no published numbers without the collector standup having actually happened.
 
 When the collector standup lands, the test suite lands here, and at least one case-study conformance report has its results validated against this suite, the spec is promotion-eligible from `v0.1.0-draft` to `v0.1.0-rc`.
 

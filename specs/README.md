@@ -8,7 +8,7 @@ Each module under `specs/` covers one class of inference system. Each module shi
 
 | Module | Class of system | First case study | Status |
 |---|---|---|---|
-| [`mcp-plugin-observability/`](./mcp-plugin-observability/) | MCP plugins for agentic CLIs (Claude Code, Gemini CLI, Codex CLI, Copilot CLI) | `kobiton/automate` | v0.1.0-draft (in progress) |
+| [`mcp-plugin-observability/`](./mcp-plugin-observability/) | MCP plugins for agentic CLIs (Claude Code, Gemini CLI, Codex CLI, Copilot CLI) | (engagement-private; not for public release without partner consent) | v0.1.0-draft (in progress) |
 | [`validator-contract-reliability/`](./validator-contract-reliability/) | AI-generated validator contracts and cryptographic primitives | (pending) | placeholder — RFC welcome |
 | [`forecasting-drift-detection/`](./forecasting-drift-detection/) | Time-series forecasting under data-shift conditions | (pending) | placeholder — RFC welcome |
 | [`decentralized-crypto-evaluation/`](./decentralized-crypto-evaluation/) | Decentralized cryptographic agents and key-material handling | (pending) | placeholder — RFC welcome |

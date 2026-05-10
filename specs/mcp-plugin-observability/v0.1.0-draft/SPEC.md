@@ -1,6 +1,6 @@
 # MCP Plugin Observability Spec — v0.1.0-draft
 
-> **Status: DRAFT.** This is a request for comment, not a finalized specification. Normative requirements are subject to change. No implementation has been independently certified yet. The first reference implementation case study is in progress against [`kobiton/automate`](./case-studies/kobiton-automate.md).
+> **Status: DRAFT.** This is a request for comment, not a finalized specification. Normative requirements are subject to change. No implementation has been independently certified yet. The first reference implementation case study is in progress against an enterprise MCP plugin under partner engagement; the case study is engagement-private until the plugin maintainer consents to public release.
 
 ## Purpose
 
@@ -74,7 +74,7 @@ A claim of conformance against this spec at version `vN.M.K-draft` requires a **
 4. Reports per-requirement results: PASS / PARTIAL / FAIL / N/A — with PARTIAL and FAIL annotated with finding evidence.
 5. Includes the plugin's matcher map (R5) as an appendix.
 
-The first reference conformance report against this draft is the [`kobiton/automate` case study](./case-studies/kobiton-automate.md), in progress.
+The first reference conformance report against this draft is in progress against an enterprise MCP plugin under partner engagement. The conformance report is engagement-private and is not eligible for public release until the plugin maintainer consents to being named.
 
 ## Versioning
 
