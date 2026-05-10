@@ -1,0 +1,15 @@
+# Default code owners
+* @jeremylongshore
+
+# CI/CD workflows require owner approval
+/.github/workflows/ @jeremylongshore
+
+# Security-sensitive files
+SECURITY.md @jeremylongshore
+.github/dependabot.yml @jeremylongshore
+
+# Spec modules — normative content; changes require explicit owner review
+/specs/ @jeremylongshore
+
+# Decision records — audit trail; modifications require owner review
+/000-docs/ @jeremylongshore
