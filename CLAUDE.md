@@ -10,6 +10,33 @@ A research umbrella for vendor-neutral evaluation methodology around AI plugins,
 - Productizable harnesses → contributions to `j-rig-binary-eval` (sister project)
 - Public reference content → this repo's `000-docs/` (Apache 2.0)
 
+## Three-repo convergence (Phase A complete 2026-05-10)
+
+This repo is the **methodology + specs umbrella** in the three-repo convergence vision (`intent-eval-lab` + `audit-harness` + `j-rig-binary-eval`). The architectural insight: the three repos compose via a shared schema (the **Evidence Bundle**), not via package consolidation. Convergence happens at the schema layer.
+
+**Master plan (local-only):** `~/.claude/plans/please-take-your-time-glimmering-stardust.md`
+**ID mapping artifact:** `~/.claude/plans/please-take-your-time-glimmering-stardust-id-map.md` (29 issues × 4 layers each — beads + GH + Plane + bd-sync link)
+**Convergence umbrella epic:** [`#4`](https://github.com/jeremylongshore/intent-eval-lab/issues/4) (`IEL-CONV-1`) — 8 umbrella + 10 work issues filed in this repo, plus 8 in `audit-harness`, plus 3 in `j-rig-binary-eval`
+
+### Phase A landed (this repo)
+
+- **Evidence Bundle spec module** at `specs/evidence-bundle/v0.1.0-draft/` (skeleton — `SPEC.md` section headers only; normative content gates to Phase B per `IEL-3`)
+- **Cross-CLI discovery module** stub at `specs/cross-cli-discovery/v0.1.0-draft/` (Phase B per `IEL-5`)
+- **OpenTelemetry RFC draft** at `000-docs/001-DR-RFC-otel-agent-rollout-gate-signals-draft.md` — full RFC text proposing `agent.rollout.gate.*` and `agent.evidence_bundle.*` signal conventions. **Drafted, NOT filed.** Filing is a Phase B deliverable per `IEL-CONV-7`.
+- **Partner-consent discipline** enforced (see § Brand-name policy below)
+
+### Phase B/C gate
+
+Phase A is documentation + skeleton ONLY. **No feature code commits to this repo's spec modules until first paying-customer signal** per master plan § Risks. When that signal arrives, next-session entry point: `bd-sync status` across the three repos → re-read mapping artifact → update meta-bead `OPS-nfx` (in home `~/.beads/`) with Phase B kickoff note → begin `IEL-3` SPEC.md normative content.
+
+### Brand-name policy (partner-consent discipline)
+
+**A partner is not named in any public repo content (specs, READMEs, GitHub issues, blog drafts) until they have explicitly consented in writing to being named.** The first reference case study against `mcp-plugin-observability/v0.1.0-draft/` is engagement-private; the brand-named scaffold file was removed from the public repo on 2026-05-10 and the case study now lives only in the engagement's private docs. When the partner consents, the case study can be re-instantiated with their name in `case-studies/`.
+
+This rule applies even to negative-affirmation phrasings ("we don't mention X, Y, Z"). Use generic terms like "an enterprise partner engagement" or "the inaugural case study (engagement-private)" until written consent is on file.
+
+`grep -ri "Kobiton\|Polygon\|Nixtla\|Lit Protocol\|Mudit Gupta" specs/` should return zero hits at all times. Run before commits touching `specs/`.
+
 ## Where to start Claude Code sessions
 
 The lab and j-rig-binary-eval are **coordinated repos with different scopes**. Open Claude Code in the right one based on what you're doing:
