@@ -400,3 +400,17 @@ Signed,
 - Reusable pattern: `~/.claude/skills/exec-decision-council/SKILL.md`
 - Brand-scrub policy: `~/.claude/projects/-home-jeremy-000-projects-kobiton/memory/project_kobiton_case_study_scrub_2026_05_10.md`
 - Intent Solutions tagline: *"We create industries that don't exist — we think outside of the box's box."*
+
+---
+
+## Appendix: Terminology Note (added 2026-05-10 post-ISEDC-v2)
+
+**This document was authored using "matcher-map" terminology. Subsequent to this Decision Record, ISEDC v2 (same date, `005-AT-DECR-isedc-v2-terminology-rename-2026-05-10.md`) renamed "matcher-map" to "Intentional Mapping" by user direction *"nothing changes but the name."***
+
+Per CISO + GC binding constraint (frozen-artifact rule, Q3 of ISEDC v2), the body of this signed Decision Record is **NOT rewritten**. The "matcher-map" references throughout this document remain as authored; they should be read as referring to the same concept now named "Intentional Mapping" elsewhere in the ecosystem.
+
+**Identifiers MM-1..MM-6 are unchanged.** They remain the canonical category codes under the Intentional Mapping conceptual frame (per ISEDC v2 Q2 decision — keep `MM-1..MM-6` for citation stability).
+
+**The architecture in this document stands unchanged.** Per user override on ISEDC v2 Q4, no new "Intent Resolution Layer" concept was adopted; only the prose-level rename matcher-map → Intentional Mapping was executed.
+
+For decisions made after 2026-05-10 in Intent terminology, see ISEDC v2: `005-AT-DECR-isedc-v2-terminology-rename-2026-05-10.md`.

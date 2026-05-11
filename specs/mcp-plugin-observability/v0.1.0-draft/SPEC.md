@@ -60,9 +60,9 @@ A conformant plugin's MCP server MUST be observable via the harness's `mcp_serve
 
 A regression suite asserting against a conformant plugin MUST be runnable from `claude -p` (the non-interactive harness) or equivalent SDK invocation, without requiring interactive CLI session allowlisting. This allows the suite to run in CI without organizational gating.
 
-### R5 — Documented matcher map
+### R5 — Documented Intentional Mapping
 
-A conformant plugin SHOULD publish a **matcher map** (see [`matcher-map-template.md`](./matcher-map-template.md)) — a vendor-neutral 3-column document mapping each finding-shape (race condition, state inconsistency, contract violation, etc.) to the hook matcher that addresses it and the OTel signal that observes whether the matcher fired. The matcher map is the artifact that makes the plugin's deterministic-enforcement layer testable, reviewable, and reusable.
+A conformant plugin SHOULD publish a **Intentional Mapping** (see [`intentional-mapping-template.md`](./intentional-mapping-template.md)) — a vendor-neutral 3-column document mapping each finding-shape (race condition, state inconsistency, contract violation, etc.) to the hook matcher that addresses it and the OTel signal that observes whether the matcher fired. The Intentional Mapping is the artifact that makes the plugin's deterministic-enforcement layer testable, reviewable, and reusable.
 
 ## Conformance reporting
 
@@ -72,7 +72,7 @@ A claim of conformance against this spec at version `vN.M.K-draft` requires a **
 2. Names the plugin under test (repo + commit SHA + tag).
 3. Documents the test environment (harness version, env-var gate set, OTel collector configuration).
 4. Reports per-requirement results: PASS / PARTIAL / FAIL / N/A — with PARTIAL and FAIL annotated with finding evidence.
-5. Includes the plugin's matcher map (R5) as an appendix.
+5. Includes the plugin's Intentional Mapping (R5) as an appendix.
 
 The first reference conformance report against this draft is in progress against an enterprise MCP plugin under partner engagement. The conformance report is engagement-private and is not eligible for public release until the plugin maintainer consents to being named.
 
