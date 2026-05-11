@@ -78,7 +78,7 @@ Connection to Phase A: the in-toto Statement `subject` field is exactly the mech
 The standard must be **attackable from any component-angle as a valid entry**, with **partial attestation honored, not penalized**. Concretely:
 
 - A repo that ships only audit-harness static-gate rows (escape-scan, CRAP, arch-check) → emits a valid Evidence Bundle.
-- A repo that ships only MCP-server conformance rows (mcp-validator transport check + matcher-map MM-3 cooldown verification) → emits a valid Evidence Bundle.
+- A repo that ships only MCP-server conformance rows (mcp-validator transport check + Intentional Mapping MM-3 cooldown verification) → emits a valid Evidence Bundle.
 - A repo that ships rows for every hop in the pipeline → emits a valid full-chain Evidence Bundle.
 - **Silence about a dimension is "this implementation chose not to cover X," not "this implementation failed X."**
 - **Coverage is a derived signal** a consumer computes (e.g., "this bundle covers 4 of 7 pipeline hops, 2 of 5 surfaces, 1 of 6 MM-categories") — it is **not** a required field of the bundle envelope.
@@ -133,7 +133,7 @@ The industry-standard ambition becomes concrete in this split. Some Phase B work
 | **Matcher-map signal vocabulary (MM-1..MM-6 categories as OTel semantic conventions)** | Sibling RFC, filed at `open-telemetry/semantic-conventions` SIG-GenAI track | Public standards-track (OTel SIG-GenAI RFC) | C-doc's § 8 cross-cutting gap. Today, MM-1..MM-6 are markdown-table prose; standardizing them as named OTel signals makes every collector + downstream tool able to filter on them by name. |
 | **AGENTS.md normative parser shape** | Reference parser at `j-rig-binary-eval/packages/core/src/parsers/agents-md-parser.ts` + filed as a parser-contract reference against `agents.md` open standard | Public standards-track (agents.md ecosystem contribution) | ~20 vendors recognize AGENTS.md. A reference parser shape settles ambiguity (heading conventions, nesting precedence, programmatic-check extraction). |
 | **Pact-style MCP plugin contract format** | `intent-eval-lab/specs/mcp-plugin-contract/v0.1.0-draft/` + proposed as Pact v4 extension at `pact-foundation/pact-specification` | Public standards-track (Pact v4 extension) | C-doc B-3. Lets agent-harness authors and plugin authors share contracts via existing Pact broker infrastructure. |
-| **MM-1..MM-6 Gherkin scenarios** | `intent-eval-lab/specs/mcp-plugin-observability/v0.1.0-draft/scenarios/*.feature` | Public reference content (Apache 2.0 in intent-eval-lab repo) | C-doc B-4. Human-readable expression of the matcher-map spec; not a separate standards body submission, but published under the spec for community reuse. |
+| **MM-1..MM-6 Gherkin scenarios** | `intent-eval-lab/specs/mcp-plugin-observability/v0.1.0-draft/scenarios/*.feature` | Public reference content (Apache 2.0 in intent-eval-lab repo) | C-doc B-4. Human-readable expression of the Intentional Mapping spec; not a separate standards body submission, but published under the spec for community reuse. |
 | **audit-harness `emit-evidence` subcommand** | `audit-harness/scripts/emit-evidence.{sh,py}` + `bin/audit-harness.js` dispatch | Intent Solutions implementation | Reference emitter against the public schema. Other emitters (e.g., a Stryker-side emitter, a Sonar-side emitter) can ship independently against the same schema. |
 | **audit-harness `--json` flag on all subcommands** | `audit-harness/scripts/*.sh` + `crap-score.py` | Intent Solutions implementation | Internal prerequisite for `emit-evidence`. No external party cares whether the harness's text mode coexists with JSON mode. |
 | **audit-harness backward-compat regression suite** | `audit-harness/tests/regression/` | Intent Solutions implementation | Internal hygiene. |
@@ -272,15 +272,15 @@ Each work item carries: ID, title, source workstream(s), arena-surfaces covered 
 - **Primary sources:** [OTel SIG-GenAI charter](https://github.com/open-telemetry/community/blob/main/projects/gen-ai.md) · existing draft at Phase A.
 - **Dependency:** none.
 
-#### PB-11. File OTel SIG-GenAI RFC: matcher-map signal vocabulary (MM-1..MM-6 as named conventions)
+#### PB-11. File OTel SIG-GenAI RFC: Intentional Mapping signal vocabulary (MM-1..MM-6 as named conventions)
 
 - **Source:** C § 8 cross-cutting gap + C § 11 Phase B item B-1 (sibling RFC).
 - **Surfaces:** MCP server + agent runtime (signals fire at the hook + tool layer).
 - **Side:** **explicitly both** — MM-1 (async race) is observable from the agent emitting `tool_decision` events and from the server emitting reconciled state.
 - **Pipeline hop:** MCP server → agent runtime → external assertion.
-- **Partial-attestation effect:** **enabling** — codifying MM-1..MM-6 as named signals means a collector + downstream checker can filter on them by name without parsing matcher-map markdown.
+- **Partial-attestation effect:** **enabling** — codifying MM-1..MM-6 as named signals means a collector + downstream checker can filter on them by name without parsing Intentional Mapping markdown.
 - **Effort:** ~3 weeks (RFC drafting + community review).
-- **Primary sources:** [OTel semantic-conventions GenAI](https://github.com/open-telemetry/semantic-conventions/tree/main/docs/gen-ai) · `intent-eval-lab/specs/mcp-plugin-observability/v0.1.0-draft/matcher-map-template.md`.
+- **Primary sources:** [OTel semantic-conventions GenAI](https://github.com/open-telemetry/semantic-conventions/tree/main/docs/gen-ai) · `intent-eval-lab/specs/mcp-plugin-observability/v0.1.0-draft/intentional-mapping-template.md`.
 - **Dependency:** none (parallel with PB-10).
 
 #### PB-12. Author Gherkin scenarios for MM-1..MM-6 + author Pact-extension format
@@ -317,7 +317,7 @@ Each work item carries: ID, title, source workstream(s), arena-surfaces covered 
 1. **CONFLICT: B-doc PB-8 (MCP-conformance check bundle in j-rig) overlaps with C-doc Phase B B-2 (Pact-style MCP plugin contract).**
    - **Reconciliation:** consolidate. PB-12 (Pact-extension + Gherkin) is the canonical Phase B MCP-conformance work. j-rig's role is to *emit rows that reference* the Pact verifier's output, not to embed its own MCP checker. B-doc PB-8 is dropped from Phase B; its semantic content is absorbed by PB-7 (provider adapters can drive an MCP server through the Pact verifier as part of a j-rig eval).
 2. **CONFLICT: A-doc's `IEL-CONV-2` reference (PB-1) and C-doc's B-5 (Conformance Provenance predicate) both define new in-toto predicates.**
-   - **Reconciliation:** they are **two complementary predicate types**, not one. PB-1 codifies `https://evals.intentsolutions.io/gate-result/v1` (a single gate's row, audit-harness + j-rig emit these). The Conformance Provenance predicate from C-doc B-5 codifies `https://evals.intentsolutions.io/conformance-provenance/v1` (a *run* of a matcher-map harness against a plugin, with aggregated PASS/PARTIAL/FAIL per row). Different scope. **Both are Phase B work**; PB-1 ships the gate-result predicate (Wave 1), and the Conformance Provenance predicate ships as **a sub-task of PB-12** (because it wraps the Pact/Gherkin verifier output). The naming + scope distinction goes in the PB-1 schema docstring + PB-12 spec.
+   - **Reconciliation:** they are **two complementary predicate types**, not one. PB-1 codifies `https://evals.intentsolutions.io/gate-result/v1` (a single gate's row, audit-harness + j-rig emit these). The Conformance Provenance predicate from C-doc B-5 codifies `https://evals.intentsolutions.io/conformance-provenance/v1` (a *run* of a Intentional Mapping harness against a plugin, with aggregated PASS/PARTIAL/FAIL per row). Different scope. **Both are Phase B work**; PB-1 ships the gate-result predicate (Wave 1), and the Conformance Provenance predicate ships as **a sub-task of PB-12** (because it wraps the Pact/Gherkin verifier output). The naming + scope distinction goes in the PB-1 schema docstring + PB-12 spec.
 3. **NO CONFLICT (positive confirmation): B-doc's vendor-namespacing (`vendor:anthropic:*`) and PB-1's in-toto-Statement subject naming are orthogonal.** The `gate_id` field in the predicate (PB-2) follows vendor-namespacing convention; the in-toto `subject` field (PB-1) names the pipeline hop being attested. They don't collide.
 4. **NO CONFLICT (positive confirmation): A-doc's `policy_hash` + `input_hash` fields and C-doc's MM-1..MM-6 signal vocabulary do not contradict.** `policy_hash` hashes the gate's policy; MM-N names the failure-shape category. Both can appear in one in-toto Statement — `predicate.policy_hash` for the policy artifact, `predicate.matcher_map_category: "MM-1"` for the shape — without ambiguity.
 5. **POTENTIAL ASSUMPTION CONFLICT: B-doc Lens-1 silence on vendor priority.** B-doc does not pre-rank vendors beyond the matrix; A-doc assumes "audit-harness must work everywhere" (per `--json` on all subcommands). The composable-partial lens (Lens 4) resolves this: no vendor must be prioritized — partial vendor coverage is fine. **Reconciliation:** PB-9 ships *all six* vendor snapshots as a batch, not gating on a "primary" vendor.
@@ -330,7 +330,7 @@ Phase C is the executable conformance harness layer that consumes the Phase B-co
 
 | ID | Title | Source | Phase B precondition | Effort |
 |---|---|---|---|---|
-| **PC-1** | Jepsen-style nemesis-generator-checker harness against the matcher-map | C § 11 Phase C C-1 (B-1 in C-doc § 9) | PB-11 (matcher-map signals codified as OTel conventions) + PB-12 (Pact extension format) | 6-10 weeks |
+| **PC-1** | Jepsen-style nemesis-generator-checker harness against the Intentional Mapping | C § 11 Phase C C-1 (B-1 in C-doc § 9) | PB-11 (Intentional Mapping signals codified as OTel conventions) + PB-12 (Pact extension format) | 6-10 weeks |
 | **PC-2** | Hypothesis-based `@matcher_map_rule` decorator library | C § 11 Phase C C-2 (B-2 in C-doc § 9) | PB-11 (signal vocabulary) | 4-6 weeks |
 | **PC-3** | Mutation-kill-rate dispatcher (audit-harness `audit-harness mutation` subcommand, per-language) | A § 8 PB-5 (deferred from Phase B) | PB-4 (`emit-evidence` ships rows the dispatcher emits to) | L (~3-5 weeks) |
 | **PC-4** | OTel `gen_ai.*` span emission across j-rig provider calls + Aider-style per-vendor reporting layer | B § 8 PB-7 + PB-6 (deferred from Phase B) | PB-7 (provider adapters) + PB-10 (rollout-gate conventions in production) | ~1 week |
@@ -347,11 +347,11 @@ C-doc § 5 surfaces gleanwork/mcp-server-tester's category of "tool discoverabil
 
 Rationale:
 
-1. **Empirical discipline** — MM-1..MM-6 were *found* in Intent Solutions partner engagements (kobiton F-findings F11..F35 directly mapped, plus mudit / nixtla / lit failure-shapes via the engagement structure). MM-7 from a third-party tool's category is **theorized**, not found. Filing MM-7 from a doc rather than from a failure would dilute the credibility property that distinguishes the matcher-map standard from a survey-of-tools.
+1. **Empirical discipline** — MM-1..MM-6 were *found* in Intent Solutions partner engagements (kobiton F-findings F11..F35 directly mapped, plus mudit / nixtla / lit failure-shapes via the engagement structure). MM-7 from a third-party tool's category is **theorized**, not found. Filing MM-7 from a doc rather than from a failure would dilute the credibility property that distinguishes the Intentional Mapping standard from a survey-of-tools.
 2. **Coverage overlap** — gleanwork's tool-discoverability is arguably an MM-5 instance (mandatory context the model isn't providing — namely, the right tool ID in its allowlist), not a distinct shape. The C-doc itself flags this ambiguity ("a sibling MM-5 issue that may warrant its own MM-7 category"). Until a real engagement surfaces a failure-shape that **does not fit MM-1..MM-6**, MM-7 stays unallocated.
 3. **Standards-track discipline** — published specs that grow categories speculatively get accused of bloat. Six categories shipped as `v0.1.0-draft` with a clear empirical provenance is a stronger position than seven categories where the seventh is "we read about this."
 
-**Action:** add a note to `specs/mcp-plugin-observability/v0.1.0-draft/matcher-map-template.md` saying MM-7 is reserved-but-unallocated and citing gleanwork as the prior art that motivates the reservation. When a real partner-engagement failure surfaces that doesn't fit MM-1..MM-6, document the failure and file MM-7 in `v0.2.0`.
+**Action:** add a note to `specs/mcp-plugin-observability/v0.1.0-draft/intentional-mapping-template.md` saying MM-7 is reserved-but-unallocated and citing gleanwork as the prior art that motivates the reservation. When a real partner-engagement failure surfaces that doesn't fit MM-1..MM-6, document the failure and file MM-7 in `v0.2.0`.
 
 ---
 
@@ -391,7 +391,7 @@ Per Workstream C's unresolved-questions list and surfacing during synthesis:
 
 4. **CRAP metric peer-review gap (Workstream A finding) for academic-facing publication.**
    - **Status:** A-doc § 3 surfaces that CRAP's primary citation is Alberto Savoia's 2007 Artima trade-press article — never peer-reviewed.
-   - **Reconciliation:** **does not block Phase B.** When the matcher-map methodology + audit-harness Evidence Bundle work eventually reaches a venue submission (post-Phase C, conditional on first-customer signal), the CRAP citation chain will need to be carefully framed: industry-original metric, in-production for ~18 years, no peer-reviewed primary but extensive practitioner adoption. This is a manuscript-prep concern, not a Phase B scope concern. **File as `intent-eval-lab` issue with `manuscript-prep` label** when academic publication track activates.
+   - **Reconciliation:** **does not block Phase B.** When the Intentional Mapping methodology + audit-harness Evidence Bundle work eventually reaches a venue submission (post-Phase C, conditional on first-customer signal), the CRAP citation chain will need to be carefully framed: industry-original metric, in-production for ~18 years, no peer-reviewed primary but extensive practitioner adoption. This is a manuscript-prep concern, not a Phase B scope concern. **File as `intent-eval-lab` issue with `manuscript-prep` label** when academic publication track activates.
 
 5. **Composable-partial principle vs verification gates in master plan.**
    - **Status:** master plan § "Verification gates for Part 2 research" lists "Has a 'capability gap matrix'" as required for each landscape doc. This is research-gate language ("must have"). The composable-partial lens (this doc § 2.4) says implementations are valid with partial coverage.
@@ -427,8 +427,8 @@ To prevent scope drift in Phase B / C planning that consumes this synthesis:
 - `/home/jeremy/000-projects/intent-eval-platform/intent-eval-lab/specs/evidence-bundle/v0.1.0-draft/SPEC.md` (skeleton)
 - `/home/jeremy/000-projects/intent-eval-platform/intent-eval-lab/000-docs/001-DR-RFC-otel-agent-rollout-gate-signals-draft.md` (RFC draft, PB-10 source)
 - `/home/jeremy/000-projects/intent-eval-platform/audit-harness/000-docs/001-DR-DESIGN-evidence-bundle-envelope-design-notes.md` (gate-result envelope, PB-1 + PB-2 + PB-4 source)
-- `/home/jeremy/000-projects/intent-eval-platform/intent-eval-lab/specs/mcp-plugin-observability/v0.1.0-draft/SPEC.md` (matcher-map spec, PB-11 + PB-12 source)
-- `/home/jeremy/000-projects/intent-eval-platform/intent-eval-lab/specs/mcp-plugin-observability/v0.1.0-draft/matcher-map-template.md` (MM-1..MM-6 template, PB-11 + PB-12 + § 7 MM-7 source)
+- `/home/jeremy/000-projects/intent-eval-platform/intent-eval-lab/specs/mcp-plugin-observability/v0.1.0-draft/SPEC.md` (Intentional Mapping spec, PB-11 + PB-12 source)
+- `/home/jeremy/000-projects/intent-eval-platform/intent-eval-lab/specs/mcp-plugin-observability/v0.1.0-draft/intentional-mapping-template.md` (MM-1..MM-6 template, PB-11 + PB-12 + § 7 MM-7 source)
 
 **Master plan (research methodology + Part 2 scope):**
 

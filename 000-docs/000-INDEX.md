@@ -7,7 +7,7 @@ Index of numbered docs in this directory. Add new docs as they land.
 | # | File | Type | Date | Status |
 |---|------|------|------|--------|
 | 001 | [`001-DR-RFC-otel-agent-rollout-gate-signals-draft.md`](./001-DR-RFC-otel-agent-rollout-gate-signals-draft.md) | DR-RFC (draft RFC) | 2026-05-10 | Phase A draft — files at OTel SIG-GenAI Phase B Week 4+ informed by community-temperature email (per ISEDC Q4) |
-| 002 | [`002-RR-LAND-mcp-testing-bridge.md`](./002-RR-LAND-mcp-testing-bridge.md) | RR-LAND (landscape) | 2026-05-10 | Part 2 Workstream C deliverable — 6,257w landscape mapping bridge from static repo analysis to protocol-level runtime conformance (matcher-map MM-1..MM-6 ↔ existing tooling gap map) |
+| 002 | [`002-RR-LAND-mcp-testing-bridge.md`](./002-RR-LAND-mcp-testing-bridge.md) | RR-LAND (landscape) | 2026-05-10 | Part 2 Workstream C deliverable — 6,257w landscape mapping bridge from static repo analysis to protocol-level runtime conformance (Intentional Mapping MM-1..MM-6 ↔ existing tooling gap map) |
 | 003 | [`003-PP-PLAN-phase-b-scope-refinement.md`](./003-PP-PLAN-phase-b-scope-refinement.md) | PP-PLAN (plan) | 2026-05-10 | Part 2 Workstream D synthesis — 6,100w, 12 Phase B work items in 3 clusters, 4 Phase C items, standards-track vs IS-implementation split, four user-supplied lenses applied |
 | 004 | [`004-AT-DECR-isedc-council-record-2026-05-10.md`](./004-AT-DECR-isedc-council-record-2026-05-10.md) | AT-DECR (decision record) | 2026-05-10 | ISEDC 7-seat adversarial council Decision Record — 5 Phase B open questions decision-locked with stacked minority protections. Verbatim seat positions preserved for future readers. |
 
