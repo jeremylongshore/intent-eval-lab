@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://evals.intentsolutions.io/gate-result/v1.schema.json",
+  "title": "Evidence Bundle gate-result predicate (v1)",
+  "description": "JSON Schema for the predicate body of an in-toto Statement v1 whose predicateType is https://evals.intentsolutions.io/gate-result/v1. This schema validates ONLY the predicate body. The enclosing in-toto Statement envelope (_type, subject, predicateType) is validated separately against the in-toto Statement v1 schema.",
+  "type": "object",
+  "required": [
+    "gate_id",
+    "result",
+    "policy_hash",
+    "input_hash",
+    "timestamp",
+    "runner",
+    "commit_sha"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "gate_id": {
+      "type": "string",
+      "description": "Pipeline-hop-qualified gate identifier. MUST match the subject[].name entry in the enclosing in-toto Statement and MUST match the regex tool:side:gate-id per SPEC.md § 6 R8.",
+      "pattern": "^[a-z0-9][a-z0-9-]*:(client|server|ci|sandbox|local):[a-zA-Z0-9][a-zA-Z0-9.-]*$",
+      "examples": [
+        "audit-harness:client:escape-scan",
+        "audit-harness:ci:crap-score",
+        "j-rig:server:MM-3",
+        "intent-rollout-gate:ci:rollout-decision"
+      ]
+    },
+    "result": {
+      "type": "string",
+      "description": "Verdict for this gate execution. See SPEC.md § 5 R6 for semantics.",
+      "enum": [
+        "PASS",
+        "FAIL",
+        "ADVISORY",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "policy_hash": {
+      "type": "string",
+      "description": "SHA-256 of the policy file the gate evaluated against, prefixed sha256:.",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "input_hash": {
+      "type": "string",
+      "description": "SHA-256 of the input artifact the gate evaluated. MUST match subject[].digest.sha256 in the enclosing Statement (SPEC.md § 6 R9).",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "RFC 3339 UTC timestamp. Moment the gate emitted the result."
+    },
+    "runner": {
+      "type": "string",
+      "description": "Tool + semver identifier that produced the row.",
+      "pattern": "^[a-z0-9][a-z0-9-]*@[0-9]+\\.[0-9]+\\.[0-9]+(-[A-Za-z0-9.-]+)?(\\+[A-Za-z0-9.-]+)?$",
+      "examples": [
+        "audit-harness@0.3.0",
+        "j-rig@0.15.0",
+        "intent-rollout-gate@0.1.0"
+      ]
+    },
+    "commit_sha": {
+      "type": "string",
+      "description": "Git commit SHA the gate evaluated against. Full 40-hex or short 7-hex accepted.",
+      "pattern": "^[a-f0-9]{7,40}$"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Free-form tool-specific metadata. Consumers MUST NOT rely on metadata fields for ship/no-ship decisions; metadata is informative only.",
+      "additionalProperties": true
+    },
+    "failure_mode": {
+      "type": "string",
+      "description": "When result is FAIL, an identifier classifying the failure shape. Refer to the originating tool's documentation for the value space.",
+      "examples": [
+        "MM-1",
+        "MM-4",
+        "policy-violation"
+      ]
+    },
+    "advisory_severity": {
+      "type": "string",
+      "description": "When result is ADVISORY, the severity tier.",
+      "enum": [
+        "info",
+        "warn",
+        "error"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "result": {
+            "const": "ADVISORY"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "advisory_severity"
+        ]
+      }
+    }
+  ]
+}

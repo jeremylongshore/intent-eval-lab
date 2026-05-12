@@ -1,0 +1,147 @@
+{
+  "$comment": "Informative example. A real Evidence Bundle is a sequence of DSSE-wrapped, signed in-toto Statement v1 documents (one per file or per JSONL line). This array form is the convenience container described in SPEC.md § 4 R1. Signatures are omitted from this example for readability — see in-toto-statement.json for a single signed-row shape.",
+  "bundle_format": "json-array",
+  "rows": [
+    {
+      "_type": "https://in-toto.io/Statement/v1",
+      "subject": [
+        {
+          "name": "audit-harness:ci:escape-scan",
+          "digest": {
+            "sha256": "0001112223334445556667778889990001112223334445556667778889990001"
+          }
+        }
+      ],
+      "predicateType": "https://evals.intentsolutions.io/gate-result/v1",
+      "predicate": {
+        "gate_id": "audit-harness:ci:escape-scan",
+        "result": "PASS",
+        "policy_hash": "sha256:aaaa1111bbbb2222cccc3333dddd4444eeee5555ffff6666aaaa1111bbbb2222",
+        "input_hash": "sha256:0001112223334445556667778889990001112223334445556667778889990001",
+        "timestamp": "2026-05-11T14:23:01Z",
+        "runner": "audit-harness@0.3.0",
+        "commit_sha": "9971183"
+      }
+    },
+    {
+      "_type": "https://in-toto.io/Statement/v1",
+      "subject": [
+        {
+          "name": "audit-harness:ci:crap-score",
+          "digest": {
+            "sha256": "1112223334445556667778889990001112223334445556667778889990001112"
+          }
+        }
+      ],
+      "predicateType": "https://evals.intentsolutions.io/gate-result/v1",
+      "predicate": {
+        "gate_id": "audit-harness:ci:crap-score",
+        "result": "PASS",
+        "policy_hash": "sha256:aaaa1111bbbb2222cccc3333dddd4444eeee5555ffff6666aaaa1111bbbb2222",
+        "input_hash": "sha256:1112223334445556667778889990001112223334445556667778889990001112",
+        "timestamp": "2026-05-11T14:23:02Z",
+        "runner": "audit-harness@0.3.0",
+        "commit_sha": "9971183",
+        "metadata": {
+          "max_crap_score": 18,
+          "files_evaluated": 142
+        }
+      }
+    },
+    {
+      "_type": "https://in-toto.io/Statement/v1",
+      "subject": [
+        {
+          "name": "audit-harness:ci:bias-count",
+          "digest": {
+            "sha256": "2223334445556667778889990001112223334445556667778889990001112223"
+          }
+        }
+      ],
+      "predicateType": "https://evals.intentsolutions.io/gate-result/v1",
+      "predicate": {
+        "gate_id": "audit-harness:ci:bias-count",
+        "result": "ADVISORY",
+        "advisory_severity": "warn",
+        "policy_hash": "sha256:aaaa1111bbbb2222cccc3333dddd4444eeee5555ffff6666aaaa1111bbbb2222",
+        "input_hash": "sha256:2223334445556667778889990001112223334445556667778889990001112223",
+        "timestamp": "2026-05-11T14:23:03Z",
+        "runner": "audit-harness@0.3.0",
+        "commit_sha": "9971183",
+        "metadata": {
+          "bias_terms_found": 2
+        }
+      }
+    },
+    {
+      "_type": "https://in-toto.io/Statement/v1",
+      "subject": [
+        {
+          "name": "j-rig:server:MM-1",
+          "digest": {
+            "sha256": "3334445556667778889990001112223334445556667778889990001112223334"
+          }
+        }
+      ],
+      "predicateType": "https://evals.intentsolutions.io/gate-result/v1",
+      "predicate": {
+        "gate_id": "j-rig:server:MM-1",
+        "result": "PASS",
+        "policy_hash": "sha256:bbbb2222cccc3333dddd4444eeee5555ffff6666aaaa1111bbbb2222cccc3333",
+        "input_hash": "sha256:3334445556667778889990001112223334445556667778889990001112223334",
+        "timestamp": "2026-05-11T14:24:15Z",
+        "runner": "j-rig@0.15.0",
+        "commit_sha": "9971183"
+      }
+    },
+    {
+      "_type": "https://in-toto.io/Statement/v1",
+      "subject": [
+        {
+          "name": "j-rig:server:MM-3",
+          "digest": {
+            "sha256": "4445556667778889990001112223334445556667778889990001112223334445"
+          }
+        }
+      ],
+      "predicateType": "https://evals.intentsolutions.io/gate-result/v1",
+      "predicate": {
+        "gate_id": "j-rig:server:MM-3",
+        "result": "NOT_APPLICABLE",
+        "policy_hash": "sha256:bbbb2222cccc3333dddd4444eeee5555ffff6666aaaa1111bbbb2222cccc3333",
+        "input_hash": "sha256:4445556667778889990001112223334445556667778889990001112223334445",
+        "timestamp": "2026-05-11T14:24:18Z",
+        "runner": "j-rig@0.15.0",
+        "commit_sha": "9971183",
+        "metadata": {
+          "reason": "Repository declares no MCP server endpoints; MM-3 cooldown semantics do not apply."
+        }
+      }
+    },
+    {
+      "_type": "https://in-toto.io/Statement/v1",
+      "subject": [
+        {
+          "name": "j-rig:server:MM-4",
+          "digest": {
+            "sha256": "5556667778889990001112223334445556667778889990001112223334445556"
+          }
+        }
+      ],
+      "predicateType": "https://evals.intentsolutions.io/gate-result/v1",
+      "predicate": {
+        "gate_id": "j-rig:server:MM-4",
+        "result": "FAIL",
+        "failure_mode": "MM-4",
+        "policy_hash": "sha256:bbbb2222cccc3333dddd4444eeee5555ffff6666aaaa1111bbbb2222cccc3333",
+        "input_hash": "sha256:5556667778889990001112223334445556667778889990001112223334445556",
+        "timestamp": "2026-05-11T14:24:22Z",
+        "runner": "j-rig@0.15.0",
+        "commit_sha": "9971183",
+        "metadata": {
+          "observed_side_effect": "External HTTP POST to api.example.com fired during dry-run; expected NO_NETWORK."
+        }
+      }
+    }
+  ]
+}

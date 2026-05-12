@@ -1,0 +1,52 @@
+# Example tests/TESTING.md policy block — INFORMATIVE, NOT NORMATIVE.
+#
+# Per SPEC.md § 8 R14, the Evidence Bundle spec does not pin a policy schema.
+# This file illustrates the kind of consumer-facing config a tool like
+# intent-rollout-gate (Phase B Milestone 5) might consume from a repository's
+# tests/TESTING.md file.
+#
+# Real-world policy schemas vary across language ecosystems and consuming
+# tools. A consumer (e.g. intent-rollout-gate's action.yml) MUST define its
+# own schema. Do not treat this YAML as authoritative.
+
+evidence_bundle:
+  spec_version: "v0.1.0-draft"
+  predicate_uri: "https://evals.intentsolutions.io/gate-result/v1"
+
+policy:
+  # Required gates — any FAIL here blocks the rollout.
+  required:
+    - "audit-harness:ci:escape-scan"
+    - "audit-harness:ci:harness-hash"
+    - "audit-harness:ci:arch-check"
+    - "j-rig:server:MM-1"
+    - "j-rig:server:MM-2"
+
+  # Applicable-only gates — required to PASS *if* present, but their absence
+  # is not a failure. NOT_APPLICABLE rows count as covered.
+  applicable_only:
+    - "j-rig:server:MM-3"
+    - "j-rig:server:MM-6"
+
+  # Advisory gates — ADVISORY rows do not block; FAIL would block.
+  advisory:
+    - "audit-harness:ci:bias-count"
+
+  # Coverage thresholds.
+  coverage:
+    min_required_gate_pass_rate: 1.0
+    min_applicable_only_coverage: 1.0
+    treat_not_applicable_as_covered: true
+
+  # Behavioral overrides — a policy MAY elevate ADVISORY to blocking under
+  # specific conditions (e.g. for protected branches).
+  overrides:
+    - branch: "main"
+      elevate_advisory_to_blocking:
+        - "audit-harness:ci:bias-count"
+
+# Reporting preferences (informative; consumed by intent-rollout-gate output formatting).
+report:
+  pr_comment: true
+  status_check_name: "intent-rollout-gate"
+  emit_decision_row: true   # consumer emits its own in-toto row attesting the decision
