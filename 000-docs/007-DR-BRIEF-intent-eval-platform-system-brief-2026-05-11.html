@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intent Eval Platform — System Brief</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.75; color: #1a1a1a; max-width: 860px; margin: 0 auto; padding: 40px 32px; background: #fff; }
+  h1 { font-size: 2rem; font-weight: 700; color: #0a0a0a; border-bottom: 3px solid #0a0a0a; padding-bottom: 12px; margin-top: 0; }
+  h2 { font-size: 1.4rem; font-weight: 700; color: #0a0a0a; border-bottom: 1px solid #ccc; padding-bottom: 6px; margin-top: 48px; }
+  h3 { font-size: 1.1rem; font-weight: 700; color: #1a1a1a; margin-top: 32px; }
+  p { margin: 0 0 18px 0; }
+  pre { background: #0f0f0f; color: #e8e8e8; padding: 24px; border-radius: 6px; font-size: 13px; line-height: 1.5; overflow-x: auto; font-family: 'Courier New', monospace; margin: 24px 0; }
+  code { font-family: 'Courier New', monospace; background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 14px; color: #333; }
+  table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 15px; }
+  th { background: #0a0a0a; color: #fff; padding: 10px 14px; text-align: left; font-weight: 600; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f9f9f9; }
+  .callout { background: #f0f4ff; border-left: 4px solid #2563eb; padding: 16px 20px; margin: 24px 0; border-radius: 0 6px 6px 0; }
+  .callout-warn { background: #fff7ed; border-left: 4px solid #ea580c; padding: 16px 20px; margin: 24px 0; border-radius: 0 6px 6px 0; }
+  .meta { font-size: 14px; color: #666; margin-bottom: 40px; }
+  .section-label { display: inline-block; background: #0a0a0a; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 1px; padding: 3px 8px; border-radius: 3px; margin-bottom: 8px; text-transform: uppercase; }
+  ul { margin: 0 0 18px 0; padding-left: 24px; }
+  li { margin-bottom: 6px; }
+  .sig { margin-top: 60px; border-top: 1px solid #ccc; padding-top: 20px; font-size: 14px; color: #666; }
+</style>
+</head>
+<body>
+
+<div class="meta">
+  <strong>Document:</strong> Intent Eval Platform — System Brief &amp; Architecture Journey<br>
+  <strong>Date:</strong> 2026-05-11<br>
+  <strong>Author:</strong> Jeremy Longshore, Intent Solutions LLC<br>
+  <strong>Classification:</strong> Internal — Strategic Architecture
+</div>
+
+<h1>Intent Eval Platform<br><span style="font-size:1.1rem;font-weight:400;color:#555;">How the System Works: A Complete Architecture Brief</span></h1>
+
+<p>This document describes the Intent Eval Platform — a three-repository evaluation system being built by Intent Solutions — from the ground up. It covers what the platform is, why it exists, how each component works, how the pieces connect, and what the full journey looks like from a developer shipping code to a signed, independently verifiable evaluation result. If you read one document to understand this system, this is it.</p>
+
+<h2>1. The Problem This Solves</h2>
+
+<p>The AI tooling ecosystem has a measurement problem. As AI agents, MCP servers, SKILL.md files, and CLI tools have proliferated across the industry, nobody has built a standardized way to answer the question: <em>did this thing actually work correctly?</em></p>
+
+<p>Every vendor has their own eval. Every team has their own benchmark. Claude Code has its own tests, Cursor has its own, Cline has its own, and none of them speak the same language. When a developer plugs an MCP server into Claude Code and something goes wrong — a tool call races, a cooldown isn't respected, a side effect fires twice — there is no standard format for describing that failure, recording it, or verifying that a fix actually resolved it.</p>
+
+<p>The situation is worse on the MCP server side specifically. MCP is an open protocol that allows AI agents to call external tools. As of today, there is no benchmark, no conformance standard, and no independently verifiable attestation format for MCP servers. A vendor can claim their MCP server "works with Claude Code" and there is no standard way to prove or disprove that claim.</p>
+
+<p>The Intent Eval Platform is the answer to that gap. It is being built as candidate substrate for an industry standard — not internal tooling, not a product with a single vendor's logo on it, but a set of specifications, schemas, and open-source tools that any party can use to produce independently verifiable evaluation results.</p>
+
+<div class="callout">
+  <strong>The core principle:</strong> Every evaluation result should be expressible as a signed, independently verifiable artifact that any auditor can check without trusting the team that produced it. Partial results are valid. Silence about a dimension means "not tested," not "failed." Coverage is a derived signal, not a requirement.
+</div>
+
+<h2>2. The Three Repositories</h2>
+
+<p>The platform is composed of three independent open-source repositories. Each has its own Git history, its own release cycle, its own license, and its own package. They are not a monorepo. They compose at the schema layer — they all emit the same kind of result artifact — and that is the only required coupling between them.</p>
+
+<table>
+  <thead><tr><th>Repository</th><th>Role</th><th>License</th><th>Language</th></tr></thead>
+  <tbody>
+    <tr><td><code>intent-eval-lab</code></td><td>Methodology + specs + schema definitions. The rulebook everything else follows.</td><td>Apache 2.0</td><td>Markdown / JSON Schema</td></tr>
+    <tr><td><code>audit-harness</code></td><td>Static gate runner. Checks the code and configuration of a repository without running a model.</td><td>MIT</td><td>Bash + Python + Node.js dispatcher</td></tr>
+    <tr><td><code>j-rig-binary-eval</code></td><td>Behavioral gate runner. Drives an AI model through a task and judges whether it behaved correctly.</td><td>MIT</td><td>TypeScript (pnpm monorepo)</td></tr>
+  </tbody>
+</table>
+
+<p>The local filesystem lays them out as siblings under a shared umbrella directory at <code>~/000-projects/intent-eval-platform/</code>. That directory is a filesystem grouping — it has no build system, no shared package.json, and no git history of its own. The coupling is entirely at the schema layer.</p>
+
+<h2>3. The Five Surfaces</h2>
+
+<p>The platform is designed to evaluate five distinct surfaces. Each surface is independently evaluable. A team that only ships MCP servers does not need to evaluate SKILL.md files. A team that only ships CLI tools does not need to run behavioral MCP gate checks. The system is designed so that partial coverage is explicitly valid — and so that the evaluation result clearly states which surfaces were tested and which were not.</p>
+
+<table>
+  <thead><tr><th>Surface</th><th>What It Is</th><th>Examples</th></tr></thead>
+  <tbody>
+    <tr><td><strong>API</strong></td><td>A provider-side HTTP or RPC endpoint that returns model output or tool results</td><td>Anthropic Messages API, OpenAI Responses API, MCP server <code>tools/call</code> JSON-RPC</td></tr>
+    <tr><td><strong>CLI</strong></td><td>The local binary an operator runs to invoke a model or agent</td><td>claude, codex, gemini, cursor, aider, cline</td></tr>
+    <tr><td><strong>MCP Server</strong></td><td>A separately-running protocol surface the agent invokes via JSON-RPC</td><td>A Kobiton test automation server, a Plane project management server, any custom domain MCP server</td></tr>
+    <tr><td><strong>Agent</strong></td><td>The runtime that composes API calls, tool calls, memory, and hooks</td><td>Claude Code, Codex CLI, Gemini CLI, Cline, Cursor, Continue.dev</td></tr>
+    <tr><td><strong>SKILL.md</strong></td><td>The instruction-shaped artifact that primes an agent for a specific task</td><td>SKILL.md, AGENTS.md, .cursor/rules/*.mdc, .windsurf/rules/*.md, GEMINI.md</td></tr>
+  </tbody>
+</table>
+
+<p>The transformation pipeline that connects these surfaces is: API &rarr; CLI &rarr; MCP server &rarr; SKILL.md &rarr; agent runtime. A capability or failure can be traced along any hop in that chain. When the platform attests to a result, the subject of the attestation names which hop is being described — so a consumer can know whether a claim is about the server side, the client side, or the instruction layer.</p>
+
+<h2>4. The Audit Harness — Static Gates</h2>
+
+<p>The audit harness is a static analysis tool. It runs against a repository without invoking any AI model. Its job is to check whether the code, configuration, and test artifacts of a repository meet a defined quality bar. Think of it as a highly opinionated linter that knows about AI-specific failure modes.</p>
+
+<p>The harness is published as <code>@intentsolutions/audit-harness</code> on npm and is also available as a PyPI package, a Rust crate, and via a curl install script. The primary interface is a Node.js CLI dispatcher (<code>audit-harness</code>) that routes to six underlying scripts.</p>
+
+<h3>The six gates</h3>
+
+<table>
+  <thead><tr><th>Gate</th><th>What It Checks</th><th>Output</th></tr></thead>
+  <tbody>
+    <tr><td><code>escape-scan</code></td><td>Scans staged git diffs for AI escape patterns — specifically REFUSE, CHALLENGE, and FLAG grammar that indicates an AI model attempting to exit a constrained task. Thresholds are read from <code>tests/TESTING.md</code> so enforcement travels with the code.</td><td>PASS / FAIL + matching lines</td></tr>
+    <tr><td><code>crap-score</code></td><td>Computes the CRAP metric (Change Risk Anti-Patterns) — a function of cyclomatic complexity multiplied by the inverse of test coverage. High CRAP score = high-risk code. Supports Python, JavaScript, Go, Rust, Java, PHP, Ruby, and .NET.</td><td>PASS / FAIL + per-function scores</td></tr>
+    <tr><td><code>arch-check</code></td><td>Runs dependency-cruiser to enforce architectural rules — which modules are allowed to import which other modules. Prevents circular dependencies and layer violations.</td><td>PASS / FAIL + violation list</td></tr>
+    <tr><td><code>harness-hash</code></td><td>Maintains a SHA-256 manifest of policy files (.feature files, dependency-cruiser config, ArchUnit config, Stryker config). Detects tampering — if a policy file changes without the hash being re-initialized, the gate fails. Prevents AI-proposed policy changes from silently bypassing enforcement.</td><td>PASS / FAIL + hash diff</td></tr>
+    <tr><td><code>bias-count</code></td><td>Counts test-bias patterns in the test suite — tautological assertions, tests that always pass, mocked implementations of the function under test. Advisory output.</td><td>COUNT + flagged tests (advisory)</td></tr>
+    <tr><td><code>gherkin-lint</code></td><td>Lints Gherkin feature files for structural quality — step definition hygiene, scenario naming, tag discipline.</td><td>PASS / FAIL + lint violations (advisory)</td></tr>
+  </tbody>
+</table>
+
+<h3>How the harness runs today</h3>
+
+<p>Today the harness produces text output and exit codes. Exit code 0 means pass, 1 means fail, 2 means error. The results are human-readable. They work in CI pipelines, pre-commit hooks, and local development workflows. When you run <code>audit-harness escape-scan --staged</code> in a git hook, you get a human-readable report telling you whether any staged AI-generated diffs contain escape patterns.</p>
+
+<p>The <code>crap-score</code> gate already supports a <code>--format json</code> flag that emits machine-readable output. That flag is the reference implementation for the Phase B upgrade path — every other gate will get the same treatment.</p>
+
+<h3>The upgrade path (Phase B)</h3>
+
+<p>The Phase B upgrade adds two capabilities on top of the existing gates without changing any gate logic:</p>
+
+<p><strong>AH-2 — <code>--json</code> flag on all subcommands.</strong> Every gate will accept a <code>--json</code> flag that causes it to emit structured JSON instead of human-readable text. The gate logic is unchanged. The output format gains a machine-readable mode. This is approximately 30 lines of code per script, following the <code>crap-score</code> pattern that already exists.</p>
+
+<p><strong>AH-3 — <code>emit-evidence</code> subcommand.</strong> A new subcommand that takes the JSON output from any gate, wraps it in the Evidence Bundle row format (an in-toto Statement v1), and writes the signed row to disk or stdout. This is what connects the static gate to the shared evaluation standard. Once a gate result is in Evidence Bundle format, it is independently verifiable by any party with access to the signing key's public component.</p>
+
+<div class="callout">
+  Both upgrades are additive. The existing text-mode behavior is unchanged. Developers who use the harness for their own repos today will notice nothing different unless they opt into <code>--json</code> mode.
+</div>
+
+<h2>5. J-Rig Binary Eval — Behavioral Gates</h2>
+
+<p>J-rig is the behavioral evaluation harness. Where audit-harness checks static properties of a codebase, j-rig checks dynamic properties of an AI system in action. It drives a model through a task, observes what the model does, and judges whether the behavior matches a specification.</p>
+
+<p>J-rig is a TypeScript pnpm monorepo with four workspace packages: core (schemas and evaluation engine), CLI (command-line interface), database (result persistence), and dashboard (reporting). The evaluation engine reads an eval spec — which can be a SKILL.md file, an AGENTS.md file, or a custom eval definition — and produces a structured judgment result.</p>
+
+<h3>The Intentional Mapping — MM-1 through MM-6</h3>
+
+<p>The most important concept in j-rig is the Intentional Mapping. This is a taxonomy of failure shapes that were discovered in real partner engagements — not theorized, not invented from survey data, but found in actual production failures observed during Intent Solutions' multi-vendor work. There are currently six categories, designated MM-1 through MM-6. The numeric identifiers are permanent; they will not be renamed even as the conceptual vocabulary evolves around them.</p>
+
+<table>
+  <thead><tr><th>ID</th><th>Category</th><th>What It Catches</th></tr></thead>
+  <tbody>
+    <tr><td><strong>MM-1</strong></td><td>Async Race</td><td>Tool calls that fire before a prior asynchronous operation has settled. The agent invokes Tool B before Tool A's result is available, leading to incorrect state or silent data loss.</td></tr>
+    <tr><td><strong>MM-2</strong></td><td>Shape Drift</td><td>The response shape of a tool call diverges from what the SKILL.md or AGENTS.md declared. The agent's declared interface and its actual runtime interface have diverged.</td></tr>
+    <tr><td><strong>MM-3</strong></td><td>Cooldown</td><td>Rate-limit or cooldown semantics are not respected. The agent calls the same tool again before the declared cooldown period has elapsed, causing server-side rate-limit failures or silent throttling.</td></tr>
+    <tr><td><strong>MM-4</strong></td><td>Side-Effect Verification</td><td>A tool call produces a side effect (writes a file, sends a message, modifies state) that is never verified by a subsequent observation. The agent assumes success without confirming it.</td></tr>
+    <tr><td><strong>MM-5</strong></td><td>Mandatory Context</td><td>The agent invokes a tool without providing context that the tool's interface requires. The tool call is technically valid but semantically incomplete — the server cannot give a useful response.</td></tr>
+    <tr><td><strong>MM-6</strong></td><td>Protocol Strict-Mode</td><td>The MCP server operates in strict protocol mode but the agent sends a request that would only be valid in lenient mode. Strict-mode rejections are not surfaced to the user.</td></tr>
+  </tbody>
+</table>
+
+<p>These six categories are expressed as Gherkin scenarios in the platform's spec directory. Any party can read them, implement their own test runner against them, and contribute results to the Evidence Bundle format. The goal is for MM-1 through MM-6 to become a community standard — filed as part of an OpenTelemetry semantic conventions RFC — so that every tool vendor, every agent runtime, and every MCP server can describe their conformance (or non-conformance) to these same six categories.</p>
+
+<h3>What j-rig does during an evaluation</h3>
+
+<p>A j-rig evaluation run follows this sequence:</p>
+
+<ol>
+  <li><strong>Parse the eval spec.</strong> J-rig reads the SKILL.md file (or AGENTS.md, or a custom eval definition). It extracts the declared tool interfaces, allowed-tools list, effort level, and any explicit acceptance criteria.</li>
+  <li><strong>Drive the model.</strong> J-rig invokes the model against the eval task. In Phase B, this will be done through provider adapters (either LiteLLM or the Vercel AI SDK — that decision is deferred to in-prototype measurement). The provider adapter handles the actual API calls; j-rig observes the inputs and outputs.</li>
+  <li><strong>Observe behavior.</strong> J-rig records every tool call, every response, every state transition. OpenTelemetry spans fire during this phase — specifically the <code>agent.rollout.gate.*</code> events that the Intent Eval Platform is proposing as a new semantic convention.</li>
+  <li><strong>Judge against the Intentional Mapping.</strong> J-rig checks the recorded behavior against the MM-1 through MM-6 categories. Each check produces a PASS, FAIL, or NOT-APPLICABLE verdict.</li>
+  <li><strong>Emit Evidence Bundle rows.</strong> Each verdict becomes an in-toto Statement v1 row, signed with the evaluation operator's key, and added to the Evidence Bundle for this run.</li>
+</ol>
+
+<h2>6. The Evidence Bundle — The Shared Output Format</h2>
+
+<p>The Evidence Bundle is the single most important concept in the platform. It is the shared output format that allows audit-harness and j-rig to compose without knowing about each other, and that allows any external party to verify evaluation results without trusting the team that produced them.</p>
+
+<p>An Evidence Bundle is a collection of in-toto Statement v1 rows. Each row is an independently signed attestation about one specific gate result at one specific moment in time. A bundle can contain one row or one hundred rows. Partial bundles are explicitly valid — they mean "we tested these things and did not test those things," not "we failed everything we did not test."</p>
+
+<h3>What a single Evidence Bundle row looks like</h3>
+
+<pre>{
+  "_type": "https://in-toto.io/Statement/v1",
+  "subject": [
+    {
+      "name": "audit-harness:client:escape-scan",
+      "digest": {
+        "sha256": "abc123def456..."
+      }
+    }
+  ],
+  "predicateType": "https://evals.intentsolutions.io/gate-result/v1",
+  "predicate": {
+    "gate_id": "audit-harness:client:escape-scan",
+    "result": "PASS",
+    "policy_hash": "sha256:789abc...",
+    "input_hash": "sha256:def012...",
+    "timestamp": "2026-05-11T14:23:00Z",
+    "runner": "audit-harness@0.3.0",
+    "commit_sha": "9971183"
+  }
+}</pre>
+
+<p>A few things to notice about this structure. The <code>subject</code> field uses the in-toto Statement standard's subject naming to identify the pipeline hop being attested — in this case, the client-side escape-scan gate. The <code>predicateType</code> is a URI hosted at <code>evals.intentsolutions.io</code>, which is the Intent Solutions predicate URI namespace locked by the ISEDC council decision on 2026-05-10. The <code>predicate</code> contains the actual gate result data in the Intent Solutions gate-result schema.</p>
+
+<p>Once a row is signed and pushed to the Rekor transparency log, it is permanently recorded. Any party with network access to Rekor can verify the signature, confirm the commit SHA, and independently reconstruct the gate verdict. The evaluation result is no longer dependent on trusting Intent Solutions — it is anchored in a public, append-only transparency log.</p>
+
+<h3>Why in-toto Statement v1</h3>
+
+<p>In-toto is a supply chain security framework originally developed at NYU and now a CNCF graduated project. Its Statement v1 format is the same envelope used by SLSA provenance attestations, SCAI (Supply Chain Attribute Integrity) statements, and Cosign-signed image manifests. By adopting in-toto Statement v1 as the Evidence Bundle envelope, the platform gets several things for free:</p>
+
+<ul>
+  <li><strong>GUAC ingestion.</strong> GUAC (Graph for Understanding Artifact Composition) can ingest in-toto Statements natively. Any organization already running GUAC for supply chain visibility can ingest Intent Eval Platform results without additional integration work.</li>
+  <li><strong>Cosign compatibility.</strong> Cosign signs in-toto Statements. The signing infrastructure is already built and battle-tested.</li>
+  <li><strong>Rekor transparency log.</strong> Rekor accepts in-toto Statements. Every signed evaluation result gets a permanent, timestamped, publicly verifiable entry.</li>
+  <li><strong>Composability.</strong> The in-toto Statement's <code>subject</code> field naturally carries the pipeline-hop discriminator — which surface, which side (client or server), which hop in the transformation chain. No bespoke field is needed.</li>
+</ul>
+
+<h2>7. The OpenTelemetry Layer</h2>
+
+<p>While the Evidence Bundle carries the durable, signed record of evaluation results, OpenTelemetry carries the ephemeral, real-time observability signals that fire during an evaluation run. These two layers are complementary: OTel is for watching what happens as it happens; the Evidence Bundle is the permanent record of what happened.</p>
+
+<p>The Intent Eval Platform is proposing two new semantic convention groups for the OpenTelemetry community:</p>
+
+<p><strong><code>agent.rollout.gate.*</code> events.</strong> These events fire when a CI rollout gate evaluates — when audit-harness runs escape-scan, when j-rig produces a verdict, when the Rollout Gate makes a ship/no-ship decision. The events carry attributes like <code>gate.id</code>, <code>gate.result</code>, <code>gate.policy_hash</code>, and <code>gate.commit_sha</code>. Any OpenTelemetry collector will capture these events alongside normal application telemetry, giving operators a single observability plane that spans code quality gates and behavioral evaluation gates.</p>
+
+<p><strong>Intentional Mapping signal vocabulary.</strong> The MM-1 through MM-6 category names are being proposed as named OTel semantic conventions. Today they are markdown prose — "MM-3 cooldown" is a human-readable label. Once standardized as OTel conventions, they become filterable signals: any collector, any dashboard, any alert rule can filter on <code>agent.mm_category == "MM-3"</code> without parsing custom log formats.</p>
+
+<p>The OTel RFC for <code>agent.rollout.gate.*</code> is already drafted at <code>intent-eval-lab/000-docs/001-DR-RFC-otel-agent-rollout-gate-signals-draft.md</code>. The community-engagement process for filing this RFC with the OTel SIG-GenAI working group follows the Intent Solutions CSO sequence: informal community-temperature email to a verified SIG-GenAI maintainer first, RFC filing four or more weeks later informed by the routing feedback.</p>
+
+<h2>8. The Rollout Gate</h2>
+
+<p>The Rollout Gate is a GitHub Action that runs at the end of a CI pipeline. It reads the Evidence Bundle produced by audit-harness and j-rig during the pipeline, evaluates the coverage and pass rates against a declared policy, and makes a ship/no-ship decision. This is the Phase C deliverable — it is the piece that closes the loop from evaluation to deployment decision.</p>
+
+<p>The policy that the Rollout Gate enforces is declared in the repository's <code>tests/TESTING.md</code> file — the same file that audit-harness reads for its thresholds. The enforcement travels with the code. Any developer who clones the repository and runs the CI pipeline gets the same gate with the same thresholds. There is no external service to configure, no SaaS dashboard to log into, no vendor-specific configuration format to learn.</p>
+
+<p>The Rollout Gate does not require complete coverage. A repository that covers three of the six MM categories and two of the five surfaces can still pass the Rollout Gate if its declared policy only requires those three categories and two surfaces. The composable partial attestation principle means the gate is as strict or as lenient as the team declares in their policy — and the Evidence Bundle clearly shows which dimensions were covered and which were not.</p>
+
+<h2>9. How It All Works Together — The Full Journey</h2>
+
+<p>Here is the complete journey from a developer pushing code to a signed, independently verifiable evaluation result sitting in the Rekor transparency log.</p>
+
+<h3>Step 1 — Developer pushes a commit</h3>
+
+<p>A developer on a team that uses the Intent Eval Platform pushes a commit to their repository. The commit might be a change to a SKILL.md file, a new MCP server endpoint, a modification to a Claude hook, or an update to the agent runtime configuration.</p>
+
+<h3>Step 2 — Pre-commit hooks fire</h3>
+
+<p>Before the commit is accepted, git pre-commit hooks run audit-harness in static gate mode. The escape-scan gate checks the staged diff for AI escape patterns. The harness-hash gate verifies that no policy files have been modified without re-initializing the hash manifest. If either gate fails, the commit is blocked and the developer sees a human-readable report describing what needs to be fixed.</p>
+
+<h3>Step 3 — CI pipeline begins</h3>
+
+<p>The commit reaches the CI pipeline. The pipeline runs the full audit-harness suite — all six gates — against the repository state at that commit. Each gate runs with the <code>--json</code> flag (Phase B upgrade AH-2), producing structured JSON output in addition to the human-readable text.</p>
+
+<h3>Step 4 — Static gate results emitted as Evidence Bundle rows</h3>
+
+<p>The <code>emit-evidence</code> subcommand (Phase B upgrade AH-3) runs after each gate. It takes the JSON output, wraps it in an in-toto Statement v1 using the <code>evals.intentsolutions.io/gate-result/v1</code> predicate type, signs it with the operator's key, and writes the signed row to the Evidence Bundle for this run. At this point the bundle contains rows for all six static gates.</p>
+
+<h3>Step 5 — Behavioral evaluation runs</h3>
+
+<p>J-rig begins its evaluation run. It parses the repository's SKILL.md or AGENTS.md file, extracts the declared tool interfaces and behavioral expectations, and drives the model through the evaluation task using the configured provider adapter. OpenTelemetry spans fire throughout this process — every gate evaluation, every tool call, every rollout decision emits an <code>agent.rollout.gate.*</code> event that is captured by whatever OTel collector the operator has configured.</p>
+
+<h3>Step 6 — Intentional Mapping checks run</h3>
+
+<p>J-rig checks the observed behavior against the MM-1 through MM-6 categories. For each applicable category, j-rig records a PASS, FAIL, or NOT-APPLICABLE verdict. A repository that does not ship an MCP server will receive NOT-APPLICABLE verdicts for the MCP-specific checks (MM-3, MM-6) — this is not a failure. It is an accurate statement about which surfaces were evaluated.</p>
+
+<h3>Step 7 — Behavioral gate results emitted as Evidence Bundle rows</h3>
+
+<p>Each j-rig verdict becomes an in-toto Statement v1 row, signed with the same operator key, and added to the Evidence Bundle. The bundle now contains both static gate rows (from audit-harness) and behavioral gate rows (from j-rig). The rows are independent — neither tool needed to know about the other to produce its rows, and the rows can be verified independently by any party.</p>
+
+<h3>Step 8 — Rollout Gate evaluates the bundle</h3>
+
+<p>The Rollout Gate GitHub Action reads the complete Evidence Bundle and evaluates it against the repository's declared policy in <code>tests/TESTING.md</code>. It checks pass rates, coverage dimensions, and any specific requirements declared in the policy. If the bundle meets the policy, the gate passes and the CI pipeline continues to deployment. If the bundle fails the policy, the gate fails, the deployment is blocked, and the developer receives a report showing which rows failed and which were not covered.</p>
+
+<h3>Step 9 — Bundle is archived</h3>
+
+<p>Regardless of the gate outcome, the signed Evidence Bundle is archived. The rows are pushed to the Rekor transparency log. The evaluation result is now permanently recorded — timestamped, signed, publicly verifiable, immutable. A partner, an auditor, or a standards-body reviewer can retrieve the bundle from Rekor at any future point and independently verify every row without contacting Intent Solutions.</p>
+
+<pre>
+Developer pushes commit
+        │
+        ├── pre-commit hooks (audit-harness, local)
+        │       escape-scan: PASS
+        │       harness-hash: PASS
+        │       → commit accepted
+        │
+        └── CI pipeline begins
+                │
+                ├── audit-harness (all 6 gates, --json)
+                │       escape-scan   → PASS → Evidence Bundle row (signed)
+                │       crap-score    → PASS → Evidence Bundle row (signed)
+                │       arch-check    → PASS → Evidence Bundle row (signed)
+                │       harness-hash  → PASS → Evidence Bundle row (signed)
+                │       bias-count    → 2    → Evidence Bundle row (advisory)
+                │       gherkin-lint  → PASS → Evidence Bundle row (signed)
+                │       [OTel spans: agent.rollout.gate.evaluated × 6]
+                │
+                ├── j-rig (behavioral eval, SKILL.md + MM checks)
+                │       MM-1 async race     → PASS → Evidence Bundle row (signed)
+                │       MM-2 shape drift    → PASS → Evidence Bundle row (signed)
+                │       MM-3 cooldown       → N/A  → Evidence Bundle row (not applicable)
+                │       MM-4 side-effect    → FAIL → Evidence Bundle row (signed)
+                │       MM-5 missing ctx    → PASS → Evidence Bundle row (signed)
+                │       MM-6 strict-mode    → N/A  → Evidence Bundle row (not applicable)
+                │       [OTel spans: agent.rollout.gate.evaluated × 6]
+                │
+                └── Rollout Gate (evaluates bundle against policy)
+                        policy: 4/6 static PASS, 3/4 applicable behavioral PASS
+                        result: FAIL (MM-4 side-effect FAIL violates policy)
+                        → deployment blocked
+                        → developer notified
+                        → bundle archived to Rekor (permanent record)
+</pre>
+
+<h2>10. How Each Surface Is Covered</h2>
+
+<p>The diagram above shows the journey for a single surface (SKILL.md + agent behavioral eval). Here is how the system covers each of the five surfaces.</p>
+
+<h3>SKILL.md and AGENTS.md</h3>
+
+<p>Audit-harness checks SKILL.md files statically: the <code>harness-hash</code> gate pins the policy contents so they cannot be silently modified; the <code>escape-scan</code> gate checks any SKILL.md-adjacent staged content for escape patterns. J-rig evaluates SKILL.md files behaviorally: it parses the file, extracts the declared interface, and drives a model through the task described in the skill, judging whether the model's behavior matches the SKILL.md's intent. A signed Evidence Bundle row attests to each judgment.</p>
+
+<h3>MCP Servers</h3>
+
+<p>MCP server evaluation is primarily a j-rig concern. J-rig's MM-1 through MM-6 behavioral categories were derived directly from MCP server failure patterns observed in real partner engagements. When j-rig evaluates an MCP server, it drives an AI agent to call the server's tools and observes whether the server's behavior matches its declared protocol contract. The six MM categories cover the full space of failure shapes that have been empirically observed: async races, shape drifts, cooldown violations, side-effect verification failures, missing-context invocations, and strict-mode protocol violations. Phase B will also include a Pact-style contract format for MCP server conformance, allowing server authors and agent-harness authors to share formal contracts via existing Pact broker infrastructure.</p>
+
+<h3>Claude Code Hooks</h3>
+
+<p>Claude hooks are the pre/post-tool-call intercept points that Claude Code exposes. The audit-harness <code>escape-scan</code> gate is specifically designed to audit hook-adjacent code — it scans git diffs for the REFUSE, CHALLENGE, and FLAG patterns that a hook might emit in response to AI escape attempts. Running escape-scan as a pre-commit hook means that every commit to a repository that ships hook configuration is automatically checked for hook quality before it reaches the main branch.</p>
+
+<h3>Agents</h3>
+
+<p>The agent surface is where j-rig does its primary work. The evaluation task drives the agent — Claude Code, Codex CLI, or another runtime — and observes its behavior via OTel spans. The <code>agent.rollout.gate.*</code> events fire from within the agent runtime during evaluation, providing a real-time stream of what the agent is doing. J-rig's behavioral verdict is based on what the OTel spans reveal about the agent's decision-making: did it respect the declared tool allowlist? Did it handle the cooldown correctly? Did it verify side effects?</p>
+
+<h3>APIs</h3>
+
+<p>The API surface is covered by j-rig's provider adapters (Phase B work item PB-7). A provider adapter wraps a specific model provider's API — Anthropic's Messages API, OpenAI's Responses API, Google's Gemini API — behind a common <code>Provider</code> interface. This allows j-rig to drive any supported model provider through the same evaluation task and compare results across providers. The adapter handles the API call; j-rig observes the call and response; the Evidence Bundle row attests to which provider, which model version, and what the result was.</p>
+
+<h2>11. The Standards Substrate Vision</h2>
+
+<p>Everything described above is being built to be consumed by parties outside of Intent Solutions — by partners, by standards bodies, by any development team that wants independently verifiable evaluation results for their AI systems.</p>
+
+<p>The in-toto predicate URI at <code>evals.intentsolutions.io/gate-result/v1</code> is being registered as a public predicate type. This means any tool — not just audit-harness or j-rig — can produce rows in this format and contribute them to an Evidence Bundle. A team using a different static analysis tool can emit rows with the same predicate type. A team that builds their own MCP server conformance checker can emit rows with the same predicate type. The format is the standard; the tools are reference implementations of that standard.</p>
+
+<p>The OTel semantic conventions being proposed — <code>agent.rollout.gate.*</code> events and the Intentional Mapping signal vocabulary — are being filed with the OpenTelemetry SIG-GenAI working group as community proposals. If adopted, they will become part of the shared observability vocabulary that every vendor in the AI tooling space can use, regardless of which evaluation tool they use to produce results.</p>
+
+<p>The Intentional Mapping categories themselves — MM-1 through MM-6 — are published under Apache 2.0 in the <code>intent-eval-lab</code> repository. Any organization can contribute a new failure-shape category by observing a real production failure that does not fit the existing six categories and submitting it through the community contribution process at <code>specs/CONTRIBUTING-failure-shape.md</code>. The taxonomy grows from empirical evidence, not from theoretical survey — and the community contribution path is the mechanism that keeps it that way over time.</p>
+
+<div class="callout">
+  <strong>The distinguishing principle:</strong> The platform is built to be an industry standard, not a product. A standard outlives any single implementation. The Evidence Bundle schema, the Intentional Mapping categories, and the OTel semantic conventions are designed to remain useful and valid even if Intent Solutions never ships another line of code against them. That is the property that makes them worth building.
+</div>
+
+<h2>12. The Build Sequence</h2>
+
+<p>The platform is built in a specific sequence because each piece depends on the previous one. The sequence is not arbitrary — it is determined by the dependency graph of the system.</p>
+
+<table>
+  <thead><tr><th>Step</th><th>Item</th><th>What It Does</th><th>Where</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td><strong>PB-1</strong></td><td>Define the in-toto Statement v1 envelope with the <code>evals.intentsolutions.io/gate-result/v1</code> predicate. This is approximately 20 lines of schema definition plus the normative spec text in SPEC.md. Everything downstream emits against this shape.</td><td>intent-eval-lab</td></tr>
+    <tr><td>2</td><td><strong>AH-2</strong></td><td>Add <code>--json</code> flag to all six audit-harness scripts. Approximately 30 lines per script. The <code>crap-score.py</code> pattern is the reference.</td><td>audit-harness</td></tr>
+    <tr><td>3</td><td><strong>AH-3</strong></td><td>Add <code>emit-evidence</code> subcommand. Takes AH-2 JSON output, wraps in in-toto Statement v1 (per PB-1 schema), signs, writes to bundle.</td><td>audit-harness</td></tr>
+    <tr><td>4</td><td><strong>JRIG-5</strong></td><td>Add Zod validator for the Evidence Bundle row schema. J-rig needs to validate incoming and outgoing rows against the PB-1 schema before emitting.</td><td>j-rig-binary-eval</td></tr>
+    <tr><td>5</td><td><strong>JRIG-6</strong></td><td>Add I/O adapters. J-rig can now read external gate results and emit its own behavioral results as Evidence Bundle rows.</td><td>j-rig-binary-eval</td></tr>
+    <tr><td>6</td><td><strong>PB-10 + PB-11</strong></td><td>File OTel RFC for <code>agent.rollout.gate.*</code> and Intentional Mapping signal vocabulary. Community review clock: ~3-4 weeks.</td><td>intent-eval-lab → OTel SIG-GenAI</td></tr>
+    <tr><td>7+</td><td>PB-2 through PB-12</td><td>Vendor-namespaced schemas, provider adapters, AGENTS.md parser, Pact contract format, Gherkin scenarios, reference deployment.</td><td>All three repos</td></tr>
+  </tbody>
+</table>
+
+<p>PB-1 is the first domino. It cannot be parallelized with anything else because everything else emits against the schema it defines. Once PB-1 exists, AH-2 and JRIG-5 can run in parallel. Once AH-2 exists, AH-3 can run. Once JRIG-5 exists, JRIG-6 can run. The OTel RFC work (PB-10/PB-11) runs in parallel with all implementation work because it is a community engagement process, not a code dependency.</p>
+
+<h2>13. Summary</h2>
+
+<p>The Intent Eval Platform is three open-source repositories composing into one evaluation system via a shared schema. Audit-harness runs static gates against code repositories. J-rig runs behavioral gates against AI systems in action. Intent-eval-lab defines the standards — the Evidence Bundle schema, the Intentional Mapping failure-shape taxonomy, and the OpenTelemetry semantic conventions — that the other two emit against.</p>
+
+<p>The output of the system is an Evidence Bundle: a collection of independently signed in-toto Statement v1 rows, each attesting to one gate result at one moment in time. The bundle is composable — partial coverage is valid — and independently verifiable by any party with Rekor access. No trust in Intent Solutions is required to verify an Evidence Bundle result.</p>
+
+<p>The system covers five surfaces: APIs, CLIs, MCP servers, AI agents, and SKILL.md instruction files. It covers both the client side (what the agent runtime does) and the server side (what the MCP server or API enforces). Every surface, every side, every pipeline hop is independently attestable — and partial attestation is explicitly valid.</p>
+
+<p>The build sequence starts with PB-1: the in-toto Statement v1 envelope schema. That is the first domino. Everything else follows from it.</p>
+
+<div class="sig">
+  <strong>Jeremy Longshore</strong><br>
+  Intent Solutions LLC<br>
+  jeremy@intentsolutions.io<br>
+  intentsolutions.io<br>
+  <em>Generated 2026-05-11</em>
+</div>
+
+</body>
+</html>
