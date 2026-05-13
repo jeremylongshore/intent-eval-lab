@@ -10,9 +10,9 @@ A research umbrella for vendor-neutral evaluation methodology around AI plugins,
 - Productizable harnesses → contributions to `j-rig-binary-eval` (sister project)
 - Public reference content → this repo's `000-docs/` (Apache 2.0)
 
-## Three-repo convergence (Phase A complete 2026-05-10)
+## Four-repo convergence (Phase A complete 2026-05-10; intent-rollout-gate added 2026-05-12)
 
-This repo is the **methodology + specs umbrella** in the three-repo convergence vision (`intent-eval-lab` + `audit-harness` + `j-rig-binary-eval`). The architectural insight: the three repos compose via a shared schema (the **Evidence Bundle**), not via package consolidation. Convergence happens at the schema layer.
+This repo is the **methodology + specs umbrella** in the four-repo convergence vision (`intent-eval-lab` + `audit-harness` + `j-rig-binary-eval` + `intent-rollout-gate`). The architectural insight: the four repos compose via a shared schema (the **Evidence Bundle**), not via package consolidation. Convergence happens at the schema layer.
 
 **Master plan (local-only):** `~/.claude/plans/please-take-your-time-glimmering-stardust.md`
 **ID mapping artifact:** `~/.claude/plans/please-take-your-time-glimmering-stardust-id-map.md` (29 issues × 4 layers each — beads + GH + Plane + bd-sync link)
@@ -63,6 +63,7 @@ Repos that **compose into one evaluation platform via the Evidence Bundle schema
 |---|---|---|
 | `projects/audit-harness` | `~/000-projects/intent-eval-platform/audit-harness` (sibling) | Deterministic gates — emits Evidence Bundle gate-result rows |
 | `projects/j-rig-binary-eval` | `~/000-projects/intent-eval-platform/j-rig-binary-eval` (sibling) | 7-layer judgment harness — consumes + emits Evidence Bundle rows |
+| `projects/intent-rollout-gate` | `~/000-projects/intent-eval-platform/intent-rollout-gate` (sibling) | GitHub Action — consumes a bundle + a `tests/TESTING.md` policy → ship/no-ship decision (M5 implementation; M4 substantive bootstrap stub) |
 
 ### Tier 2 — Independent lab research projects (outside the umbrella)
 
