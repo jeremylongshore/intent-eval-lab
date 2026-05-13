@@ -10,42 +10,75 @@ permissions:
   contents: read
 
 jobs:
-  lint:
-    name: Lint
+  validate-docs:
+    name: Validate specs and docs
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          node-version: "22"
-          cache: "npm"
+          python-version: "3.12"
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install validators
+        run: python3 -m pip install --quiet pyyaml jsonschema
 
-      - name: Lint
-        run: npx eslint .
+      - name: JSON Schema syntax (specs/**/schema/*.json)
+        shell: bash
+        run: |
+          set -e
+          shopt -s globstar nullglob
+          found=0
+          for f in specs/**/schema/*.json; do
+            found=1
+            echo "→ $f"
+            python3 -c "import json; json.load(open('$f'))"
+          done
+          if [ "$found" -eq 0 ]; then
+            echo "No schema files found — pass."
+          fi
 
-  test:
-    name: Test (Node ${{ matrix.node-version }})
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [18, 20, 22]
-    steps:
-      - uses: actions/checkout@v4
+      - name: YAML syntax (specs/**/*.yaml)
+        shell: bash
+        run: |
+          set -e
+          shopt -s globstar nullglob
+          found=0
+          for f in specs/**/*.yaml; do
+            found=1
+            echo "→ $f"
+            python3 -c "import yaml; yaml.safe_load(open('$f'))"
+          done
+          if [ "$found" -eq 0 ]; then
+            echo "No yaml files in specs — pass."
+          fi
 
-      - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: "npm"
+      - name: JSON syntax (specs/**/examples/*.json)
+        shell: bash
+        run: |
+          set -e
+          shopt -s globstar nullglob
+          found=0
+          for f in specs/**/examples/*.json; do
+            found=1
+            echo "→ $f"
+            python3 -c "import json; json.load(open('$f'))"
+          done
+          if [ "$found" -eq 0 ]; then
+            echo "No JSON example files — pass."
+          fi
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run tests
-        run: npm test
+      - name: Partner-name leak check (specs only)
+        shell: bash
+        run: |
+          set -e
+          if [ -d specs ]; then
+            if grep -ril -E "Kobiton|Polygon|Nixtla|Lit Protocol|Mudit Gupta" specs/ ; then
+              echo "::error::Partner name leaked into specs/. Specs must be vendor-generic per ISEDC v1 Q2."
+              exit 1
+            fi
+            echo "✓ no partner-name leaks in specs/"
+          else
+            echo "specs/ does not exist yet — pass"
+          fi
