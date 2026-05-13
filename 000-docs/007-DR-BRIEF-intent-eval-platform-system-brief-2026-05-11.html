@@ -374,5 +374,52 @@ Developer pushes commit
   <em>Generated 2026-05-11</em>
 </div>
 
+<hr>
+
+<h2>Addendum 2026-05-12 — Fourth repository: <code>intent-rollout-gate</code></h2>
+
+<p>This brief was authored 2026-05-11 describing a three-repository platform (<code>intent-eval-lab</code>, <code>audit-harness</code>, <code>j-rig-binary-eval</code>) with the Rollout Gate depicted as an architectural concept downstream of the bundle emitters. The addendum below records the fourth repository's creation per Milestone 4 of the build journey plan (<code>~/.claude/plans/se-the-council-bubbly-frog.md</code>) and the gap analysis at <a href="./008-DR-GAPS-spec-vs-system-brief-2026-05-11.md"><code>008-DR-GAPS-spec-vs-system-brief-2026-05-11.md</code></a>.</p>
+
+<h3>What changed</h3>
+
+<ul>
+  <li><strong>New repository:</strong> <a href="https://github.com/jeremylongshore/intent-rollout-gate"><code>jeremylongshore/intent-rollout-gate</code></a> created 2026-05-12 as a public MIT-licensed repo. Local clone at <code>intent-eval-platform/intent-rollout-gate/</code>, sibling to the other three convergence repos.</li>
+
+  <li><strong>What it ships at M4:</strong> a substantive bootstrap — <code>action.yml</code> with declared inputs (<code>bundle-path</code>, <code>policy-file</code>, <code>predicate-uri</code>, optional <code>rekor-url</code>, <code>cosign-key</code>, <code>dry-run</code>) and outputs (<code>decision</code>, <code>summary</code>, <code>signed-decision-row-path</code>); a CI smoke that asserts the early-adopter contract (<code>decision=not-implemented</code> exit-0); a substantive design doc at <code>000-docs/001-DR-DESIGN-rollout-gate-architecture-2026-05-12.md</code>; standard governance files (README, LICENSE, CONTRIBUTING, CLAUDE, SECURITY); a minimal CI workflow; and a beads baseline.</li>
+
+  <li><strong>What it does NOT yet ship:</strong> the actual Rollout Gate decision logic. That lands in M5 per the build journey plan. The action's <code>runs.using: composite</code> stub returns <code>decision=not-implemented</code> with exit 0 by design — this lets adopters wire <code>uses: jeremylongshore/intent-rollout-gate@v1</code> into their CI ahead of M5 without the action blocking their deployments.</li>
+</ul>
+
+<h3>Why a fourth repo (not a fourth module in <code>intent-eval-lab</code>)</h3>
+
+<p>The Rollout Gate is a downstream <strong>consumer</strong> of the Evidence Bundle, not a producer of methodology or specs. Authoring it as a module inside <code>intent-eval-lab</code> would conflate the lab's role (defining the standard) with the gate's role (acting on the standard). It would also force every gate-implementation change through a methodology-repo PR cycle, which is the wrong governance shape — gate decisions are operational, not normative.</p>
+
+<p>The four-repo split mirrors the Evidence Bundle architecture itself: <code>intent-eval-lab</code> defines the predicate URI; <code>audit-harness</code> + <code>j-rig-binary-eval</code> emit rows against it; <code>intent-rollout-gate</code> consumes assembled bundles + policy. Each repo has one job. None depends on shipping the others' code; they depend only on the schema.</p>
+
+<h3>What this means for § 8 of the original brief</h3>
+
+<p>§ 8 ("The Rollout Gate") describes the architectural intent. It remains accurate as the design narrative. The implementation lives at the URL above, not as a module inside one of the other repos. The design doc at <code>intent-rollout-gate/000-docs/001-DR-DESIGN-rollout-gate-architecture-2026-05-12.md</code> extends § 8 with the three-stage decision algorithm (required-gate pass + applicable-only coverage + advisory elevation), the OTel events fired during evaluation, the language-choice deferred decision (TS vs Go vs Python — locked in M5), and the early-adopter exit-0 contract.</p>
+
+<h3>What this means for the build sequence</h3>
+
+<p>§ "Phase B build sequence" remains correct: PB-1 (in-toto envelope schema) is still the first domino. The fourth repo's existence does not reorder PB-1..PB-12 because the fourth repo's only dependency is the schema PB-1 ships. The rollout-gate implementation work is M5 in the build journey plan, gated on M3 completion (j-rig emission) — same gating as before; only the repo it lives in changed.</p>
+
+<h3>Cross-references</h3>
+
+<ul>
+  <li>Build journey plan: <code>~/.claude/plans/se-the-council-bubbly-frog.md</code> Milestone 4</li>
+  <li>Gap analysis predicting this addendum: <a href="./008-DR-GAPS-spec-vs-system-brief-2026-05-11.md"><code>008-DR-GAPS-spec-vs-system-brief-2026-05-11.md</code></a></li>
+  <li>Design doc inside the new repo: <code>intent-rollout-gate/000-docs/001-DR-DESIGN-rollout-gate-architecture-2026-05-12.md</code></li>
+  <li>PB-7 measurement protocol that gates the provider-adapter choice (also M4): <a href="../../j-rig-binary-eval/000-docs/018-AT-SPEC-pb7-adapter-measurement-protocol-2026-05-12.md"><code>j-rig-binary-eval/000-docs/018-AT-SPEC-pb7-adapter-measurement-protocol-2026-05-12.md</code></a></li>
+</ul>
+
+<div class="sig">
+  <strong>Jeremy Longshore</strong><br>
+  Intent Solutions LLC<br>
+  jeremy@intentsolutions.io<br>
+  intentsolutions.io<br>
+  <em>Addendum 2026-05-12</em>
+</div>
+
 </body>
 </html>

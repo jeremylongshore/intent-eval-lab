@@ -63,6 +63,7 @@ Repos that **compose into one evaluation platform via the Evidence Bundle schema
 |---|---|---|
 | `projects/audit-harness` | `~/000-projects/intent-eval-platform/audit-harness` (sibling) | Deterministic gates — emits Evidence Bundle gate-result rows |
 | `projects/j-rig-binary-eval` | `~/000-projects/intent-eval-platform/j-rig-binary-eval` (sibling) | 7-layer judgment harness — consumes + emits Evidence Bundle rows |
+| `projects/intent-rollout-gate` | `~/000-projects/intent-eval-platform/intent-rollout-gate` (sibling) | GitHub Action — consumes a bundle + a `tests/TESTING.md` policy → ship/no-ship decision (M5 implementation; M4 substantive bootstrap stub) |
 
 ### Tier 2 — Independent lab research projects (outside the umbrella)
 
