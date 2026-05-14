@@ -664,7 +664,7 @@ intentsolutions.io
 - **OTel temperature record:** `intent-eval-lab/000-docs/009-RR-INTL-otel-sig-genai-temperature.md`
 - **intent-rollout-gate design doc:** `intent-rollout-gate/000-docs/001-DR-DESIGN-rollout-gate-architecture-...md`
 - **Reusable ISEDC pattern:** `~/.claude/skills/exec-decision-council/SKILL.md` v1.0.0
-- **Document Filing Standard v4.3:** `~/000-projects/002-command-bible/DOCUMENT-FILING-STANDARD-v3.0.md` (and successors)
+- **Document Filing Standard v4.3:** `~/000-projects/002-command-bible/DOCUMENT-FILING-STANDARD-v4.3.md` (and successors)
 - **Tracking bead:** `iel-5eo` (close with this DR as evidence)
 - **Plane HQ:** LAB-6 (IEL-CONV-1) — update with comment linking to this DR
 - **Tagline:** *"We create industries that don't exist — we think outside of the box's box."*
