@@ -233,7 +233,7 @@ The following standards are **binding** on every repo in the ecosystem. They are
 
 **License audit.** Every release runs `pip-licenses` / `npm-license-checker` (or language-equivalent) on the resolved dependency tree. GPL / AGPL dependencies are blocked at CI absent explicit GC waiver (DR-010 § 7 Q2 GC non-negotiable). A `LICENSES.md` file in each repo root enumerates every direct dependency with license name and upstream license-file link.
 
-**Partner-name vendor-generic discipline.** The vendor-generic case-study scrub binding from DR-004 S1Q2 stays in force across the widened scope (DR-010 § 10 reaffirmation). Every repo runs the partner-name grep guard (defined in the parent `~/000-projects/CLAUDE.md` ecosystem rules) against `specs/` before any commit. The expected output is zero hits. A non-zero result blocks the commit. The same discipline applies to public Decision Records, READMEs, and any other public-facing artifact in the ecosystem until per-partner written consent is on file (DR-004 S1Q2). The current grep pattern is maintained in the ecosystem-level CLAUDE.md so this blueprint is itself scrubbable.
+**Partner-name vendor-generic discipline.** The vendor-generic case-study scrub binding from DR-004 S1Q2 stays in force across the widened scope (DR-010 § 10 reaffirmation). Every repo runs the partner-name grep guard (defined in the parent `~/000-projects/CLAUDE.md` ecosystem rules) against all public-facing directories (including `specs/`, `000-docs/`, public READMEs, and any other tracked public artifact) before any commit. The expected output is zero hits. A non-zero result blocks the commit. The same discipline applies to public Decision Records and any other public-facing artifact in the ecosystem until per-partner written consent is on file (DR-004 S1Q2). The current grep pattern is maintained in the ecosystem-level CLAUDE.md so this blueprint is itself scrubbable.
 
 **External-pattern non-borrow discipline.** Per DR-010 § 13.6, the platform does **not** borrow named patterns from external authors into forward-deployed work. The platform conforms to open standards (in-toto, DSSE, JSON Schema, OpenTelemetry semantic-conventions, SLSA, OpenSSF) and depends on standard runtime tools (cosign, sigstore, npm, pnpm) — these are standards and dependencies, not borrowed patterns. The platform does **not** carry "informed by X" / "inspired by Y" footers for external authors in specs, code comments, design docs, READMEs, blog posts, public Decision Records, or RFC text. Designs land as our own with our own naming derived from our own use cases. Internal patterns from prior Intent Solutions work (Evidence Bundle, predicate URIs, the MM-1..MM-6 Intentional Mapping vocabulary, the 7-layer testing taxonomy) may be cross-referenced freely.
 
@@ -312,21 +312,21 @@ graph TD
 
 | Document | Path | Role |
 |---|---|---|
-| DR-004 (S1 — 5 binding constraints) | `004-AT-DECR-isedc-council-record-2026-05-10.md` | Predicate URI namespace, partner-consent vendor-generic, MM-7 defer, OTel CSO sequence, provider PASS/FAIL gates |
-| DR-005 (terminology rename) | `005-AT-DECR-isedc-v2-terminology-rename-2026-05-10.md` | matcher-map → Intentional Mapping (MM-1..MM-6) |
-| DR-006 (S2 — Phase B gate, lifted) | `006-AT-DECR-isedc-council-2-phase-b-gate-2026-05-11.md` | Phase B gate decision; lifted by user override (informs structure of § 2.3 routing) |
-| DR-010 (S4 — widened-scope architectural lock) | `010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md` | Q1=A ONE BIG; Q2 per-artifact hybrid; Q3 unification thesis + incremental URI namespace; Q4 § 13.6 override (no external-pattern borrow); Q5 § 13.5 override (customer-signal gate removed; bandwidth-only gate); Q6 three-class governance |
+| DR-004 (S1 — 5 binding constraints) | [`004-AT-DECR-isedc-council-record-2026-05-10.md`](./004-AT-DECR-isedc-council-record-2026-05-10.md) | Predicate URI namespace, partner-consent vendor-generic, MM-7 defer, OTel CSO sequence, provider PASS/FAIL gates |
+| DR-005 (terminology rename) | [`005-AT-DECR-isedc-v2-terminology-rename-2026-05-10.md`](./005-AT-DECR-isedc-v2-terminology-rename-2026-05-10.md) | matcher-map → Intentional Mapping (MM-1..MM-6) |
+| DR-006 (S2 — Phase B gate, lifted) | [`006-AT-DECR-isedc-council-2-phase-b-gate-2026-05-11.md`](./006-AT-DECR-isedc-council-2-phase-b-gate-2026-05-11.md) | Phase B gate decision; lifted by user override (informs structure of § 2.3 routing) |
+| DR-010 (S4 — widened-scope architectural lock) | [`010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md`](./010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md) | Q1=A ONE BIG; Q2 per-artifact hybrid; Q3 unification thesis + incremental URI namespace; Q4 § 13.6 override (no external-pattern borrow); Q5 § 13.5 override (customer-signal gate removed; bandwidth-only gate); Q6 three-class governance |
 | Parent plan | `~/.claude/plans/se-the-council-bubbly-frog.md` | Strategic wedge, 3-blueprint structure, 5-repo target (Addenda #3, #4) |
 | v2.1 epic plan | `~/.claude/plans/se-the-council-bubbly-frog-epics-and-beads-for-review-v2.1.md` | Epic + bead breakdown; this blueprint is `iel-E01` |
-| System brief | `007-DR-BRIEF-intent-eval-platform-system-brief-2026-05-11.html` | 6,000-word system brief; Evidence Bundle thesis; six-month journey |
-| Gap analysis | `008-DR-GAPS-spec-vs-system-brief-2026-05-11.md` | M1 Foundation gap analysis |
-| FUTURE.md | `FUTURE.md` | Bandwidth-gated future platforms (LLM Harness Lab, Agent Runtime Sandbox); deferred predicate URIs |
-| OTel temperature record | `009-RR-INTL-otel-sig-genai-temperature.md` | OTel SIG-GenAI paper-trail file; informal community-temperature email |
-| Blueprint B (forward ref) | `012-AT-ARCH-platform-runtime-blueprint.md` | Kernel specification; 13-entity canonical domain model |
-| Blueprint C template (forward ref) | `013-AT-SPEC-repo-blueprint-template.md` | Per-repo blueprint template |
-| Canonical glossary (forward ref) | `014-DR-GLOS-canonical-glossary.md` | Single source of truth for platform terms |
+| System brief | [`007-DR-BRIEF-intent-eval-platform-system-brief-2026-05-11.html`](./007-DR-BRIEF-intent-eval-platform-system-brief-2026-05-11.html) | 6,000-word system brief; Evidence Bundle thesis; six-month journey |
+| Gap analysis | [`008-DR-GAPS-spec-vs-system-brief-2026-05-11.md`](./008-DR-GAPS-spec-vs-system-brief-2026-05-11.md) | M1 Foundation gap analysis |
+| FUTURE.md | [`FUTURE.md`](../FUTURE.md) | Bandwidth-gated future platforms (LLM Harness Lab, Agent Runtime Sandbox); deferred predicate URIs |
+| OTel temperature record | [`009-RR-INTL-otel-sig-genai-temperature.md`](./009-RR-INTL-otel-sig-genai-temperature.md) | OTel SIG-GenAI paper-trail file; informal community-temperature email |
+| Blueprint B (forward ref) | [`012-AT-ARCH-platform-runtime-blueprint.md`](./012-AT-ARCH-platform-runtime-blueprint.md) | Kernel specification; 13-entity canonical domain model |
+| Blueprint C template (forward ref) | [`013-AT-SPEC-repo-blueprint-template.md`](./013-AT-SPEC-repo-blueprint-template.md) | Per-repo blueprint template |
+| Canonical glossary (forward ref) | [`014-DR-GLOS-canonical-glossary.md`](./014-DR-GLOS-canonical-glossary.md) | Single source of truth for platform terms |
 | ISEDC pattern | `~/.claude/skills/exec-decision-council/SKILL.md` v1.0.0 | Reusable adversarial-council pattern |
-| Document Filing Standard v4.3 | `~/000-projects/002-command-bible/DOCUMENT-FILING-STANDARD-v3.0.md` (and successors) | Filing convention for all artifacts in this ecosystem |
+| Document Filing Standard v4.3 | `~/000-projects/002-command-bible/DOCUMENT-FILING-STANDARD-v4.3.md` (and successors) | Filing convention for all artifacts in this ecosystem |
 
 ---
 
