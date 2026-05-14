@@ -252,6 +252,47 @@ When (a) AND (b), file a tracking bead and begin.
 
 ---
 
+## LLM Harness Lab — bandwidth-gated (NOT customer-signal-gated)
+
+**Insight recognized:** 2026-05-13 (ISEDC Session 4, DR-010 Q5)
+**ISEDC reference:** `010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md` § Q5 + § 13.5 (acting-head-of-board override removing customer-signal gate)
+
+User-named platform-build: sandbox for retries / judges / telemetry / routing / repair-chains / cost-tracking. Domain: Inference + Reliability. Recommended stack (Python): FastAPI / asyncio / Redis / Ollama+vLLM / DeepEval / Langfuse / OpenTelemetry / Grafana.
+
+Initial scaffold form: `intent-eval-lab/specs/FUTURE-platforms/llm-harness-lab/README.md` — scope, recommended-stack rationale, internal use cases that motivate building it. As bandwidth permits and the acting head of board's own use cases surface concrete requirements, implementation can begin.
+
+**Trigger condition (per § 13.5 override):** **Bandwidth permitting** AND Phase A baseline complete (SPEC.md normative locked + M5 v0.2 production-Rekor cut + internal-dogfood signal). NO paying-customer precondition — this is an internal tool the acting head of board is building for himself + Intent Solutions practice, simultaneously shared with the world as OSS default. License audit (GC IP discipline) + name clearance (GC IP discipline) + Decision Record filing PRESERVED as IP gates — required BEFORE first public repo created, regardless of customer-vs-internal framing.
+
+---
+
+## Agent Runtime Sandbox — bandwidth-gated (NOT customer-signal-gated)
+
+**Insight recognized:** 2026-05-13 (ISEDC Session 4, DR-010 Q5)
+**ISEDC reference:** `010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md` § Q5 + § 13.5
+
+User-named platform-build: orchestrator with loop budgets, capability gates, traces, rollback states, eval checkpoints. Domain: Agent Systems. Recommended stack (Python): Temporal / LangGraph+ADK / OpenTelemetry / Qdrant.
+
+Initial scaffold form: `intent-eval-lab/specs/FUTURE-platforms/agent-runtime-sandbox/README.md` — scope, recommended-stack rationale, internal use cases.
+
+**Trigger condition (per § 13.5 override):** **Bandwidth permitting** AND the validator-only Agent Systems coverage from existing `validate-mcp` + `validate-agent` is demonstrably insufficient against a real deployment the acting head of board is running. NO paying-customer precondition. IP gates (license audit + name clearance + DR) preserved.
+
+---
+
+## Deferred predicate URIs (Phase B+, ISEDC Session 4 Q3)
+
+**Insight recognized:** 2026-05-13 (ISEDC Session 4, DR-010 Q3)
+
+Per Q3 CISO per-predicate assessment, the following predicate URIs are deferred or rejected:
+
+### Deferred to Phase B+ (sanitization spec gated)
+- **`harness-experiment/v1`** — experimental output is the LAST thing to anchor in Rekor permanently. Phase B+ when experimental-output stability demonstrated.
+- **`cache-decision/v1`** — leaks prompt-shape and access-pattern data. Phase B+ after sanitization spec lands at `intent-eval-lab/specs/sanitization/v0.1.0-draft/SPEC.md`.
+
+### REJECTED for v1 (CISO veto preserved)
+- **`agent-loop-trace/v1`** — loop traces contain prompts, tool calls, credential-shaped strings, agent reasoning. Permanent Rekor record of potentially sensitive trace data is unacceptable. **Trigger to revisit:** trace-sanitization spec authored AND passes CISO PASS/FAIL sanitization-test fixture in CI. Until then, REJECTED for v1.
+
+---
+
 *This file is maintained by the ISEDC process. Entries graduate to tracked backlog when their
 trigger condition is met. Do not delete entries without ISEDC deliberation or acting-head-of-board
 direction.*
