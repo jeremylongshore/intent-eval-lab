@@ -201,9 +201,9 @@ What fails together; what is isolated; what bounded retries cover. Reference Blu
 
 > Author's Guide: Blueprint B § 2 enumerates 13 canonical entities (EvalSpec, EvalRun, MatcherMap, EvidenceBundle, JudgeDecision, RuntimeReceipt, RegressionPack, RolloutGate, SkillSnapshot, SessionTrace, ToolInvocation, CostRecord, FailureTaxonomy). For every entity this repo touches, declare whether you **consume**, **produce**, or **both**; cite which Blueprint B § 2.N attributes you implement (e.g., "produces with required-fields and content-hash; defers retention to consumer"); link to the canonical glossary entry. **Do NOT redefine canonical entities locally** — link to `014-DR-GLOS-canonical-glossary.md` § 2.N and let the glossary be the source of truth.
 
-| Entity | Direction | Blueprint B attributes implemented | Glossary ref |
-|---|---|---|---|
-| `<EntityName>` | consumes / produces / both | `<required fields + UUID + mutability + retention + replayability + provenance + lifecycle + storage + audit — list only the attributes this repo implements>` | `014-DR-GLOS-canonical-glossary.md` § 2.N |
+| Entity | Direction | Blueprint B Ref | Attributes implemented | Glossary ref |
+|---|---|---|---|---|
+| `<EntityName>` | consumes / produces / both | `Blueprint B § 2.N` | `<required fields + UUID + mutability + retention + replayability + provenance + lifecycle + storage + audit — list only the attributes this repo implements>` | `014-DR-GLOS-canonical-glossary.md` § 2.N |
 
 **Entities NOT touched by this repo:** `<list the canonical entities this repo does not interact with — for completeness so a reviewer can spot a gap>`.
 
@@ -685,9 +685,11 @@ boundaries beyond "git clone, read markdown."
 
 ## § 5 — Canonical entities used
 
-| Entity | Direction | Attributes implemented | Glossary ref |
-|---|---|---|---|
-| (none) | N/A — methodology-only repo with no entity I/O | N/A | `014-DR-GLOS-canonical-glossary.md` |
+| Entity | Direction | Blueprint B Ref | Attributes implemented | Glossary ref |
+|---|---|---|---|---|
+| (none) | N/A | N/A | N/A | `014-DR-GLOS-canonical-glossary.md` |
+
+**Entities NOT touched by this repo:** All 13 canonical entities (EvalSpec, EvalRun, MatcherMap, EvidenceBundle, JudgeDecision, RuntimeReceipt, RegressionPack, RolloutGate, SkillSnapshot, SessionTrace, ToolInvocation, CostRecord, FailureTaxonomy) — methodology-only repo with no entity I/O.
 
 ## § 6 — Interfaces
 
@@ -704,9 +706,14 @@ hierarchy is stable across MINOR bumps.
 
 ## § 8 — Security / isolation
 
-N/A — no secrets, no sandbox, no provider surface. Threat model: an adversary
-with repo write access could publish misleading example content; defended by
-CODEOWNERS review.
+N/A — no secrets, no sandbox, no provider surface.
+
+### 8.3 Provider PASS/FAIL gates
+N/A — this repo does not touch LLM providers. Section present per Class-1
+ISEDC requirement that the gate-restatement be visible even when not exercised.
+
+**Threat model:** an adversary with repo write access could publish misleading
+example content; defended by CODEOWNERS review.
 
 ## § 9 — Observability
 
