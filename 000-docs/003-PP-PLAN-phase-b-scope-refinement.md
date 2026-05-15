@@ -65,7 +65,7 @@ API  →  CLI wrapper  →  MCP server  →  SKILL.md  →  agent runtime
 Each hop is its own evaluable + attestable surface, and the in-toto `subject` field can name the **exact transformation point being attested**. Examples:
 
 - An attestation about an **API → CLI** transformation: "the `codex` CLI v0.130.0 binary correctly maps OpenAI Responses-API `tool_calls` shape to its action-log emission."
-- An attestation about a **CLI → MCP server** transformation: "the an enterprise mobile-testing MCP server MCP server's `confirmAppUpload` tool returns a shape consistent with the SKILL.md's `argument-hint` declaration."
+- An attestation about a **CLI → MCP server** transformation: "the enterprise mobile-testing MCP server's `confirmAppUpload` tool returns a shape consistent with the SKILL.md's `argument-hint` declaration."
 - An attestation about an **MCP server → SKILL.md** transformation: "the Plane MCP server's tool list matches the project's `SKILL.md` `allowed-tools` declaration with no orphans."
 - An attestation about a **SKILL.md → agent runtime** transformation: "Claude Code v2.1.128 reads the SKILL.md's `effort: high` declaration and emits `claude_code.skill_activated` with `effort=high` in span attributes."
 
