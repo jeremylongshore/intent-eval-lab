@@ -50,11 +50,14 @@ jobs:
         run: |
           set -e
           # shellcheck disable=SC2016
-          PATTERN='Kobiton|Polygon|Nixtla|Lit Protocol|Mudit Gupta'
-          echo "Scanning public artifacts for partner-name hits…"
+          PATTERN='Kobiton|Polygon|Nixtla|Lit Protocol|Mudit Gupta|Mudit'
+          echo "Scanning public artifacts for partner-name hits (case-insensitive)…"
           # grep -r over the in-scope dirs; --include filters to text-like files
           # so this stays fast and doesn't false-trigger on .DS_Store, binaries, etc.
-          HITS=$(grep -rEn \
+          # -i is REQUIRED: an earlier audit found lowercased partner names
+          # (`kobiton/automate`, `kobiton/CLAUDE.md`, `kobiton / mudit / nixtla / lit`)
+          # that a case-sensitive grep missed.
+          HITS=$(grep -rEni \
             --include='*.md' \
             --include='*.html' \
             --include='*.yaml' \

@@ -23,4 +23,4 @@ The subshell wrapper `( ... )` is load-bearing: a bare `trap ... EXIT` inside a 
 
 **Audit-trail caveat:** until the upstream fix lands, the workaround is operator-dependent. A session that crashes after a bead state mutation but before the trap fires will leave the canonical bd state behind the GH/Plane mirrors. For audit-grade reconstruction, treat any bead state change made after the most recent successful `bd export → cp → bd import` cycle as provisional until manually verified.
 
-**Upstream:** https://github.com/steveyegge/beads (file the bug there when the draft email at `/home/jeremy/.claude/projects/-home-jeremy-000-projects-intent-eval-platform/memory/` is ready to send)
+**Upstream:** https://github.com/steveyegge/beads (file the bug there when the draft email in the project memory is ready to send)

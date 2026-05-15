@@ -49,8 +49,8 @@ Per user override on Q4, this rename is a **string replacement**, not an archite
 
 1. `intent-eval-lab/000-docs/004-AT-DECR-isedc-council-record-2026-05-10.md` (ISEDC v1, signed) — receives appended Terminology Note per Q3
 2. Snapshot tags `r1-2026-04-28`, `r2-2026-05-04`
-3. R1 partner deliverable already delivered to Stu/Frank (`partners.intentsolutions.io/kobiton/r1/`)
-4. R2 partner deliverable already delivered (`partners.intentsolutions.io/kobiton/r2/`)
+3. R1 partner deliverable already delivered to the engagement leads (partner portal — path elided per DR-004 S1Q2)
+4. R2 partner deliverable already delivered (partner portal — path elided per DR-004 S1Q2)
 5. OTel RFC draft (`001-DR-RFC-...`) once filed at SIG-GenAI — currently mutable; renames freely until filing
 
 ## Living docs (rename freely in same session)
@@ -63,10 +63,10 @@ Per user override on Q4, this rename is a **string replacement**, not an archite
 6. `intent-eval-lab/000-docs/002-RR-LAND-mcp-testing-bridge.md` (research landscape, not partner-signed; treat as living per acting-head-of-board call)
 7. `intent-eval-lab/000-docs/003-PP-PLAN-phase-b-scope-refinement.md` (synthesis, internal)
 8. `audit-harness/000-docs/002-RR-LAND-upgrade-landscape.md`
-9. `kobiton/CLAUDE.md`
-10. `kobiton/000-docs/034-RR-OPEN-things-to-think-about.md`
+9. Primary-engagement repo CLAUDE.md (path elided per DR-004 S1Q2)
+10. Primary-engagement repo open-questions doc (path elided per DR-004 S1Q2)
 11. `intent-eval-platform/CLAUDE.md` (umbrella)
-12. Memory entries under `~/.claude/projects/-home-jeremy-000-projects-kobiton/memory/`
+12. Primary-engagement private memory entries (path elided per DR-004 S1Q2)
 
 ## Acting Head of Board declaration
 
@@ -74,7 +74,7 @@ I, **Claude (Anthropic, `claude-opus-4-7`)**, find that:
 - All 7 ISEDC seats convened and returned adversarial structured assessments
 - The user issued two direct overrides: Q5 timing ("fix it" → NOW) and Q4 scope ("nothing changes but the name" → rename only, no architectural concept addition)
 - Decisions Q1, Q2, Q3 reflect council majority with stacked minority protections honored
-- Decisions Q4 and Q5 reflect user override — council deliberation preserved in seat memos at `/tmp/claude-1000/-home-jeremy-000-projects-kobiton/40b51df0-3e65-4871-b87f-60c926aa6a00/tasks/`
+- Decisions Q4 and Q5 reflect user override — council deliberation preserved in seat memos at the engagement-session tasks directory (path elided per DR-004 S1Q2)
 - Execution proceeds in the same session per Q5 user override
 
 Signed,
@@ -84,4 +84,4 @@ Signed,
 
 - ISEDC v1: `004-AT-DECR-isedc-council-record-2026-05-10.md` (predecessor; frozen)
 - Reusable pattern: `~/.claude/skills/exec-decision-council/SKILL.md`
-- Seat memos: `/tmp/claude-1000/-home-jeremy-000-projects-kobiton/40b51df0-3e65-4871-b87f-60c926aa6a00/tasks/` (CTO `ab3f8cb`, GC `a6112d25`, CMO `a96817e1`, CFO `aecb22e4`, CSO `a801764f`, CISO `a4617e81`, VP DevRel `a6ad7e33`)
+- Seat memos: engagement-session tasks directory (path elided per DR-004 S1Q2); task IDs CTO `ab3f8cb`, GC `a6112d25`, CMO `a96817e1`, CFO `aecb22e4`, CSO `a801764f`, CISO `a4617e81`, VP DevRel `a6ad7e33`

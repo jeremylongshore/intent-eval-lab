@@ -263,7 +263,7 @@ Each seat closed their analysis with a cross-question memo. These are preserved 
 
 > The Phase B work products are *permanent brand commitments*. The predicate URI, the named case studies, the OTel namespace, the in-toto predicate type — each one is a paper artifact that outlives Intent Solutions' control of it. Once filed in external registries, we cannot quietly retract.
 >
-> **The single decision whose failure mode is most costly: Q2 (case-study publication discipline).** A predicate URI typo can be deprecated with a v2; an MM-7 misfile can be retracted in v0.2.0; an OTel namespace can be renamed in a follow-up RFC. **But a partner-name leak in a public spec cannot be unpublished.** The internet's memory is permanent, the partner's memory is longer, and the brand-scrub discipline we set 2026-05-10 is the *only* reason kobiton/mudit/nixtla/lit trust Intent Solutions to handle their failure data in the first place. One slip there ends the empirical substrate that makes the matcher-map credible. Hold the line on consent-or-silence.
+> **The single decision whose failure mode is most costly: Q2 (case-study publication discipline).** A predicate URI typo can be deprecated with a v2; an MM-7 misfile can be retracted in v0.2.0; an OTel namespace can be renamed in a follow-up RFC. **But a partner-name leak in a public spec cannot be unpublished.** The internet's memory is permanent, the partner's memory is longer, and the brand-scrub discipline we set 2026-05-10 is the *only* reason the named partners (the primary client engagement, an active revenue client, and two inbound credibility engagements) trust Intent Solutions to handle their failure data in the first place. One slip there ends the empirical substrate that makes the matcher-map credible. Hold the line on consent-or-silence.
 
 ### CMO seat memo (verbatim theme)
 
@@ -398,7 +398,7 @@ Signed,
 - Meta-bead: `OPS-nfx` in `~/.beads/`
 - Plane HQ: `LAB-6` (Intent Eval Platform master umbrella, Plane workspace `intentsolutions`)
 - Reusable pattern: `~/.claude/skills/exec-decision-council/SKILL.md`
-- Brand-scrub policy: `~/.claude/projects/-home-jeremy-000-projects-kobiton/memory/project_kobiton_case_study_scrub_2026_05_10.md`
+- Brand-scrub policy: private engagement-memory file (path elided per DR-004 S1Q2 vendor-generic discipline; available in the canonical PRIVATE umbrella memory tree)
 - Intent Solutions tagline: *"We create industries that don't exist — we think outside of the box's box."*
 
 ---
