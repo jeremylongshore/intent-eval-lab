@@ -61,7 +61,7 @@
   <tbody>
     <tr><td><code>intent-eval-lab</code></td><td>Methodology + specs + schema definitions. The rulebook everything else follows.</td><td>Apache 2.0</td><td>Markdown / JSON Schema</td></tr>
     <tr><td><code>audit-harness</code></td><td>Static gate runner. Checks the code and configuration of a repository without running a model.</td><td>MIT</td><td>Bash + Python + Node.js dispatcher</td></tr>
-    <tr><td><code>j-rig-binary-eval</code></td><td>Behavioral gate runner. Drives an AI model through a task and judges whether it behaved correctly.</td><td>MIT</td><td>TypeScript (pnpm monorepo)</td></tr>
+    <tr><td><code>j-rig-skill-binary-eval</code></td><td>Behavioral gate runner. Drives an AI model through a task and judges whether it behaved correctly.</td><td>MIT</td><td>TypeScript (pnpm monorepo)</td></tr>
   </tbody>
 </table>
 
@@ -347,8 +347,8 @@ Developer pushes commit
     <tr><td>1</td><td><strong>PB-1</strong></td><td>Define the in-toto Statement v1 envelope with the <code>evals.intentsolutions.io/gate-result/v1</code> predicate. This is approximately 20 lines of schema definition plus the normative spec text in SPEC.md. Everything downstream emits against this shape.</td><td>intent-eval-lab</td></tr>
     <tr><td>2</td><td><strong>AH-2</strong></td><td>Add <code>--json</code> flag to all six audit-harness scripts. Approximately 30 lines per script. The <code>crap-score.py</code> pattern is the reference.</td><td>audit-harness</td></tr>
     <tr><td>3</td><td><strong>AH-3</strong></td><td>Add <code>emit-evidence</code> subcommand. Takes AH-2 JSON output, wraps in in-toto Statement v1 (per PB-1 schema), signs, writes to bundle.</td><td>audit-harness</td></tr>
-    <tr><td>4</td><td><strong>JRIG-5</strong></td><td>Add Zod validator for the Evidence Bundle row schema. J-rig needs to validate incoming and outgoing rows against the PB-1 schema before emitting.</td><td>j-rig-binary-eval</td></tr>
-    <tr><td>5</td><td><strong>JRIG-6</strong></td><td>Add I/O adapters. J-rig can now read external gate results and emit its own behavioral results as Evidence Bundle rows.</td><td>j-rig-binary-eval</td></tr>
+    <tr><td>4</td><td><strong>JRIG-5</strong></td><td>Add Zod validator for the Evidence Bundle row schema. J-rig needs to validate incoming and outgoing rows against the PB-1 schema before emitting.</td><td>j-rig-skill-binary-eval</td></tr>
+    <tr><td>5</td><td><strong>JRIG-6</strong></td><td>Add I/O adapters. J-rig can now read external gate results and emit its own behavioral results as Evidence Bundle rows.</td><td>j-rig-skill-binary-eval</td></tr>
     <tr><td>6</td><td><strong>PB-10 + PB-11</strong></td><td>File OTel RFC for <code>agent.rollout.gate.*</code> and Intentional Mapping signal vocabulary. Community review clock: ~3-4 weeks.</td><td>intent-eval-lab → OTel SIG-GenAI</td></tr>
     <tr><td>7+</td><td>PB-2 through PB-12</td><td>Vendor-namespaced schemas, provider adapters, AGENTS.md parser, Pact contract format, Gherkin scenarios, reference deployment.</td><td>All three repos</td></tr>
   </tbody>
@@ -378,7 +378,7 @@ Developer pushes commit
 
 <h2>Addendum 2026-05-12 — Fourth repository: <code>intent-rollout-gate</code></h2>
 
-<p>This brief was authored 2026-05-11 describing a three-repository platform (<code>intent-eval-lab</code>, <code>audit-harness</code>, <code>j-rig-binary-eval</code>) with the Rollout Gate depicted as an architectural concept downstream of the bundle emitters. The addendum below records the fourth repository's creation per Milestone 4 of the build journey plan (<code>~/.claude/plans/se-the-council-bubbly-frog.md</code>) and the gap analysis at <a href="./008-DR-GAPS-spec-vs-system-brief-2026-05-11.md"><code>008-DR-GAPS-spec-vs-system-brief-2026-05-11.md</code></a>.</p>
+<p>This brief was authored 2026-05-11 describing a three-repository platform (<code>intent-eval-lab</code>, <code>audit-harness</code>, <code>j-rig-skill-binary-eval</code>) with the Rollout Gate depicted as an architectural concept downstream of the bundle emitters. The addendum below records the fourth repository's creation per Milestone 4 of the build journey plan (<code>~/.claude/plans/se-the-council-bubbly-frog.md</code>) and the gap analysis at <a href="./008-DR-GAPS-spec-vs-system-brief-2026-05-11.md"><code>008-DR-GAPS-spec-vs-system-brief-2026-05-11.md</code></a>.</p>
 
 <h3>What changed</h3>
 
@@ -394,7 +394,7 @@ Developer pushes commit
 
 <p>The Rollout Gate is a downstream <strong>consumer</strong> of the Evidence Bundle, not a producer of methodology or specs. Authoring it as a module inside <code>intent-eval-lab</code> would conflate the lab's role (defining the standard) with the gate's role (acting on the standard). It would also force every gate-implementation change through a methodology-repo PR cycle, which is the wrong governance shape — gate decisions are operational, not normative.</p>
 
-<p>The four-repo split mirrors the Evidence Bundle architecture itself: <code>intent-eval-lab</code> defines the predicate URI; <code>audit-harness</code> + <code>j-rig-binary-eval</code> emit rows against it; <code>intent-rollout-gate</code> consumes assembled bundles + policy. Each repo has one job. None depends on shipping the others' code; they depend only on the schema.</p>
+<p>The four-repo split mirrors the Evidence Bundle architecture itself: <code>intent-eval-lab</code> defines the predicate URI; <code>audit-harness</code> + <code>j-rig-skill-binary-eval</code> emit rows against it; <code>intent-rollout-gate</code> consumes assembled bundles + policy. Each repo has one job. None depends on shipping the others' code; they depend only on the schema.</p>
 
 <h3>What this means for § 8 of the original brief</h3>
 

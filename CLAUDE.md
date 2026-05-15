@@ -7,16 +7,16 @@ Guidance for Claude Code when working in `/home/jeremy/000-projects/intent-eval-
 A research umbrella for vendor-neutral evaluation methodology around AI plugins, agents, MCP servers, and skill-discovery systems. Scoped to **measurement and methodology** — not a product, not a marketplace, not a blog. Outputs flow to other surfaces:
 
 - Validated methodology → blog posts on `startaitools.com`
-- Productizable harnesses → contributions to `j-rig-binary-eval` (sister project)
+- Productizable harnesses → contributions to `j-rig-skill-binary-eval` (sister project)
 - Public reference content → this repo's `000-docs/` (Apache 2.0)
 
 ## Four-repo convergence (Phase A complete 2026-05-10; intent-rollout-gate added 2026-05-12)
 
-This repo is the **methodology + specs umbrella** in the four-repo convergence vision (`intent-eval-lab` + `audit-harness` + `j-rig-binary-eval` + `intent-rollout-gate`). The architectural insight: the four repos compose via a shared schema (the **Evidence Bundle**), not via package consolidation. Convergence happens at the schema layer.
+This repo is the **methodology + specs umbrella** in the four-repo convergence vision (`intent-eval-lab` + `audit-harness` + `j-rig-skill-binary-eval` + `intent-rollout-gate`). The architectural insight: the four repos compose via a shared schema (the **Evidence Bundle**), not via package consolidation. Convergence happens at the schema layer.
 
 **Master plan (local-only):** `~/.claude/plans/please-take-your-time-glimmering-stardust.md`
 **ID mapping artifact:** `~/.claude/plans/please-take-your-time-glimmering-stardust-id-map.md` (29 issues × 4 layers each — beads + GH + Plane + bd-sync link)
-**Convergence umbrella epic:** [`#4`](https://github.com/jeremylongshore/intent-eval-lab/issues/4) (`IEL-CONV-1`) — 8 umbrella + 10 work issues filed in this repo, plus 8 in `audit-harness`, plus 3 in `j-rig-binary-eval`
+**Convergence umbrella epic:** [`#4`](https://github.com/jeremylongshore/intent-eval-lab/issues/4) (`IEL-CONV-1`) — 8 umbrella + 10 work issues filed in this repo, plus 8 in `audit-harness`, plus 3 in `j-rig-skill-binary-eval`
 
 ### Phase A landed (this repo)
 
@@ -39,7 +39,7 @@ Run the partner-name grep guard against `specs/`, `000-docs/`, `README.md`, and 
 
 ## Where to start Claude Code sessions
 
-The lab and j-rig-binary-eval are **coordinated repos with different scopes**. Open Claude Code in the right one based on what you're doing:
+The lab and j-rig-skill-binary-eval are **coordinated repos with different scopes**. Open Claude Code in the right one based on what you're doing:
 
 | You're working on | Open Claude Code in |
 |---|---|
@@ -62,7 +62,7 @@ Repos that **compose into one evaluation platform via the Evidence Bundle schema
 | Symlink | Real path | Convergence role |
 |---|---|---|
 | `projects/audit-harness` | `~/000-projects/intent-eval-platform/audit-harness` (sibling) | Deterministic gates — emits Evidence Bundle gate-result rows |
-| `projects/j-rig-binary-eval` | `~/000-projects/intent-eval-platform/j-rig-binary-eval` (sibling) | 7-layer judgment harness — consumes + emits Evidence Bundle rows |
+| `projects/j-rig-binary-eval` | `~/000-projects/intent-eval-platform/j-rig-binary-eval` (sibling; GH-canonical repo name is `j-rig-skill-binary-eval`, local FS dir name retained for backward-compat) | 7-layer judgment harness — consumes + emits Evidence Bundle rows |
 | `projects/intent-rollout-gate` | `~/000-projects/intent-eval-platform/intent-rollout-gate` (sibling) | GitHub Action — consumes a bundle + a `tests/TESTING.md` policy → ship/no-ship decision (M5 implementation; M4 substantive bootstrap stub) |
 
 ### Tier 2 — Independent lab research projects (outside the umbrella)

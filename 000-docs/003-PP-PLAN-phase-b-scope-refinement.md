@@ -15,7 +15,7 @@
 
 ## 1. Mission and ambition — industry-standard substrate, not internal tooling
 
-The three repos — `audit-harness`, `j-rig-binary-eval`, `intent-eval-lab` — are not internal tooling for Intent Solutions partner engagements. They are **candidate substrate for an industry standard** for evaluating the agent-runtime arena. The empirical proving ground is Intent Solutions' multi-vendor partner work (kobiton / mudit / nixtla / lit failure-shapes — MM-1 through MM-6 were *found*, not theorized). The synthesis target for Phase B is the structural reshape that lets every artifact published by the three repos be consumed by an outside party (a partner, an auditor, an OSS contributor, an OTel SIG-GenAI reviewer, an in-toto attestation verifier) without that party having to know anything about Intent Solutions' internal engagements.
+The three repos — `audit-harness`, `j-rig-skill-binary-eval`, `intent-eval-lab` — are not internal tooling for Intent Solutions partner engagements. They are **candidate substrate for an industry standard** for evaluating the agent-runtime arena. The empirical proving ground is Intent Solutions' multi-vendor partner work (kobiton / mudit / nixtla / lit failure-shapes — MM-1 through MM-6 were *found*, not theorized). The synthesis target for Phase B is the structural reshape that lets every artifact published by the three repos be consumed by an outside party (a partner, an auditor, an OSS contributor, an OTel SIG-GenAI reviewer, an in-toto attestation verifier) without that party having to know anything about Intent Solutions' internal engagements.
 
 Phase A landed three skeletons (`SPEC.md` for the Evidence Bundle, RFC draft for OTel rollout-gate semantic conventions, envelope design notes for gate-result rows). The three Part 2 landscape docs span 15,000 words across three workstreams (A: audit-harness, B: j-rig multi-provider, C: MCP testing bridge), surfacing **17 Phase B candidate work items** and **2 Phase C candidates**.
 
@@ -406,7 +406,7 @@ To prevent scope drift in Phase B / C planning that consumes this synthesis:
 - **Not implementation.** No code is being written. The first PR is whichever Phase B work item lands first (PB-1 per § 5 sequencing).
 - **Not customer acquisition strategy.** § 8 names the customer-signal trigger conditions for several decisions, but does not propose a go-to-market.
 - **Not packaging / distribution decisions.** § 8 leaves CLI distribution open.
-- **Not naming.** "intent-eval-lab" / "audit-harness" / "j-rig-binary-eval" repo names are inputs. The predicate URI namespace `https://evals.intentsolutions.io/<predicate-type>/v<version>` was decision-locked by ISEDC Q1 (2026-05-10) — see `004-AT-DECR-isedc-council-record-2026-05-10.md` § 6 Q1. Repo names themselves stay as inputs.
+- **Not naming.** "intent-eval-lab" / "audit-harness" / "j-rig-skill-binary-eval" repo names are inputs. The predicate URI namespace `https://evals.intentsolutions.io/<predicate-type>/v<version>` was decision-locked by ISEDC Q1 (2026-05-10) — see `004-AT-DECR-isedc-council-record-2026-05-10.md` § 6 Q1. Repo names themselves stay as inputs.
 - **Not LAB-6 update.** § "Mission" of the parent task: the parent agent updates LAB-6 after reviewing this synthesis.
 - **Not OPS-nfx update.** Same — parent agent handles.
 - **Not Plane backlog grooming.** Phase B work items in § 5 are not yet filed as LAB-N children. The parent agent decides which become first-class Plane issues vs which are sub-tasks of existing IEL-CONV-N children.
