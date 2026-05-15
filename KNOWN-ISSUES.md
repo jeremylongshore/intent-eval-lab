@@ -13,7 +13,8 @@ Operational issues affecting the IEP ecosystem that are not platform-spec concer
 ```bash
 bd-safe() {
   (
-    trap 'bd export > /tmp/bd-snapshot.jsonl && \cp -f /tmp/bd-snapshot.jsonl .beads/issues.jsonl && bd import .beads/issues.jsonl' EXIT
+    tmp_file=$(mktemp /tmp/bd-snapshot.XXXXXX) || return 1
+    trap 'bd export > "$tmp_file" && \cp -f "$tmp_file" .beads/issues.jsonl && bd import .beads/issues.jsonl; rm -f "$tmp_file"' EXIT
     "$@"
   )
 }
