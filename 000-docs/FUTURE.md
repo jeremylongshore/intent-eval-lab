@@ -174,7 +174,7 @@ tracked work item in the next minor version of `mcp-plugin-observability/`.
 
 ### What the insight is
 
-The Evidence Bundle emitters (`audit-harness` M2, `j-rig-binary-eval` M3, `intent-rollout-gate`
+The Evidence Bundle emitters (`audit-harness` M2, `j-rig-skill-binary-eval` M3, `intent-rollout-gate`
 M5) all fire `agent.rollout.gate.*` OTel events alongside their signed-row emission. A reference
 deployment of an OTel collector configured to ingest and route those events (to a dashboard, an
 alerting backend, or a long-term store) is the natural next step in operator usability — but it

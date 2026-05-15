@@ -37,7 +37,7 @@ This is itself a **NORMATIVE** document binding on the ecosystem under DR-010 §
 - **§ 5 — Governance + lifecycle terms.** ISEDC, three-class routing, Decision Records, override, ratification.
 - **§ 6 — Signing + attestation terms.** in-toto Statement v1, DSSE, cosign, Rekor, predicate URI, subject naming, DNSSEC + CAA.
 - **§ 7 — Sequence + lifecycle terms.** Phase A/B/C, RF-N (forward-ref to iel-E11), sigstore staging vs production Rekor, EXPERIMENTAL mode, `bd-sync`.
-- **§ 8 — Anti-patterns + reserved terms.** Reservations and disciplines that cannot be silently violated: `labs.intentsolutions.io` reserved-don't-touch, vendor-generic discipline, external-pattern non-borrow, approximate reproducibility, bd auto-flush JSONL drift.
+- **§ 8 — Anti-patterns + reserved terms.** Reservations and disciplines that cannot be silently violated: `labs.intentsolutions.io` reserved-don't-touch, vendor-generic discipline, external-pattern non-borrow, approximate reproducibility, no-new-platform-initiation.
 - **§ 9 — Alphabetical cross-reference index.** Alphabetical pointer from each term to its primary section here and to the 2-4 most relevant documents that use it.
 
 When in doubt about which section a term belongs in, prefer the section that captures the term's **canonical use site**. A term that appears across multiple sections (e.g., "Evidence Bundle" — an entity in § 2, but also the lingua franca cited by signing terms in § 6) lives in its primary section with cross-references from the others.
@@ -287,8 +287,6 @@ This section catalogues disciplines that **cannot be silently violated**. Each e
 
 **Approximate reproducibility (anti-pattern).** Replay in the Intent Eval Platform is **audit-grade deterministic**, not approximately reproducible. A replay produces the same verdict as the original at the RF level declared by the originating predicate, or it produces a replay-failed verdict — there is no "close enough" zone. Documentation that hedges replay claims with phrases like "approximately reproducible," "broadly deterministic," or "reproducible in most cases" is reframing the discipline downward. The correct framing is RF-N: state the RF level explicitly, and if the predicate's RF level is RF-best-effort, document the sources of non-determinism explicitly. Citation: Blueprint A § 1.2 principle 2; Blueprint B § 3.2.
 
-**bd auto-flush JSONL drift.** Operational anti-pattern observed during the v2.1 epic plan execution. `bd`'s auto-export step fails on `git-add` when `.beads/` is gitignored, silently losing in-memory writes between sessions. The workaround is the `bd export → cp → bd import` cycle, applied atomically when state changes need to be persisted across the auto-flush boundary. The underlying bug is tracked in `bd_000-projects-ufc`. Until the fix lands upstream, any session that mutates bead state (note, close, status change) MUST run the export-cp-import workaround before session-end. Citation: v2.1 epic plan canonical-SoT discipline; `bd_000-projects-ufc`.
-
 **No new platform initiation in next 6 months.** Per DR-010 Q1 reaffirmation, no new sub-platform under the Intent Eval Platform umbrella may be **initiated** in the next 6 months. The bandwidth math (3-5 hrs/wk, ~12 founder-hours/year governance overhead) does not support an additional brand surface. The two **named future** sub-platforms catalogued in `FUTURE.md` — *LLM Harness Lab* and *Agent Runtime Sandbox* — are **design-doc-only, bandwidth-gated**. Initiation of either as an actual build is a Class-1 ISEDC trigger. Citation: Blueprint A § 3.7; DR-010 § 7 Q1 reaffirmation.
 
 **Decoupled distribution from publishing.** Per Blueprint A § 1.2 principle 11, every release artifact confirms successful **publish** through an out-of-band check — not just successful local **write**. CI pipelines treat "the artifact is readable from its public URL by an unauthenticated client" as the definition of done, not "the publish command exited 0." This principle exists because of the observed failure mode where local write succeeded but downstream propagation failed silently, producing drift that looks like success. Citation: Blueprint A § 1.2 principle 11.
@@ -308,7 +306,6 @@ This index points each term to its primary section in this glossary and to the 2
 | Anti-goals (binding scope control) | § 8 | Blueprint A § 3; DR-010 § 7 Q1 |
 | Approximate reproducibility (anti-pattern) | § 8 | Blueprint A § 1.2; Blueprint B § 3.2 |
 | `bd-sync` | § 7 | `~/000-projects/CLAUDE.md`; v2.1 epic plan |
-| bd auto-flush JSONL drift | § 8 | v2.1 epic plan; `bd_000-projects-ufc` |
 | Class 1 routing | § 5 | Blueprint A § 2.3; DR-010 § 7 Q6 |
 | Class 2 routing | § 5 | Blueprint A § 2.3; DR-010 § 7 Q6 |
 | Class 3 routing | § 5 | Blueprint A § 2.3; DR-010 § 7 Q6 |

@@ -121,7 +121,7 @@ Each question shows: (a) the question, (b) each seat's recommended answer + 1-li
 |---|---|---|
 | **CTO** | Generic shapes in PB-12 Gherkin; separate empty `case-studies/` dir under `specs/mcp-plugin-observability/` to land partner-consented cases later. | Decouple spec velocity from consent timelines. Generic Gherkin is more reusable as normative spec anyway. |
 | **GC** | STRONGLY generic-only. Public PB-12 cites ZERO real partners by name, by URL, by repo, by F-finding ID, or by recognizable scenario. | 2026-05-10 brand-scrub is binding policy. Deviating without written consent = partner-relationship malpractice with zero upside in Phase B. |
-| **CMO** | Tiered ask. Phase B Wave 1 = vendor-generic ONLY; in parallel pursue consent for ONE attributed case study each (Kobiton post-M3, Nixtla, one of Mudit/Lit), target published-real example in Phase B+1. | Named case studies = 10x credibility of "anonymous Fortune 500 customer." Worst case: partner says no, fall back to generic. |
+| **CMO** | Tiered ask. Phase B Wave 1 = vendor-generic ONLY; in parallel pursue consent for ONE attributed case study each (the primary client engagement post-milestone, an active revenue client, one of two inbound credibility engagements), target published-real example in Phase B+1. | Named case studies = 10x credibility of "anonymous Fortune 500 customer." Worst case: partner says no, fall back to generic. |
 | **CFO** | Generic shapes only through Phase B close. Case-study consent only after first-paying-customer signal + partners in stable post-deliverable state. | Pursuing partner consent in Phase B = sole-prop bandwidth Jeremy doesn't have. Case-study is a Phase C asset, not a Phase B asset. |
 | **CSO** | Phase B ships pseudonymized empirical-anchor scaffolds (Partner-A / Partner-B / Partner-C). Phase C re-publishes with consent. | Standards-track credibility rests on "empirical anchor exists" claim, not on "publicly attributable." |
 | **CISO** | Vendor-generic Gherkin public; partner-named behind consent gates; schema slot `case_study.partner_id` reserved null in public corpus. | Public scenarios enable independent red-teaming. But cannot override GC consent paper trail. |
@@ -135,7 +135,7 @@ Each question shows: (a) the question, (b) each seat's recommended answer + 1-li
 - PB-12 Phase B ships generic Gherkin with internal docstrings noting "based on real engagement, scrubbed per IS-consent-policy 2026-05-10" — so future consent enables drop-in attribution, not rewrite.
 - An empty `case-studies/` directory is created under `specs/mcp-plugin-observability/v0.1.0-draft/` to reserve the structural slot.
 - A `CONTRIBUTING-case-study.md` is authored in that directory documenting the consent + co-credit pattern for Phase B+1.
-- Partner-consent ask commences in **Phase B+1** (not Phase B), aligned with engagement-close windows: Kobiton post-M3 (~2026-05-25+), Nixtla, one of Mudit/Lit. CMO's tiered ask is preserved as Phase B+1 work.
+- Partner-consent ask commences in **Phase B+1** (not Phase B), aligned with engagement-close windows (the primary client engagement post-milestone (~2026-05-25+), an active revenue client, one of two inbound credibility engagements). CMO's tiered ask is preserved as Phase B+1 work.
 - Schema slot `case_study.partner_id` reserved null in public corpus (CISO requirement).
 - CISO's revocation-procedure requirement applies: if any partner-named publication is later authorized pre-consent (edge case), Rekor-anchored revocation procedure must be documented BEFORE first publication.
 
@@ -263,7 +263,7 @@ Each seat closed their analysis with a cross-question memo. These are preserved 
 
 > The Phase B work products are *permanent brand commitments*. The predicate URI, the named case studies, the OTel namespace, the in-toto predicate type — each one is a paper artifact that outlives Intent Solutions' control of it. Once filed in external registries, we cannot quietly retract.
 >
-> **The single decision whose failure mode is most costly: Q2 (case-study publication discipline).** A predicate URI typo can be deprecated with a v2; an MM-7 misfile can be retracted in v0.2.0; an OTel namespace can be renamed in a follow-up RFC. **But a partner-name leak in a public spec cannot be unpublished.** The internet's memory is permanent, the partner's memory is longer, and the brand-scrub discipline we set 2026-05-10 is the *only* reason kobiton/mudit/nixtla/lit trust Intent Solutions to handle their failure data in the first place. One slip there ends the empirical substrate that makes the matcher-map credible. Hold the line on consent-or-silence.
+> **The single decision whose failure mode is most costly: Q2 (case-study publication discipline).** A predicate URI typo can be deprecated with a v2; an MM-7 misfile can be retracted in v0.2.0; an OTel namespace can be renamed in a follow-up RFC. **But a partner-name leak in a public spec cannot be unpublished.** The internet's memory is permanent, the partner's memory is longer, and the brand-scrub discipline we set 2026-05-10 is the *only* reason the named partners (the primary client engagement, an active revenue client, and two inbound credibility engagements) trust Intent Solutions to handle their failure data in the first place. One slip there ends the empirical substrate that makes the matcher-map credible. Hold the line on consent-or-silence.
 
 ### CMO seat memo (verbatim theme)
 
@@ -345,7 +345,7 @@ The council did not collapse to consensus theater. Each seat argued from its val
 | Q1: `evals.intentsolutions.io` URI scheme | LAB-6 body update + PB-1 SPEC.md authoring (LAB-24) + `intent-eval-lab/000-docs/0NN-AT-SPEC-predicate-versioning-policy.md` (new, CTO requirement) + Caddy block on existing IS Caddyfile (CFO requirement) + DNSSEC + CAA pinning at registrar (CISO requirement) | Jeremy / Phase B kickoff | Phase B Wave 1 |
 | Q1 follow-on: `labs.intentsolutions.io` reserved for blog/methodology landing | CLAUDE.md update at umbrella + intent-eval-lab repos (reserved-don't-touch for predicates) | Jeremy | Phase B Wave 1 |
 | Q2: Generic Gherkin scaffolds derived from real engagements | PB-12 implementation — Gherkin scenarios + Pact extension format (will need its own LAB-N work item filed at Phase B kickoff; not LAB-26 which is the separate cross-CLI discovery spec module per LAB-6 child index) + `specs/mcp-plugin-observability/v0.1.0-draft/case-studies/` empty dir + `specs/mcp-plugin-observability/v0.1.0-draft/case-studies/CONTRIBUTING-case-study.md` | Jeremy / Phase B Wave 2 | Phase B Wave 2 |
-| Q2 follow-on: Partner-consent ask | Phase B+1 work plan (Kobiton post-M3, Nixtla, one of Mudit/Lit) | Jeremy | Phase B+1 |
+| Q2 follow-on: Partner-consent ask | Phase B+1 work plan (the primary client engagement post-milestone, an active revenue client, one of two inbound credibility engagements) | Jeremy | Phase B+1 |
 | Q3: Defer MM-7 + community contribution path | `specs/CONTRIBUTING-failure-shape.md` (new, VP DevRel requirement) + gleanwork prior-art citation in `matcher-map-template.md` (GC/CSO requirement) + `FUTURE.md` (CFO framing) | Jeremy / Phase B Wave 1 | Phase B Wave 1 |
 | Q4: Informal community-temperature email first | Week 1 informal email to verified SIG-GenAI maintainer (CSO sequence) + `0NN-RR-INTL-otel-sig-genai-temperature.md` record file (GC requirement) | Jeremy | Phase B Wave 1 (pre-PB-10/PB-11) |
 | Q4 follow-on: RFCs PB-10 + PB-11 file Week 4+ informed by routing feedback | RFC drafts in `intent-eval-lab/000-docs/` (already drafted as `001-DR-RFC-otel-agent-rollout-gate-signals-draft.md` for PB-10; PB-11 to be drafted) | Jeremy | Phase B Wave 2 |
@@ -398,7 +398,7 @@ Signed,
 - Meta-bead: `OPS-nfx` in `~/.beads/`
 - Plane HQ: `LAB-6` (Intent Eval Platform master umbrella, Plane workspace `intentsolutions`)
 - Reusable pattern: `~/.claude/skills/exec-decision-council/SKILL.md`
-- Brand-scrub policy: `~/.claude/projects/-home-jeremy-000-projects-kobiton/memory/project_kobiton_case_study_scrub_2026_05_10.md`
+- Brand-scrub policy: private engagement-memory file (path elided per DR-004 S1Q2 vendor-generic discipline; available in the canonical PRIVATE umbrella memory tree)
 - Intent Solutions tagline: *"We create industries that don't exist — we think outside of the box's box."*
 
 ---

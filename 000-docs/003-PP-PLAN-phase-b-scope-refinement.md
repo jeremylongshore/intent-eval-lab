@@ -15,7 +15,7 @@
 
 ## 1. Mission and ambition — industry-standard substrate, not internal tooling
 
-The three repos — `audit-harness`, `j-rig-binary-eval`, `intent-eval-lab` — are not internal tooling for Intent Solutions partner engagements. They are **candidate substrate for an industry standard** for evaluating the agent-runtime arena. The empirical proving ground is Intent Solutions' multi-vendor partner work (kobiton / mudit / nixtla / lit failure-shapes — MM-1 through MM-6 were *found*, not theorized). The synthesis target for Phase B is the structural reshape that lets every artifact published by the three repos be consumed by an outside party (a partner, an auditor, an OSS contributor, an OTel SIG-GenAI reviewer, an in-toto attestation verifier) without that party having to know anything about Intent Solutions' internal engagements.
+The three repos — `audit-harness`, `j-rig-skill-binary-eval`, `intent-eval-lab` — are not internal tooling for Intent Solutions partner engagements. They are **candidate substrate for an industry standard** for evaluating the agent-runtime arena. The empirical proving ground is Intent Solutions' multi-vendor partner work (the primary client engagement, an active revenue client, two inbound credibility engagements — MM-1 through MM-6 failure-shapes were *found*, not theorized). The synthesis target for Phase B is the structural reshape that lets every artifact published by the three repos be consumed by an outside party (a partner, an auditor, an OSS contributor, an OTel SIG-GenAI reviewer, an in-toto attestation verifier) without that party having to know anything about Intent Solutions' internal engagements.
 
 Phase A landed three skeletons (`SPEC.md` for the Evidence Bundle, RFC draft for OTel rollout-gate semantic conventions, envelope design notes for gate-result rows). The three Part 2 landscape docs span 15,000 words across three workstreams (A: audit-harness, B: j-rig multi-provider, C: MCP testing bridge), surfacing **17 Phase B candidate work items** and **2 Phase C candidates**.
 
@@ -35,7 +35,7 @@ The convergence operates across five distinct surfaces, each of which can carry 
 |---|---|---|
 | **API** | Provider-side HTTP/RPC endpoint that returns model output or tool result | Anthropic Messages API, OpenAI Responses API, Gemini API, MCP server `tools/call` JSON-RPC |
 | **CLI** | The local binary an operator runs | `claude`, `codex`, `gemini`, `cursor`, `aider`, `cline` |
-| **MCP server** | A separately-running protocol surface the agent invokes via JSON-RPC | `kobiton/automate`, custom Plane MCP server, OpenAI MCP servers, gleanwork MCP examples |
+| **MCP server** | A separately-running protocol surface the agent invokes via JSON-RPC | an enterprise mobile-testing MCP server, custom Plane MCP server, OpenAI MCP servers, gleanwork MCP examples |
 | **Agent** | The runtime that composes API + tool calls + memory + hooks | Claude Code, Codex CLI, Gemini CLI, Cline, Cursor, Continue.dev |
 | **SKILL.md** | The instruction-shaped artifact that primes the agent for a task | `SKILL.md`, `AGENTS.md`, `.cursor/rules/*.mdc`, `.windsurf/rules/*.md`, `GEMINI.md`, `.continue/checks/*.md`, `CONVENTIONS.md` |
 
@@ -65,7 +65,7 @@ API  →  CLI wrapper  →  MCP server  →  SKILL.md  →  agent runtime
 Each hop is its own evaluable + attestable surface, and the in-toto `subject` field can name the **exact transformation point being attested**. Examples:
 
 - An attestation about an **API → CLI** transformation: "the `codex` CLI v0.130.0 binary correctly maps OpenAI Responses-API `tool_calls` shape to its action-log emission."
-- An attestation about a **CLI → MCP server** transformation: "the `kobiton/automate` MCP server's `confirmAppUpload` tool returns a shape consistent with the SKILL.md's `argument-hint` declaration."
+- An attestation about a **CLI → MCP server** transformation: "the enterprise mobile-testing MCP server's `confirmAppUpload` tool returns a shape consistent with the SKILL.md's `argument-hint` declaration."
 - An attestation about an **MCP server → SKILL.md** transformation: "the Plane MCP server's tool list matches the project's `SKILL.md` `allowed-tools` declaration with no orphans."
 - An attestation about a **SKILL.md → agent runtime** transformation: "Claude Code v2.1.128 reads the SKILL.md's `effort: high` declaration and emits `claude_code.skill_activated` with `effort=high` in span attributes."
 
@@ -347,7 +347,7 @@ C-doc § 5 surfaces gleanwork/mcp-server-tester's category of "tool discoverabil
 
 Rationale:
 
-1. **Empirical discipline** — MM-1..MM-6 were *found* in Intent Solutions partner engagements (kobiton F-findings F11..F35 directly mapped, plus mudit / nixtla / lit failure-shapes via the engagement structure). MM-7 from a third-party tool's category is **theorized**, not found. Filing MM-7 from a doc rather than from a failure would dilute the credibility property that distinguishes the Intentional Mapping standard from a survey-of-tools.
+1. **Empirical discipline** — MM-1..MM-6 were *found* in Intent Solutions partner engagements (the primary client engagement F-findings F11..F35 directly mapped, plus an active revenue client / two inbound credibility engagements failure-shapes via the engagement structure). MM-7 from a third-party tool's category is **theorized**, not found. Filing MM-7 from a doc rather than from a failure would dilute the credibility property that distinguishes the Intentional Mapping standard from a survey-of-tools.
 2. **Coverage overlap** — gleanwork's tool-discoverability is arguably an MM-5 instance (mandatory context the model isn't providing — namely, the right tool ID in its allowlist), not a distinct shape. The C-doc itself flags this ambiguity ("a sibling MM-5 issue that may warrant its own MM-7 category"). Until a real engagement surfaces a failure-shape that **does not fit MM-1..MM-6**, MM-7 stays unallocated.
 3. **Standards-track discipline** — published specs that grow categories speculatively get accused of bloat. Six categories shipped as `v0.1.0-draft` with a clear empirical provenance is a stronger position than seven categories where the seventh is "we read about this."
 
@@ -406,7 +406,7 @@ To prevent scope drift in Phase B / C planning that consumes this synthesis:
 - **Not implementation.** No code is being written. The first PR is whichever Phase B work item lands first (PB-1 per § 5 sequencing).
 - **Not customer acquisition strategy.** § 8 names the customer-signal trigger conditions for several decisions, but does not propose a go-to-market.
 - **Not packaging / distribution decisions.** § 8 leaves CLI distribution open.
-- **Not naming.** "intent-eval-lab" / "audit-harness" / "j-rig-binary-eval" repo names are inputs. The predicate URI namespace `https://evals.intentsolutions.io/<predicate-type>/v<version>` was decision-locked by ISEDC Q1 (2026-05-10) — see `004-AT-DECR-isedc-council-record-2026-05-10.md` § 6 Q1. Repo names themselves stay as inputs.
+- **Not naming.** "intent-eval-lab" / "audit-harness" / "j-rig-skill-binary-eval" repo names are inputs. The predicate URI namespace `https://evals.intentsolutions.io/<predicate-type>/v<version>` was decision-locked by ISEDC Q1 (2026-05-10) — see `004-AT-DECR-isedc-council-record-2026-05-10.md` § 6 Q1. Repo names themselves stay as inputs.
 - **Not LAB-6 update.** § "Mission" of the parent task: the parent agent updates LAB-6 after reviewing this synthesis.
 - **Not OPS-nfx update.** Same — parent agent handles.
 - **Not Plane backlog grooming.** Phase B work items in § 5 are not yet filed as LAB-N children. The parent agent decides which become first-class Plane issues vs which are sub-tasks of existing IEL-CONV-N children.
