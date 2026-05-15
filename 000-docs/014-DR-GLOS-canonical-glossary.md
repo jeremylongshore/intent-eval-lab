@@ -293,6 +293,8 @@ This section catalogues disciplines that **cannot be silently violated**. Each e
 
 **Decoupled distribution from publishing.** Per Blueprint A § 1.2 principle 11, every release artifact confirms successful **publish** through an out-of-band check — not just successful local **write**. CI pipelines treat "the artifact is readable from its public URL by an unauthenticated client" as the definition of done, not "the publish command exited 0." This principle exists because of the observed failure mode where local write succeeded but downstream propagation failed silently, producing drift that looks like success. Citation: Blueprint A § 1.2 principle 11.
 
+**Anti-goals (binding scope control).** Binding constraints declaring what the Intent Eval Platform is **not**: not a generalized autonomous agent platform, not a workflow automation competitor (not Zapier), not a distributed compute platform, not a no-code builder, not infinite orchestration, not the union of every adjacent category (LangSmith + Datadog + GitHub Actions + OTel + Evals + MCP orchestration). The strategic wedge entry point is "deterministic evaluation + rollout gates for Claude Code Skills and MCP ecosystems"; scope-creep into any anti-goal triggers ISEDC re-convene per DR-010 Q6 Class-1 routing. Anti-goals are **co-equal to goals**: a feature request that would expand scope into an anti-goal area is rejected even if individually desirable. Citation: Blueprint A § 3; DR-010 § 7 Q1 reaffirmation; parent plan Addendum #3.
+
 ---
 
 ## 9. Alphabetical cross-reference index
@@ -303,7 +305,7 @@ This index points each term to its primary section in this glossary and to the 2
 |---|---|---|
 | Acting head of board | § 5 | Blueprint A § 1.1; DR-010 § 13.5 + § 13.6; ISEDC skill |
 | Active predicate types | § 6 | Blueprint A § 4.2; Blueprint B § 7.2; DR-010 § 7 Q3 |
-| Anti-goals (binding scope control) | § 8 cross-ref | Blueprint A § 3 |
+| Anti-goals (binding scope control) | § 8 | Blueprint A § 3; DR-010 § 7 Q1 |
 | Approximate reproducibility (anti-pattern) | § 8 | Blueprint A § 1.2; Blueprint B § 3.2 |
 | `bd-sync` | § 7 | `~/000-projects/CLAUDE.md`; v2.1 epic plan |
 | bd auto-flush JSONL drift | § 8 | v2.1 epic plan; `bd_000-projects-ufc` |
@@ -365,7 +367,7 @@ This index points each term to its primary section in this glossary and to the 2
 | Subject naming | § 6 | Blueprint B § 7.3 |
 | ToolInvocation | § 2.11 | Blueprint B § 2.11 |
 | trace | § 3 | Blueprint A § 4.2; iel-E12 (forward-ref) |
-| Vendor-generic discipline | § 8 | DR-004 S1Q2; DR-010 § 10; PRIVATE `~/000-projects/CLAUDE.md` |
+| Vendor-generic discipline | § 8 | DR-004 S1Q2; DR-010 § 10; PRIVATE ~/000-projects/CLAUDE.md |
 
 ---
 
