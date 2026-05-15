@@ -14,10 +14,10 @@
 
 ### 1.1 The gap this document maps
 
-The three-repo convergence (`intent-eval-lab` + `audit-harness` + `j-rig-binary-eval`) currently spans two of the three rungs of evaluation. The two existing rungs are:
+The three-repo convergence (`intent-eval-lab` + `audit-harness` + `j-rig-skill-binary-eval`) currently spans two of the three rungs of evaluation. The two existing rungs are:
 
 1. **Static repo analysis** — `audit-harness` performs hash-pinning, CRAP-score computation, architecture inspection, escape-scan, Gherkin lint, and bias detection against a repo *at rest*. It inspects files; it does not exercise behavior at runtime.
-2. **Behavioral skill evaluation** — `j-rig-binary-eval` runs deterministic prompts against a deployed skill or plugin and grades the outcome with an LLM-as-judge or rule-based oracle. It exercises behavior; it does not observe the protocol-level signals that explain *why* a behavior emerged.
+2. **Behavioral skill evaluation** — `j-rig-skill-binary-eval` runs deterministic prompts against a deployed skill or plugin and grades the outcome with an LLM-as-judge or rule-based oracle. It exercises behavior; it does not observe the protocol-level signals that explain *why* a behavior emerged.
 
 A third rung is missing and that is what this document maps:
 

@@ -380,7 +380,8 @@ Every Evidence Bundle row emitted by any tool in the platform MUST carry:
 2. **Predicate type URI** — the typed identifier for the row's predicate body schema. Format: `evals.intentsolutions.io/<predicate-type>/v<version>` per DR-004 Q1 namespace lock + DR-010 Q3 grammar lock. Currently approved predicate types:
    - `gate-result/v1` — SPEC.md normative landing in § 7 of THIS blueprint (production-Rekor unlocked once Blueprint B merges).
    - `validation-result/v1`, `eval-verdict/v1`, `cost-attribution/v1` — conditionally approved per DR-010 Q3; remain `sigstore_staging` until their respective SPEC.md normative sections land.
-   - `harness-experiment/v1`, `cache-decision/v1` — deferred to Phase B+ per DR-010 Q3 (sanitization spec required first).
+   - `harness-experiment/v1` — deferred to Phase B+ per DR-010 Q3 (experimental output is the LAST thing to anchor in Rekor permanently; defer until experimental-output stability demonstrated).
+   - `cache-decision/v1` — deferred to Phase B+ per DR-010 Q3 (leaks prompt-shape and access-pattern data; sanitization spec required first).
    - `agent-loop-trace/v1` — **REJECTED for v1** per DR-010 Q3 CISO veto; gated on a separate sanitization spec at `intent-eval-lab/specs/sanitization/v0.1.0-draft/SPEC.md` (epic iel-E10). The runtime MUST refuse to construct a row with this predicate URI until the sanitization spec lands.
 
 3. **Predicate body** — the entity-specific structured payload. For `gate-result/v1`, the schema is specified in § 7.4 below. For other approved predicates, the schema lives in the predicate's own SPEC.md when authored.

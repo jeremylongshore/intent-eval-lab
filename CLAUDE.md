@@ -35,7 +35,7 @@ Phase A is documentation + skeleton ONLY. **No feature code commits to this repo
 
 This rule applies even to negative-affirmation phrasings ("we don't mention X, Y, Z"). Use generic terms like "an enterprise partner engagement" or "the inaugural case study (engagement-private)" until written consent is on file.
 
-`grep -ri "Kobiton\|Polygon\|Nixtla\|Lit Protocol\|Mudit Gupta" specs/` should return zero hits at all times. Run before commits touching `specs/`.
+Run the partner-name grep guard against `specs/`, `000-docs/`, `README.md`, and this `CLAUDE.md` before any commit touching public artifacts. The active pattern is maintained in the PRIVATE umbrella `~/000-projects/CLAUDE.md` and is **not enumerated here** — inlining it would defeat the discipline. The `.github/workflows/partner-name-guard.yml` CI workflow also enforces this gate automatically on every PR and push to main. Expected output: zero hits.
 
 ## Where to start Claude Code sessions
 

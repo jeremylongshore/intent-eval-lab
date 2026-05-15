@@ -41,7 +41,7 @@ The directive: fold-in, not stop. Adapt + restructure where needed. Foundation l
 3. **The transformation pipeline:** API → CLI → MCP → SKILL.md → agent
 4. **Composable partial attestation:** every component is a valid entry; silence ≠ failure
 5. **The AISE 5-domain stack:** Inference · Reliability · Eval Science · Agent Systems · LLMOps
-6. **Sole-prop bandwidth reality:** ~3-5 hrs/wk sustainable, baseline split across Kobiton M2 (first priority), Nixtla, claude-code-plugins, trucking, VPS-as-the-home, Anthropic Enterprise cohort
+6. **Sole-prop bandwidth reality:** ~3-5 hrs/wk sustainable, baseline split across the primary client engagement (first priority), an active revenue client, claude-code-plugins, trucking, VPS-as-the-home, Anthropic Enterprise cohort
 
 ## 5. The six questions verbatim
 
@@ -51,7 +51,7 @@ The directive: fold-in, not stop. Adapt + restructure where needed. Foundation l
 | Q2 | Language reconciliation: TS-primary lock vs Python-heavy widening; hybrid; per-artifact fold | Supply-chain audit surface; ecosystem alignment; in-flight rewrite cost |
 | Q3 | Drift-prevention architecture: unification thesis binding; widen predicate URI namespace; new Plane module | URI permanence in Rekor (one-way door); schema-versioning blast radius |
 | Q4 | Uncle Bob borrowable patterns #1–#6: which to borrow, with what bindings | Spec-vocabulary lock-in; attribution discipline; tamper-evidence in derived patterns |
-| Q5 | Roadmap sequencing: M5 first vs pause-to-converge; per-artifact fold; founder-hour budget; Kobiton M2 first priority | Bandwidth math; OTel maintainer warm-context; M5.1 dev-trust decay; SPEC.md drift |
+| Q5 | Roadmap sequencing: M5 first vs pause-to-converge; per-artifact fold; founder-hour budget; primary client engagement first priority | Bandwidth math; OTel maintainer warm-context; M5.1 dev-trust decay; SPEC.md drift |
 | Q6 | Governance loop: decision routing classes; cadence; convening standing | Future-decision routing; @pvncher engagement S3Q2 reopen request |
 
 ## 6. Council composition
@@ -267,7 +267,7 @@ The platform is **Intent Eval Platform** — single umbrella, single identity in
 
 - **Weeks 17–26 (months 5–6):** Public rollout per master plan M6. Quickstart, example repo, blog content, OTel RFC filing (Week 4+ informed by routing feedback per S1Q4 sequence).
 
-**Kobiton M2 first priority preserved — runs on its own track, not displaced.**
+**Primary client engagement first priority preserved — runs on its own track, not displaced.**
 
 **Founder-hour budget (CFO-grade, locked):**
 
@@ -286,12 +286,12 @@ The platform is **Intent Eval Platform** — single umbrella, single identity in
 **Gap: 54+ hours of work that doesn't exist at the high end.** This is the CFO bandwidth-math reality. Resolution:
 
 - **+50 founder-hour widening cap is BINDING.** +66 is the absolute ceiling. Any work pushing above triggers automatic ISEDC re-convene.
-- **No new platform-build implementation in next 6 months.** LLM Harness Lab + Agent Runtime Sandbox stay as **design-doc-only** state in `intent-eval-lab/specs/FUTURE-platforms/`. README, scope, unlock triggers — no code. Gated on second paying-customer signal (Kobiton M2 is signal #1; signal #2 unlocks first platform-build).
+- **No new platform-build implementation in next 6 months.** LLM Harness Lab + Agent Runtime Sandbox stay as **design-doc-only** state in `intent-eval-lab/specs/FUTURE-platforms/`. README, scope, unlock triggers — no code. Gated on second paying-customer signal (the primary client engagement is signal #1; signal #2 unlocks first platform-build).
 - **Eval Control Plane positioning** (user-named: "GitHub Actions for AI reliability") becomes the umbrella positioning at M6 rollout — it's NOT a separate build, it IS the platform.
 
 **Stacked binding constraints:**
 1. **(CISO non-negotiable)** M5.1 v0.1 ships in `experimental` mode on sigstore staging. Zero production-key signing until SPEC.md normative lands. Any attestations produced in this window are explicitly enumerated and re-signed against the final spec before production cutover. Documented spec-vs-implementation diff published with every M5 release in this window.
-2. **(CFO non-negotiable)** +50 hr widening cap; +66 hr hard ceiling. Kobiton M2 priority off-the-top, never from this budget.
+2. **(CFO non-negotiable)** +50 hr widening cap; +66 hr hard ceiling. Primary client engagement priority off-the-top, never from this budget.
 3. **(CSO non-negotiable)** OTel informal-email Week 1 ships in some form (honest in-flight signal if needed) — silence with a warm maintainer is worse than honest in-flight signal.
 4. **(GC non-negotiable)** No new public repo for LLM Harness Lab or Agent Runtime Sandbox before (a) license audit complete, (b) name cleared by GC, (c) Decision Record filed. Until those gates: design-doc only.
 5. **(VPDevRel discipline)** M5.1 README is honest about what's experimental. Action.yml stub gets replaced with v0.1.0-experimental real-mode (not silent exit-0). Saturday-afternoon dev test must pass: clone → quickstart → working experimental Rollout Gate within 10 minutes.
@@ -375,7 +375,7 @@ The platform is **Intent Eval Platform** — single umbrella, single identity in
 
 ### CFO
 
-*"The widening is a positioning opportunity disguised as a build mandate. 3-5 hr/wk sole-prop with one revenue signal cannot execute three platforms. Available 78–130 hrs over 6 months; widened plan as-pitched needs 125–184. Gap is 54+ hours that doesn't exist. Either cut scope, secure 2nd paying customer to expand bandwidth, or accept shipping none of it well. Folding-in is CONVERGENCE (reduces surface), NOT ADDITION (multiplies surface). My recommendations preserve fold-in while refusing addition. Most-costly: Q1 (sunk-cost trap) and Q3 (URIs are permanent in Rekor). Holding firm on TS lock, +50 hr cap, no URI expansion, pause-and-converge, no platform-builds without 2nd paying customer. Kobiton M2 protection non-negotiable."*
+*"The widening is a positioning opportunity disguised as a build mandate. 3-5 hr/wk sole-prop with one revenue signal cannot execute three platforms. Available 78–130 hrs over 6 months; widened plan as-pitched needs 125–184. Gap is 54+ hours that doesn't exist. Either cut scope, secure 2nd paying customer to expand bandwidth, or accept shipping none of it well. Folding-in is CONVERGENCE (reduces surface), NOT ADDITION (multiplies surface). My recommendations preserve fold-in while refusing addition. Most-costly: Q1 (sunk-cost trap) and Q3 (URIs are permanent in Rekor). Holding firm on TS lock, +50 hr cap, no URI expansion, pause-and-converge, no platform-builds without 2nd paying customer. Primary client engagement protection non-negotiable."*
 
 ### CSO
 
@@ -461,7 +461,7 @@ User directive: *"The work that we started in this plan needs to fold into the n
 | **`intent-rollout-gate/000-docs/001-DR-DESIGN-rollout-gate-architecture-...md`** | Landed | KEEP as-is. Reference from Q5 sequencing. | None. |
 | **`intent-rollout-gate` branch `feat/m5-typescript-runtime-lock-and-mvp`** | Checked out, zero commits | RESUMED. M5.1 PR proceeds per the master plan's TS skeleton + policy parser + bundle loader + decision engine + PR-comment renderer + dist build + CI. **Branch renamed: `feat/m5.1-ts-runtime-experimental-v0.1.0`** to make the experimental-mode-gate explicit. | New Decision Record `intent-rollout-gate/000-docs/002-AT-DECR-runtime-language-typescript-2026-05-13.md` (referenced from this DR) lands first; cites this DR's Q2 stacked constraints. M5.1 v0.1 ships EXPERIMENTAL on sigstore staging; v0.2 (after SPEC.md normative lands) cuts to production Rekor. |
 | **11 existing validators** (validate-skillmd v5.0.1, validate-plugin v2.1.0, validate-agent v1.0.0, validate-mcp v1.0.0, validate-hook v1.0.0, validate-consistency v1.0.0, validate-marketplace v1.0.0, audit-tests v7.1.0, implement-tests v1.1.0, sync-testing-harness v0.1.0, audit-harness v0.3.0) | Working; inconsistent Evidence Bundle emission posture | KEEP all where they are. Phase B retrofit: each gets an `--emit-evidence` mode per Q3 unification thesis. Sequenced after M5.1 v0.2 cuts to production. No language migration. | New beads filed per validator under the new "Tooling Drift Prevention" Plane sub-module. |
-| **`j-rig-binary-eval` v0.23.0** | Working; already emits Evidence Bundle (M3-equivalent complete per master plan) | KEEP as reference implementation. Phase B: Zod validator bridge to incoming Evidence Bundle rows; AGENTS.md parser; provider abstraction with CISO PASS/FAIL gates. | Already aligned with Q1=A platform identity. |
+| **`j-rig-skill-binary-eval` v0.23.0** | Working; already emits Evidence Bundle (M3-equivalent complete per master plan) | KEEP as reference implementation. Phase B: Zod validator bridge to incoming Evidence Bundle rows; AGENTS.md parser; provider abstraction with CISO PASS/FAIL gates. | Already aligned with Q1=A platform identity. |
 | **`audit-harness` v0.3.0** | Working; already emits Evidence Bundle (M2-equivalent complete) | KEEP as polyglot reference. Phase B: SEMVER regression test suite (HIGH drift fix). | None. |
 | **CRITICAL drift risk (SPEC.md skeleton-only)** | Open | **PROMOTED to absolute-top-priority** per Q3. Beads `iel-ni9` + `iel-f28` re-prioritized P0. | First work item out of this DR. |
 | **HIGH × 3 drift risks** (Anthropic snapshots manual-freeze, j-rig Tier 3 no spec, audit-harness SEMVER hand-written) | Open | Phase B per Q3. New beads filed. | None. |
@@ -471,8 +471,8 @@ User directive: *"The work that we started in this plan needs to fold into the n
 | **Existing beads `iel-uj0`, `iel-71s`, etc.** | Open in `iel-` prefix | KEEP open. Re-prioritize per Phase A / Phase B sequencing above. | Bead-level updates per the locked sequence; no bead deletions. |
 | **Meta-bead `OPS-nfx`** (execution-tracking bead in home `~/.beads/`) | Open | KEEP. Add comment linking to this DR. | None. |
 | **Master plan `~/.claude/plans/se-the-council-bubbly-frog.md`** | Authored | REFRESH with this DR's outcomes folded into Phase A / Phase B / FUTURE sections. | Light edits + appendix pointing to this DR. |
-| **Kobiton M2 work (kobiton repo)** | Active, first priority | UNTOUCHED. Runs on its own track. Off-the-top from founder-hour budget. | None. |
-| **Nixtla / claude-code-plugins / trucking / VPS-as-the-home / Anthropic Enterprise cohort** | Active | UNTOUCHED. | None — eval-platform widening fits in residual capacity per CFO bandwidth gate. |
+| **Primary client engagement (private repo)** | Active, first priority | UNTOUCHED. Runs on its own track. Off-the-top from founder-hour budget. | None. |
+| **Active revenue client / claude-code-plugins / trucking / VPS-as-the-home / Anthropic Enterprise cohort** | Active | UNTOUCHED. | None — eval-platform widening fits in residual capacity per CFO bandwidth gate. |
 
 ## 12. Implementation directives
 
@@ -552,7 +552,7 @@ The acting head of board re-asserts: **this is an internal tool the acting head 
 - **All CTO bindings stand**: hard internal package boundaries, per-domain CODEOWNERS, schema-stability SLA, JSON Schema → Pydantic + Zod codegen CI gate, URI grammar `evals.intentsolutions.io/<predicate-type>/v<version>`.
 - **All GC IP discipline stands**: vendor-generic scrub binding extends across AISE 5 domains, license audit for any Python dependency tree, LICENSES.md + pip-licenses CI gate, PREDICATE-TYPES.md registry. **The IP gates are NOT customer-signal gates and remain in force regardless of internal-vs-external framing.**
 - **All CSO standards-body discipline stands**: OTel informal-email Week 1 ships, community-temperature before RFC, named-maintainer sign-off, S1Q4 sequence.
-- **CFO bandwidth math stands**: +50hr widening cap, +66hr hard ceiling, 3-5 hrs/wk reality, Kobiton M2 first priority off-the-top. Only the customer-signal GATE TRIGGER is overridden — the bandwidth math itself is untouched.
+- **CFO bandwidth math stands**: +50hr widening cap, +66hr hard ceiling, 3-5 hrs/wk reality, primary client engagement first priority off-the-top. Only the customer-signal GATE TRIGGER is overridden — the bandwidth math itself is untouched.
 - **Q1=A (single converged Intent Eval Platform), Q2 (per-artifact hybrid), Q3 (unification thesis binding + incremental URI namespace), Q4 (all 6 Uncle Bob borrows approved with security bindings), Q5 sequencing (parallel-track with experimental-mode gate), Q6 three-class governance + public DR archive within 7d**: ALL STAND.
 
 **Why the override:**

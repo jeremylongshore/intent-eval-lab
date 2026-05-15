@@ -15,7 +15,7 @@
 ## 1. Purpose
 
 The system brief (`007-DR-BRIEF`) describes the full Intent Eval Platform — a six-month journey
-across `audit-harness` emission, `j-rig-binary-eval` emission, an `intent-rollout-gate` consumer,
+across `audit-harness` emission, `j-rig-skill-binary-eval` emission, an `intent-rollout-gate` consumer,
 internal dogfood, and public rollout. The **Evidence Bundle SPEC.md normative draft** ships in
 Milestone 1 covers a deliberately narrow slice of that journey: the envelope, predicate URI,
 predicate body schema, subject naming, signing, and policy-consumption interface.

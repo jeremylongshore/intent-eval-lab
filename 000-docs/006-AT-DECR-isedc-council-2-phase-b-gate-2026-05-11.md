@@ -38,7 +38,7 @@ Together these constitute external ecosystem validation that the problem space i
 3. **The transformation pipeline:** API → CLI → MCP → SKILL.md → agent
 4. **Composable partial attestation:** every component is a valid entry; silence ≠ failure
 5. **Ecosystem clock:** OTel RFC community-review timelines (~3-4 weeks), competing artifacts, window to file first
-6. **Sole-prop bandwidth reality:** Jeremy is the only engineer; every Phase B item is opportunity cost against OPS, Kobiton M2, Nixtla, claude-code-plugins
+6. **Sole-prop bandwidth reality:** Jeremy is the only engineer; every Phase B item is opportunity cost against OPS, the primary client engagement, an active revenue client, claude-code-plugins
 
 ## 4. Questions brought to the council
 

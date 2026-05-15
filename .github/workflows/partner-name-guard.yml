@@ -1,0 +1,75 @@
+name: Partner-name guard
+
+# Enforces DR-004 S1Q2 binding (reaffirmed at DR-010 § 10):
+# zero partner-name hits in any public-facing artifact.
+#
+# Authority: 000-docs/004-AT-DECR-isedc-council-record-2026-05-10.md S1Q2
+# Authority: 000-docs/010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md § 10
+# Authority: 000-docs/014-DR-GLOS-canonical-glossary.md § 8 "Vendor-generic discipline"
+#
+# The grep pattern is sourced from the PRIVATE umbrella CLAUDE.md so the
+# pattern itself never leaks via this public workflow file. We use a
+# deliberately small inline list here as a backstop in case the umbrella
+# pattern path is unavailable to CI (which it always is — umbrella is
+# private). This is the explicit "the public template never inlines the
+# pattern" pattern adapted for CI: the inline list MUST stay in sync with
+# the PRIVATE umbrella CLAUDE.md grep pattern; mismatch is an
+# audit-trail concern, not an enforcement gap (the umbrella is the
+# source of truth for the human-driven scrub).
+
+on:
+  pull_request:
+    paths:
+      - '000-docs/**'
+      - 'specs/**'
+      - 'README.md'
+      - 'CLAUDE.md'
+      - 'KNOWN-ISSUES.md'
+  push:
+    branches: [main]
+    paths:
+      - '000-docs/**'
+      - 'specs/**'
+      - 'README.md'
+      - 'CLAUDE.md'
+      - 'KNOWN-ISSUES.md'
+
+jobs:
+  partner-name-grep:
+    name: Partner-name vendor-generic grep
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run partner-name grep
+        # Pattern intentionally pinned here as backstop — must stay in sync
+        # with the canonical pattern in PRIVATE ~/000-projects/CLAUDE.md.
+        # If this pattern is updated, the umbrella canonical pattern MUST
+        # also be updated. The umbrella is the source of truth.
+        run: |
+          set -e
+          # shellcheck disable=SC2016
+          PATTERN='Kobiton|Polygon|Nixtla|Lit Protocol|Mudit Gupta'
+          echo "Scanning public artifacts for partner-name hits…"
+          # grep -r over the in-scope dirs; --include filters to text-like files
+          # so this stays fast and doesn't false-trigger on .DS_Store, binaries, etc.
+          HITS=$(grep -rEn \
+            --include='*.md' \
+            --include='*.html' \
+            --include='*.yaml' \
+            --include='*.yml' \
+            --include='*.json' \
+            --include='*.txt' \
+            "$PATTERN" \
+            000-docs/ specs/ README.md CLAUDE.md KNOWN-ISSUES.md 2>/dev/null || true)
+          if [ -n "$HITS" ]; then
+            echo "::error::Partner-name vendor-generic discipline violation. DR-004 S1Q2 binding (reaffirmed DR-010 § 10) requires zero partner-name hits in public artifacts."
+            echo ""
+            echo "Hits:"
+            echo "$HITS"
+            echo ""
+            echo "Remediation: replace partner names with vendor-generic phrasing per DR-004 S1Q2 allowed terms (e.g., 'the primary client engagement', 'an active revenue client', 'an enterprise partner engagement'). See 000-docs/014-DR-GLOS-canonical-glossary.md § 8 'Vendor-generic discipline' for the canonical phrasing scheme."
+            exit 1
+          fi
+          echo "✓ Zero partner-name hits across public artifacts."
