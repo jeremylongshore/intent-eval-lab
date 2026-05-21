@@ -62,7 +62,8 @@ Plus sub-types inside the entity files (kernel-exported, but not standalone enti
 - `ScoringConfig` (inside `EvalSpec.ts`)
 - `AssertionExpression` (inside `EvalSpec.ts`, declared as `unknown`)
 - `MatcherInputPattern` (inside `MatcherMap.ts`)
-- `ModelTarget` / `SiblingSkill` / `GateResultEnum` etc. — kernel-internal sub-types in j-rig's parallel surface (see § 4 below).
+
+Note on j-rig's parallel sub-types: j-rig defines its own local sub-types (`ModelTarget`, `SiblingSkill`, `GateResultEnum`, etc.) that are NOT kernel exports and are NOT part of the kernel canonical surface. They are j-rig-local concepts that share namespace adjacency with the kernel but live entirely under `@j-rig/core`. Their classification is documented in § 4.2 (j-rig-specific types retained locally) and § 6 (open question on `GateResultEnum` vs kernel `GateResultV1`).
 
 The kernel publishes JSON Schemas for the 13 entities + `gate-result.schema.json` at `intent-eval-core/schemas/v1/*.schema.json`. Verified file listing matches the entity list.
 
