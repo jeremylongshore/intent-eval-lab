@@ -1,0 +1,136 @@
+name: Schema drift guard
+
+# Enforces ISEDC Session 5 (DR 018 § 6.4) Option α-minus schema-authority
+# precedence: the kernel @intentsolutions/core owns the canonical JSON
+# Schemas for every Evidence Bundle predicate body. Lab specs/ MAY host
+# redirect stubs for discoverability but MUST NOT host normative schema
+# content.
+#
+# Authority: 000-docs/012-AT-ARCH-platform-runtime-blueprint.md § 7.0
+# Authority: 000-docs/018-AT-DECR-isedc-council-session-5-jrig-reconciliation-2026-05-21.md § 6.4
+# Authority: 000-docs/014-DR-GLOS-canonical-glossary.md "Predicate URI" + "Active predicate types"
+#
+# Allowlist: a redirect stub MUST carry an `x-redirect` top-level field.
+# Any *.schema.json file under specs/evidence-bundle/*/schema/ that lacks
+# x-redirect OR that defines normative `properties` for canonical predicate
+# fields fails this gate.
+
+on:
+  pull_request:
+    paths:
+      - 'specs/evidence-bundle/**'
+      - '.github/workflows/schema-drift.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'specs/evidence-bundle/**'
+      - '.github/workflows/schema-drift.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  drift-check:
+    name: Schema content must be kernel-canonical
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Walk lab schema files + verify redirect-stub conformance
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          fail=0
+          # Canonical predicate field names that MUST NOT be declared in lab
+          # schema files (these belong to the kernel canonical schema only).
+          NORMATIVE_FIELDS=(
+            "gate_id"
+            "gate_name"
+            "gate_version"
+            "gate_decision"
+            "gate_reasons"
+            "coverage"
+            "policy_ref"
+            "policy_hash"
+            "input_hash"
+            "evaluated_at"
+            "runner"
+            "commit_sha"
+            "result"
+            "timestamp"
+          )
+
+          while IFS= read -r -d '' schema_file; do
+            echo "::group::Checking ${schema_file}"
+
+            # Parse + verify the file is valid JSON + has x-redirect marker
+            python3 - "${schema_file}" "${NORMATIVE_FIELDS[@]}" <<'PYEOF' || fail=1
+          import json
+          import sys
+
+          path = sys.argv[1]
+          normative_fields = set(sys.argv[2:])
+
+          try:
+              with open(path) as fh:
+                  schema = json.load(fh)
+          except (json.JSONDecodeError, OSError) as e:
+              print(f"::error file={path}::cannot parse JSON: {e}")
+              sys.exit(1)
+
+          if not isinstance(schema, dict):
+              print(f"::error file={path}::schema root must be an object")
+              sys.exit(1)
+
+          if 'x-redirect' not in schema:
+              print(f"::error file={path}::missing top-level `x-redirect` field — lab schema files MUST be redirect stubs per Blueprint B § 7.0; kernel @intentsolutions/core is canonical (see DR 018 § 6.4)")
+              sys.exit(1)
+
+          # Walk properties dict (if any) — flag normative-field declarations.
+          properties = schema.get('properties') or {}
+          if not isinstance(properties, dict):
+              print(f"::error file={path}::`properties` must be an object if present")
+              sys.exit(1)
+
+          violations = sorted(set(properties.keys()) & normative_fields)
+          if violations:
+              print(f"::error file={path}::declares normative predicate field(s) — kernel-canonical only: {', '.join(violations)}")
+              sys.exit(1)
+
+          # Allow $ref forwarding to the kernel.
+          ref = schema.get('$ref', '')
+          if ref and 'intent-eval-core' not in ref and '@intentsolutions/core' not in ref:
+              print(f"::warning file={path}::$ref does not appear to forward to kernel: {ref}")
+
+          print(f"OK: {path} is a valid kernel-redirect stub")
+          PYEOF
+
+            echo "::endgroup::"
+          done < <(find specs/evidence-bundle -type f -name '*.schema.json' -print0)
+
+          if [[ ${fail} -ne 0 ]]; then
+            echo ""
+            echo "::error::Schema drift detected. Lab schema files MUST be redirect stubs carrying an x-redirect field and MUST NOT declare canonical predicate fields. Canonical schemas live in the kernel at @intentsolutions/core/schemas/v1/. See 000-docs/018-AT-DECR-isedc-council-session-5-jrig-reconciliation-2026-05-21.md § 6.4 (Option α-minus)."
+            exit 1
+          fi
+
+          echo "All schema files are valid kernel-redirect stubs."
+
+      - name: Summary
+        if: always()
+        shell: bash
+        run: |
+          echo "## Schema drift guard" >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
+          echo "Verifies lab \`specs/evidence-bundle/*/schema/*.schema.json\` files are kernel-redirect stubs per DR 018 § 6.4 (Option α-minus)." >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
+          echo "Canonical schemas live in [\`@intentsolutions/core\`](https://github.com/jeremylongshore/intent-eval-core/tree/main/schemas/v1)." >> "${GITHUB_STEP_SUMMARY}"

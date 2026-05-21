@@ -5,6 +5,26 @@
 > (`audit-harness` v0.3.0 emission + `j-rig-binary-eval` v0.15.0 emission +
 > `intent-rollout-gate` v0.1.0 consumer) inform `v0.1.0-rc` / `v0.1.0` revisions.
 
+> **Schema-authority notice (effective 2026-05-21).** The canonical JSON Schema for the
+> `gate-result/v1` predicate body is published in the kernel package
+> [`@intentsolutions/core@0.1.0+`](https://www.npmjs.com/package/@intentsolutions/core) at
+> [`@intentsolutions/core/schemas/v1/gate-result.schema.json`](https://github.com/jeremylongshore/intent-eval-core/blob/main/schemas/v1/gate-result.schema.json).
+> The schema file at `schema/gate-result.schema.json` in this directory is a **redirect stub**;
+> edits to that file have no normative force. The normative prose in this document (and in
+> Blueprint B § 7) MUST agree with the kernel schema; **the kernel schema wins on conflict.**
+> Ratified by ISEDC Session 5 — see
+> [`000-docs/018-AT-DECR-isedc-council-session-5-jrig-reconciliation-2026-05-21.md`](../../../000-docs/018-AT-DECR-isedc-council-session-5-jrig-reconciliation-2026-05-21.md)
+> § 6.4 (Option α-minus). The predicate URI `https://evals.intentsolutions.io/gate-result/v1`
+> is unchanged and remains immutable per Blueprint B § 7.2.
+>
+> **Migration note.** Earlier drafts of this spec encoded `result` (uppercase 4-value enum) +
+> `timestamp` and lacked `gate_name`, `gate_version`, `gate_reasons`, `coverage`, and `policy_ref`.
+> The normative shape (lowercase `gate_decision` enum with `'pass' | 'fail' | 'advisory' | 'error'`,
+> `evaluated_at`, plus the 5 additional required fields) landed in Blueprint B § 7.4 on
+> 2026-05-15 and was locked in the kernel on 2026-05-17. Implementers MUST conform to the
+> kernel schema; this document's § 5 prose tables are being updated to match as part of the
+> kernel-canonical migration (`iel-link-schemas-blueprint-b` cluster).
+
 ## 1. Purpose
 
 An **Evidence Bundle** is a tamper-evident, schema-versioned, signature-verifiable collection of
