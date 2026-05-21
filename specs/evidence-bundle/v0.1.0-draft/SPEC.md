@@ -22,8 +22,9 @@
 > The normative shape (lowercase `gate_decision` enum with `'pass' | 'fail' | 'advisory' | 'error'`,
 > `evaluated_at`, plus the 5 additional required fields) landed in Blueprint B § 7.4 on
 > 2026-05-15 and was locked in the kernel on 2026-05-17. Implementers MUST conform to the
-> kernel schema; this document's § 5 prose tables are being updated to match as part of the
-> kernel-canonical migration (`iel-link-schemas-blueprint-b` cluster).
+> kernel schema. This document's § 5 prose tables remain stale (still encode the v0.1.0-draft
+> shape) and are scheduled for cleanup in a separate follow-up track per AAR 019 § 3. The
+> kernel schema wins on any conflict; § 5 tables are NOT canonical until the cleanup lands.
 
 ## 1. Purpose
 

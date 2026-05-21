@@ -58,7 +58,7 @@ Those are follow-on items NOT in Priority 5 scope and will be tracked via the `i
 
 - **Authority chain**: DR 018 § 6.4 (Option α-minus ratification) → Blueprint B § 7.0 (new schema-authority sub-section, landing in this PR) → this AAR (closeout)
 - **Bead lineage**:
-  - `iep-P5-lab-schema-repoint` (`bd_000-projects-xxx` — to be filed when Plane-LAB-95 mirror lands; treated as closed-by-this-AAR per Plane catch-up workflow)
+  - `iep-P5-lab-schema-repoint` (`bd_000-projects-03qo`) — Priority 5 umbrella; treated as closed-by-this-AAR pending PR merge
   - `iel-link-schemas-to-kernel` (`bd_000-projects-i4jh`) — schema file replacement: COMPLETE
   - `iel-link-schemas-blueprint-b` (`bd_000-projects-v1ao`) — Blueprint B § 7 update: COMPLETE
   - `iel-link-schemas-glossary` (`bd_000-projects-7vvz`) — Canonical Glossary kernel pointers: COMPLETE
