@@ -722,6 +722,20 @@ graph LR
 >
 > **What this section unlocks.** Production-Rekor signing for `gate-result/v1` predicates is unlocked once this blueprint merges to `intent-eval-lab` main, PROVIDED that DNSSEC and CAA pinning on `evals.intentsolutions.io` are active per DR-004 Q1 + DR-010 Q3 CISO binding (verified by the iah-E06 pre-flight in audit-harness, forward-reference). Until both conditions are satisfied, `gate-result/v1` continues to anchor to sigstore staging (`rekor.sigstage.dev`) per DR-010 Q5 CISO non-negotiable.
 
+### 7.0 Schema authority (effective 2026-05-21)
+
+The canonical, machine-readable JSON Schema for the `gate-result/v1` predicate body is published in the kernel package [`@intentsolutions/core@0.1.0+`](https://www.npmjs.com/package/@intentsolutions/core) at [`@intentsolutions/core/schemas/v1/gate-result.schema.json`](https://github.com/jeremylongshore/intent-eval-core/blob/main/schemas/v1/gate-result.schema.json). The kernel TypeScript surface ships the same shape as [`GateResultV1`](https://github.com/jeremylongshore/intent-eval-core/blob/main/src/predicates/gate-result-v1.ts) (`@intentsolutions/core/predicates/gate-result-v1`).
+
+**Authority precedence on conflict.** Where this section's prose tables, the lab schema redirect stub at `intent-eval-lab/specs/evidence-bundle/v0.1.0-draft/schema/gate-result.schema.json`, the lab spec mirror at `intent-eval-lab/specs/evidence-bundle/v0.1.0-draft/SPEC.md`, and the kernel schema disagree, **the kernel schema wins.** Edits to this Blueprint § 7 that change the predicate body shape require simultaneous edits to the kernel; this Blueprint section is amended to match the kernel, not the reverse.
+
+This reverses the 2026-05-11 framing in § 7.4 (which said "the JSON Schema file wins for machine-validation purposes and this section is amended to match") only with respect to *which* JSON Schema file is canonical. The principle that the machine-readable schema is authoritative is unchanged; what changed is the file's location: lab → kernel. Ratified by ISEDC Session 5 (Class-2) — see [`000-docs/018-AT-DECR-isedc-council-session-5-jrig-reconciliation-2026-05-21.md`](./018-AT-DECR-isedc-council-session-5-jrig-reconciliation-2026-05-21.md) § 6.4 Option α-minus.
+
+**Predicate URI is unchanged.** The URI `https://evals.intentsolutions.io/gate-result/v1` remains immutable per § 7.2; only the schema location migrated, not the URI namespace.
+
+**Future predicate bodies.** Every predicate URI added to the platform (`validation-result/v1`, `eval-verdict/v1`, `cost-attribution/v1`, `runtime-receipt/v1`, future) ships its canonical JSON Schema in the kernel before exiting `sigstore_staging` per DR-010 Q3. Lab `specs/` MAY host redirect stubs for discoverability; lab `specs/` MUST NOT host normative schema content.
+
+**Drift detection.** The lab CI workflow `.github/workflows/schema-drift.yml` fails any PR that re-introduces normative schema content under `intent-eval-lab/specs/evidence-bundle/*/schema/` (allowlist: redirect-stub pattern carrying an `x-redirect` field).
+
 ### 7.1 In-toto Statement v1 envelope
 
 Every `gate-result/v1` row MUST be a well-formed [in-toto Statement v1](https://github.com/in-toto/attestation/blob/main/spec/v1/statement.md) document with the following top-level structure:
@@ -765,7 +779,7 @@ https://evals.intentsolutions.io/gate-result/v1
 
 The URI is **effectively immutable** once any row referencing it is signed and pushed to a transparency log (sigstore staging or production Rekor). Per DR-010 Q3 CTO non-negotiable, the URI grammar `evals.intentsolutions.io/<predicate-type>/v<version>` is locked in writing in this section BEFORE first production-Rekor attestation. Per DR-004 Q1 + DR-010 reaffirmation, the `evals.intentsolutions.io` subdomain is reserved EXCLUSIVELY for predicate URIs and MUST be DNSSEC-enabled with CAA records pinned to a single Certificate Authority before any signed attestation referencing the URI is pushed to a public transparency log.
 
-**Versioning policy.** Breaking changes to the predicate body schema (removing a required field, narrowing an enum, changing semantics of an existing field) MUST mint a new URI at the next major version: `https://evals.intentsolutions.io/gate-result/v2`. Both URIs MAY coexist; consumers that support only v1 MUST reject v2 rows rather than mis-interpreting them. Adding new optional fields, adding new enum values to optional enums, and clarifying prose MUST NOT require a URI bump. The JSON Schema at `intent-eval-lab/specs/evidence-bundle/v0.1.0-draft/schema/gate-result.schema.json` MUST remain backward-compatible across minor revisions.
+**Versioning policy.** Breaking changes to the predicate body schema (removing a required field, narrowing an enum, changing semantics of an existing field) MUST mint a new URI at the next major version: `https://evals.intentsolutions.io/gate-result/v2`. Both URIs MAY coexist; consumers that support only v1 MUST reject v2 rows rather than mis-interpreting them. Adding new optional fields, adding new enum values to optional enums, and clarifying prose MUST NOT require a URI bump. The kernel JSON Schema at `@intentsolutions/core/schemas/v1/gate-result.schema.json` MUST remain backward-compatible across minor revisions of the kernel package.
 
 **`labs.intentsolutions.io` is reserved-don't-touch** per ISEDC v1 CISO binding (DR-004 reaffirmed at DR-010). That subdomain MAY host blog content, methodology landing pages, RFC published-version pages, or Phase-C content surfaces; it MUST NOT host an in-toto predicate URI, an OpenTelemetry attribute namespace, or an attestation predicate identifier. Once the first in-toto Statement is signed referencing an `evals.` URI, that namespace is permanent in Rekor; `labs.` must stay clear of attestation surface to preserve DNS / brand-surface isolation.
 
@@ -793,7 +807,7 @@ A subject `name` MUST match the predicate body's `gate_id` field exactly (per §
 
 ### 7.4 `gate-result/v1` predicate body — schema
 
-The `predicate` field MUST validate against the JSON Schema published at `intent-eval-lab/specs/evidence-bundle/v0.1.0-draft/schema/gate-result.schema.json`. This section is the normative prose specification; the JSON Schema file is the normative machine-readable specification. The two MUST agree; in any case of disagreement, the JSON Schema file wins for machine-validation purposes and this section is amended to match.
+The `predicate` field MUST validate against the canonical JSON Schema published in the kernel package at `@intentsolutions/core/schemas/v1/gate-result.schema.json` (GH source: [`intent-eval-core/schemas/v1/gate-result.schema.json`](https://github.com/jeremylongshore/intent-eval-core/blob/main/schemas/v1/gate-result.schema.json)). This section is the normative prose specification; the kernel JSON Schema is the normative machine-readable specification. The two MUST agree; in any case of disagreement, the kernel JSON Schema wins for machine-validation purposes and this section is amended to match. The lab schema redirect stub at `intent-eval-lab/specs/evidence-bundle/v0.1.0-draft/schema/gate-result.schema.json` is a `$ref` pointer to the kernel and carries no normative content — see § 7.0 for the schema-authority precedence.
 
 **Required fields:**
 
@@ -851,7 +865,7 @@ Operators MAY omit Rekor anchoring for private bundles (engagement-internal eval
 **Verification.** A conforming verifier:
 
 1. MUST validate each row's DSSE signature against the signing identity (cosign keyless OIDC subject + issuer match, OR cosign keyref).
-2. MUST validate the predicate body against the JSON Schema at `intent-eval-lab/specs/evidence-bundle/v0.1.0-draft/schema/gate-result.schema.json`.
+2. MUST validate the predicate body against the kernel JSON Schema at `@intentsolutions/core/schemas/v1/gate-result.schema.json` (canonical per § 7.0; the lab path at `intent-eval-lab/specs/evidence-bundle/v0.1.0-draft/schema/gate-result.schema.json` is a redirect stub with no normative content).
 3. MUST confirm `subject[].digest.sha256` matches `predicate.input_hash`.
 4. SHOULD confirm a Rekor entry exists when the row claims Rekor anchoring (via `cosign verify-attestation --rekor-url`).
 5. MUST NOT treat the absence of optional fields (`metadata`, `failure_mode`, `advisory_severity`, `cost_record_ref`, `replay_fidelity_level`) as a verification failure.
