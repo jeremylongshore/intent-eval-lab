@@ -19,8 +19,8 @@ Effective immediately:
 
 - `iah-E02` parent bead (`bd_000-projects-46x`) and all 4 children (`iah-E02a/b/c/d` — `bd_000-projects-urxx/l1pq/5kp3/78p5`) are **closed with `--reason "deferred to iah-E04 per AT-DECR 021"`** (or superseded, see § 6).
 - `iah-E02` is **removed from `iep-P1-kernel-adoption`'s dependency list** (this was already provisionally done 2026-05-21 pending this DR; this document ratifies the change).
-- `iah-kernel-shadow-check` (`bd_000-projects-873c`, P0 standing safety rule) is **unblocked**: it scopes its grep-detector enforcement against the **actual** kernel surface materializing in `iah-E04`, not against the inventory's plan-recollection list (see § 4).
-- `iep-P1-kernel-adoption` umbrella can now close on **3-of-4 children** (`iel-link-schemas-to-kernel` — DONE via PR #65 + lab cluster, `iaj-E02b` — pending shape-reconciliation per § 5 of Discoveries, `iar-consumer-migration` — subsumed into Priority 4 M5 MVP). The audit-harness arm is **N/A**, not pending.
+- `iah-kernel-shadow-check` (`bd_000-projects-873c`, P0 standing safety rule) is **unblocked**: it scopes its grep-detector enforcement against the **actual** kernel surface materializing in `iah-E04`, not against the inventory's plan-recollection list (see § 4 of this DR for the touchpoint and § 5 of this DR for the plan-recollection corrections it must enforce against).
+- `iep-P1-kernel-adoption` umbrella can now close on **3-of-4 children** (`iel-link-schemas-to-kernel` — DONE via PR #65 + lab cluster, `iaj-E02b` — pending shape-reconciliation per the **IEP Convergence Debt Plan § Discoveries, Discovery 2** (j-rig `EvalSpec` is a name-collision with kernel's `EvalSpec`, not a duplicate; needs shape-level comparison before any codemod), `iar-consumer-migration` — subsumed into Priority 4 M5 MVP). The audit-harness arm is **N/A**, not pending.
 
 ## 2. Inventory evidence (the decisive finding)
 
