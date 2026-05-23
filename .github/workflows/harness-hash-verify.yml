@@ -1,0 +1,58 @@
+name: Harness-hash verify
+
+# Per iep-harness-hash-platform-rollout (bd_000-projects-g6zu) following the
+# audit-harness@v1.1.0 self-pin pattern (PR jeremylongshore/audit-harness#36 /
+# bd_000-projects-itpl). The .harness-hash manifest at repo root pins the
+# files listed in .harness-hash-extra-patterns (CI workflow definitions,
+# the schema redirect stub, the vendored audit-harness scripts + wrapper).
+#
+# Authority chain:
+#  - audit-harness v1.1.0 introduced the .harness-hash-extra-patterns mechanism
+#  - intent-eval-lab vendored audit-harness v1.1.0 at .audit-harness/ (snapshot
+#    from audit-harness@846ff6a; PROVENANCE file records the source commit)
+#  - This workflow runs `scripts/audit-harness verify` on every PR + push to
+#    main. Exit 2 (HARNESS_TAMPERED) blocks the PR.
+#
+# When a pinned file legitimately changes (e.g., a deliberate CI workflow edit),
+# re-init the manifest:
+#   scripts/audit-harness init
+#   git add .harness-hash && git commit -m "chore: re-init .harness-hash after <reason>"
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: harness-hash --verify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run harness-hash --verify (hard-fail)
+        # Exit codes:
+        #   0 — OK (pin matches)
+        #   2 — HARNESS_TAMPERED (a pinned file's hash changed — block the PR)
+        #   3 — no manifest (.harness-hash absent — should not happen post-rollout)
+        run: scripts/audit-harness verify
+
+      - name: Summary
+        if: always()
+        shell: bash
+        run: |
+          echo "## Harness-hash verify" >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
+          echo "Verifies the pin manifest at \`.harness-hash\` against working-tree hashes." >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
+          echo "Pin scope declared in [.harness-hash-extra-patterns](../tree/main/.harness-hash-extra-patterns):" >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- \`.github/workflows/*.yml\` — CI workflow definitions" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- \`specs/evidence-bundle/v0.1.0-draft/schema/*.schema.json\` — schema redirect stubs (DR 018)" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- \`.audit-harness/scripts/*.{sh,py}\` + \`.audit-harness/bin/audit-harness.js\` — vendored harness" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- \`scripts/audit-harness\` — wrapper" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- \`.harness-hash-extra-patterns\` — bootstrap pin (this file)" >> "${GITHUB_STEP_SUMMARY}"

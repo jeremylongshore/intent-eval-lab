@@ -1,0 +1,44 @@
+# Self-pin patterns for intent-eval-lab.
+#
+# Per iep-harness-hash-platform-rollout (bd_000-projects-g6zu) following the
+# audit-harness@v1.1.0 self-pin pattern (PR #36 / bd_000-projects-itpl).
+#
+# The default audit-harness PATTERNS array targets generic consumer artifacts
+# (.feature files, architecture configs, coverage thresholds) — none of which
+# the lab uses. This file extends the pin scope to lab-specific load-bearing
+# files: the CI workflows that enforce platform discipline, and the schema
+# redirect stubs that anchor the kernel-canonical schema authority.
+#
+# Files NOT pinned (intentional):
+#  - DRs and Blueprints — amended via formal governance (ISEDC), not by silent edit.
+#  - Glossary, AARs, READMEs — frequent edits expected; pinning would create churn.
+#  - 000-INDEX.md — updated on every doc add; same churn argument.
+#
+# Files PINNED below:
+
+# CI workflow definitions — silent edits here are the silent-policy-erosion
+# failure mode the harness exists to prevent (e.g., adding `|| true` to a grep
+# that's supposed to block the PR).
+.github/workflows/*.yml
+
+# Evidence Bundle schema redirect stubs (per ISEDC Session 5 DR 018 § 6.4
+# Option α-minus). These must stay redirect-stub-shaped; the schema-drift CI
+# gate at .github/workflows/schema-drift.yml is the runtime check, and this
+# hash pin is the integrity floor underneath it.
+specs/evidence-bundle/v0.1.0-draft/schema/*.schema.json
+
+# This extras file itself — bootstrap pin so a silent edit to the pin
+# declarations can't subvert the mechanism. Matches audit-harness's own
+# self-pin pattern (audit-harness/.harness-hash-extra-patterns line for
+# `.harness-hash-extra-patterns`).
+.harness-hash-extra-patterns
+
+# The vendored audit-harness scripts + wrapper. Same rationale as
+# audit-harness self-pinning its own scripts in PR #36 — these scripts ARE
+# the policy enforcement surface. A silent edit to harness-hash.sh in the
+# vendored copy could subvert the lab's hash check. Re-vendoring on a new
+# audit-harness release requires a fresh `scripts/audit-harness init`.
+.audit-harness/scripts/*.sh
+.audit-harness/scripts/*.py
+.audit-harness/bin/audit-harness.js
+scripts/audit-harness
