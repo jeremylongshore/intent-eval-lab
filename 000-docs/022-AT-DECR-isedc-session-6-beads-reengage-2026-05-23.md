@@ -5,7 +5,7 @@
 | **Date** | 2026-05-23 |
 | **Acting head of board** | Jeremy Longshore (Claude as designated drafting executor) |
 | **Council size** | 7 (default roster: CTO · GC · CMO · CFO · CSO · CISO · VP DevRel) |
-| **Status** | DECIDED, drafting executor proceeding |
+| **Status** | DECIDED, EXECUTED — INVERTED BY EMPIRICAL FINDING (see § 11) |
 | **Counterparty** | `gastownhall/beads` — 23,613★ Steve-Yegge-stewarded bd issue tracker; primary code-review counterparty: maphew (Matt Wilkie) |
 | **Session JSONL** | `~/.claude/skills/exec-decision-council/sessions/2026-05-23-beads-reengage/session.jsonl` |
 
