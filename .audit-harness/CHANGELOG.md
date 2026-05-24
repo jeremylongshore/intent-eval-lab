@@ -1,0 +1,189 @@
+# Changelog
+
+All notable changes are recorded here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [v1.1.1] - 2026-05-23
+
+### Fixed — 6 script robustness + portability fixes (IEP Convergence Debt Plan Priority 3)
+
+Closes `iah-script-robustness-upstream` (`bd_000-projects-qqkq`, P2). Addresses the 6 medium-severity Gemini findings surfaced when audit-harness scripts were vendored into `intent-eval-lab` via `iep-harness-hash-platform-rollout` (PR #67). All fixes are upstream-only: zero CLI surface change, zero runtime-dep change, zero policy change.
+
+- **`scripts/escape-scan.sh`** (mktemp leak): `--staged` and `--range` modes allocate a temp file via `mktemp` to capture the diff but never clean it up. Adds `trap 'rm -f "$DIFF_SRC"' EXIT` immediately after each `mktemp` so the temp file is removed on every exit path (clean exit, REFUSE, CHALLENGE, signal). Matters most when escape-scan runs as a local git hook where temp accumulation is silent.
+- **`scripts/crap-score.py`** (missing `go` PATH guard): `score_go()` called `run(["go", "test", "-coverprofile=...", ...])` without first checking that `go` is on PATH, so on systems without Go installed the subprocess raised `FileNotFoundError` and aborted the whole CRAP pass. Wraps the call in the existing `which_or_none("go")` pattern already used for `radon`, `gocyclo`, and the downstream `go tool cover` invocation.
+- **`scripts/crap-score.py`** (rglob walk pruning): the `--json` input-hash computation walked every file under `root` via `rglob("*")`, only filtering `node_modules` / `.venv` after the directory had been traversed. Replaces with `os.walk` + `dirs[:] = [...]` in-place pruning, skipping `.git`, `node_modules`, `.venv`/`venv`, `__pycache__`, `dist`, `build`, `target`, `.tox`, `.mypy_cache`, `.pytest_cache`, `.next`, `.nuxt`, `.cache`. Major perf win on large repos; no behavioral change to the resulting hash for repos without pruned-extension files under those directories.
+- **`scripts/emit-evidence.sh`** (shell→Python path injection): `python3 -c "import json, sys; print(json.load(open('$PKG_JSON'))['version'])"` interpolated the shell variable directly into the Python source. Paths containing single quotes (or arbitrary characters in adversarial cases) broke the parse. Now passes `$PKG_JSON` via `sys.argv[1]` — `python3 -c "import json, sys; print(json.load(open(sys.argv[1]))['version'])" "$PKG_JSON"` — moving the path through the safe argv channel.
+- **`scripts/bias-count.sh`** (per-file sha256sum fork): `find ... -exec sha256sum {} \;` spawned one `sha256sum` process per matched file. Changes the terminator to `+` so `find` batches arguments into one (or few) sha256sum invocations. Perf win on test suites with many files; output identical because the downstream `sort | sha256sum` step normalizes.
+- **`scripts/harness-hash.sh`** (cross-platform sha256sum): GNU coreutils ships `sha256sum`, macOS ships `shasum -a 256`. Adds detection at script top selecting whichever is available into a `SHA256_CMD` bash array, falling back with a clear error if neither is on PATH. Both produce identical `<hash>  <file>` output, so the manifest format and downstream `awk` parsing are byte-equivalent. Enables engineer-local runs on macOS without forcing every contributor to install coreutils.
+
+### Changed — Version bumped to v1.1.1 across all 5 manifests
+
+Per the version-canonical-check CI gate (added in v1.0.2 PR #35). All 5 committed manifest locations now report `1.1.1`:
+- `package.json`
+- `version.txt`
+- `python/pyproject.toml`
+- `python/src/intent_audit_harness/__init__.py`
+- `rust/Cargo.toml`
+
+### Changed — `.harness-hash` regenerated
+
+The self-pinning manifest is regenerated to capture the new script hashes (per `iep-P3 iah-self-pin` v1.1.0 mechanism). The 6 script edits change 4 of the 9 pinned-file hashes; `--init` rewrites the manifest.
+
+### Why patch, not minor
+
+Pure bug + portability fixes. No new flags, no new commands, no policy change, no breaking change to the manifest format. Downstream consumers re-vendor (or re-install via the polyglot installers) and get the improvements transparently.
+
+### Why this matters for the platform
+
+The scripts in this release are now vendored into `intent-eval-lab` (per `iep-harness-hash-platform-rollout` rollout 1, lab PR #67) and will land in `j-rig-binary-eval` next. Bug-fix patches travel via re-vendor — `AUDIT_HARNESS_VERSION=v1.1.1 curl -sSL https://raw.githubusercontent.com/jeremylongshore/audit-harness/main/install.sh | bash` for vendored consumers, `pnpm up @intentsolutions/audit-harness` for node consumers. Landing the fixes before the rollout reaches more repos avoids re-publishing buggy vendored copies that immediately need replacement.
+
+AAR: `000-docs/006-AA-AACR-script-robustness-upstream-iep-P3-2026-05-23.md`.
+
+### Sequencing impact on Priority 6 Phase A1
+
+Priority 6 Phase A1 (`iah-shellcheck-hard-fail`) flips `.github/workflows/ci.yml:89` from `shellcheck scripts/*.sh || true` to hard-fail. Per the IEP Convergence Debt Plan risk-mitigation table ("Flipping shellcheck to hard-fail breaks existing audit-harness CI — mitigation: land fixes for Gemini's 6 findings FIRST, THEN flip the gate"), this release is the explicit precondition for the shellcheck flip. Phase A1 PR opens after v1.1.1 lands on main.
+
+## [v1.1.0] - 2026-05-22
+
+### Added — Per-repo `.harness-hash-extra-patterns` mechanism + audit-harness self-pin (IEP Convergence Debt Plan Priority 3)
+
+Closes `iah-self-pin` (`bd_000-projects-itpl`, P1). The harness's own policy enforcement surface (scripts/*.sh + scripts/*.py + bin/audit-harness.js) is now hash-pinned at the audit-harness repo root. CI's `audit-harness list` + `harness-hash --verify` self-check steps are flipped from `|| true` exit-3 tolerance to hard-fail: any byte change to a pinned policy file without a fresh `--init` + commit of the regenerated `.harness-hash` exits 2 (HARNESS_TAMPERED) and blocks the PR.
+
+- **`scripts/harness-hash.sh`**: NEW — reads an optional `.harness-hash-extra-patterns` file at the repo root and appends its lines to the default PATTERNS array. Comments (`#`) + blank lines ignored. Backward-compatible: repos without the file get exactly the previous behavior — consumer repos are not affected.
+- **`.harness-hash-extra-patterns`** (NEW, audit-harness repo root): pins `scripts/*.sh`, `scripts/*.py`, `bin/audit-harness.js`, and the extras file itself (preventing silent edits to the self-pinning scope).
+- **`.harness-hash`** (NEW, audit-harness repo root): 9-file manifest produced by `bash scripts/harness-hash.sh --init`. Committed to main.
+- **`.github/workflows/ci.yml`**: `audit-harness list` + `harness-hash --verify` self-check steps drop `|| true` suffixes. Hard-fail in place. Comment block updated.
+
+### Why minor not patch
+
+The `.harness-hash-extra-patterns` mechanism is a new authored feature surface — repos that opt in get a new capability. Per SemVer, minor bump. Existing repos (zero adopters today; this is the first one) are unaffected.
+
+### Why this matters
+
+Before this release, the audit-harness CI workflow could not enforce its own policy. The "harness tests itself" design rule (CLAUDE.md rule 5) was aspirational — `audit-harness list` and `harness-hash --verify` both exited 0 when no manifest existed (intentional tolerance to avoid false-failing every PR). A silent edit to `scripts/escape-scan.sh` (the gate that REFUSES threshold-lowering changes) would pass CI. That's the failure mode this release closes.
+
+### Cross-platform-rollout note
+
+`iep-harness-hash-platform-rollout` (`bd_000-projects-g6zu`) unblocks on this release. The remaining 4 IEP repos (intent-eval-lab, j-rig-binary-eval, intent-rollout-gate — kernel already pinned) can now copy this pattern using their own `.harness-hash-extra-patterns` to pin per-repo policy files (CI workflow definitions, governance docs, vendored harness wrappers).
+
+### Changed — Version bumped to v1.1.0 across all 5 manifests
+
+Per the version-canonical-check CI gate landed in v1.0.2 (PR #35). All 5 committed manifest locations now report `1.1.0`.
+
+AAR: `000-docs/005-AA-AACR-iah-self-pin-iep-P3-2026-05-22.md`.
+
+## [v1.0.2] - 2026-05-21
+
+### Chore — Polyglot manifest alignment + Apache-2.0 NOTICE inclusion in distributions (IEP Convergence Debt Plan Priority 3)
+
+Aligned all polyglot manifests (`package.json` + `version.txt` + `python/pyproject.toml` + `python/src/intent_audit_harness/__init__.py` + `rust/Cargo.toml` + `rust/Cargo.lock`) at version `1.0.2`. Bumped from npm `v1.0.1` → `v1.0.2` (rather than aligning the PyPI/crates.io wrappers to npm's `v1.0.1`) so all four registries publish lockstep from this release forward — preserves the immutability of the already-shipped npm `v1.0.1` tarball. Added a CI gate that fails any future drift. Folded NOTICE file inclusion into Python sdist + Rust crate distributions per Apache-2.0 § 4. No CLI surface or runtime behavior changes — pure metadata + packaging alignment.
+
+- `package.json`: version `1.0.1` → `1.0.2`
+- `version.txt`: `0.2.0` → `1.0.2`
+- `python/pyproject.toml`: version `0.1.0` → `1.0.2`; license `MIT` → `Apache-2.0`; PyPI classifier updated to "License :: OSI Approved :: Apache Software License"; `[tool.hatch.build.targets.sdist].include` adds `/LICENSE` + `/NOTICE` per Apache-2.0 § 4
+- `python/src/intent_audit_harness/__init__.py`: `__version__` `0.1.0` → `1.0.2`
+- `rust/Cargo.toml`: version `0.1.0` → `1.0.2`; license `MIT` → `Apache-2.0`; `include` adds `NOTICE` per Apache-2.0 § 4
+- `rust/Cargo.lock`: package entry version `1.0.1` → `1.0.2` (file is gitignored but the working-tree state is consistent for cargo builds)
+- `.github/workflows/ci.yml`: NEW `version-canonical-check` job — fails if any of the 5 tracked version locations diverge from `package.json`, or if any non-npm manifest carries a non-`Apache-2.0` license. The gate also includes a robustness check for `rust/Cargo.lock` (currently gitignored; no-ops gracefully when the file isn't present in CI checkout).
+
+Closes beads (pending PR merge): `iah-version-drift` (bd_000-projects-uoz3), `iah-license-drift` (bd_000-projects-ck2e), `iah-version-canonical-check` (bd_000-projects-hd5y). AAR at `000-docs/004-AA-AACR-polyglot-version-license-alignment-2026-05-21.md`.
+
+Notes for downstream consumers:
+
+- **npm** users: `v1.0.2` is purely metadata + packaging — no observable behavior change vs. `v1.0.1`. Upgrade at your convenience.
+- **PyPI + crates.io** users: this is the first published `v1.0.2` and the first published Apache-2.0 release on these registries. The prior published `0.1.0` artifacts pre-date the `v1.0.0` Apache-2.0 relicense and remain available under their original MIT terms (registry tarballs are immutable). From `v1.0.2` forward all four registries publish lockstep at the same SemVer.
+
+## [v1.0.1] - 2026-05-20
+
+### Fixed — NOTICE in published tarball
+
+- Added `NOTICE` to `package.json#files` so the file ships in the npm tarball alongside `LICENSE`. Per Apache 2.0 § 4, derivatives must carry the NOTICE file's attribution text if one exists in the source. `v1.0.0` shipped the relicense to Apache 2.0 but the tarball only carried `LICENSE` — this corrects that omission.
+
+No code, behavior, CLI, or dependency changes — packaging-only patch.
+
+## [v1.0.0] - 2026-05-19
+
+### Changed — License (BREAKING)
+
+- **Relicensed from MIT to Apache 2.0.** Deliberate alignment with the rest of the Intent Eval Platform ecosystem (`intent-eval-lab`, `intent-eval-core`) so every repo ships under a single OSI-approved license with explicit patent-grant language.
+- Existing `0.x` releases on npm remain available under their original MIT terms (npm tarballs are immutable). All releases `>= 1.0.0` are Apache 2.0.
+- Added `NOTICE` file per Apache 2.0 best practice with copyright attribution and license summary.
+- README license section updated to reflect the change with a backward-compat note.
+
+No code, CLI surface, behavior, or runtime dependency changes in this release — license-only bump cut as MAJOR for legal clarity and consumer review signaling.
+
+## [v0.3.0] - 2026-05-12
+
+### Added — Evidence Bundle emission (Milestone 2 of the build journey)
+
+- `--json` flag on every gate (`escape-scan`, `harness-hash --verify`, `arch`, `bias`,
+  `gherkin-lint`, `crap`). Emits a machine-readable gate-result envelope to stdout while
+  preserving the existing human-readable text on stderr. Exit codes unchanged.
+- `emit-evidence` subcommand. Reads a gate-result envelope from stdin (or `--input`),
+  augments it with `timestamp`, `runner`, `commit_sha`, and emits a complete
+  [in-toto Statement v1](https://github.com/in-toto/attestation/blob/main/spec/v1/statement.md)
+  with `predicateType` `https://evals.intentsolutions.io/gate-result/v1` per
+  [`evidence-bundle/v0.1.0-draft/SPEC.md`](https://github.com/jeremylongshore/intent-eval-lab/blob/main/specs/evidence-bundle/v0.1.0-draft/SPEC.md).
+  Optional `--sign` (cosign keyless or `--key`), `--rekor-url` for transparency-log push.
+  OTel `agent.rollout.gate.evaluated` event when `AUDIT_HARNESS_OTEL=1` or
+  `OTEL_EXPORTER_OTLP_ENDPOINT` set (best-effort no-op otherwise).
+- `SEMVER.md` — explicit SemVer commitment doc covering exit codes, stream contracts,
+  and the predicate URI freeze.
+- `tests/regression/run-regression.sh` — backward-compat regression suite. 11 checks
+  across text-mode parity, `--json` stream separation, schema validation, and the
+  `emit-evidence` pipeline.
+- CI: `regression` job in `.github/workflows/ci.yml` runs the regression suite on every PR.
+
+### Changed
+
+- `bin/audit-harness.js` dispatcher exposes the new `emit-evidence` subcommand.
+- `scripts/arch-check.sh` `--json` output reshaped to the gate-result envelope shape
+  (the prior single-line `{"tool","status","violations","log"}` was internal — no
+  documented adopter parsed it).
+
+### Notes
+
+- **No breaking changes.** Pre-v0.3.0 callers see identical text-mode output and exit
+  codes. The `--json` flag is purely additive.
+- **CISO gate (per ISEDC v1 Q1, 2026-05-10):** pushing a signed Statement to Rekor
+  against `evals.intentsolutions.io/gate-result/v1` is BLOCKED until DNSSEC + CAA
+  records are verified on the namespace. The script supports unsigned envelope
+  emission until that gate clears (tracked in `intent-eval-lab/.beads/` as `iel-4zr`).
+- **Plan reference:** `~/.claude/plans/se-the-council-bubbly-frog.md` Milestone 2.
+
+## [v0.2.0] - 2026-05-10
+
+- docs: add release.yml — complete /repo-dress 21-file canon (c0298ef)
+- docs: fill baseline OSS governance gaps via /repo-dress (closes #10) (29a8520)
+- docs: Part 2 Workstream A upgrade landscape (c967f3e)
+- docs(CLAUDE.md): add three-repo convergence section (b8255a3)
+- infra: convergence Phase A.0 + A — bd init, GH templates, CI workflow, design notes (8f30db4)
+- bd init: initialize beads issue tracking (ffc7597)
+- feat: add PyPI and crates.io wrappers for audit-harness (9b97217)
+
+
+All notable changes to `@intentsolutions/audit-harness` are documented here.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.1.0] — 2026-04-21
+
+Initial release. Extracted from the `audit-tests` Claude Code skill v7.0.0 to enable in-repo enforcement without global skill installation.
+
+### Added
+
+- `audit-harness verify` — SHA-256 hash verification for pinned policy files
+- `audit-harness init` — initialize/re-init the `.harness-hash` manifest
+- `audit-harness list` — list pinned files
+- `audit-harness escape-scan` — detect AI escape patterns in a diff (coverage threshold lowering, test deletion, architecture bypasses, test skip markers)
+- `audit-harness arch` — dispatch language-appropriate architecture checker (dependency-cruiser / import-linter / ArchUnit / deptrac / arch-go)
+- `audit-harness bias` — count common test-bias patterns
+- `audit-harness gherkin-lint` — advisory Gherkin quality check
+- `audit-harness crap` — CRAP (Complexity × Coverage) scorer for Python, JS/TS, Go, Rust
+
+### Key design decisions
+
+- **Scripts stay as shell/python.** Not a TypeScript port — battle-tested implementations, language-portable, minimal dependencies.
+- **Thin Node CLI.** `bin/audit-harness.js` is a dispatcher only; all logic lives in `scripts/`.
+- **Policy-driven thresholds.** `escape-scan.sh` reads floors from `tests/TESTING.md` in the target repo, not from the script source.
+- **Zero runtime dependencies** beyond Node 18+, bash, and Python 3 (only if using `crap` command).
