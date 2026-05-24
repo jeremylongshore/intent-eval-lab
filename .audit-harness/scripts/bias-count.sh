@@ -36,7 +36,7 @@ if [ ! -d "$TEST_DIR" ]; then
 fi
 
 # Hash the test directory tree as the "input"
-INPUT_HASH=$(find "$TEST_DIR" -type f \( -name "*.py" -o -name "*.ts" -o -name "*.js" -o -name "*.tsx" -o -name "*.jsx" -o -name "*.go" -o -name "*.rs" -o -name "*.java" -o -name "*.cs" -o -name "*.rb" \) -exec sha256sum {} \; 2>/dev/null | sort | sha256sum | awk '{print "sha256:"$1}')
+INPUT_HASH=$(find "$TEST_DIR" -type f \( -name "*.py" -o -name "*.ts" -o -name "*.js" -o -name "*.tsx" -o -name "*.jsx" -o -name "*.go" -o -name "*.rs" -o -name "*.java" -o -name "*.kt" -o -name "*.cs" -o -name "*.php" -o -name "*.rb" \) -exec sha256sum {} + 2>/dev/null | sort | sha256sum | awk '{print "sha256:"$1}')
 
 if [[ "$JSON_OUT" -eq 1 ]]; then
   exec 3>&1   # save stdout for the JSON object

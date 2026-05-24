@@ -171,7 +171,7 @@ def score_go(root: Path, kind: str) -> list[MethodScore]:
 
     coverage: dict[str, float] = {}
     cov_out = root / "coverage.out"
-    if not cov_out.is_file():
+    if not cov_out.is_file() and which_or_none("go"):
         run(["go", "test", "-coverprofile=coverage.out", "-covermode=atomic", "./..."], root)
     if cov_out.is_file() and which_or_none("go"):
         rc, out, _ = run(["go", "tool", "cover", "-func=coverage.out"], root)
@@ -385,11 +385,21 @@ def main() -> int:
         import hashlib, os
         side = os.environ.get("AUDIT_HARNESS_SIDE", "ci")
         # input_hash: SHA256 over all production+test source-file contents under root, sorted.
+        # Use os.walk with directory pruning instead of rglob — large vendored trees
+        # (node_modules, .venv, .git, build outputs) would otherwise dominate the walk
+        # cost on big repos and waste IO on files we already filter out by extension.
         digest = hashlib.sha256()
         exts = (".py", ".ts", ".tsx", ".js", ".jsx", ".go", ".rs", ".java", ".kt", ".cs", ".php", ".rb")
-        for fp in sorted(root.rglob("*")):
-            if fp.is_file() and fp.suffix in exts and "node_modules" not in fp.parts and ".venv" not in fp.parts:
-                digest.update(fp.read_bytes())
+        prune = {".git", "node_modules", ".venv", "venv", "__pycache__", "dist", "build",
+                 "target", ".tox", ".mypy_cache", ".pytest_cache", ".next", ".nuxt", ".cache"}
+        collected: list[Path] = []
+        for dirpath, dirs, files in os.walk(root):
+            dirs[:] = [d for d in dirs if d not in prune]
+            for fn in files:
+                if fn.endswith(exts):
+                    collected.append(Path(dirpath) / fn)
+        for fp in sorted(collected):
+            digest.update(fp.read_bytes())
         input_hash = f"sha256:{digest.hexdigest()}"
         # policy_hash: SHA256 over the threshold tuple (stable, deterministic)
         policy_repr = f"prod={args.threshold_prod}|test={args.threshold_test}|avg={args.threshold_avg}".encode()

@@ -1,5 +1,47 @@
 # Changelog
 
+All notable changes are recorded here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [v1.1.1] - 2026-05-23
+
+### Fixed — 6 script robustness + portability fixes (IEP Convergence Debt Plan Priority 3)
+
+Closes `iah-script-robustness-upstream` (`bd_000-projects-qqkq`, P2). Addresses the 6 medium-severity Gemini findings surfaced when audit-harness scripts were vendored into `intent-eval-lab` via `iep-harness-hash-platform-rollout` (PR #67). All fixes are upstream-only: zero CLI surface change, zero runtime-dep change, zero policy change.
+
+- **`scripts/escape-scan.sh`** (mktemp leak): `--staged` and `--range` modes allocate a temp file via `mktemp` to capture the diff but never clean it up. Adds `trap 'rm -f "$DIFF_SRC"' EXIT` immediately after each `mktemp` so the temp file is removed on every exit path (clean exit, REFUSE, CHALLENGE, signal). Matters most when escape-scan runs as a local git hook where temp accumulation is silent.
+- **`scripts/crap-score.py`** (missing `go` PATH guard): `score_go()` called `run(["go", "test", "-coverprofile=...", ...])` without first checking that `go` is on PATH, so on systems without Go installed the subprocess raised `FileNotFoundError` and aborted the whole CRAP pass. Wraps the call in the existing `which_or_none("go")` pattern already used for `radon`, `gocyclo`, and the downstream `go tool cover` invocation.
+- **`scripts/crap-score.py`** (rglob walk pruning): the `--json` input-hash computation walked every file under `root` via `rglob("*")`, only filtering `node_modules` / `.venv` after the directory had been traversed. Replaces with `os.walk` + `dirs[:] = [...]` in-place pruning, skipping `.git`, `node_modules`, `.venv`/`venv`, `__pycache__`, `dist`, `build`, `target`, `.tox`, `.mypy_cache`, `.pytest_cache`, `.next`, `.nuxt`, `.cache`. Major perf win on large repos; no behavioral change to the resulting hash for repos without pruned-extension files under those directories.
+- **`scripts/emit-evidence.sh`** (shell→Python path injection): `python3 -c "import json, sys; print(json.load(open('$PKG_JSON'))['version'])"` interpolated the shell variable directly into the Python source. Paths containing single quotes (or arbitrary characters in adversarial cases) broke the parse. Now passes `$PKG_JSON` via `sys.argv[1]` — `python3 -c "import json, sys; print(json.load(open(sys.argv[1]))['version'])" "$PKG_JSON"` — moving the path through the safe argv channel.
+- **`scripts/bias-count.sh`** (per-file sha256sum fork): `find ... -exec sha256sum {} \;` spawned one `sha256sum` process per matched file. Changes the terminator to `+` so `find` batches arguments into one (or few) sha256sum invocations. Perf win on test suites with many files; output identical because the downstream `sort | sha256sum` step normalizes.
+- **`scripts/harness-hash.sh`** (cross-platform sha256sum): GNU coreutils ships `sha256sum`, macOS ships `shasum -a 256`. Adds detection at script top selecting whichever is available into a `SHA256_CMD` bash array, falling back with a clear error if neither is on PATH. Both produce identical `<hash>  <file>` output, so the manifest format and downstream `awk` parsing are byte-equivalent. Enables engineer-local runs on macOS without forcing every contributor to install coreutils.
+
+### Changed — Version bumped to v1.1.1 across all 5 manifests
+
+Per the version-canonical-check CI gate (added in v1.0.2 PR #35). All 5 committed manifest locations now report `1.1.1`:
+- `package.json`
+- `version.txt`
+- `python/pyproject.toml`
+- `python/src/intent_audit_harness/__init__.py`
+- `rust/Cargo.toml`
+
+### Changed — `.harness-hash` regenerated
+
+The self-pinning manifest is regenerated to capture the new script hashes (per `iep-P3 iah-self-pin` v1.1.0 mechanism). The 6 script edits change 4 of the 9 pinned-file hashes; `--init` rewrites the manifest.
+
+### Why patch, not minor
+
+Pure bug + portability fixes. No new flags, no new commands, no policy change, no breaking change to the manifest format. Downstream consumers re-vendor (or re-install via the polyglot installers) and get the improvements transparently.
+
+### Why this matters for the platform
+
+The scripts in this release are now vendored into `intent-eval-lab` (per `iep-harness-hash-platform-rollout` rollout 1, lab PR #67) and will land in `j-rig-binary-eval` next. Bug-fix patches travel via re-vendor — `AUDIT_HARNESS_VERSION=v1.1.1 curl -sSL https://raw.githubusercontent.com/jeremylongshore/audit-harness/main/install.sh | bash` for vendored consumers, `pnpm up @intentsolutions/audit-harness` for node consumers. Landing the fixes before the rollout reaches more repos avoids re-publishing buggy vendored copies that immediately need replacement.
+
+AAR: `000-docs/006-AA-AACR-script-robustness-upstream-iep-P3-2026-05-23.md`.
+
+### Sequencing impact on Priority 6 Phase A1
+
+Priority 6 Phase A1 (`iah-shellcheck-hard-fail`) flips `.github/workflows/ci.yml:89` from `shellcheck scripts/*.sh || true` to hard-fail. Per the IEP Convergence Debt Plan risk-mitigation table ("Flipping shellcheck to hard-fail breaks existing audit-harness CI — mitigation: land fixes for Gemini's 6 findings FIRST, THEN flip the gate"), this release is the explicit precondition for the shellcheck flip. Phase A1 PR opens after v1.1.1 lands on main.
+
 ## [v1.1.0] - 2026-05-22
 
 ### Added — Per-repo `.harness-hash-extra-patterns` mechanism + audit-harness self-pin (IEP Convergence Debt Plan Priority 3)

@@ -52,8 +52,17 @@ fi
 
 case "$1" in
   -) DIFF_SRC="/dev/stdin" ;;
-  --staged) DIFF_SRC=$(mktemp); git diff --cached > "$DIFF_SRC" ;;
-  --range) DIFF_SRC=$(mktemp); git diff "$2" > "$DIFF_SRC"; shift ;;
+  --staged)
+    DIFF_SRC=$(mktemp)
+    trap 'rm -f "$DIFF_SRC"' EXIT
+    git diff --cached > "$DIFF_SRC"
+    ;;
+  --range)
+    DIFF_SRC=$(mktemp)
+    trap 'rm -f "$DIFF_SRC"' EXIT
+    git diff "$2" > "$DIFF_SRC"
+    shift
+    ;;
   --no-hash) VERIFY_HASH=0; shift; DIFF_SRC="$1" ;;
   --help|-h)
     sed -n '2,26p' "$0"; exit 0 ;;

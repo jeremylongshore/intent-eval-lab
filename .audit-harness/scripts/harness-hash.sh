@@ -23,6 +23,18 @@
 
 set -euo pipefail
 
+# Cross-platform SHA-256: `sha256sum` ships with GNU coreutils (Linux);
+# macOS only has `shasum -a 256`. Both produce identical `<hash>  <file>`
+# output, so downstream awk parsing is unchanged.
+if command -v sha256sum >/dev/null 2>&1; then
+  SHA256_CMD=(sha256sum)
+elif command -v shasum >/dev/null 2>&1; then
+  SHA256_CMD=(shasum -a 256)
+else
+  echo "harness-hash: neither sha256sum nor shasum found in PATH" >&2
+  exit 2
+fi
+
 ROOT="${ROOT:-$(pwd)}"
 MANIFEST="${ROOT}/.harness-hash"
 JSON_OUT=0
@@ -99,7 +111,7 @@ hash_files() {
     return 0
   fi
   while IFS= read -r f; do
-    printf '%s  %s\n' "$(sha256sum "$f" | awk '{print $1}')" "$f"
+    printf '%s  %s\n' "$("${SHA256_CMD[@]}" "$f" | awk '{print $1}')" "$f"
   done <<< "$files"
 }
 
@@ -127,7 +139,7 @@ cmd_verify() {
   expected=$(cat "$MANIFEST")
 
   local manifest_hash
-  manifest_hash=$(sha256sum "$MANIFEST" | awk '{print "sha256:"$1}')
+  manifest_hash=$("${SHA256_CMD[@]}" "$MANIFEST" | awk '{print "sha256:"$1}')
 
   local pinned_count
   pinned_count=$(echo "$expected" | grep -c '^' || true)

@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# audit-harness — vendored shell wrapper (non-Node repos).
+# Mirrors the Node CLI at https://www.npmjs.com/package/@intentsolutions/audit-harness
+# but dispatches directly to the scripts in .audit-harness/scripts/.
+
 set -euo pipefail
 
 HARNESS_DIR="$(cd "$(dirname "$0")/.." && pwd)/.audit-harness"

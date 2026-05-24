@@ -103,7 +103,8 @@ PKG_JSON="${SCRIPT_DIR}/../package.json"
 if [[ -n "$RUNNER_VERSION_OVERRIDE" ]]; then
   RUNNER="$RUNNER_VERSION_OVERRIDE"
 elif [[ -f "$PKG_JSON" ]]; then
-  VER=$(python3 -c "import json, sys; print(json.load(open('$PKG_JSON'))['version'])" 2>/dev/null || echo "unknown")
+  # Pass PKG_JSON via argv so paths with quotes/spaces/specials don't break the python source.
+  VER=$(python3 -c "import json, sys; print(json.load(open(sys.argv[1]))['version'])" "$PKG_JSON" 2>/dev/null || echo "unknown")
   RUNNER="audit-harness@${VER}"
 else
   RUNNER="audit-harness@unknown"

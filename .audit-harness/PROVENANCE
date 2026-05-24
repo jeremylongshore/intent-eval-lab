@@ -1,1 +1,19 @@
-Vendored from audit-harness@846ff6a (main HEAD post PR #36 merge)
+Vendored from audit-harness@v1.1.1 (tag commit on main post PR #37 merge).
+
+PR #37 closes iah-script-robustness-upstream (bd_000-projects-qqkq) —
+6 medium-severity Gemini findings on the previous v1.1.0 vendored snapshot
+(intent-eval-lab PR #67 review) fixed at the source:
+
+  - escape-scan.sh: mktemp leak (trap-cleanup)
+  - crap-score.py: missing `go` PATH guard
+  - crap-score.py: rglob walk pruning (perf win on large repos)
+  - emit-evidence.sh: shell->python path injection (argv channel)
+  - bias-count.sh: per-file sha256sum fork (batched + .kt/.php extensions)
+  - harness-hash.sh: macOS sha256sum portability (shasum -a 256 fallback)
+
+Superseded snapshot: 846ff6a (v1.1.0) which was vendored in the first
+rollout commit on this branch.
+
+Per IEP Convergence Debt Plan Priority 3 (iep-P3-audit-harness-hardening)
+and the harness-hash platform rollout (iep-harness-hash-platform-rollout,
+bd_000-projects-g6zu).
