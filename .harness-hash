@@ -1,10 +1,10 @@
 0719a6fe3dc3c9f78c0318a9aff0dfc29253023f3d7d3d3dfa1e032ee0fae08c  .audit-harness/bin/audit-harness.js
 f5bb89ef74bffa018a92df6abbfeb66b3d2264daf6b365bc8cafdbad00065f9d  .audit-harness/scripts/arch-check.sh
 93173d353a7820a6484519329a16ea8795b9658d79e682af0557158b18a6ebdf  .audit-harness/scripts/bias-count.sh
-558ac23a60409cf8724fe13190e571681f7caf7cd9ded80eefc8feecacc7a450  .audit-harness/scripts/crap-score.py
+83da2309e20151aeb14afe5625c14a67ebf8a6a5e78330861fcf3e1444bebc40  .audit-harness/scripts/crap-score.py
 add245f35fb0dbd63d5ab475020bb367b53be4c611eb509d614c8a1f5ca8ea32  .audit-harness/scripts/emit-evidence.sh
 0ffea346a8c310677f2176e9f367370c8b308f82633bf62ccd00a95985e09469  .audit-harness/scripts/escape-scan.sh
-4fbe08462d0748e2ec9f78d66f20b31eb36e59c094adbfce57452134509db18e  .audit-harness/scripts/gherkin-lint.sh
+d29a2e9b94f7fd94f4f8953314323f96ca424cbaa6a985f6783b48ee2feae0f8  .audit-harness/scripts/gherkin-lint.sh
 9c588a980e89dbc9ea2bcf0992daff51ec72b926ecb1644e21838b9fc5c2883d  .audit-harness/scripts/harness-hash.sh
 9ca08b97184ec2c452fbe89f87165e1a6c97a375bc9a681568c3b205aace20af  .github/workflows/ci.yml
 6865fe341ed8cd9fdc0783cb8c86d585eaa144ff9c97a10770492ffa58c4b801  .github/workflows/harness-hash-verify.yml

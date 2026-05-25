@@ -37,6 +37,19 @@ class MethodScore:
     kind: str  # "src" or "test"
 
 
+# Directories to skip during candidate discovery AND the --json input-hash
+# walk. Single source of truth — both call sites MUST use this set so a repo
+# with `reports/` (or `.next/`, `.nuxt/`, `.cache/`) gets identical treatment
+# in both the candidate scan and the input-hash computation. Adding a dir
+# here removes it from BOTH passes; that's the invariant this constant exists
+# to preserve.
+EXCLUDED_DIRS = {
+    ".git", ".venv", "venv", "node_modules", "__pycache__",
+    "dist", "build", "target", ".tox", ".mypy_cache", ".pytest_cache",
+    ".next", ".nuxt", ".cache", "reports",
+}
+
+
 def crap(complexity: int, coverage_pct: float) -> float:
     cov = max(0.0, min(100.0, coverage_pct)) / 100.0
     return (complexity ** 2) * ((1.0 - cov) ** 3) + complexity
@@ -82,15 +95,11 @@ def score_python(root: Path, kind: str) -> list[MethodScore]:
         scanned = [t for t in candidates if (root / t).is_dir()]
         if not scanned:
             test_dirs = {"tests", "test", "spec", "specs", "features", "__tests__"}
-            ignore = {
-                ".git", ".venv", "venv", "node_modules", "dist", "build", "target",
-                ".tox", ".mypy_cache", ".pytest_cache", "reports", "__pycache__",
-            }
             scanned = [
                 p.name for p in root.iterdir()
                 if p.is_dir()
                 and not p.name.startswith(".")
-                and p.name not in ignore
+                and p.name not in EXCLUDED_DIRS
                 and p.name not in test_dirs
                 and any(p.rglob("*.py"))
             ]
@@ -392,11 +401,9 @@ def main() -> int:
         # cost on big repos and waste IO on files we already filter out by extension.
         digest = hashlib.sha256()
         exts = (".py", ".ts", ".tsx", ".js", ".jsx", ".go", ".rs", ".java", ".kt", ".cs", ".php", ".rb")
-        prune = {".git", "node_modules", ".venv", "venv", "__pycache__", "dist", "build",
-                 "target", ".tox", ".mypy_cache", ".pytest_cache", ".next", ".nuxt", ".cache"}
         collected: list[Path] = []
         for dirpath, dirs, files in os.walk(root):
-            dirs[:] = [d for d in dirs if d not in prune]
+            dirs[:] = [d for d in dirs if d not in EXCLUDED_DIRS]
             for fn in files:
                 if fn.endswith(exts):
                     collected.append(Path(dirpath) / fn)

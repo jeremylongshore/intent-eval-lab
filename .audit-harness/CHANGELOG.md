@@ -2,6 +2,57 @@
 
 All notable changes are recorded here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.4] - 2026-05-25
+
+### Fixed — gherkin-lint.sh prev_blank print-every-line noise (IEP P3, Gemini #71 review chain)
+
+Closes `iah-gherkin-prev-blank-noise` (`bd_000-projects-o9q1`, P2). The third awk block in `scripts/gherkin-lint.sh` (the And-at-scenario-start checker) opened with a bare `prev_blank = 1` expression that awk interpreted as an always-true pattern with implicit `{ print }` default action — flooding stdout with every line of every feature file alongside the intentional ERROR printf. `prev_blank` was never USED anywhere in the awk script (verified via grep). Removed both touches: the top-level expression AND the assignment in the blank-line pattern (which was also unreachable for anything that mattered, since no downstream pattern read `prev_blank`). The third awk block now produces ONLY the targeted ERROR line when triggered. Verified via the same deliberate-failure test from v1.1.2 AAR — output before: full feature file printed interleaved with ERROR. Output after: just the ERROR line.
+
+### Changed — gherkin-lint.sh process_awk_output() collapsed to single awk pass (Gemini #38 follow-up)
+
+Closes `iah-gherkin-single-awk-opt` (`bd_000-projects-vawm`, P3). v1.1.2 introduced `process_awk_output()` with two awk subprocesses per call (one counting WARN, one counting ERROR). v1.1.4 collapses to a single awk pass via `read -r w e < <(awk '/^WARN /{w++} /^ERROR /{e++} END {print w+0, e+0}' <<< "$out")` per Gemini PR #39 verbatim suggestion. Halves the awk fork count (4 callsites × 2 subprocesses = 8 awk processes/feature → 4). Verified with mixed WARN+ERROR test: 2 WARNs + 1 ERROR in one feature file produces summary `2 warning(s), 1 error(s)` and exit 1.
+
+### Fixed — crap-score.py exclusion sets deduplicated via EXCLUDED_DIRS constant (Gemini #71 review)
+
+Closes `iah-crap-score-exclusion-dedup` (`bd_000-projects-niv8`, P2). Pre-v1.1.4, `scripts/crap-score.py` had TWO separate sets with overlapping intent but divergent contents:
+- `ignore` set in `score_python()` (line 85): had `"reports"` but lacked `.next`, `.nuxt`, `.cache`
+- `prune` set in `main()` (line 394, added v1.1.1 for `--json` input-hash walk): had `.next`, `.nuxt`, `.cache` but lacked `"reports"`
+
+Asymmetry was a real bug: a repo with `reports/` would skip score_python's candidate scan but its `.py` files DID get hashed by the input-hash walk; opposite for `.next/.nuxt/.cache`. Fixed by extracting a single module-level constant `EXCLUDED_DIRS` (union of both prior sets) referenced by both call sites. Set contents: `.git`, `.venv`, `venv`, `node_modules`, `__pycache__`, `dist`, `build`, `target`, `.tox`, `.mypy_cache`, `.pytest_cache`, `.next`, `.nuxt`, `.cache`, `reports`.
+
+### Changed — Shellcheck CI job version-pinned (parity with ruff v1.1.3)
+
+Closes `iah-shellcheck-version-pin` (`bd_000-projects-v1ds`, P3). v1.1.2 (Phase A1) installed shellcheck via `apt-get install -y shellcheck` which pulls whatever Ubuntu's runner-image version happens to ship (currently 0.9.0). When the runner image upgrades shellcheck to 0.10.x or later, new rules activate silently and could surface findings in already-merged code. v1.1.4 pins to `v0.10.0` via download from the koalaman/shellcheck GitHub releases. CI step prints `shellcheck --version` for audit trail. To bump: edit `SHELLCHECK_VERSION` env in the workflow + run `shellcheck scripts/*.sh` locally + commit as explicit PR. Matches the ruff version-pin pattern from v1.1.3.
+
+### Changed — Version bumped to v1.1.4 across all 5 manifests
+
+Per the version-canonical-check CI gate (v1.0.2 PR #35). All 5 manifest locations now report `1.1.4`.
+
+### Changed — `.harness-hash` regenerated
+
+`scripts/gherkin-lint.sh` + `scripts/crap-score.py` modified; both are pinned. 2 of 9 pinned-file hashes change.
+
+### Why patch, not minor
+
+Pure cleanup release: dead-code removal, perf microoptimization, bug fixes for cross-call inconsistencies, CI version pin. No new CLI commands, no new flags, no API change. Consumers re-vendor / `pnpm up` and get the cleaner scripts + tighter CI transparently.
+
+### Verification
+
+- `shellcheck scripts/*.sh` → exit 0 (local 0.9.0; CI will run pinned 0.10.0)
+- `ruff check` → `All checks passed!`
+- `bash -n scripts/*.sh` → all pass
+- `python3 -m py_compile scripts/crap-score.py + cli.py` → exit 0
+- `bash scripts/harness-hash.sh --verify` → OK after `--init`
+- gherkin-lint deliberate-failure test (And-at-start): exit 1, summary correct
+- gherkin-lint mixed test (2 WARN + 1 ERROR): summary `2 warning(s), 1 error(s)`, exit 1
+- Output noise gone: feature-file lines no longer printed alongside ERRORs
+
+AAR: `000-docs/009-AA-AACR-v1.1.4-cleanup-bundle-2026-05-25.md`.
+
+### Not bundled (separate scope)
+
+`iah-python-wrapper-scripts-sync` (`bd_000-projects-65k4`) remains open. The Python wrapper's `python/src/intent_audit_harness/scripts/crap-score.py` (and the Rust wrapper's mirror) are stale by design — install.sh sources from canonical `scripts/` but wrapper packaging hasn't grown a build-time sync mechanism. Implementation requires choosing between hatch build-hook, Cargo build.rs, symlinks, or CI-enforced manual sync. Deferred to its own focused PR.
+
 ## [v1.1.3] - 2026-05-24
 
 ### Added — Ruff CI gate against own-code Python (IEP Convergence Debt Plan Priority 6 Phase A2)
