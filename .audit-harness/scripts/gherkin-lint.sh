@@ -48,7 +48,24 @@ WARN_COUNT=0
 ERROR_COUNT=0
 
 warn() { echo "WARN  $1:$2 $3"; WARN_COUNT=$((WARN_COUNT + 1)); }
-err()  { echo "ERROR $1:$2 $3"; ERROR_COUNT=$((ERROR_COUNT + 1)); }
+
+# process_awk_output — funnel awk-printed WARN/ERROR lines through the bash
+# counters so the summary + exit code reflect awk-fallback findings too.
+# Pre-v1.1.2 BUG: the awk blocks below printed WARN/ERROR lines but ran in
+# subprocesses so the parent-shell counters never updated; the summary said
+# "0 errors" while printing errors and the exit code stayed 0. Fixed here per
+# Gemini PR #38 review. (`awk '/^WARN /{c++} END{print c+0}'` cleanly handles
+# the no-match case under set -euo pipefail without needing `|| true`.)
+process_awk_output() {
+  local out="$1"
+  [ -z "$out" ] && return 0
+  local w e
+  w=$(printf '%s\n' "$out" | awk '/^WARN /{c++} END{print c+0}')
+  e=$(printf '%s\n' "$out" | awk '/^ERROR /{c++} END{print c+0}')
+  WARN_COUNT=$((WARN_COUNT + w))
+  ERROR_COUNT=$((ERROR_COUNT + e))
+  printf '%s\n' "$out"
+}
 
 # 1. Prefer official gherkin-lint if available
 if command -v gherkin-lint >/dev/null 2>&1; then
@@ -61,7 +78,7 @@ else
 
   while IFS= read -r -d '' feature; do
     # Imperative verbs / CSS selectors in steps (declarative warning)
-    awk -v file="$feature" '
+    process_awk_output "$(awk -v file="$feature" '
       /^[[:space:]]*(Given|When|Then|And|But)/ {
         line = $0
         if (line ~ /click|type|fill[ _]in|press|select.*from[ _]dropdown/) {
@@ -71,10 +88,10 @@ else
           printf "WARN  %s:%d CSS selector / xpath in step (prefer business language)\n", file, NR
         }
       }
-    ' "$feature"
+    ' "$feature")"
 
     # Scenario length (> 10 steps)
-    awk -v file="$feature" '
+    process_awk_output "$(awk -v file="$feature" '
       /^[[:space:]]*Scenario/ { sc = NR; steps = 0; sn = $0; next }
       /^[[:space:]]*(Given|When|Then|And|But)/ { if (sc) steps++ }
       /^[[:space:]]*Scenario|^[[:space:]]*Feature|^$/ {
@@ -88,7 +105,7 @@ else
           printf "WARN  %s:%d scenario has %d steps (>10 is too long)\n", file, sc, steps
         }
       }
-    ' "$feature"
+    ' "$feature")"
 
     # Repeated Givens without Background (3+ identical Given lines)
     dupe=$(awk '/^[[:space:]]*Given/ { print }' "$feature" | sort | uniq -c | awk '$1 >= 3 { print }')
@@ -97,7 +114,7 @@ else
     fi
 
     # "And" at scenario start (grammar error)
-    awk -v file="$feature" '
+    process_awk_output "$(awk -v file="$feature" '
       prev_blank = 1
       /^[[:space:]]*$/ { prev_blank = 1; next }
       /^[[:space:]]*Scenario/ { in_scenario = 1; step_count = 0; next }
@@ -107,7 +124,7 @@ else
         }
         step_count++
       }
-    ' "$feature"
+    ' "$feature")"
 
   done < <(find "$PATH_ARG" -name "*.feature" -print0)
 fi

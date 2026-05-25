@@ -2,6 +2,60 @@
 
 All notable changes are recorded here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.2] - 2026-05-24
+
+### Changed — Shellcheck CI gate flipped from tolerant to hard-fail (IEP Convergence Debt Plan Priority 6 Phase A1)
+
+Closes `iah-shellcheck-hard-fail` (`bd_000-projects-4asc`, P1). The shellcheck job in `.github/workflows/ci.yml` previously ran `shellcheck scripts/*.sh || true` — warnings and errors were logged but never blocked the PR. As of this release the `|| true` suffix is removed: any shellcheck finding (warning or error) blocks the build. The locked precondition was v1.1.1 (PR #37) which addressed the 6 Gemini-flagged robustness findings — the surface was already clean enough that flipping the gate exposed exactly 3 residual dead-code findings, all fixed below.
+
+### Removed — 3 pieces of dead code surfaced by the harder shellcheck gate
+
+- **`scripts/bias-count.sh`**: `declare -A PATTERN_COUNTS` plus the per-call `PATTERN_COUNTS["$label"]=$count` assignment in `count_pattern()`. SC2034: the associative array was populated but never read. Per-pattern counts are still printed inline (line 61) and are aggregated into `TOTAL_BIAS` for the JSON output `bias_total` metadata field; the per-pattern breakdown was apparently intended for a richer JSON shape that was never wired. Restoring it would be a feature, not a fix; filed as deferred scope if a consumer asks.
+- **`scripts/emit-evidence.sh`**: `INPUT_HASH_HEX="$(echo "$STATEMENT" | python3 -c ...)"` (formerly line 238). SC2034: computed but never read. Vestige from an earlier cosign integration; the surrounding `BLOB_FILE` construction relies on `ARTIFACT_NAME` only.
+- **`scripts/gherkin-lint.sh`**: `err()` helper function. SC2317: zero call sites in the file (verified via `grep -n "\berr\b"` — only the definition matches). The helper was defined symmetrically with `warn()` but never wired up to the awk rubric or the subprocess-fallback path. Replaced with `process_awk_output()` helper (see Fixed section below).
+
+### Fixed — gherkin-lint.sh awk subprocess undercount (silent-failure class bug; Gemini PR #38 review)
+
+While processing the SC2317 cleanup above, Gemini's PR #38 review surfaced a deeper bug: the gherkin-lint.sh awk-fallback path printed `WARN`/`ERROR` lines via `awk printf` but those subprocesses never incremented the parent shell's `WARN_COUNT`/`ERROR_COUNT` counters. The summary line said "0 warnings, 0 errors" while errors were actively being printed; the exit code stayed 0 regardless. Exactly the silent-failure class the linter exists to surface in OTHER projects.
+
+- **New `process_awk_output()` helper**: wraps each awk subprocess, captures its output, counts `WARN ` / `ERROR ` lines via inline awk (`'/^WARN /{c++} END{print c+0}'` — set-euo-pipefail safe, no `|| true` needed), increments the bash counters, then re-prints. 4 awk blocks now feed through it.
+- **Verification**: deliberate-failure test against a feature with `Scenario: ... \n And ...` produces exit code 1 + summary `0 warning(s), 1 error(s)` (was: exit 0 + `0 warning(s), 0 error(s)` while still printing the ERROR line). Clean feature still exits 0.
+- **Separate-scope finding**: the third awk script contains a stray top-level `prev_blank = 1` that awk treats as an always-true pattern, triggering its default print-every-line action. That's a pre-existing cosmetic issue (extra noise in script output) but not a counter bug — filed as deferred scope.
+
+### Changed — Version bumped to v1.1.2 across all 5 manifests
+
+Per the version-canonical-check CI gate (v1.0.2 PR #35). All 5 committed manifest locations now report `1.1.2`:
+- `package.json`
+- `version.txt`
+- `python/pyproject.toml`
+- `python/src/intent_audit_harness/__init__.py`
+- `rust/Cargo.toml`
+
+### Changed — `.harness-hash` regenerated
+
+The self-pinning manifest is regenerated to capture the new script hashes (per `iep-P3 iah-self-pin` v1.1.0 mechanism). 3 of 9 pinned-file hashes change (the 3 modified scripts); 6 unchanged.
+
+### Why patch, not minor
+
+Pure dead-code removal + a CI policy tightening. No new CLI commands, no new flags, no API change, no behavioral change for any consumer. Downstream consumers re-vendor (or `pnpm up`) and get the cleaner scripts transparently.
+
+### Verification
+
+- `shellcheck scripts/*.sh` → exit 0 on a clean checkout (verified locally before push)
+- `bash -n scripts/*.sh` → all pass
+- `python3 -m py_compile scripts/crap-score.py` → exit 0
+- `bash scripts/harness-hash.sh --verify` → harness-hash: OK after `--init`
+- CI shellcheck job will now block on any future warning — try staging `cmd $var` (unquoted expansion) to verify the gate fires
+
+AAR: `000-docs/007-AA-AACR-shellcheck-hard-fail-iep-P6-2026-05-24.md`.
+
+### What this unblocks in the IEP Convergence Debt Plan
+
+P6 Phase A1 closed. Next-ready P6 work:
+- A2: `iah-ruff` — add Python ruff CI gate
+- A3: `iah-eslint-dispatcher` — add eslint coverage for `bin/audit-harness.js`
+- A4: `iah-script-robustness-upstream` (already shipped in v1.1.1; nothing more to do)
+
 ## [v1.1.1] - 2026-05-23
 
 ### Fixed — 6 script robustness + portability fixes (IEP Convergence Debt Plan Priority 3)

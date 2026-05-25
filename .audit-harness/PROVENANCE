@@ -1,19 +1,24 @@
-Vendored from audit-harness@v1.1.1 (tag commit on main post PR #37 merge).
+Vendored from audit-harness@v1.1.2 (tag commit on main post PR #38 merge).
 
-PR #37 closes iah-script-robustness-upstream (bd_000-projects-qqkq) —
-6 medium-severity Gemini findings on the previous v1.1.0 vendored snapshot
-(intent-eval-lab PR #67 review) fixed at the source:
+PR #38 closes iah-shellcheck-hard-fail (bd_000-projects-4asc) — Phase A1 of
+the IEP Convergence Debt Plan Priority 6 (linter rollout):
 
-  - escape-scan.sh: mktemp leak (trap-cleanup)
-  - crap-score.py: missing `go` PATH guard
-  - crap-score.py: rglob walk pruning (perf win on large repos)
-  - emit-evidence.sh: shell->python path injection (argv channel)
-  - bias-count.sh: per-file sha256sum fork (batched + .kt/.php extensions)
-  - harness-hash.sh: macOS sha256sum portability (shasum -a 256 fallback)
+  - .github/workflows/ci.yml: shellcheck CI gate flipped from `|| true`
+    tolerance to hard-fail
+  - 3 dead-code findings deleted (surfaced by the harder gate):
+    * PATTERN_COUNTS associative array (bias-count.sh, SC2034)
+    * INPUT_HASH_HEX variable (emit-evidence.sh, SC2034)
+    * err() helper (gherkin-lint.sh, SC2317; zero call sites)
+  - BONUS bug fix surfaced by Gemini PR #38 review: gherkin-lint.sh
+    awk subprocess counter undercount. 4 awk blocks printed WARN/ERROR
+    lines but never bumped the parent shell's WARN_COUNT / ERROR_COUNT,
+    so the summary said "0 errors" while errors were printed. Fixed via
+    new process_awk_output() helper that captures, counts, increments,
+    then prints. Verified end-to-end with deliberate-failure test.
 
-Superseded snapshot: 846ff6a (v1.1.0) which was vendored in the first
-rollout commit on this branch.
+Superseded snapshot: v1.1.1 (846ff6a + 3c7762b on audit-harness), which
+was vendored in this branch's predecessor PR #67 24h prior.
 
 Per IEP Convergence Debt Plan Priority 3 (iep-P3-audit-harness-hardening)
-and the harness-hash platform rollout (iep-harness-hash-platform-rollout,
-bd_000-projects-g6zu).
+and Priority 6 (iep-P6-linter-rollout), plus the harness-hash platform
+rollout (iep-harness-hash-platform-rollout, bd_000-projects-g6zu).
