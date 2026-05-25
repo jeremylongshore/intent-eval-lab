@@ -235,7 +235,6 @@ COSIGN_ARGS+=("--output-signature" "$ENVELOPE_FILE")
 # `cosign attest-blob` needs a "blob" — the input the predicate attests to.
 # Per SPEC subject naming, that's the input_hash; we use a virtual artifact name.
 ARTIFACT_NAME="$(echo "$STATEMENT" | python3 -c "import json,sys; print(json.load(sys.stdin)['subject'][0]['name'])")"
-INPUT_HASH_HEX="$(echo "$STATEMENT" | python3 -c "import json,sys; print(json.load(sys.stdin)['subject'][0]['digest']['sha256'])")"
 
 # Write a placeholder blob whose sha256 == the declared input_hash. This makes
 # the DSSE envelope's subject coherent with the predicate.

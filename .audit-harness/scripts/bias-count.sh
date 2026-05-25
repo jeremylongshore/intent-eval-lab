@@ -49,7 +49,6 @@ echo "════════════════════════�
 echo
 
 TOTAL_BIAS=0
-declare -A PATTERN_COUNTS
 
 count_pattern() {
   local label="$1"
@@ -57,7 +56,6 @@ count_pattern() {
   local count
   count=$(grep -rn "$pattern" "$TEST_DIR" 2>/dev/null | wc -l)
   TOTAL_BIAS=$((TOTAL_BIAS + count))
-  PATTERN_COUNTS["$label"]=$count
   printf "  %-30s %d\n" "$label" "$count"
 }
 
