@@ -2,6 +2,59 @@
 
 All notable changes are recorded here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.3] - 2026-05-24
+
+### Added — Ruff CI gate against own-code Python (IEP Convergence Debt Plan Priority 6 Phase A2)
+
+Closes `iah-ruff` (`bd_000-projects-x9bs`, P1). New `.github/workflows/ci.yml` job `ruff (Python lint)` runs `ruff check` (version-pinned to 0.15.4 per the iah-shellcheck-version-pin lesson) against the own-code Python surface. Ruleset `select = ["B", "E", "F"]` — pyflakes (F) for dead imports + unused variables; pycodestyle errors (E) for syntax-level issues; **flake8-bugbear (B) for Python-specific bugs** (mutable default args, unreliable exception handling — added per Gemini PR #39 review after empirical confirmation that zero new findings fire on our codebase). Line length set to 120 (modern Python convention). Further ratchet (I import-order, UP pyupgrade, etc.) deferred to a future ratchet bead.
+
+- New `ruff.toml` at repo root: lint scope = `scripts/*.py` + `python/src/intent_audit_harness/{__init__,__main__,cli}.py`; excludes `python/.venv/` + `python/src/intent_audit_harness/scripts/` + `rust/scripts/` (the last two are bundled-content mirrors of `scripts/*` — stale-sync tracked separately, see below).
+- Version pinned via `pip install 'ruff==0.15.4'`; CI prints `ruff --version` for audit trail.
+
+### Removed — 3 ruff-surfaced dead-code findings
+
+- **`scripts/crap-score.py`**: redundant local `import hashlib, os` inside the `if args.json:` block was shadowing the module-level `import os`, causing ruff F401 against the top-level (which IS used by the same block). **Per Gemini PR #39 review (PEP 8 alignment)**, moved `hashlib` to module-level imports alongside the other stdlib imports; removed the local re-import entirely. The bandaid-comment explaining the local import is also gone.
+- **`scripts/crap-score.py`**: dead local variable `metrics = rec.get("metrics", {}).get("cyclomatic", {})` in `score_rust()` (line 266; F841). Assigned but never read. The actual cyclomatic value is fetched freshly inside the loop on line 268.
+- **`python/src/intent_audit_harness/cli.py`**: dead `import os` at line 12 (F401). Zero `os.*` usages in the file.
+
+### Changed — Long-line reformat in scripts/crap-score.py
+
+- Line 84 `ignore` set literal (155 chars) reformatted into a multi-line set literal that fits 120-char limit. Cosmetic; no behavior change.
+
+### Changed — Version bumped to v1.1.3 across all 5 manifests
+
+Per the version-canonical-check CI gate (v1.0.2 PR #35). All 5 manifest locations now report `1.1.3`.
+
+### Changed — `.harness-hash` regenerated
+
+`scripts/crap-score.py` is pinned by `.harness-hash-extra-patterns`; the dead-code removal + long-line reformat changes its hash. 1 of 9 pinned-file hashes change.
+
+### Why patch, not minor
+
+Pure lint-gate addition + dead-code removal. No new CLI commands, no new flags, no API change. Consumers re-vendor / `pnpm up` and get the cleaner scripts + the (new for them) ruff config transparently.
+
+### Verification
+
+- `ruff check` → `All checks passed!` on clean checkout
+- `python3 -m py_compile scripts/crap-score.py` → exit 0
+- `python3 -m py_compile python/src/intent_audit_harness/cli.py` → exit 0
+- `shellcheck scripts/*.sh` → exit 0 (no regression on Phase A1)
+- `bash scripts/harness-hash.sh --verify` → OK after `--init`
+- CI ruff job will block any future PR that introduces a Python lint finding (F401, F841, E*, etc.)
+
+### Follow-up bead filed
+
+`iah-python-wrapper-scripts-sync` (new) — `python/src/intent_audit_harness/scripts/crap-score.py` is a stale mirror of `scripts/crap-score.py`, ~1 month behind canonical source. Missing the v1.1.1 `--json` envelope emission, the `which_or_none("go")` PATH guard, and the rglob-walk pruning. Same pattern likely in `rust/scripts/`. Either (a) build-time copy in the Python/Rust wrapper packaging, (b) symlink, or (c) hand-sync discipline with CI check. Currently excluded from ruff scope; exclusion drops once the sync mechanism ships.
+
+AAR: `000-docs/008-AA-AACR-ruff-iep-P6-2026-05-24.md`.
+
+### What unblocks next
+
+P6 Phase A2 complete. Next-ready P6 work:
+- A3: `iah-eslint-dispatcher` (`bd_000-projects-rnpy`) — eslint coverage for `bin/audit-harness.js`
+- B1: `iep-shared-lint-configs` — `.audit-harness-configs/` for vendoring lint configs to consumer repos
+- Plus 2 bundleable Gemini-found fixes from v1.1.2 review: `iah-gherkin-prev-blank-noise` + `iah-gherkin-single-awk-opt`
+
 ## [v1.1.2] - 2026-05-24
 
 ### Changed — Shellcheck CI gate flipped from tolerant to hard-fail (IEP Convergence Debt Plan Priority 6 Phase A1)

@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import os
 import shutil
@@ -81,7 +82,10 @@ def score_python(root: Path, kind: str) -> list[MethodScore]:
         scanned = [t for t in candidates if (root / t).is_dir()]
         if not scanned:
             test_dirs = {"tests", "test", "spec", "specs", "features", "__tests__"}
-            ignore = {".git", ".venv", "venv", "node_modules", "dist", "build", "target", ".tox", ".mypy_cache", ".pytest_cache", "reports", "__pycache__"}
+            ignore = {
+                ".git", ".venv", "venv", "node_modules", "dist", "build", "target",
+                ".tox", ".mypy_cache", ".pytest_cache", "reports", "__pycache__",
+            }
             scanned = [
                 p.name for p in root.iterdir()
                 if p.is_dir()
@@ -263,7 +267,6 @@ def score_rust(root: Path, kind: str) -> list[MethodScore]:
         except json.JSONDecodeError:
             continue
         fpath = rec.get("name", "")
-        metrics = rec.get("metrics", {}).get("cyclomatic", {})
         for func in rec.get("spaces", []):
             c = int(func.get("metrics", {}).get("cyclomatic", {}).get("sum", 1))
             complexity.append((fpath, func.get("name", "<anon>"), c))
@@ -382,7 +385,6 @@ def main() -> int:
         (out_dir / "summary.json").write_text(json.dumps(summary, indent=2))
 
     if args.json:
-        import hashlib, os
         side = os.environ.get("AUDIT_HARNESS_SIDE", "ci")
         # input_hash: SHA256 over all production+test source-file contents under root, sorted.
         # Use os.walk with directory pruning instead of rglob — large vendored trees
