@@ -7,7 +7,7 @@ versioning follows [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-## [0.1.0] — 2026-05-10
+## [0.1.0] - 2026-05-10
 
 First public release of the Intent Eval Lab repository — the methodology + specs umbrella for the Intent Eval Platform.
 
