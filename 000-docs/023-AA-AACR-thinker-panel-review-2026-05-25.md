@@ -15,7 +15,7 @@
 
 ## 1. Background
 
-A multi-repo release-sweep plan was approved 2026-05-25 to drive `/release` ceremony across the 5 IEP sub-repos (intent-eval-core, intent-eval-lab, j-rig-binary-eval, intent-rollout-gate, audit-harness). Step 0.5 was added to the plan as an adversarial review BEFORE the release work began — the rationale being that real findings on the underlying architecture, the bd backlog, and the verify-before-claim discipline might affect the sequence or shape of Steps 1-7.
+A multi-repo release-sweep plan was approved 2026-05-25 to drive `/release` ceremony across the 5 IEP sub-repos (intent-eval-core, intent-eval-lab, j-rig-skill-binary-eval, intent-rollout-gate, audit-harness). Step 0.5 was added to the plan as an adversarial review BEFORE the release work began — the rationale being that real findings on the underlying architecture, the bd backlog, and the verify-before-claim discipline might affect the sequence or shape of Steps 1-7.
 
 The panel was built in two layers:
 
@@ -307,9 +307,9 @@ Two reasons documented in the plan:
 ## 9. Cross-references
 
 - `~/.claude/agents/martin-fowler-reviewer.md` and 12 sibling files (durable agent assets)
-- `intent-eval-lab/000-docs/010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md` — DR-010, the constitutional document the panel critiqued
-- `intent-eval-lab/000-docs/022-AT-DECR-isedc-session-6-beads-reengage-2026-05-23.md` — DR-022, the verify-before-claim discipline source
-- `intent-eval-lab/000-docs/012-AT-ARCH-platform-runtime-blueprint.md` — Blueprint B, target of Kleppmann/Hickey/Gregg findings
+- [DR-010](./010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md) — the constitutional document the panel critiqued
+- [DR-022](./022-AT-DECR-isedc-session-6-beads-reengage-2026-05-23.md) — the verify-before-claim discipline source
+- [Blueprint B](./012-AT-ARCH-platform-runtime-blueprint.md) — target of Kleppmann/Hickey/Gregg findings
 - bd workspace at `/home/jeremy/000-projects/.beads/`
 - Original 6 agent run outputs preserved (Claude Code agent IDs: `a10a35aaac5c48e3c`, `ac986d3616075de01`, `a9c19f3c89b8cc233`, `a4b6eb6181330d3de`, `a9fcca794639ef54e`, `a24641b56d1ca6077`)
 
