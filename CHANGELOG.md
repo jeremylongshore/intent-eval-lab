@@ -1,37 +1,40 @@
 # Changelog
 
-## [v0.1.0] - 2026-05-10
+All notable changes to this project are documented here.
 
-- docs: complete /repo-dress 21-file canon (8 governance files, closes #24) (0814969)
-- docs: /validate-consistency audit fixes (INDEX stale + README j-rig claim + DR PB-12 mapping) (b91f2f5)
-- docs: Part 2 landscape (Workstream C) + synthesis (D) + ISEDC Decision Record (3ea8ca5)
-- docs(CLAUDE.md): clarify tier-1 vs tier-2 constituent-project distinction (5402628)
-- docs(CLAUDE.md): update absolute paths after move into intent-eval-platform/ umbrella (2c01742)
-- docs(CLAUDE.md): add three-repo convergence section + brand-name policy (360db92)
-- specs: convergence Phase A — Evidence Bundle skeleton, OTel RFC draft, brand-name scrub (18a193d)
-- bd init: initialize beads issue tracking (5dfd2a1)
-- docs(specs/mcp-plugin-observability): note Go as planned reference runner (377dd13)
-- feat(specs): add normative methodology output tree (a2d5d03)
-- chore: scaffold intent-eval-lab umbrella repo (b9f5dbd)
-
-
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
+versioning follows [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-## [0.1.0] - 2026-05-10
+## [0.1.0] — 2026-05-10
+
+First public release of the Intent Eval Lab repository — the methodology + specs umbrella for the Intent Eval Platform.
 
 ### Added
-- Initial project setup with full governance
-- README, LICENSE, CODE_OF_CONDUCT, CONTRIBUTING, SECURITY, SUPPORT
-- CI/CD workflows (lint, test, release automation)
+
+- Initial repository scaffold (`/repo-dress` 21-file canon, 8 governance files)
 - Enterprise documentation set (6-doc planning suite)
-- GitHub issue templates and PR template
+- `README.md`, `LICENSE` (Apache 2.0), `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md`, `SECURITY.md`, `SUPPORT.md`
+- CI/CD workflows (`lint.yml`, `test.yml`, release automation)
+- GitHub issue templates + PR template
 - Dependabot configuration
-- EditorConfig and gitattributes
+- `.editorconfig` + `.gitattributes`
+- Beads issue tracking initialized at repo scope
+- `specs/` Phase A convergence skeleton — Evidence Bundle skeleton + OpenTelemetry RFC draft (`000-docs/001-DR-RFC-otel-agent-rollout-gate-signals-draft.md`)
+- `specs/mcp-plugin-observability/` reference module (Go as planned reference runner)
+- Normative methodology output tree under `specs/`
+
+### Changed
+
+- `CLAUDE.md` — added three-repo convergence section + partner-name vendor-generic discipline (per DR-004 S1Q2)
+- `CLAUDE.md` — clarified tier-1 (Evidence-Bundle-composing platform) vs tier-2 (independent lab research) constituent project distinction
+- `CLAUDE.md` — updated absolute paths after move into `intent-eval-platform/` umbrella
+- Part 2 ecosystem landscape report + Workstream-D synthesis + first ISEDC Decision Record
+
+### Fixed
+
+- `/validate-consistency` audit fixes — INDEX stale entries, README j-rig claim drift, PB-12 DR mapping
 
 [Unreleased]: https://github.com/jeremylongshore/intent-eval-lab/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/jeremylongshore/intent-eval-lab/releases/tag/v0.1.0
