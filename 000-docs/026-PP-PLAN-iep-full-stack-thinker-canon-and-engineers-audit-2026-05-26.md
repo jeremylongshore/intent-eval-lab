@@ -6,7 +6,7 @@
 | Owner | Jeremy Longshore (executor: Claude as drafting CTO) |
 | Type | Audit-orchestration plan (the plan IS the input; the audit is the output) |
 | Trigger | User direction 2026-05-26: "make a /plan to have a team of experts engineers and thought leaders thinker canon audit the entire epic bead build out we have so far to ensure everything is in line — this is a parfe project lots of wires to keep straight" |
-| Companion plan | `025-PP-PLAN-j-rig-keeper-pretrip-evidence-2026-05-26.md` (the buildout being audited) |
+| Companion plan | `025-PP-PLAN-skill-refiner-2026-05-26.md` (the buildout being audited) |
 | Status banding | ACTIVE |
 
 ## Why this audit, why now
@@ -17,7 +17,7 @@ The IEP has grown into a multi-repo, multi-epic, multi-priority structure with c
 - 56+ epics across the repos (some closed, many open)
 - ~600+ beads in the umbrella workspace
 - 8+ ratified Decision Records (DR-004 through DR-018+ series, with the j-rig + Keeper brand canon as the most recent)
-- 1 newly-restructured 3-epic-26-child cluster (j-rig Keeper + Pre-Trip + Evidence — see companion plan)
+- 1 newly-restructured 3-epic-26-child cluster (Skill Refiner — eval-guided improvement loop; see companion plan)
 - Multiple P0 dependency chains crossing repo boundaries (uprg → kernel v0.3.0; 9pi3 → kernel v0.2.0; bj5m → release tag pattern)
 - 5 deferred standalone beads (j-rig MLOps Phase F + creator product)
 
@@ -29,7 +29,7 @@ User framing: "lots of wires to keep straight." The risk is structural drift —
 
 | Lane | Subject | Source-of-truth layer |
 |---|---|---|
-| **Lane 1 — Brand canon** | All public-facing artifacts (READMEs, specs, plan docs, repo names, package names, CLI names, blog drafts, gists) checked against the j-rig + intent-audit-harness brand canon decisions of 2026-05-26 | DR-010 § 13.6, plan 025, this plan |
+| **Lane 1 — Brand canon** | All public-facing artifacts (READMEs, specs, plan docs, repo names, package names, CLI names, blog drafts, gists) checked against the j-rig + Skill Refiner + intent-audit-harness brand canon decisions of 2026-05-26 | DR-010 § 13.6, plan 025, this plan |
 | **Lane 2 — Bead structure** | All open epics + children: titles plain-English (post-2026-05-22 rule), parent-child graph correct, dependency edges valid, labels sane, no orphaned in_progress, no P0 chains gated on closed pre-conditions, no duplicate beads from race conditions | bd workspace (canonical SoT) |
 | **Lane 3 — Cross-repo dependency graph** | Inter-repo edges across the 5 IEP repos: who consumes what, who emits what, schema-authority direction (kernel → consumers, never reverse), Evidence Bundle compat policy honored at every emitter+consumer pair | Blueprint A, Blueprint B § 7, kernel-shadow inventory (`intent-eval-lab/000-docs/016-RR-LAND`), DR-018 |
 | **Lane 4 — Decision Record consistency** | Every ratified DR is still load-bearing OR explicitly marked superseded; § 13.5 + § 13.6 overrides still apply; ISEDC sessions traceable from binding rule → source DR; no contradictions between active DRs | intent-eval-lab/000-docs/0*-AT-DECR-* + DR-010 master |
@@ -87,7 +87,7 @@ Engineers and thinker-canon reviewers disagree productively. Engineer finding ("
 
 Acting CTO (Claude) assembles the canonical brief pack the panel reads. Includes:
 
-- Companion plan (`025-PP-PLAN-j-rig-keeper-pretrip-evidence-2026-05-26.md`)
+- Companion plan (`025-PP-PLAN-skill-refiner-2026-05-26.md`)
 - All 8 active Decision Records (010-018 series, j-rig brand canon)
 - Blueprint A + Blueprint B + canonical glossary
 - Kernel-shadow inventory (`016-RR-LAND`) + shape reconciliation addendum (`017-RR-LAND`)
@@ -198,7 +198,7 @@ The audit doc cluster lives in `audit/<date>/` so subsequent audits don't overwr
 
 ## Companion artifacts
 
-- Plan being audited: `025-PP-PLAN-j-rig-keeper-pretrip-evidence-2026-05-26.md`
+- Plan being audited: `025-PP-PLAN-skill-refiner-2026-05-26.md`
 - Existing thinker-canon reviewer agents: `~/.claude/agents/<thinker>-reviewer.md` (13 agents per bd-remember)
 - Recent precedent panel: "AA-AACR-thinker-panel-review-2026-05-25" (`023-AA-AACR-thinker-panel-review-2026-05-25.md`) — surfaced 9+ P0/P1 findings + Beck #1 j-rig CI root cause + Gregg #2 OTel semconv gap that gates v0.2.0 kernel
 - ISEDC pattern: `/exec-decision-council` skill at `~/.claude/skills/exec-decision-council/`
