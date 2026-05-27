@@ -89,19 +89,28 @@ Five phases. Each ships independently. Each later phase consumes earlier-phase v
 
 ```typescript
 // Value types
-type SkillDocHash = Sha256
-type EvalSetHash = Sha256
-type ScoreRecord = { skill: SkillDocHash; evalSet: EvalSetHash;
-                     behavioral: number; readability: number; ... }
-type EditProposal = { parent: SkillDocHash; ops: Array<AddOp|DeleteOp|ReplaceOp>;
-                      proposer_model: string; rationale: string }
+type SkillDocHash = Sha256;
+type EvalSetHash = Sha256;
+type ScoreRecord = {
+  skill: SkillDocHash;
+  evalSet: EvalSetHash;
+  behavioral: number;
+  readability: number;
+  [dimension: string]: unknown; // extensible — additional scoring dimensions added per skill kind
+};
+type EditProposal = {
+  parent: SkillDocHash;
+  ops: Array<AddOp | DeleteOp | ReplaceOp>;
+  proposer_model: string;
+  rationale: string;
+};
 
-// Pure operations
-bootstrap(skillDoc): EvalSet
-score(skillDoc, evalSet, modelTier='haiku'): ScoreRecord
-propose(skillDoc, scoredRollouts, optimizerModel='sonnet'): EditProposal
-apply(skillDoc, edit): SkillDocV2
-accept(scoreV1, scoreV2): boolean
+// Pure operations (illustrative signatures — final shape lands in Phase A package)
+declare function bootstrap(skillDoc: SkillDoc): EvalSet;
+declare function score(skillDoc: SkillDoc, evalSet: EvalSet, modelTier?: 'haiku' | 'sonnet' | 'opus'): ScoreRecord;
+declare function propose(skillDoc: SkillDoc, scoredRollouts: ScoredRollout[], optimizerModel?: string): EditProposal;
+declare function apply(skillDoc: SkillDoc, edit: EditProposal): SkillDocV2;
+declare function accept(scoreV1: ScoreRecord, scoreV2: ScoreRecord): boolean;
 ```
 
 - Append-only event log at `.skillopt/log.jsonl`
@@ -249,7 +258,7 @@ Template (REQUIRED sections):
 | Optimization passes | N (M accepted, K rejected) |
 | Compute cost | $X.XX (Haiku $X.XX; Sonnet $X.XX; Opus $X.XX) |
 | Wall-clock | HH:MM:SS |
-| Confidence tier | alpha | beta | stable |
+| Confidence tier | `alpha` \| `beta` \| `stable` |
 
 ## 1. Context
 ## 2. Eval set composition
