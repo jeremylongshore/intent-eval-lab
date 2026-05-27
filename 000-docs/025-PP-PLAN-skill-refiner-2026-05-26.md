@@ -7,7 +7,9 @@
 | Supersedes | Prior 2026-05-26 release-sweep plan (carry-over items folded into § 1). Filename evolved in-PR across 3 brand iterations: `025-PP-PLAN-skillopt-pattern-plugin-ecosystem-2026-05-26.md` (initial draft, borrowed verbiage) → `025-PP-PLAN-j-rig-keeper-pretrip-evidence-2026-05-26.md` (j-rig sub-product naming) → `025-PP-PLAN-skill-refiner-2026-05-26.md` (final, peer-product naming under IS agent-rig stack). |
 | Decision basis | User-confirmed via AskUserQuestion rounds 2026-05-26 |
 | Scope | ONE new product — **Skill Refiner** — the eval-guided improvement loop that proposes safe, minimal SKILL.md edits and accepts only on strict score improvement. Delivered as a Claude Code plugin with a 3-layer hook architecture (sinker/line/hook); emits signed evidence reports (markdown + HTML) per pass; integrates with the IEP kernel as the 14th canonical entity (SkillVersion) + a new predicate URI (skill-refiner-pass/v1). |
-| Status banding | ACTIVE |
+| Status banding | ACTIVE — SUPERSEDED-BY 027-PP-PLAN-skill-refiner-snoopy-fluttering-comet-v4-2026-05-26.md (this plan is the companion / v3 framing; plan 027 is the v4 enhancement with ecosystem-fold + per-repo bead structure + plan-audit phase) |
+| Beads | bd_000-projects-0r8m (product epic — Tier-1 kernel + evidence), bd_000-projects-3zol (product epic — Refiner library), bd_000-projects-jsy3 (product epic — /j-rig plugin + hooks), bd_000-projects-rqwk (RC-IEL), bd_000-projects-brij (RC-IEC), bd_000-projects-214c (RC-IAJ), bd_000-projects-aon3 (RC-IAH), bd_000-projects-r8ir (RC-IAR), bd_000-projects-pu35 (TL-EPIC) |
+| GitHub | jeremylongshore/intent-eval-lab#78, jeremylongshore/intent-eval-lab#79, jeremylongshore/intent-eval-core#12, jeremylongshore/j-rig-skill-binary-eval#81, jeremylongshore/intent-audit-harness#42, jeremylongshore/intent-rollout-gate#15 |
 
 ## What this is
 
