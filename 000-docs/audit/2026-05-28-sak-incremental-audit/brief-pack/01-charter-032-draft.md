@@ -1,0 +1,1 @@
+../../032-AT-DECR-isedc-class-1-charter-spec-authority-kernel-draft-2026-05-28.md
