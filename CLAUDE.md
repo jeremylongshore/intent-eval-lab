@@ -127,6 +127,45 @@ Never share state across experiments. Tear down infrastructure after each run un
 
 Keep this scoped. The lab's value is rigor + cross-project synthesis, not building yet another application.
 
+## Skill Refiner — plan + audit + ratification (2026-05-27)
+
+The Skill Refiner buildout is the active multi-week effort under this lab umbrella. Plan is RATIFIED 2026-05-27; first `bd claim` permitted; recommended first claim is the Phase A.0 null-hypothesis baseline.
+
+**Canonical docs (read in order):**
+
+| Order | Doc | Purpose |
+|---|---|---|
+| 1 | `000-docs/027-PP-PLAN-skill-refiner-snoopy-fluttering-comet-v4-2026-05-26.md` | THE PLAN (v5 inline; ~1700 lines). DR-028 Amendments Index block at top is the v5 delta digest. |
+| 2 | `000-docs/028-AT-DECR-isedc-council-session-7-skill-refiner-plan-ratification-2026-05-27.md` | ISEDC Session 7 Decision Record — 10 ratified decisions (T1-T4 tensions + P0-RATIFY-1..6). Verbatim seat positions + binding minority constraints. |
+| 3 | `000-docs/029-DR-BAND-skill-refiner-bandwidth-model-2026-05-27.md` | FTE-week budget per phase (8.8 FTE-weeks total ≈ ~3 calendar months bandwidth-gated + external blockers). Critical-path beads. Pre-mortem. |
+| 4 | `000-docs/025-PP-PLAN-skill-refiner-2026-05-26.md` | Companion plan (v3 framing); SUPERSEDED-BY 027. |
+| 5 | `000-docs/audit/2026-05-26-plan-audit/STATUS.md` | Current state: **RATIFIED** as of 2026-05-27 |
+| 6 | `000-docs/audit/2026-05-26-plan-audit/synthesis.md` | 7-seat Plan Audit panel synthesis (Hickey/Beck/Karpathy/Huyen/Lamport/Cunningham/Kleppmann); 6 convergent P0s; 4 tensions |
+| 7 | `000-docs/audit/2026-05-26-plan-audit/findings/*-findings.md` | 7 individual Plan Audit seat reports + 6 thinker tension arbitrations |
+| 8 | `000-docs/audit/2026-05-26-plan-audit/remediation-map.md` | Finding → plan-section / bead-ID action map |
+| 9 | `000-docs/audit/2026-05-26-plan-audit/internal-review-2026-05-27.md` | Pre-flight 4-reviewer pass (article-consistency + architect + code + fact-checker) that produced v4.1 P0 patches |
+
+**Headline decisions (DR-028 ratified):**
+
+- **T1 SkillVersion entity:** DISCRIMINATOR — separate entity from SkillSnapshot, `version_kind` + `parent_version_id` + `source_snapshot_hash` (reference, NOT FK) (6 vs 5 vs 2 vs 2)
+- **T2 Phase D:** ANTI-GOAL — removed from plan; Blueprint A § 3.X amendment carries the explicit non-commitment (12 of 14 voices)
+- **T3 Process discipline:** COLLAPSE — bd is canonical writer; GH/Plane are projections; `bd-sync` becomes generator (20/20 consensus)
+- **T4 Brand:** KEEP Skill Refiner as named product (CMO/CFO/VP DevRel business-axis trio overrode thinker-majority on brand-instability + dev-mental-model grounds); AC-7 + new AC-13 RefinerStrategy interface are the engineering hedge
+
+**Enforcement (machine, not honor):** `intent-eval-lab/scripts/bd-claim-precheck.sh` reads `000-docs/audit/2026-05-26-plan-audit/STATUS.md`; blocks `bd claim` against refiner-labeled beads unless STATUS=RATIFIED (or RATIFIED-WITH-DELTAS for explicitly-authorized work). Tested + working.
+
+**Tri-link verifier:** `intent-eval-lab/scripts/validate-trilink.sh` enforces bead↔doc↔GH-issue cross-refs for refiner-labeled artifacts. Runs in CI per repo (planned). Currently PASS.
+
+**Bead workspace:** ALL Skill Refiner beads (50 open as of 2026-05-27) live in the umbrella `~/000-projects/.beads/` (NOT per-repo workspaces). Per-repo distinguishability via mandatory `repo:<short>` labels (`repo:iel`, `repo:iec`, `repo:iaj`, `repo:iah`, `repo:iar`, `repo:iep`). Query example: `bd list --label repo:iec --label refiner --status open`.
+
+**Open external blockers (sole-prop-owned):**
+
+- `bd_000-projects-uprg` — Evidence Bundle compat policy → blocks Phase C SkillVersion in `@intentsolutions/core@0.3.0`
+- `bd_000-projects-9pi3` — OTel semconv pin → blocks kernel v0.3.0 release
+- Both amended with DR-028 dependency notes pointing to 029-DR-BAND
+
+**Plan Audit pattern (reusable):** the 4-reviewer pre-flight → 7-seat thinker-canon panel → 6-thinker tension arbitration → 7-seat ISEDC ratification sequence is reusable for any future high-stakes plan (any plan with multiple convergent P0s + cross-seat tensions). See `~/.claude/skills/exec-decision-council/sessions/2026-05-27-skill-refiner-plan-ratification/` for the canonical run.
+
 ## Internal operational notes
 
 Detailed operational state (active engagements, sock-puppet observations, partner-specific notes, patent-sensitive cross-refs) lives in `.private/CLAUDE-private.md` — gitignored, local-only. Read that file in addition to this one when working in this dir on operational tasks.
