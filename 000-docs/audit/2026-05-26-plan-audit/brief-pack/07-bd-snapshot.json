@@ -1,0 +1,1528 @@
+[
+  {
+    "id": "bd_000-projects-rqwk.1",
+    "title": "Author intent-eval-lab/000-docs/028-AT-SPEC-skill-refiner-pass-v1-predicate.md (normative predicate spec)",
+    "description": "**Plan reference:** Plan 027 § 5 Critical Files + § 5.5 leaf inventory.\n\n**Scope:** Author intent-eval-lab/000-docs/028-AT-SPEC-skill-refiner-pass-v1-predicate.md (normative predicate spec for skill-refiner-pass/v1). Lives at predicateType URI https://evals.intentsolutions.io/skill-refiner-pass/v1. Include cross-field invariants per CISO binding (rekor_log_index non-null iff signing_mode='production'). Embed gate-result row schema.\n\n**Architectural commitments honored:** AC-1 (Tier-1 kernel integration), AC-9 (single-signer audit trail), AC-12 (tri-linkage).\n\n**Coordination:** parent = bd_000-projects-0r8m. Per-repo = bd_000-projects-rqwk.\n\n**Dependencies:** soft-depends on bd_000-projects-uprg (Evidence Bundle compat policy) — predicate URI cannot be signed into prod Rekor until uprg closes.\n\nDoc: intent-eval-platform/intent-eval-lab/000-docs/028-AT-SPEC-skill-refiner-pass-v1-predicate.md\nGitHub: TBD-Step-2\n",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-27T20:25:44Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-27T20:25:44Z",
+    "labels": [
+      "coord",
+      "doc",
+      "epic",
+      "refiner",
+      "repo:iel",
+      "spec",
+      "task"
+    ],
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-rqwk.1",
+        "depends_on_id": "bd_000-projects-rqwk",
+        "type": "parent-child",
+        "created_at": "2026-05-27T14:25:44Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 0,
+    "dependent_count": 0,
+    "comment_count": 0,
+    "parent": "bd_000-projects-rqwk"
+  },
+  {
+    "id": "bd_000-projects-brij.1",
+    "title": "Add SkillVersion entry to intent-eval-core boundary table doc (14th canonical entity)",
+    "description": "**Plan reference:** Plan 027 § 5.5 leaf inventory + § 5 Critical Files.\n\n**Scope:** Add SkillVersion entry to intent-eval-core boundary table doc (002-AT-ARCH-repo-blueprint). Document: 14th canonical entity, fields per plan § 4 Phase C schema, relationship to existing SkillSnapshot (extends, NOT duplicates), spec-version pinning per AC-11 amendment from Step 0 (claude-docs-spec-tree-2026-05-27.md).\n\n**Architectural commitments honored:** AC-1, AC-11, AC-12.\n\n**Coordination:** parent = bd_000-projects-0r8m. Per-repo = bd_000-projects-brij.\n\nDoc: intent-eval-platform/intent-eval-core/000-docs/002-AT-ARCH-repo-blueprint-2026-05-18.md\nGitHub: TBD-Step-2\n",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-27T20:22:26Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-27T20:22:26Z",
+    "labels": [
+      "coord",
+      "doc",
+      "epic",
+      "refiner",
+      "repo:iec",
+      "task"
+    ],
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-brij.1",
+        "depends_on_id": "bd_000-projects-brij",
+        "type": "parent-child",
+        "created_at": "2026-05-27T14:22:25Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 0,
+    "dependent_count": 0,
+    "comment_count": 0,
+    "parent": "bd_000-projects-brij"
+  },
+  {
+    "id": "bd_000-projects-brij",
+    "title": "Skill Refiner — intent-eval-core coordination (SkillVersion entity, validator, schema, release)",
+    "description": "**Plan reference:** Plan 027 § 5.5 — per-repo Skill Refiner coordination epic for `intent-eval-core`.\n\n**Scope:** SkillVersion entity schema (14th canonical) at schemas/v1/skill-version.schema.json; Zod validator src/validators/v1/skill-version.ts; skill-refiner-pass predicate schema; @intentsolutions/core@0.3.0 release ceremony; boundary table update; ALLOWLIST.md update.\n\n**Architectural commitments honored:** AC-1 (Tier-1 IEP integration), AC-2 (append-only), AC-11 (spec-version pinning in SkillVersion), AC-12 (tri-linkage).\n\n**Per-repo distinguishability:** label `repo:iec` + Doc + GitHub fields below.\n\n**Children:** IEC-N1 (boundary table), IEC-N2 (ER diagram update). Product epic 0r8m's children (0r8m.1, 0r8m.2, 0r8m.8) coordinate through this RC.\n\n**Gate:** blocks on bd_000-projects-uprg (Evidence Bundle compat policy) + bd_000-projects-9pi3 (OTel semconv pin) per plan § 4 Phase C exit criteria.\n\nDoc: intent-eval-platform/intent-eval-core/000-docs/002-AT-ARCH-repo-blueprint-2026-05-18.md\nGitHub: TBD-Step-2\n",
+    "notes": "GitHub: jeremylongshore/intent-eval-core#12 — https://github.com/jeremylongshore/intent-eval-core/issues/12. MIRROR RULE: bd-sync handles fan-out — `bd-sync note bd_000-projects-brij` and `bd-sync close bd_000-projects-brij` mirror to GH and Plane automatically.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "epic",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-27T20:04:14Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-27T21:03:48Z",
+    "labels": [
+      "coord",
+      "epic",
+      "refiner",
+      "repo:iec"
+    ],
+    "dependency_count": 0,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-0r8m.8",
+    "title": "Ship @intentsolutions/core@0.3.0 release ceremony with SkillVersion entity + skill-refiner-pass/v1 predicate + sigstore provenance + AAR",
+    "description": "Final kernel-side task on Epic 3. Pre-conditions: schema/validator/predicate/Blueprint/glossary all land + ISEDC Session 7 DR filed. Ceremony: bump 0.2.x → 0.3.0 (MINOR additive Parallel Change per bd_000-projects-xcs4), CHANGELOG per Keep-a-Changelog 1.1.0 (hyphen), /branch-protection bypass-restore, git tag v0.3.0 + push --follow-tags, CI publishes via release.yml with sigstore provenance, verify via npm view, author AAR at intent-eval-core/000-docs/NNN-AA-AACR-release-v0.3.0-\u003cdate\u003e.md. Uses j-rig tag-trigger pattern (PR #80) — avoids bd_000-projects-bj5m branch-protection failures. Honors 59tx alerting. Plan ref: 025 § 4 Phase C, § 9 verification #3.",
+    "notes": "Doc: intent-eval-platform/intent-eval-core/000-docs/NNN-AA-AACR-release-v0.3.0-2026-TBD.md\nGitHub: jeremylongshore/intent-eval-core#12",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-27T03:08:46Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-27T21:23:03Z",
+    "labels": [
+      "evidence",
+      "j-rig",
+      "kernel",
+      "refiner",
+      "release"
+    ],
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-0r8m.8",
+        "depends_on_id": "bd_000-projects-0r8m",
+        "type": "parent-child",
+        "created_at": "2026-05-26T21:08:45Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 0,
+    "dependent_count": 0,
+    "comment_count": 0,
+    "parent": "bd_000-projects-0r8m"
+  },
+  {
+    "id": "bd_000-projects-0r8m.7",
+    "title": "Convene ISEDC Session 7 to ratify skill-refiner-pass/v1 URI namespace addition (CISO binding: evals.intentsolutions.io) + file DR",
+    "description": "Use /exec-decision-council skill (7-seat adversarial council). Ratification: Q1 add skill-refiner-pass/v1 to evals.intentsolutions.io namespace (CISO binding); Q2 confirm SkillVersion as 14th canonical entity; Q3 confirm staging-only Rekor until uprg compat policy ratified; Q4 confirm j-rig as canonical emitter. Output DR at intent-eval-lab/000-docs/NNN-AT-DECR-isedc-session-7-skill-refiner-tier1.md with verbatim 7-seat positions. Pre-condition: uprg + 9pi3 closed. Plan ref: 025 § 4 Phase C exit criteria #4.",
+    "notes": "Doc: intent-eval-platform/intent-eval-lab/000-docs/NNN-AT-DECR-isedc-session-7-skill-refiner-tier1-2026-TBD.md\nGitHub: jeremylongshore/intent-eval-lab#78",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-27T03:07:19Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-27T21:21:10Z",
+    "labels": [
+      "decision-record",
+      "evidence",
+      "isedc",
+      "j-rig",
+      "kernel",
+      "refiner"
+    ],
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-0r8m.7",
+        "depends_on_id": "bd_000-projects-0r8m",
+        "type": "parent-child",
+        "created_at": "2026-05-26T21:07:18Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 0,
+    "dependent_count": 0,
+    "comment_count": 0,
+    "parent": "bd_000-projects-0r8m"
+  },
+  {
+    "id": "bd_000-projects-0r8m.6",
+    "title": "Build 'j-rig emit-refiner-pass' CLI command (parallel to existing 'j-rig emit-evidence') — emits skill-refiner-pass/v1 Evidence Bundle rows",
+    "description": "New CLI command in j-rig-binary-eval/packages/cli/src/commands/emit-refiner-pass.ts. Pattern: parallel to emit-evidence.ts. Usage: j-rig emit-refiner-pass --skill \u003cid\u003e --proposal \u003chash\u003e --decision \u003caccepted|rejected\u003e [--rekor] [--signing-mode staging|prod]. Reads SkillVersion + EditProposal from .j-rig/refiner/store/; builds predicate body matching skill-refiner-pass/v1 schema; wraps in in-toto Statement v1; optional cosign sign + Rekor upload. Uses audit-harness emit-evidence wrapper for signing. Plan ref: 025 § 4 Phase C j-rig changes.",
+    "notes": "Doc: intent-eval-platform/j-rig-binary-eval/000-docs/021-AT-SPEC-refiner-core-api.md\nGitHub: jeremylongshore/j-rig-skill-binary-eval#81",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-27T03:05:23Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-27T21:19:08Z",
+    "labels": [
+      "cli",
+      "evidence",
+      "j-rig",
+      "kernel",
+      "refiner"
+    ],
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-0r8m.6",
+        "depends_on_id": "bd_000-projects-0r8m",
+        "type": "parent-child",
+        "created_at": "2026-05-26T21:05:23Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 0,
+    "dependent_count": 0,
+    "comment_count": 0,
+    "parent": "bd_000-projects-0r8m"
+  },
+  {
+    "id": "bd_000-projects-0r8m.5",
+    "title": "Update canonical glossary (014-DR-GLOS) with Skill Refiner brand canon entries: SkillVersion, Skill Refiner, 3-layer hooks (sinker/line/hook), ScoreRecord, EditProposal, Skill Refiner evidence reports",
+    "description": "Add 6 new entries to intent-eval-lab/000-docs/014-DR-GLOS-canonical-glossary.md following existing entry format. Cross-link to Blueprint B § 7 + plan 025. Per DR-010 § 13.6 (external-pattern non-borrow): entries explain IS-native concepts; cite prior art for design context only. Plan ref: 025 § 4 Phase C + § 5 critical files.",
+    "notes": "Doc: intent-eval-platform/intent-eval-lab/000-docs/014-DR-GLOS-canonical-glossary.md\nGitHub: jeremylongshore/intent-eval-lab#78",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-27T03:03:38Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-27T21:16:52Z",
+    "labels": [
+      "evidence",
+      "glossary",
+      "j-rig",
+      "kernel",
+      "refiner"
+    ],
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-0r8m.5",
+        "depends_on_id": "bd_000-projects-0r8m",
+        "type": "parent-child",
+        "created_at": "2026-05-26T21:03:38Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 0,
+    "dependent_count": 0,
+    "comment_count": 0,
+    "parent": "bd_000-projects-0r8m"
+  },
+  {
+    "id": "bd_000-projects-0r8m.4",
+    "title": "Extend Blueprint B § 7 (intent-eval-lab) with normative skill-refiner-pass/v1 spec — predicate URI, field definitions, cross-field invariants, emitter/consumer expectations",
+    "description": "Add new subsection to intent-eval-lab/000-docs/012-AT-ARCH-platform-runtime-blueprint.md § 7 carrying the normative spec for skill-refiner-pass/v1. Sections: URI namespace, required/optional fields, cross-field invariants (rekor_log_index ↔ signing_mode), emitter (j-rig is canonical), consumer (intent-rollout-gate enriches, not blocking), versioning per bd_000-projects-uprg ratified policy, glossary refs. Per Blueprint B § 7.0 'Schema authority' (PR #65) — schema in kernel, semantics in this doc. Plan ref: 025 § 4 Phase C.",
+    "notes": "Doc: intent-eval-platform/intent-eval-lab/000-docs/012-AT-ARCH-platform-runtime-blueprint.md\nGitHub: jeremylongshore/intent-eval-lab#78",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-27T03:01:46Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-27T21:14:49Z",
+    "labels": [
+      "blueprint",
+      "evidence",
+      "j-rig",
+      "kernel",
+      "refiner"
+    ],
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-0r8m.4",
+        "depends_on_id": "bd_000-projects-0r8m",
+        "type": "parent-child",
+        "created_at": "2026-05-26T21:01:45Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 0,
+    "dependent_count": 0,
+    "comment_count": 0,
+    "parent": "bd_000-projects-0r8m"
+  },
+  {
+    "id": "bd_000-projects-0r8m.3",
+    "title": "Design skill-refiner-pass/v1 predicate schema (intent-eval-core/schemas/v1/skill-refiner-pass.schema.json) + register in index.json",
+    "description": "The signable predicate carried by Evidence Bundle rows during optimization. URI: https://evals.intentsolutions.io/skill-optimization-step/v1 (CISO binding: evals not labs). Body: skill_version_id, edit_proposal_hash, score_pre, score_post, decision (accepted|rejected), decision_reason, proposer_model, optimizer_seed, timestamp. Signs into prod Rekor ONLY after bd_000-projects-uprg closes. Plan ref: § 4 Phase C.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-27T02:37:28Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-27T03:00:44Z",
+    "labels": [
+      "evidence",
+      "j-rig",
+      "kernel",
+      "predicate"
+    ],
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-0r8m.3",
+        "depends_on_id": "bd_000-projects-0r8m",
+        "type": "parent-child",
+        "created_at": "2026-05-26T20:37:27Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 0,
+    "dependent_count": 0,
+    "comment_count": 0,
+    "parent": "bd_000-projects-0r8m"
+  },
+  {
+    "id": "bd_000-projects-0r8m.2",
+    "title": "Implement SkillVersion Zod validator (src/validators/v1/skill-version.ts) via pnpm run codegen:validators + export from index",
+    "description": "After schema lands (0r8m.1), regenerate Zod validator. Hand-wrap with cross-field invariants. Tests cover valid record, invalid hash, invariant violations. Pattern: mirror existing GateResultV1 validator. Plan ref: § 4 Phase C, § 5 critical files.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-27T02:35:41Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-27T02:35:41Z",
+    "labels": [
+      "evidence",
+      "j-rig",
+      "kernel",
+      "validator"
+    ],
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-0r8m.2",
+        "depends_on_id": "bd_000-projects-0r8m",
+        "type": "parent-child",
+        "created_at": "2026-05-26T20:35:40Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 0,
+    "dependent_count": 0,
+    "comment_count": 0,
+    "parent": "bd_000-projects-0r8m"
+  },
+  {
+    "id": "bd_000-projects-0r8m.1",
+    "title": "Design SkillVersion entity schema at intent-eval-core/schemas/v1/skill-version.schema.json (14th canonical entity — additive, joins existing 13)",
+    "description": "First kernel task on Epic 3. SkillVersion is ADDITIVE to existing 13 entities (does NOT replace SkillSnapshot — complementary). Fields per plan § 4 Phase C: id (uuidv7), skill_id (kebab-slug), skill_doc_hash (sha256), parent_version_id (lineage), edit_proposal_hash, eval_set_hash, score_record, accepted_by, accepted_at, signing_mode, rekor_log_index. Cross-field invariants per bd_000-projects-1is2 (CISO co-author): rekor_log_index non-null iff signing_mode='production'. Plan ref: § 4 Phase C.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-27T02:33:46Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-27T02:33:46Z",
+    "labels": [
+      "evidence",
+      "j-rig",
+      "kernel",
+      "schema"
+    ],
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-0r8m.1",
+        "depends_on_id": "bd_000-projects-0r8m",
+        "type": "parent-child",
+        "created_at": "2026-05-26T20:33:45Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 0,
+    "dependent_count": 0,
+    "comment_count": 0,
+    "parent": "bd_000-projects-0r8m"
+  },
+  {
+    "id": "bd_000-projects-0r8m",
+    "title": "Ship Skill Refiner evidence + Tier-1 IEP kernel integration — SkillVersion entity (14th canonical) + skill-refiner-pass/v1 predicate URI + signed evidence reports",
+    "description": "Epic 3 of the j-rig sub-product roadmap (j-rig brand canon, 2026-05-26).\n\nj-rig Evidence is the report production + signed-attestation sub-product. Tier-1 IEP integration promotes SkillVersion to the 14th canonical entity in intent-eval-core (joining the existing 13). Mints skill-optimization-step/v1 predicate URI on evals.intentsolutions.io.\n\nArchitectural commits:\n- intent-eval-core: schemas/v1/skill-version.schema.json + skill-optimization-step.schema.json + Zod validators + index registrations + CHANGELOG entry + version bump to 0.3.0\n- intent-eval-lab: Blueprint B § 7 normative spec extension + canonical glossary entries\n- j-rig: new j-rig emit-skill-step CLI command (parallel to existing emit-evidence)\n- intent-rollout-gate: M5 substantive runtime consumes skill-optimization-step/v1 rows as enrichment\n\nj-rig Evidence report pipeline:\n- Markdown AAR canonical: \u003crepo\u003e/000-docs/NNN-RL-REPT-jrig-keeper-\u003cskill\u003e-\u003cdate\u003e.md (10 required sections per § E.1)\n- HTML projection: deterministically rendered from MD; hosted at evals.intentsolutions.io/reports/\u003cskill-id\u003e/\u003csha-prefix\u003e/ via Hugo template\n- Signed Evidence Bundle: in-toto Statement v1 anchored via cosign + sigstore Rekor\n\nCompanion P0 dependencies:\n- bd_000-projects-uprg — Evidence Bundle predicate compatibility policy (BLOCKS this epic — one-way Rekor door)\n- bd_000-projects-9pi3 — OTel semconv pin (BLOCKS kernel v0.3.0 ship)\n- bd_000-projects-59tx — Release workflow failure alerting (CROSS-CUTTING)\n\nPlan: intent-eval-lab/000-docs/025-PP-PLAN-j-rig-keeper-pretrip-evidence-2026-05-26.md § 4 Phase C+E.\nPR: jeremylongshore/intent-eval-lab#77.\nSupersedes deps: closed bead bd_000-projects-6qyw.3 transferred its uprg+9pi3 deps here.",
+    "acceptance_criteria": "@intentsolutions/core@0.3.0 published with SkillVersion entity + skill-optimization-step/v1 predicate. j-rig emit-skill-step CLI shipped. Blueprint B § 7 extended. ISEDC Session 7 DR ratifying URI namespace filed. jrig-evidence-report v1.0.0-draft SPEC.md committed. HTML renderer live at evals.intentsolutions.io/reports/. One real report generated end-to-end (Epic 2 demo).",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "epic",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-27T01:58:58Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-27T02:51:17Z",
+    "labels": [
+      "evidence",
+      "j-rig",
+      "kernel"
+    ],
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-0r8m",
+        "depends_on_id": "bd_000-projects-3zol",
+        "type": "blocks",
+        "created_at": "2026-05-26T19:58:58Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-59tx",
+    "title": "Add Release workflow failure alerting (ntfy 'prod-alerts' topic) across IEP repos",
+    "description": "Per IEP thinker-panel review (Gregg finding #1, 2026-05-25). j-rig Release workflow failed 3 consecutive times since v1.0.0 (runs 26350224382, 26197406480, 26140831171) with NO alert path. Each was caught by ad-hoc gh run list — nobody got paged.\n\nAction per repo (j-rig + intent-eval-core + audit-harness + intent-rollout-gate when M5 lands):\n1. Add 'failure:' step to .github/workflows/release.yml that POSTs to ntfy topic 'prod-alerts' (http://intentsolutions:8080).\n2. Add scheduled release-health.yml that runs daily and pings on any 'failure' conclusion in latest run.\n\nUSE-method 'Errors' axis was pinned \u003e0 with zero monitoring. Release pipeline degraded steady-state. Sweep precondition: j-rig CI fix lands (PR #76 in flight).",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-26T01:00:05Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-26T01:00:05Z",
+    "dependency_count": 0,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-9pi3",
+    "title": "Pin OTel semantic conventions in @intentsolutions/core BEFORE v0.2.0 ships",
+    "description": "Per IEP thinker-panel review (Gregg finding #2 + most-costly-to-recover-from, 2026-05-25). Blueprint B § 4.3 specifies OTel events (runtime.dedup, bundle.emission.refused, replay.verdict, etc.) but the ATTRIBUTE NAMES are not pinned. Five emitters (j-rig, audit-harness, intent-rollout-gate, intent-eval-lab tests, intent-eval-core itself) will drift across naming (eval_run_id vs evalRunId vs run.id).\n\nAction: add schemas/v1/otel-attributes.yaml to intent-eval-core (OTel semconv format), export named constants from @intentsolutions/core/otel/v1, add normative 'must emit' attribute list per predicate kind to Blueprint B § 7.2.\n\nChild of iel-E12 (Canonical runtime event taxonomy). Without this, iel-E12's event-name pinning is necessary but not sufficient. Must land before v0.2.0 ships — recovery cost after consumers emit drifted-attribute spans rises super-linearly with retained-trace count.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-26T00:58:47Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-26T00:58:47Z",
+    "dependency_count": 0,
+    "dependent_count": 1,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-uprg",
+    "title": "Write Evidence Bundle predicate compatibility policy BEFORE first prod-Rekor anchor",
+    "description": "Per IEP thinker-panel review (Kleppmann finding #4, Fowler most-costly-to-recover-from, 2026-05-25). Rekor anchoring is a one-way door — once gate-result/v1 rows are signed into prod Rekor, the URI namespace is permanent forever. The compatibility policy MUST be written and ratified BEFORE iah-E06 pre-flight passes.\n\nPolicy MUST specify: (a) FORWARD rule (v1 consumer ignores unknown fields in v2 rows), (b) BACKWARD rule (v2 consumer reads v1 rows unmodified), (c) MIXING rule (bundles MAY contain rows of different versions; consumers process each row independently), (d) DEPRECATION rule (vN supported for at least 3 years after v(N+1)).\n\nLanding place: intent-eval-lab/specs/evidence-bundle/COMPATIBILITY.md. Should be made an iec-E12 precondition.\n\nThis is a one-way door. Recovery cost = abandon v1 namespace and start over at v2 (forfeits first-mover-on-attested-evidence claim).",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-26T00:57:38Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-26T00:57:38Z",
+    "dependency_count": 0,
+    "dependent_count": 1,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-wit3",
+    "title": "iec-E12b — Audit-harness iah-E04 second-emitter shape sketch (paper)",
+    "description": "Per DR 018 § 6.4 CSO + CFO joint binding precondition. Sketch on paper the EvidenceBundlePayload shape audit-harness's iah-E04 emit-evidence subcommand will need. Output: design doc showing how audit-harness will populate the kernel-canonical payload shape. Blocks iec-E12 final PR open per binding precondition: if no second-emitter shape can be articulated, the kernel PR is HELD. Parent: bd_000-projects-wjh6; blocks iec-E12.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-21T02:20:57Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-21T02:20:57Z",
+    "dependency_count": 0,
+    "dependent_count": 1,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-1is2",
+    "title": "iec-E12a — Cross-field invariant enumeration (CISO co-author)",
+    "description": "Per DR 018 § 6.4. CISO co-authors enumeration of cross-field invariants from Blueprint B § 7.3 line 792 BEFORE iec-E12 kernel PR opens. Output: design-doc or PR-body section enumerating each invariant + Zod .refine() implementation pattern. Once these invariants ship in kernel, they are effectively immutable. Parent: bd_000-projects-wjh6; blocks iec-E12.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-21T02:20:04Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-21T02:20:04Z",
+    "dependency_count": 0,
+    "dependent_count": 1,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-33tc",
+    "title": "iec-E12 — Kernel @intentsolutions/core v0.2.0: EvidenceBundlePayload + cross-field invariants",
+    "description": "Per ISEDC Session 5 Q2 decision (DR 018). Ship kernel v0.2.0 (minor bump, additive — no breaking changes to existing kernel consumers). Adds: (1) EvidenceBundlePayload type + Zod schema (the JSON-array wire format); (2) folded EvidenceStatement row shape from j-rig (in-toto Statement v1 carrying gate-result/v1 predicate); (3) cross-field invariants from Blueprint B § 7.3 line 792 enforced as Zod .refine() calls — subject[0].name === predicate.gate_id AND subject[0].digest.sha256 (no prefix) === predicate.input_hash (no sha256: prefix); (4) extensions: Record\u003cstring, unknown\u003e escape hatch for experimental fields. Binding preconditions: PR drafted against ≥2 prospective emitters before merge; CISO co-authors invariant enumeration before PR opens. Parent: bd_000-projects-wjh6 (ISEDC Session 5).",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "feature",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-21T02:19:06Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-21T02:19:06Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-33tc",
+        "depends_on_id": "bd_000-projects-1is2",
+        "type": "blocks",
+        "created_at": "2026-05-20T20:30:46Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-33tc",
+        "depends_on_id": "bd_000-projects-wit3",
+        "type": "blocks",
+        "created_at": "2026-05-20T20:31:33Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 2,
+    "dependent_count": 3,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-x6dd",
+    "title": "iep-kernel-shadow-inventory — Read-only inventory of 11 canonical types across 5 repos",
+    "description": "Read-only audit. Walk audit-harness, j-rig-binary-eval, intent-rollout-gate, intent-eval-lab, and intent-eval-core source trees. Identify every local definition of the 11 canonical kernel types: EvidenceBundle, EvalSpec, EvalRun, EvalCase, SessionTrace, Provider, JudgeAdapter, ScoringConfig, MatcherInputPattern, AssertionExpression, GateResultV1. Produce intent-eval-lab/000-docs/016-RR-LAND-kernel-shadow-inventory-2026-05-20.md with per-repo per-type breakdown, file paths, line numbers, retention sites (test fixtures), and migration target list. Unblocks Priority 1 parallel migration work.",
+    "acceptance_criteria": "Inventory doc filed at intent-eval-lab/000-docs/016-RR-LAND-kernel-shadow-inventory-2026-05-20.md. Per-repo per-type breakdown complete. Migration target list with file paths derived.",
+    "notes": "Sub of iep-P1-kernel-adoption (bd_000-projects-6hd6). NEW per 2026-05-20 IEP Convergence Debt plan.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-20T20:41:19Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-20T20:41:19Z",
+    "dependency_count": 0,
+    "dependent_count": 2,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-u8xo",
+    "title": "iep-P4-rollout-gate-m5 — M5 MVP execution (thin-shell architecture preserved)",
+    "description": "Umbrella epic for Priority 4 of the IEP convergence debt plan (2026-05-20). Drives intent-rollout-gate M5 MVP execution under Option A architecture: decision logic stays in @j-rig/rollout-gate (iaj-E03); intent-rollout-gate is thin shell (\u003c=200 LOC per iar-E04 acceptance criteria). Action-layer concerns (Option C carve-out): markdown summary rendering for GITHUB_STEP_SUMMARY, action.yml wiring, README/SECURITY docs, Action self-test fixture. Closes when act/GH Actions can invoke action with sample bundle+policy and get real ship/no-ship/advisory decision in step summary, with fail-closed proven by negative tests.",
+    "design": "Per IEP Convergence Debt plan 2026-05-20 (decision A/A/B with Option-C carve-out). Children: iar-E02 + 4 subs (DR-002 language lock), iar-E03 + 4 subs (node20 shell), iar-E04 + 4 subs (import @j-rig/rollout-gate), iaj-E03 (package), iaj-E09b (publish), iar-consumer-migration (kernel consumption), iar-contributing-license-drift, iar-summary-renderer (NEW), iar-docs-real-behavior (NEW). DOES NOT create iar-M5* duplicates per architecture decision A.",
+    "notes": "Cluster: IEP umbrella. Source-of-truth: /tmp/iep-convergence-decision-brief-2026-05-20.md. Architecture lock: decision logic lives in @j-rig/rollout-gate; intent-rollout-gate is delegating shell per iar-E04 acceptance criteria.\nGitHub: jeremylongshore/intent-eval-lab#61 — https://github.com/jeremylongshore/intent-eval-lab/issues/61. MIRROR RULE: bd-sync handles fan-out — `bd-sync note bd_000-projects-u8xo` and `bd-sync close bd_000-projects-u8xo` mirror to GH and Plane automatically.\n\nPlane: LAB-94 — https://projects.intentsolutions.io/internal/projects/?peekIssue=LAB-94",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "feature",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-20T20:39:24Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-20T21:34:30Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-u8xo",
+        "depends_on_id": "bd_000-projects-5qd",
+        "type": "blocks",
+        "created_at": "2026-05-20T15:04:37Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-u8xo",
+        "depends_on_id": "bd_000-projects-7k1n",
+        "type": "blocks",
+        "created_at": "2026-05-20T15:10:43Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-u8xo",
+        "depends_on_id": "bd_000-projects-8yj",
+        "type": "blocks",
+        "created_at": "2026-05-20T15:07:00Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-u8xo",
+        "depends_on_id": "bd_000-projects-cab3",
+        "type": "blocks",
+        "created_at": "2026-05-20T15:08:23Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-u8xo",
+        "depends_on_id": "bd_000-projects-dv7",
+        "type": "blocks",
+        "created_at": "2026-05-20T15:06:17Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-u8xo",
+        "depends_on_id": "bd_000-projects-fgwy",
+        "type": "blocks",
+        "created_at": "2026-05-20T15:09:47Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-u8xo",
+        "depends_on_id": "bd_000-projects-m3fb",
+        "type": "blocks",
+        "created_at": "2026-05-20T15:07:42Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-u8xo",
+        "depends_on_id": "bd_000-projects-ohjr",
+        "type": "blocks",
+        "created_at": "2026-05-20T15:09:06Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-u8xo",
+        "depends_on_id": "bd_000-projects-yns",
+        "type": "blocks",
+        "created_at": "2026-05-20T15:05:31Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 9,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-t3q8",
+    "title": "iep-P3-audit-harness-hardening — Supply-chain hardening for audit-harness",
+    "description": "Umbrella epic for Priority 3 of the IEP convergence debt plan (2026-05-20). Drives audit-harness supply-chain hardening: npm sigstore provenance; .harness-hash self-pinning; 4-manifest version reconciliation; Apache 2.0 license drift fix; signed Python/Rust artifacts; CI hard-fail on policy edit without re-init; bash version floor; polyglot dependabot. DNSSEC + CAA pre-flight via iah-E06 cluster is a Priority 3 blocker.",
+    "design": "Per IEP Convergence Debt plan 2026-05-20 (decision A/A/B). Children: iah-self-pin, iah-sigstore, iah-version-drift, iah-license-drift, iah-E06 + 4 subs, iah-kernel-shadow-check (NEW), iah-version-canonical-check (NEW), iah-bash-floor (NEW), iah-dependabot-polyglot (NEW), iah-py-sigstore (NEW), iah-rust-attest (NEW).",
+    "notes": "Cluster: IEP umbrella. Source-of-truth: /tmp/iep-convergence-decision-brief-2026-05-20.md.\nGitHub: jeremylongshore/intent-eval-lab#60 — https://github.com/jeremylongshore/intent-eval-lab/issues/60. MIRROR RULE: bd-sync handles fan-out — `bd-sync note bd_000-projects-t3q8` and `bd-sync close bd_000-projects-t3q8` mirror to GH and Plane automatically.\n\nPlane: LAB-93 — https://projects.intentsolutions.io/internal/projects/?peekIssue=LAB-93",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "feature",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-20T20:38:40Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-20T21:33:16Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-t3q8",
+        "depends_on_id": "bd_000-projects-13ty",
+        "type": "blocks",
+        "created_at": "2026-05-20T15:03:49Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-t3q8",
+        "depends_on_id": "bd_000-projects-873c",
+        "type": "blocks",
+        "created_at": "2026-05-20T14:59:22Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-t3q8",
+        "depends_on_id": "bd_000-projects-ck2e",
+        "type": "blocks",
+        "created_at": "2026-05-20T14:57:51Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-t3q8",
+        "depends_on_id": "bd_000-projects-cp2n",
+        "type": "blocks",
+        "created_at": "2026-05-20T15:02:11Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-t3q8",
+        "depends_on_id": "bd_000-projects-hd5y",
+        "type": "blocks",
+        "created_at": "2026-05-20T15:00:21Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-t3q8",
+        "depends_on_id": "bd_000-projects-itpl",
+        "type": "blocks",
+        "created_at": "2026-05-20T14:55:35Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-t3q8",
+        "depends_on_id": "bd_000-projects-jcgw",
+        "type": "blocks",
+        "created_at": "2026-05-20T15:01:18Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-t3q8",
+        "depends_on_id": "bd_000-projects-kyk1",
+        "type": "blocks",
+        "created_at": "2026-05-20T15:02:59Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-t3q8",
+        "depends_on_id": "bd_000-projects-q0f",
+        "type": "blocks",
+        "created_at": "2026-05-20T14:58:38Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-t3q8",
+        "depends_on_id": "bd_000-projects-t0ba",
+        "type": "blocks",
+        "created_at": "2026-05-20T14:56:21Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-t3q8",
+        "depends_on_id": "bd_000-projects-uoz3",
+        "type": "blocks",
+        "created_at": "2026-05-20T14:57:09Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 11,
+    "dependent_count": 9,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-sqq8",
+    "title": "iep-P2-j-rig-hardening — j-rig release + stub-provider hardening",
+    "description": "Umbrella epic for Priority 2 of the IEP convergence debt plan (2026-05-20). Drives j-rig-binary-eval release hardening: remove '|| true' from release.yml so failing tests block release; make stub providers loudly non-authoritative with provider.mode='stub' field; gate real providers behind explicit env var; document stub semantics. Closes when CI proves failure behavior and stub provider banner visible.",
+    "design": "Per IEP Convergence Debt plan 2026-05-20 (decision A/A/B). Children: iaj-release-test-bypass, iaj-stub-provider, iaj-stub-docs (NEW), iaj-stub-negative-test (NEW).",
+    "notes": "Cluster: IEP umbrella. Source-of-truth: /tmp/iep-convergence-decision-brief-2026-05-20.md.\nGitHub: jeremylongshore/intent-eval-lab#59 — https://github.com/jeremylongshore/intent-eval-lab/issues/59. MIRROR RULE: bd-sync handles fan-out — `bd-sync note bd_000-projects-sqq8` and `bd-sync close bd_000-projects-sqq8` mirror to GH and Plane automatically.\n\nPlane: LAB-92 — https://projects.intentsolutions.io/internal/projects/?peekIssue=LAB-92",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "feature",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-20T20:37:59Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-20T21:31:57Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-sqq8",
+        "depends_on_id": "bd_000-projects-d8au",
+        "type": "blocks",
+        "created_at": "2026-05-20T14:57:16Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-sqq8",
+        "depends_on_id": "bd_000-projects-f9rp",
+        "type": "blocks",
+        "created_at": "2026-05-20T14:59:28Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-sqq8",
+        "depends_on_id": "bd_000-projects-lcgu",
+        "type": "blocks",
+        "created_at": "2026-05-20T14:57:58Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-sqq8",
+        "depends_on_id": "bd_000-projects-sizs",
+        "type": "blocks",
+        "created_at": "2026-05-20T14:58:43Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 4,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-6hd6",
+    "title": "iep-P1-kernel-adoption — Kernel adoption across consumer repos",
+    "description": "Umbrella epic for Priority 1 of the IEP convergence debt plan (2026-05-20). Drives kernel adoption (consumer-side migration to @intentsolutions/core@0.1.0) across audit-harness, j-rig-binary-eval, intent-rollout-gate, and intent-eval-lab. Verifies the unification thesis (DR-010 Q3) in practice. Closes when audit-harness kernel-shadow-check exits 0 in all 5 repos and 4 migration AARs are filed. Per-priority AAR lands at intent-eval-lab/000-docs/NNN-AA-AACR-convergence-debt-closeout-2026-05-XX.md.",
+    "design": "Per IEP Convergence Debt plan 2026-05-20 (decision A/A/B). Children: iep-kernel-shadow-inventory (NEW), iah-E02 + 4 subs, iaj-E02 + 4 subs, iel-link-schemas-to-kernel, iar-consumer-migration. Honors Option-A architecture (thin-shell preserved for intent-rollout-gate).",
+    "notes": "Cluster: IEP umbrella. Source-of-truth doc: /tmp/iep-convergence-decision-brief-2026-05-20.md. Decision: A/A/B per 2026-05-20 user reply.\nGitHub: jeremylongshore/intent-eval-lab#58 — https://github.com/jeremylongshore/intent-eval-lab/issues/58. MIRROR RULE: bd-sync handles fan-out — `bd-sync note bd_000-projects-6hd6` and `bd-sync close bd_000-projects-6hd6` mirror to GH and Plane automatically.\n\nPlane: LAB-91 — https://projects.intentsolutions.io/internal/projects/?peekIssue=LAB-91",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "feature",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-20T20:37:09Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-20T21:30:53Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-6hd6",
+        "depends_on_id": "bd_000-projects-7wj",
+        "type": "blocks",
+        "created_at": "2026-05-20T14:54:53Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-6hd6",
+        "depends_on_id": "bd_000-projects-cab3",
+        "type": "blocks",
+        "created_at": "2026-05-20T14:56:31Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-6hd6",
+        "depends_on_id": "bd_000-projects-i4jh",
+        "type": "blocks",
+        "created_at": "2026-05-20T14:55:45Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-6hd6",
+        "depends_on_id": "bd_000-projects-wjh6",
+        "type": "blocks",
+        "created_at": "2026-05-20T20:15:47Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      },
+      {
+        "issue_id": "bd_000-projects-6hd6",
+        "depends_on_id": "bd_000-projects-x6dd",
+        "type": "blocks",
+        "created_at": "2026-05-20T14:53:28Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 5,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-oi8d",
+    "title": "iar-E02d — acceptance criteria for v0.1.0 → v0.2.0 transition",
+    "description": "Build task for epic iar-E02: acceptance criteria for v0.1.0 → v0.2.0 transition",
+    "notes": "Child of iar-E02. Parent bead: bd_000-projects-5qd. Cluster: intent-rollout-gate.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T09:18:48Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T09:18:48Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-oi8d",
+        "depends_on_id": "bd_000-projects-5qd",
+        "type": "blocks",
+        "created_at": "2026-05-14T03:19:21Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-xnan",
+    "title": "iar-E02c — alternatives considered + what's deferred",
+    "description": "Build task for epic iar-E02: alternatives considered + what's deferred",
+    "notes": "Child of iar-E02. Parent bead: bd_000-projects-5qd. Cluster: intent-rollout-gate.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T09:17:44Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T09:17:44Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-xnan",
+        "depends_on_id": "bd_000-projects-5qd",
+        "type": "blocks",
+        "created_at": "2026-05-14T03:18:17Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-gnu4",
+    "title": "iar-E02b — reference DR-010 § 13.5",
+    "description": "Build task for epic iar-E02: reference DR-010 § 13.5",
+    "notes": "Child of iar-E02. Parent bead: bd_000-projects-5qd. Cluster: intent-rollout-gate.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T09:16:44Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T09:16:44Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-gnu4",
+        "depends_on_id": "bd_000-projects-5qd",
+        "type": "blocks",
+        "created_at": "2026-05-14T03:17:15Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-jdm0",
+    "title": "iar-E02a — record TS-primary lock rationale",
+    "description": "Build task for epic iar-E02: record TS-primary lock rationale",
+    "notes": "Child of iar-E02. Parent bead: bd_000-projects-5qd. Cluster: intent-rollout-gate.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T09:15:44Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T09:15:44Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-jdm0",
+        "depends_on_id": "bd_000-projects-5qd",
+        "type": "blocks",
+        "created_at": "2026-05-14T03:16:15Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-5345",
+    "title": "iar-E01e — Blueprint C section 5: release strategy + DoD",
+    "description": "Build task for epic iar-E01: Blueprint C section 5: release strategy + DoD",
+    "notes": "Child of iar-E01. Parent bead: bd_000-projects-gxg. Cluster: intent-rollout-gate.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T09:14:39Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T09:14:39Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-5345",
+        "depends_on_id": "bd_000-projects-gxg",
+        "type": "blocks",
+        "created_at": "2026-05-14T03:15:13Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-e1kg",
+    "title": "iar-E01d — Blueprint C section 4: testing + security + observability",
+    "description": "Build task for epic iar-E01: Blueprint C section 4: testing + security + observability",
+    "notes": "Child of iar-E01. Parent bead: bd_000-projects-gxg. Cluster: intent-rollout-gate.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T09:13:41Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T09:13:41Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-e1kg",
+        "depends_on_id": "bd_000-projects-gxg",
+        "type": "blocks",
+        "created_at": "2026-05-14T03:14:10Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-7l5m",
+    "title": "iar-E01c — Blueprint C section 3: architecture + interfaces",
+    "description": "Build task for epic iar-E01: Blueprint C section 3: architecture + interfaces",
+    "notes": "Child of iar-E01. Parent bead: bd_000-projects-gxg. Cluster: intent-rollout-gate.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T09:12:41Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T09:12:41Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-7l5m",
+        "depends_on_id": "bd_000-projects-gxg",
+        "type": "blocks",
+        "created_at": "2026-05-14T03:13:11Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-dxhh",
+    "title": "iar-E01b — Blueprint C section 2: scope-boundary (delegates logic to j-rig)",
+    "description": "Build task for epic iar-E01: Blueprint C section 2: scope-boundary (delegates logic to j-rig)",
+    "notes": "Child of iar-E01. Parent bead: bd_000-projects-gxg. Cluster: intent-rollout-gate.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T09:11:38Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T09:11:38Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-dxhh",
+        "depends_on_id": "bd_000-projects-gxg",
+        "type": "blocks",
+        "created_at": "2026-05-14T03:12:11Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-14q8",
+    "title": "iar-E01a — Blueprint C section 1: repo identity (thin shell role)",
+    "description": "Build task for epic iar-E01: Blueprint C section 1: repo identity (thin shell role)",
+    "notes": "Child of iar-E01. Parent bead: bd_000-projects-gxg. Cluster: intent-rollout-gate.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T09:10:31Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T09:10:31Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-14q8",
+        "depends_on_id": "bd_000-projects-gxg",
+        "type": "blocks",
+        "created_at": "2026-05-14T03:11:05Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-aulf",
+    "title": "iaj-E01e — Blueprint C section 5: release strategy + DoD",
+    "description": "Build task for epic iaj-E01: Blueprint C section 5: release strategy + DoD",
+    "notes": "Child of iaj-E01. Parent bead: bd_000-projects-mte. Cluster: j-rig-binary-eval.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T08:26:19Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T08:26:19Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-aulf",
+        "depends_on_id": "bd_000-projects-mte",
+        "type": "blocks",
+        "created_at": "2026-05-14T02:26:44Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-kg0p",
+    "title": "iaj-E01d — Blueprint C section 4: testing + security + observability",
+    "description": "Build task for epic iaj-E01: Blueprint C section 4: testing + security + observability",
+    "notes": "Child of iaj-E01. Parent bead: bd_000-projects-mte. Cluster: j-rig-binary-eval.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T08:25:28Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T08:25:28Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-kg0p",
+        "depends_on_id": "bd_000-projects-mte",
+        "type": "blocks",
+        "created_at": "2026-05-14T02:25:52Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-61nt",
+    "title": "iaj-E01c — Blueprint C section 3: architecture + interfaces",
+    "description": "Build task for epic iaj-E01: Blueprint C section 3: architecture + interfaces",
+    "notes": "Child of iaj-E01. Parent bead: bd_000-projects-mte. Cluster: j-rig-binary-eval.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T08:24:33Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T08:24:33Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-61nt",
+        "depends_on_id": "bd_000-projects-mte",
+        "type": "blocks",
+        "created_at": "2026-05-14T02:24:58Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-2n6a",
+    "title": "iaj-E01b — Blueprint C section 2: scope + anti-goals",
+    "description": "Build task for epic iaj-E01: Blueprint C section 2: scope + anti-goals",
+    "notes": "Child of iaj-E01. Parent bead: bd_000-projects-mte. Cluster: j-rig-binary-eval.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T08:23:42Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T08:23:42Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-2n6a",
+        "depends_on_id": "bd_000-projects-mte",
+        "type": "blocks",
+        "created_at": "2026-05-14T02:24:08Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-u9g7",
+    "title": "iaj-E01a — Blueprint C section 1: repo identity for j-rig",
+    "description": "Build task for epic iaj-E01: Blueprint C section 1: repo identity for j-rig",
+    "notes": "Child of iaj-E01. Parent bead: bd_000-projects-mte. Cluster: j-rig-binary-eval.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T08:22:52Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T08:22:52Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-u9g7",
+        "depends_on_id": "bd_000-projects-mte",
+        "type": "blocks",
+        "created_at": "2026-05-14T02:23:17Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-5lzu",
+    "title": "iah-E01e — Blueprint C section 5: release strategy + DoD",
+    "description": "Build task for epic iah-E01: Blueprint C section 5: release strategy + DoD",
+    "notes": "Child of iah-E01. Parent bead: bd_000-projects-8x5. Cluster: audit-harness.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T07:47:14Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T07:47:14Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-5lzu",
+        "depends_on_id": "bd_000-projects-8x5",
+        "type": "blocks",
+        "created_at": "2026-05-14T01:47:30Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-8tho",
+    "title": "iah-E01d — Blueprint C section 4: testing + security + observability",
+    "description": "Build task for epic iah-E01: Blueprint C section 4: testing + security + observability",
+    "notes": "Child of iah-E01. Parent bead: bd_000-projects-8x5. Cluster: audit-harness.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T07:46:37Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T07:46:37Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-8tho",
+        "depends_on_id": "bd_000-projects-8x5",
+        "type": "blocks",
+        "created_at": "2026-05-14T01:46:52Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-p9ct",
+    "title": "iah-E01c — Blueprint C section 3: architecture + interfaces",
+    "description": "Build task for epic iah-E01: Blueprint C section 3: architecture + interfaces",
+    "notes": "Child of iah-E01. Parent bead: bd_000-projects-8x5. Cluster: audit-harness.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T07:45:39Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T07:45:39Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-p9ct",
+        "depends_on_id": "bd_000-projects-8x5",
+        "type": "blocks",
+        "created_at": "2026-05-14T01:45:56Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-8srr",
+    "title": "iah-E01b — Blueprint C section 2: scope + anti-goals",
+    "description": "Build task for epic iah-E01: Blueprint C section 2: scope + anti-goals",
+    "notes": "Child of iah-E01. Parent bead: bd_000-projects-8x5. Cluster: audit-harness.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T07:44:54Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T07:44:54Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-8srr",
+        "depends_on_id": "bd_000-projects-8x5",
+        "type": "blocks",
+        "created_at": "2026-05-14T01:45:15Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-sm23",
+    "title": "iah-E01a — Blueprint C section 1: repo identity for audit-harness",
+    "description": "Build task for epic iah-E01: Blueprint C section 1: repo identity for audit-harness",
+    "notes": "Child of iah-E01. Parent bead: bd_000-projects-8x5. Cluster: audit-harness.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T07:44:17Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T07:44:17Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-sm23",
+        "depends_on_id": "bd_000-projects-8x5",
+        "type": "blocks",
+        "created_at": "2026-05-14T01:44:37Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-nzua",
+    "title": "iel-E12e — Anti-patterns + cross-references to iah-E07 + iaj-E08",
+    "description": "Build task for epic iel-E12: Anti-patterns + cross-references to iah-E07 + iaj-E08",
+    "notes": "Child of iel-E12. Parent bead: bd_000-projects-14z. Cluster: intent-eval-lab.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T07:29:31Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T07:29:31Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-nzua",
+        "depends_on_id": "bd_000-projects-14z",
+        "type": "blocks",
+        "created_at": "2026-05-14T01:29:50Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-z1a3",
+    "title": "iel-E12d — Naming standards + required metadata + lineage rules",
+    "description": "Build task for epic iel-E12: Naming standards + required metadata + lineage rules",
+    "notes": "Child of iel-E12. Parent bead: bd_000-projects-14z. Cluster: intent-eval-lab.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T07:28:53Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T07:28:53Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-z1a3",
+        "depends_on_id": "bd_000-projects-14z",
+        "type": "blocks",
+        "created_at": "2026-05-14T01:29:12Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-va7a",
+    "title": "iel-E12c — Storage + observability + optimization event categories",
+    "description": "Build task for epic iel-E12: Storage + observability + optimization event categories",
+    "notes": "Child of iel-E12. Parent bead: bd_000-projects-14z. Cluster: intent-eval-lab.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T07:28:15Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T07:28:15Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-va7a",
+        "depends_on_id": "bd_000-projects-14z",
+        "type": "blocks",
+        "created_at": "2026-05-14T01:28:33Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-sms2",
+    "title": "iel-E12b — Replay + governance event categories",
+    "description": "Build task for epic iel-E12: Replay + governance event categories",
+    "notes": "Child of iel-E12. Parent bead: bd_000-projects-14z. Cluster: intent-eval-lab.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T07:27:37Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T07:27:37Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-sms2",
+        "depends_on_id": "bd_000-projects-14z",
+        "type": "blocks",
+        "created_at": "2026-05-14T01:27:55Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-blr7",
+    "title": "iel-E12a — Execution + judge event categories (with payload schemas)",
+    "description": "Build task for epic iel-E12: Execution + judge event categories (with payload schemas)",
+    "notes": "Child of iel-E12. Parent bead: bd_000-projects-14z. Cluster: intent-eval-lab.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T07:27:00Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T07:27:00Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-blr7",
+        "depends_on_id": "bd_000-projects-14z",
+        "type": "blocks",
+        "created_at": "2026-05-14T01:27:19Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-czgl",
+    "title": "iel-E11e — Cross-references from Blueprint B + iec-E06",
+    "description": "Build task for epic iel-E11: Cross-references from Blueprint B + iec-E06",
+    "notes": "Child of iel-E11. Parent bead: bd_000-projects-1xz. Cluster: intent-eval-lab.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T07:26:24Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T07:26:24Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-czgl",
+        "depends_on_id": "bd_000-projects-1xz",
+        "type": "blocks",
+        "created_at": "2026-05-14T01:26:41Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-cp8k",
+    "title": "iel-E11d — Anti-patterns + storage + retention implications",
+    "description": "Build task for epic iel-E11: Anti-patterns + storage + retention implications",
+    "notes": "Child of iel-E11. Parent bead: bd_000-projects-1xz. Cluster: intent-eval-lab.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T07:25:45Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T07:25:45Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-cp8k",
+        "depends_on_id": "bd_000-projects-1xz",
+        "type": "blocks",
+        "created_at": "2026-05-14T01:26:05Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  },
+  {
+    "id": "bd_000-projects-doij",
+    "title": "iel-E11c — Replay verification rules (hash, lineage, integrity, divergence)",
+    "description": "Build task for epic iel-E11: Replay verification rules (hash, lineage, integrity, divergence)",
+    "notes": "Child of iel-E11. Parent bead: bd_000-projects-1xz. Cluster: intent-eval-lab.",
+    "status": "open",
+    "priority": 0,
+    "issue_type": "task",
+    "owner": "jeremylongshore@users.noreply.github.com",
+    "created_at": "2026-05-14T07:24:43Z",
+    "created_by": "jeremylongshore",
+    "updated_at": "2026-05-14T07:24:43Z",
+    "dependencies": [
+      {
+        "issue_id": "bd_000-projects-doij",
+        "depends_on_id": "bd_000-projects-1xz",
+        "type": "blocks",
+        "created_at": "2026-05-14T01:25:04Z",
+        "created_by": "jeremylongshore",
+        "metadata": "{}"
+      }
+    ],
+    "dependency_count": 1,
+    "dependent_count": 0,
+    "comment_count": 0
+  }
+]
+
+Showing 50 issues; more results matched but were hidden by --limit. Use --limit 0 for all, or --limit N to raise the cap.

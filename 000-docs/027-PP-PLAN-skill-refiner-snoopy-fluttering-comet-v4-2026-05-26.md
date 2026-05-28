@@ -15,7 +15,36 @@
 - 2026-05-26 v2 — j-rig Keeper / Pre-Trip / Evidence sub-product framing (superseded)
 - 2026-05-26 v3 — Skill Refiner peer-product collapse (current brand canon)
 - 2026-05-26 v4 — fold-in of: ecosystem-integration rigor, SkillMD/agentskills.io spec pinning, per-repo bead structure, ASCII diagram catalog, tri-linkage discipline, plan-audit phase, execution sequence
-- 2026-05-27 v4.1 (THIS) — P0 patches from internal pre-Plan-Audit review (`000-docs/audit/2026-05-26-plan-audit/internal-review-2026-05-27.md`): § 4 Phase B L3 mechanism `PostToolUse:Bash` → `PreToolUse:Bash` (Anthropic hooks reference: PostToolUse cannot block already-ran bash); § 4 Phase B exit criterion uncoupled from Phase E public hosting (resolves prior Phase B↔E circular dependency); § 4 Phase A `score()` `modelTier` union narrowed to `'haiku' | 'sonnet'` (AC-5 binds Opus to final-validation only); AC-11 rewritten to split open-standard layer (6 fields) from Claude Code extension layer (8 fields, including new `disallowed-tools` from v2.1.152) with locally-forked snapshots replacing moving-target external dependency. 12 P1 findings deferred to § 13 Step 5 remediation queue post-Plan-Audit § 12.
+- 2026-05-27 v4.1 — P0 patches from internal pre-Plan-Audit review (`000-docs/audit/2026-05-26-plan-audit/internal-review-2026-05-27.md`): § 4 Phase B L3 mechanism `PostToolUse:Bash` → `PreToolUse:Bash` (Anthropic hooks reference: PostToolUse cannot block already-ran bash); § 4 Phase B exit criterion uncoupled from Phase E public hosting (resolves prior Phase B↔E circular dependency); § 4 Phase A `score()` `modelTier` union narrowed to `'haiku' | 'sonnet'` (AC-5 binds Opus to final-validation only); AC-11 rewritten to split open-standard layer (6 fields) from Claude Code extension layer (8 fields, including new `disallowed-tools` from v2.1.152) with locally-forked snapshots replacing moving-target external dependency. 12 P1 findings deferred to § 13 Step 5 remediation queue post-Plan-Audit § 12.
+- 2026-05-27 v5 (THIS) — DR-028 amendments folded inline per `000-docs/028-AT-DECR-isedc-council-session-7-skill-refiner-plan-ratification-2026-05-27.md` (ISEDC Session 7 ratification + 13-thinker tension arbitration). See **§ DR-028 Amendments Index** below for the per-section change list. Phase D removed (anti-goal in Blueprint A § 3.X). AC-12 rewritten (T3 COLLAPSE consensus). New AC-13 (RefinerStrategy interface). New Phase A.0 (null-hypothesis baseline). SkillVersion entity ships with `version_kind` + `parent_version_id` + `source_snapshot_hash` (T1 DISCRIMINATOR resolution). Phase-budget weeks superseded by FTE-week model at `029-DR-BAND-skill-refiner-bandwidth-model-2026-05-27.md`. § 13 Step 7 hard gate machine-enforced via `intent-eval-lab/scripts/bd-claim-precheck.sh`.
+
+## DR-028 Amendments Index (v5 changes — read first)
+
+This block is the canonical pointer to the v5 deltas. The full underlying decisions live in `000-docs/028-AT-DECR-isedc-council-session-7-skill-refiner-plan-ratification-2026-05-27.md`. Section-level changes:
+
+| Section affected | Delta |
+|---|---|
+| Revision history (above) | v5 entry added |
+| § 3 AC-3 | `accept()` predicate formally specified: Pareto-dominant on `behavioral` + non-regressing on all named dims + significance threshold T at α=0.05 + Pareto-incomparable → REJECT to rejected-edit buffer with reason `pareto-incomparable`. Predicate ships NORMATIVELY in `skill-refiner-pass/v1` JSON Schema (per CSO Session 7 binding). |
+| § 3 AC-7 | Operationalized via new AC-13 RefinerStrategy interface — claim no longer un-substantiated. |
+| § 3 AC-12 | REWRITTEN: tri-link discipline = bd is the CANONICAL writer; GH issue bodies + doc front-matter are GENERATED PROJECTIONS via `bd-sync`; humans editing GH or doc bodies directly is a CI-detected anomaly that re-projects from bd. The 7 process disciplines (PR-1..5 + validate-trilink + spec-refresh) collapse to ONE: "bd is source; everything else is projection." |
+| § 3 NEW AC-13 | RefinerStrategy interface defined in `@j-rig/refiner-core/strategies/`. Phase A ships TWO reference implementations: `NaiveInContextStrategy` (also serves as Phase A.0 null-hypothesis baseline) + `SkillOptStyleStrategy` (original v4.1 propose() mechanism refactored). `refiner_strategy_id` field added to SkillVersion schema; signed in predicate payload (CISO Session 7 binding). |
+| § 3.5 PR-1..5 | COLLAPSED into single discipline per T3 consensus. PR-1 is now: "bd is the canonical writer of bead↔doc↔GH-issue cross-refs; bd-sync generates the projections." Replaces all 5 prior PR-N rules. |
+| § 4 NEW Phase A.0 | Null-hypothesis bitter-lesson baseline: naive Opus-in-context vs proposed Refiner on `/validate-skillmd`. Decision rule: if naive achieves > 70% of projected Refiner lift, DESCOPE Phase B mechanism. Per VP DevRel binding: result PUBLISHED as blog post regardless of outcome. Bandwidth: 3.5 FTE-days per 029-DR-BAND. GATES Phase A. |
+| § 4 Phase A | Inserts Phase A.0; ships RefinerStrategy interface + 2 reference impls; ships EvalSet versioning (`eval_set_version` + `lineage_parent` + `refresh_due_at`); ships eval-set quality eval (coverage/leakage/calibration/adversarial-pass-rate per Karpathy F-AK-005 binding). Bandwidth: 11.5 FTE-days (≈ 2.3 FTE-weeks) per 029-DR-BAND. |
+| § 4 Phase B | L3 hook clarified PreToolUse:Bash per v4.1. Plugin CLI surface unchanged. Bandwidth: 9.5 FTE-days. |
+| § 4 Phase C | SkillVersion entity: separate from SkillSnapshot, carries `version_kind: 'edit' | 'revert' | 'restore'` + `parent_version_id` (SkillVersion → SkillVersion) + `source_snapshot_hash` (read-only reference to SkillSnapshot, NOT FK) + `refiner_strategy_id` (signed). `pending_production` intermediate state for sigstore Rekor outages; outbox + reconciler pattern with `retry_after` + `max_retries: 5` + `signing_failed` surfacing. Cross-field invariant amended: `rekor_log_index non-null iff signing_mode='production' AND status='active'`. Bandwidth: 15 FTE-days, gated on `uprg` + `9pi3` close. |
+| § 4 Phase D | REMOVED. Anti-goal language lives in Blueprint A § 3.X amendment per DR-028 T2 majority (12 of 14 voices). Re-opening trigger per Karpathy + Gregg minority: `self-gen lift > +8pp on kernel-pinned eval set on any frontier release, OR internal acceptance rate parity`. ISEDC reconvenes if observed. |
+| § 4 Phase E | Unchanged. Bandwidth: 4.5 FTE-days concurrent with Phase B. |
+| § 4 NEW AAR-cadence subsection | Per Cunningham F-WC-001: post-phase-exit AAR + quarterly mini-review + post-incident (≤7 days) retrospective. Discipline that produced AAR-023's 9+ findings and this very Plan Audit's 46 findings. |
+| § 4 "~N weeks" phase budgets | All superseded by FTE-week model at `029-DR-BAND-skill-refiner-bandwidth-model-2026-05-27.md`. Aggregate: ~8.8 FTE-weeks ≈ ~3 calendar months (bandwidth + sync + external-blocker wait). |
+| § 4.5 Ecosystem Fold matrix | `iec-E12` row expanded to show transitive chain `E12a + E12b → E12 → uprg + 9pi3 → Phase C` per Cunningham F-WC-005 dependency-direction-honesty binding. |
+| § 5.5 validate-trilink.sh | Simplified per T3 collapse: Check 1 (bead carries Doc + GitHub fields) stays; Checks 2 + 3 demoted to advisory-only (they check generator output). |
+| § 6.5 D5 ER diagram | Updated to show SkillVersion as separate entity from SkillSnapshot with `source_snapshot_hash` as a reference (not a FK arrow); `version_kind` discriminator shown as a typed enum field. |
+| § 8 Risks | New rows: "Bandwidth model under-estimated" (mitigated by per-phase re-validation); "External blockers `uprg`/`9pi3` not closed before Phase C kickoff" (mitigated by A+B-as-v0.1.0 fallback). |
+| § 13 Step 7 | Hard gate now MACHINE-ENFORCED via `intent-eval-lab/scripts/bd-claim-precheck.sh` (P0-RATIFY-4). DR-028 partial-lift authorized 6 shorthands; external-contributor PRs see CI WARNING + contributor-acknowledgment (not hard block) per VP DevRel binding. |
+
+**T4 brand framing resolution (DR-028):** Skill Refiner stays as a NAMED product in the 3-product agent-rig stack (Test → Improve → Ship). The "eval is the product" framing (thinker-majority architectural truth) lives in Blueprint A as the internal architectural reality but does NOT override consumer-facing 3-product brand. AC-7 + AC-13 are the engineering bridge. CMO + CFO + VP DevRel business-axis trio overrode thinker-majority on brand-instability + developer-mental-model grounds.
 
 **Filing-number reservations adjusted from in-conversation draft**:
 - This plan: `027-PP-PLAN-skill-refiner-snoopy-fluttering-comet-v4-2026-05-26.md` (was tentatively unreserved)
@@ -192,7 +221,9 @@ These are non-negotiable design constraints:
 9. **Single-signer audit trail** (ISEDC pattern). Refiner proposes; human + acting CTO disposes. Read-only roles preserved.
 10. **Marketing as "evals-gated skill edits" not "automated skill optimization"** (Karpathy verdict — durable framing when frontier-native lands).
 11. **NEW AC-11: agentskills.io + Claude Code spec compliance** (per § 2.5; revised 2026-05-27 post-internal-review). The Refiner's edit grammar respects two layered spec surfaces, each pinned to a locally-forked snapshot (drift is detected by quarterly bd memory, never silently embedded in SkillVersion records). (a) **Open-standard layer (agentskills.io v1)** — `name` + `description` REQUIRED; `license`, `compatibility`, `metadata`, `allowed-tools` (experimental) OPTIONAL. Source-of-truth snapshot at `intent-eval-lab/research/agentskills-spec-v1.0.0.md`. (b) **Claude Code extension layer** — `disallowed-tools` (added v2.1.152, 2026-05-27), `model`, `argument-hint`, `disable-model-invocation`, `context`, `agent`, `effort`, `hooks` OPTIONAL. Source-of-truth snapshot at `intent-eval-lab/research/claude-docs-spec-tree-2026-05-27.md`. The Refiner's L1 Sinker hook invokes `/validate-skillmd` Tier 2 which validates against both layers independently. SkillVersion records pin BOTH spec generations: `skill_md_open_spec: "agentskills.io/v1.0-<snapshot-sha256-prefix>"` and `skill_md_cc_extension_version: "claude-code/2.1.152-<snapshot-sha256-prefix>"`.
-12. **NEW AC-12: tri-linkage discipline** (per § 3.5). Every Refiner doc cites driving beads + GH issues; every Refiner bead description ends with `Doc:` + `GitHub:` lines; every Refiner GH issue body ends with `Bead:` + `Doc:` lines. CI-verified.
+12. **AC-12: tri-linkage discipline — REWRITTEN v5 per DR-028 T3 COLLAPSE (20/20 consensus)**: bd is the CANONICAL writer of bead↔doc↔GH-issue cross-refs. GH issue bodies and doc front-matter Beads-rows are GENERATED PROJECTIONS produced by `bd-sync` from the bead's notes. Humans editing GH issues or doc front-matter directly is a CI-detected anomaly that triggers re-projection from bd. The 7 process disciplines in v4.1's § 3.5 (PR-1..5 + validate-trilink + spec-refresh) collapse to ONE rule in v5: "bd is source; everything else is projection." Multiple-writers-of-the-same-fact is replaced by single-writer + verifiable-projection per CSO Session 7 standards-body-realpolitik binding (matches in-toto + SLSA + Sigstore direction).
+
+13. **NEW AC-13: RefinerStrategy interface (v5 per DR-028 P0-RATIFY-5)**. The Refiner mechanism is operationalized as a swappable strategy behind a typed interface in `@j-rig/refiner-core/strategies/`. Phase A ships TWO reference implementations: `NaiveInContextStrategy` (single-pass Opus-in-context — also serves as the Phase A.0 null-hypothesis baseline per DR-028 P0-RATIFY-3) and `SkillOptStyleStrategy` (the original v4.1 propose() mechanism refactored as a strategy impl). `refiner_strategy_id` field added to SkillVersion schema; signed in predicate payload per CISO Session 7 binding (mechanism-swappable must NOT become mechanism-untraceable). AC-7's bitter-lesson swap claim is no longer un-substantiated. Per VP DevRel binding: the interface is documented in `j-rig-binary-eval/000-docs/` with a conformance-test suite for community contributors — the swap from internal API becomes a community extension point.
 
 ---
 
@@ -468,9 +499,15 @@ plugins/productivity/j-rig/
 - intent-eval-lab Blueprint B § 7 extended with new predicate spec
 - ISEDC Session 7 ratifies the URI namespace addition (CISO binding: must be on `evals.intentsolutions.io` not `labs.`)
 
-### Phase D — DEFERRED indefinitely (creator sub-product)
+### Phase D — REMOVED v5 per DR-028 T2 (ANTI-GOAL — 12 of 14 voices)
 
-Was originally scoped as a second plugin generating NEW skills from scratch. Per § 2 and SkillsBench evidence, deferred. No code, no design, no marketplace listing until external trigger fires. Filed as standalone deferred bead `bd_000-projects-vbqp`.
+**v5 status: This phase is REMOVED from the plan.** Per DR-028 T2 majority (Cunningham + Fowler + Torvalds + Pike + Thompson + Armstrong + 6 ISEDC seats = 12 of 14 voices), Phase D is replaced by an explicit anti-goal in Blueprint A § 3.X:
+
+> **Blueprint A § 3.X Anti-goal:** Intent Solutions does not build a creator product for SKILL.md generation. SkillsBench (arXiv 2602.12670) demonstrates that self-generated skills underperform the no-skill baseline ("no benefit on average") while human-curated skills deliver +16.2pp. IS's role is to refine human-curated skills via evals-gated edits, not to displace human curation.
+
+**Re-opening trigger** (per Karpathy + Gregg minority binding from DR-028): `self-gen lift > +8pp on kernel-pinned eval set on any frontier model release, OR internal acceptance rate parity`. ISEDC reconvenes if this metric is observed externally OR internally.
+
+The standalone deferred bead `bd_000-projects-vbqp` is updated to status `closed: superseded-by-DR-028-T2-anti-goal` in Step 5 remediation.
 
 ### Phase E — Evidence report production / proof-of-work deliverable spec — ongoing
 
@@ -1577,13 +1614,19 @@ bd remember --key skill-refiner-plan-ratified-2026-05-26 \
 
 This is the visible signal that gates Step 7. After Step 6, every IEP repo's CLAUDE.md primes a future session correctly without re-reading the entire plan.
 
-### Step 7 — First `bd claim` (code begins)
+### Step 7 — First `bd claim` (code begins; v5 MACHINE-ENFORCED)
+
 **Owner:** acting CTO or designated engineer
 **Output:** first commit on a Skill Refiner feature branch
+**Enforcement (v5 per DR-028 P0-RATIFY-4):** Hard gate is MACHINE-ENFORCED by `intent-eval-lab/scripts/bd-claim-precheck.sh`. The script reads `000-docs/audit/2026-05-26-plan-audit/STATUS.md`, refuses `bd claim` against any refiner-labeled bead when STATUS = OPEN, partially permits under RATIFIED-WITH-DELTAS using the DR-028-authorized-shorthand whitelist (6 shorthands: SkillVersion-entity-schema-with-version_kind, RefinerStrategy-interface, Phase-A.0-null-hypothesis-baseline, bd-sync-cross-ref-generator, bd-claim-precheck.sh-script, sigstore-Rekor-outbox-reconciler), and fully permits under RATIFIED. Per VP DevRel binding: external-contributor PRs see the gate as a CI WARNING + contributor-acknowledgment, NOT a hard block.
 
-Pick the first leaf-task bead from the dependency graph (likely `IAJ-N1` Scaffold @j-rig/refiner-core boundary split per the build-order table in § 4 Phase A). Run `bd update <id> --claim`. Begin code.
+**v5 first-claim order (post-DR-028, gated):**
+1. The Phase A.0 null-hypothesis baseline bead (filed via DR-028 directive #5) — this is the FIRST claim because it GATES Phase A per DR-028 P0-RATIFY-3 (if naive beats Refiner, Phase B descopes)
+2. After Phase A.0 result lands: IAJ-N1 (Scaffold @j-rig/refiner-core) OR descope per Phase A.0 decision rule
 
-**Checkpoint:** first commit pushed to feature branch with full commit message referencing bead ID + plan section.
+Run `bd update <id> --claim` (with the wrapper that calls bd-claim-precheck.sh first). Begin code.
+
+**Checkpoint:** first commit pushed to feature branch with full commit message referencing bead ID + plan section + DR-028 authorization note.
 
 ### Step 8 — Per-phase exit verification (recurring) + bd memory + CLAUDE.md update
 **Owner:** acting CTO at each phase exit
