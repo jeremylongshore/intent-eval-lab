@@ -1,0 +1,31 @@
+# Lychee link-checker config for intent-eval-lab
+#
+# Verifies links across markdown corpus. Offline mode in CI (validates
+# format + relative paths); nightly online sweep verifies external URLs.
+
+verbose = "info"
+no_progress = true
+include_verbatim = true
+
+# Skip known-flaky / rate-limited hosts
+exclude = [
+  "^https://localhost",
+  "^http://localhost",
+  "^https://127\\.0\\.0\\.1",
+  # External-link allowlist for hosts that 429 on bot user-agents
+  "^https://twitter\\.com",
+  "^https://x\\.com",
+  "^https://linkedin\\.com",
+]
+
+# Skip linkbacks to GitHub anchors that change frequently
+exclude_path = [
+  ".audit-harness",
+  "node_modules",
+  "research/phase-a-0-baseline/results/raw",
+]
+
+# Cache to avoid hammering external hosts in CI
+[cache]
+enabled = true
+max_cache_age = "7d"
