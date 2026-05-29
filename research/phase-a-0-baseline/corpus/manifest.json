@@ -1,0 +1,523 @@
+{
+  "held_out": {
+    "A": [
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 97,
+        "path": "/home/jeremy/.claude/skills/repo-blueprint/SKILL.md",
+        "sha256": "9ffefb258d3fa194ecc9a37bb4cf3368d60318890f451207836e7d3aff914ac3"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 68,
+        "path": "/home/jeremy/.claude/skills/pr-review/SKILL.md",
+        "sha256": "520d4221ff02343eef96bc72518e9de3f224b2dffe33da53f9a374559895f552"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 76,
+        "path": "/home/jeremy/.claude/skills/slack/SKILL.md",
+        "sha256": "385c9e6fa53f764b4fa80bbe1c691550b4daa71eb51c9cac7d8673c249dfad93"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 86,
+        "path": "/home/jeremy/.claude/skills/validate-plugin/SKILL.md",
+        "sha256": "5563d6709ae6bbc5916dd1354a433e718e148a5ef4034a68389d86dc4abeceb6"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 73,
+        "path": "/home/jeremy/.claude/skills/sync-testing-harness/SKILL.md",
+        "sha256": "7de4013366c4ddac7e4393dc10f8cda2c6a3777fa19f162a21088b24bb299806"
+      }
+    ],
+    "B": [
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 89,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/supabase-pack/skills/supabase-common-errors/SKILL.md",
+        "sha256": "35325887789bc23aea2b183a450c255f0ccb18b780fedeb777018f9cc3b5dd1d"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 98,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/database/database-audit-logger/skills/implementing-database-audit-logging/SKILL.md",
+        "sha256": "8dc3b75bd34abb0df6df57d324d9c9b9f192902b394af21f5ebed27b94da1654"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 93,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/supabase-pack/skills/supabase-deploy-integration/SKILL.md",
+        "sha256": "6396ad7b1a0e50f3fe3a5beb7b556b934683e279b876bf31307bf432f3b04b03"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 83,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/databricks-pack/skills/databricks-reference-architecture/SKILL.md",
+        "sha256": "78486d1563e4601c1ce6c9df37a288e53a99031a9b0b41c57732a903abd72865"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 88,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/notion-pack/skills/notion-migration-deep-dive/SKILL.md",
+        "sha256": "fab479deb7fa0090bee3a6d752c62c20f6f84b7614aaffee969d85deefe02b45"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 97,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/devops/sugar/skills/managing-autonomous-development/SKILL.md",
+        "sha256": "39694061ee3bd15d841148381b2a8b0bbd184334ddfbf1cb893af0ea8c2e07c4"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 83,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/databricks-pack/skills/databricks-cost-tuning/SKILL.md",
+        "sha256": "89280dde8563e2f05bf70ae3eddc0df5a2993b7d550a53e7503bdff4a704034c"
+      }
+    ],
+    "C": [
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 78,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/coreweave-pack/skills/coreweave-rate-limits/SKILL.md",
+        "sha256": "27e8a20ef42d94ec15d23acf85ccacc56b0ebaf195279d7bf8db60610d32f886"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 78,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/flyio-pack/skills/flyio-hello-world/SKILL.md",
+        "sha256": "e4e5be6d87b61c500c38087600daa7f94ad2c58f50a94373f2fb216d6d90735f"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 93,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/procore-pack/skills/procore-install-auth/SKILL.md",
+        "sha256": "702b0cd979cf91b0bf33221acfdb56ecc523b54d6cade1792780c7a5861d5d61"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 85,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/procore-pack/skills/procore-migration-deep-dive/SKILL.md",
+        "sha256": "4238b14311b43ad28aa4f0add7e235ddaa47d8010aacad4810bc5edb9464d2f7"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 75,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/snowflake-pack/skills/snowflake-rate-limits/SKILL.md",
+        "sha256": "fa8d565f4f2160e043fd2123f74b26ad746627922c1d59fc00338c67ba4f8b18"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 77,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/wispr-pack/skills/wispr-security-basics/SKILL.md",
+        "sha256": "87a22514690fc45e24a36d081ad952a6ae111527b358ac4b710730051113d38e"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 81,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/salesforce-pack/skills/salesforce-local-dev-loop/SKILL.md",
+        "sha256": "61a180f4ec97634deae04fbd065347c20542a1b4faab84dbc68cc86bcf177b00"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 64,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/ai-agency/tonone/skills/prism-ui/SKILL.md",
+        "sha256": "6417540a8171338deb6c63462e8bae503dc6f300e83c5a35e5c58099e0da973c"
+      }
+    ]
+  },
+  "pre_registration": {
+    "design_doc": "intent-eval-lab/research/phase-a-0-baseline/DESIGN.md",
+    "generated_at": "2026-05-29T00:54:35.312614+00:00",
+    "held_out": {
+      "A": 5,
+      "B": 7,
+      "C": 8
+    },
+    "seed": 42,
+    "stratification": {
+      "A_global": 20,
+      "B_marketplace_pass": 20,
+      "C_marketplace_fail": 20
+    },
+    "validator_commit": "7b9eb8f",
+    "validator_version": "3.7.0"
+  },
+  "skipped": [],
+  "stats": {
+    "global_skills_scored": 42,
+    "marketplace_fail_pool_size": 148,
+    "marketplace_pass_pool_size": 52,
+    "total_marketplace_scored": 200,
+    "wall_seconds": 82
+  },
+  "strata": {
+    "A": [
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 98,
+        "path": "/home/jeremy/.claude/skills/cleanup-code/SKILL.md",
+        "sha256": "6e14708fc2e680121f85dfd6473abbc1c17087b4d6cca58675e68ca8de6f82a8"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 96,
+        "path": "/home/jeremy/.claude/skills/agent-creator/SKILL.md",
+        "sha256": "d60f231fb5d1061e95d51ad78f4de5e650175bd98d2ba9b80f36bbf4d5328ef5"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 88,
+        "path": "/home/jeremy/.claude/skills/contribute/SKILL.md",
+        "sha256": "805a93df9c67a1406d829c1d983f2ff288aae73d96e4b46dda39e276a55ce145"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 75,
+        "path": "/home/jeremy/.claude/skills/sitrep/SKILL.md",
+        "sha256": "7bb51fe3f207095fd6f7d4229d76137d6c7ce029bb1427da6c6b32a804d62380"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 94,
+        "path": "/home/jeremy/.claude/skills/validate-mcp/SKILL.md",
+        "sha256": "c72c63201ec6a8d98bb116798a7b547f25c6969d9b2ed4cc2e380f26b2b8d798"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 87,
+        "path": "/home/jeremy/.claude/skills/implement-tests/SKILL.md",
+        "sha256": "22875bce016804b1d91a0b05abd16d9207f6646e34bd51d70fb66d4d20cb14f4"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 82,
+        "path": "/home/jeremy/.claude/skills/validate-skillmd/SKILL.md",
+        "sha256": "dce11c41895266153618e36eb3c4a6611359a2f1210b4ef56a20e13177568db1"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 95,
+        "path": "/home/jeremy/.claude/skills/repo-sweep/SKILL.md",
+        "sha256": "fee0ef8925c8ba761ef5362330392c278b98e1ed321577eefcfacacfd6aa224a"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 100,
+        "path": "/home/jeremy/.claude/skills/appaudit/SKILL.md",
+        "sha256": "17a1bc460229ca0418bccdc3a19a1c9295cc8e5691aeeebd775d1cd1468aef2a"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 92,
+        "path": "/home/jeremy/.claude/skills/validate-agent/SKILL.md",
+        "sha256": "fa5147296ce11b78b20deafbf3ae6a9e47a14df7d067fb9ad5005e4c91da617b"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 86,
+        "path": "/home/jeremy/.claude/skills/release/SKILL.md",
+        "sha256": "aa68675baa4a11bbbbe1d58abe515a59e99ba449020c2217ad1f341a3a497c8e"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 67,
+        "path": "/home/jeremy/.claude/skills/deep-research/SKILL.md",
+        "sha256": "97df8f48337883dfcb74230bff5f08da5711809bd844223f8b957c786ecf8100"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 75,
+        "path": "/home/jeremy/.claude/skills/status-update-writer/SKILL.md",
+        "sha256": "3834230fede410bb43846e8967d5cc1047dbfd6e6720b03a9cc1b4d2e986bb7f"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 71,
+        "path": "/home/jeremy/.claude/skills/product-researcher/SKILL.md",
+        "sha256": "a49783610153931f6dda8f67293f4231039a75f45f0beccab0066e946b908cc8"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 91,
+        "path": "/home/jeremy/.claude/skills/doc-filing/SKILL.md",
+        "sha256": "12599ea900d43e2e930b9a3c61c937b851cd0abe0e48091ac1150ea848cd1987"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 80,
+        "path": "/home/jeremy/.claude/skills/repo-dress/SKILL.md",
+        "sha256": "791fd9d929e5c0ac70a844c73cc82f1a342c3ca10d7b66d7a92f91f2bfae9c1d"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 91,
+        "path": "/home/jeremy/.claude/skills/validate-hook/SKILL.md",
+        "sha256": "f8ba830bf1b75c95cd985712f74d8a887505be827ea7677656589bf90904c643"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 93,
+        "path": "/home/jeremy/.claude/skills/validate-marketplace/SKILL.md",
+        "sha256": "6b2ae7f6465ca62e7bf09d4f501465f256b9c122a3cb25adf20769feb32626f6"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 60,
+        "path": "/home/jeremy/.claude/skills/ui-ux-pro-max/SKILL.md",
+        "sha256": "b3ab45c714a7222dbf41bff153fc0570640e356ba272417d396da950a7863a78"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 86,
+        "path": "/home/jeremy/.claude/skills/email/SKILL.md",
+        "sha256": "3369ed8974aacb69d07e0ada99ecf72129175ef83f95c6d637a3e1213b23f6c9"
+      }
+    ],
+    "B": [
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 75,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/supabase-pack/skills/supabase-schema-from-requirements/SKILL.md",
+        "sha256": "7d20dbd793abfd6b0be9ae63beb1c6d56014282e9ff2b2b5b598fcbfddaf5194"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 91,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/onenote-pack/skills/onenote-upgrade-migration/SKILL.md",
+        "sha256": "298b38e306d8ee5f363a7d0b22bd848783da43bea86600e733994740b3f0f47d"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 97,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/performance/infrastructure-metrics-collector/skills/collecting-infrastructure-metrics/SKILL.md",
+        "sha256": "8d3fa3c1d9a9e2bad4b48434ca32e6cc4be4048fdd6eeded90ac587342529a8c"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 84,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/vastai-pack/skills/vastai-webhooks-events/SKILL.md",
+        "sha256": "0c83aa61837a74539cf9122744c218617e9229657267d5e0dde15a0f496f0127"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 95,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/lokalise-pack/skills/lokalise-incident-runbook/SKILL.md",
+        "sha256": "92af0bd2c95fe84829bc9068b82d02d8cff621c1bd3a9ab4a20b616e1b978295"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 97,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/performance/log-analysis-tool/skills/analyzing-logs/SKILL.md",
+        "sha256": "c3273e79038c391f4f52d039a2c689f18b7fdd478781736bee388c718425aed2"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 91,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/sentry-pack/skills/sentry-debug-bundle/SKILL.md",
+        "sha256": "99211f5bdfe67c5de809e1dda6f4d9d67cb823e1ac955596e87024dd22d1f9f8"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 76,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/notion-pack/skills/notion-upgrade-migration/SKILL.md",
+        "sha256": "4223d9930ad0f07c1a7e44e1c1c359599d5e0183603eb203e3a1d78beb5fcfe9"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 92,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/maintainx-pack/skills/maintainx-core-workflow-a/SKILL.md",
+        "sha256": "4c9239de458dca78f24aa6087f072c66511f107df395e0e48731250eadc80ab2"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 94,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/langchain-py-pack/skills/langchain-prompt-engineering/SKILL.md",
+        "sha256": "d15c47d9186c7d0101cc0900bb87c4c0c21d770d02aeb9e237cd5de3e3212fe5"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 79,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/twinmind-pack/skills/twinmind-local-dev-loop/SKILL.md",
+        "sha256": "f2a8f2e92347154c3dcc0bad945d6b3fb8c8ec40b2a7c9e7123ef94a1d7bf211"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 86,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/notion-pack/skills/notion-ci-integration/SKILL.md",
+        "sha256": "d3b1a4a7645dd2a84c30e07be350514174c001ef3017715c3d3a49f4baa2f6e2"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 100,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/examples/jeremy-plugin-tool/skills/plugin-creator/SKILL.md",
+        "sha256": "5d6a95a7124ec4d43030371d95ab9c5d70d08625207d852c22fd05cd342d7b39"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 100,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/productivity/000-jeremy-content-consistency-validator/skills/000-jeremy-content-consistency-validator/SKILL.md",
+        "sha256": "58e456aa8429827158338dcd69f4c41ad0fb4660b25fe88dd2a5d449588d0abc"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 75,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/notion-pack/skills/notion-advanced-troubleshooting/SKILL.md",
+        "sha256": "bc56c6d11f8a7c5b80e1cfac9af4becc18ce3881661136e2796827baaeb9796a"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 93,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/langchain-py-pack/skills/langchain-content-blocks/SKILL.md",
+        "sha256": "2b9b4960b423eae24c7d013d0090d4e43e5a988a5a593ae9118bce5f0b9d33d9"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 80,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/firecrawl-pack/skills/firecrawl-local-dev-loop/SKILL.md",
+        "sha256": "d80f740a536dc3373b2cd7003879d78157990ef2cc98601ac0d51a0bc154a7d6"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 97,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/ai-ml/dataset-splitter/skills/splitting-datasets/SKILL.md",
+        "sha256": "8a7bb1a01c38988a4c4f2c9648b38344bc67d7afa6015f08aade961b900c00bb"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 79,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/notion-pack/skills/notion-multi-env-setup/SKILL.md",
+        "sha256": "f579edd8b8781cbf2240b07ec7a070e3a8c7dc3132a2a003bbe8def786da5a07"
+      },
+      {
+        "marketplace_pass": true,
+        "marketplace_score": 100,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/api-development/api-schema-validator/skills/validating-api-schemas/SKILL.md",
+        "sha256": "328d5f81eaba3e63094055f077e9b01c2fa1467a7f2a7e607566261f4eca3671"
+      }
+    ],
+    "C": [
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 69,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/ai-agency/tonone/skills/forge-diagnose/SKILL.md",
+        "sha256": "91d6f24bb7cde8b706718eab11568a701bcc78fcd25e43c56aa21653c303c71a"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 69,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/miro-pack/skills/miro-observability/SKILL.md",
+        "sha256": "2f6f4e1fe48f1462ea7ad0e1f6929046fec213e85b3ced3a5230d2a3766a6066"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 74,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/ai-agency/tonone/skills/volt-recon/SKILL.md",
+        "sha256": "e588e21c16b10cd8501233052ea33d32394fa1a137f04c78765d524f7ab3a8a7"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 88,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/linear-pack/skills/linear-deploy-integration/SKILL.md",
+        "sha256": "c7cc88efd2d235a9e4517f9b0a09daac6133751d2fd66da4f04e8621f02b2a1a"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 77,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/openevidence-pack/skills/openevidence-prod-checklist/SKILL.md",
+        "sha256": "272a48afd9e68089142e3660ff54750a5a751fa136114c321a8c7f232c7dd879"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 79,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/coderabbit-pack/skills/coderabbit-observability/SKILL.md",
+        "sha256": "7e8d4161c344ccc136e740003a706b0053bb53b60fc4f18125c11fbb48e9ed69"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 81,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/intercom-pack/skills/intercom-debug-bundle/SKILL.md",
+        "sha256": "c25434b3200f97dbd98dcbcbfb4f2d52d427f9f537859f692f1453b550cacfff"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 78,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/veeva-pack/skills/veeva-webhooks-events/SKILL.md",
+        "sha256": "f2366217689ca1073c20651107fe46be8615e4918ac660d872b0861704e849c2"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 74,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/ai-agency/tonone/skills/flux-query/SKILL.md",
+        "sha256": "e20e0fd700ca7f9e5eef5f9493fbd459b6b42ee1abc85039f292a0275f9fbc6d"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 91,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/skill-databases/windsurf/skills/windsurf-flows-automation/SKILL.md",
+        "sha256": "4f8ff935f739c8a05412bb68570bbe12bb8ca7b352d5b5248eb86e268025dd8c"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 74,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/groq-pack/skills/groq-observability/SKILL.md",
+        "sha256": "49eedc2a8f6b9a14c15877012ff3526b9c400293cafb8dd2d3ce8952ad120bfe"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 87,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/lindy-pack/skills/lindy-sdk-patterns/SKILL.md",
+        "sha256": "be19b47245c153ce9b5e65d011917b64de4b9632a2262e46c622cd607778b47b"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 85,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/runway-pack/skills/runway-prod-checklist/SKILL.md",
+        "sha256": "d8774d04750fc37c67eeeec6c67acfd851a6e6d04f190b02e704d445f6d9623f"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 79,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/abridge-pack/skills/abridge-deploy-integration/SKILL.md",
+        "sha256": "214f6fb8c83dc6c730d2456d215ff3dfc030ea1deae8394355789f86e29a9a76"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 70,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/ai-agency/tonone/skills/helm-plan/SKILL.md",
+        "sha256": "c564eed31b57493aaee05d7fbef1bbf41374e44cbf5d9d25a6b54e51622e27c1"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 85,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/windsurf-pack/skills/windsurf-performance-tuning/SKILL.md",
+        "sha256": "51b81c90502c73e592c5aeeab41e92673d512cdd4c730c4769efa149a583e287"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 84,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/openevidence-pack/skills/openevidence-ci-integration/SKILL.md",
+        "sha256": "ab86d71159b8b5dcb8d20b2f1bd3f4c35b9c6e917cf2ff3a417c6ee6420f5dde"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 87,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/hex-pack/skills/hex-security-basics/SKILL.md",
+        "sha256": "20c5cf86ce084c288298c5bed78f3c1247b313a6c0deda02f36204903981a1dd"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 79,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/fathom-pack/skills/fathom-ci-integration/SKILL.md",
+        "sha256": "e0d0d4000fa8d11418ea472843be0a526c099d11d15cfb9f26fa6eab7be03d0a"
+      },
+      {
+        "marketplace_pass": false,
+        "marketplace_score": 75,
+        "path": "/home/jeremy/000-projects/claude-code-plugins/plugins/saas-packs/canva-pack/skills/canva-load-scale/SKILL.md",
+        "sha256": "46c17b850632cda1e79686cf664e1b7621296b21032347b1d6c604acfda0ac1b"
+      }
+    ]
+  }
+}
