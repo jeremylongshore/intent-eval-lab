@@ -80,3 +80,7 @@ credentials/
 # SOPS temp files (decrypted to /dev/shm during sops-env exec)
 *.sops.tmp
 # <<< sops-init managed block <<<
+
+# Coverage subprocess instrumentation artifacts
+.coverage
+.coverage.*

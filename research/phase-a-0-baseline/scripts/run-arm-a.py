@@ -39,9 +39,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
-import hashlib
 import json
-import math
 import os
 import statistics
 import sys
@@ -52,16 +50,15 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _arm_common import (
     ALL_PROVIDER_NAMES,
-    BudgetExceeded,
-    CostMeter,
     DEFAULT_BUDGET_CEILING_USD,
     DEFAULT_PROVIDER,
+    BudgetExceeded,
+    CostMeter,
     ManifestReader,
     ResultPersister,
     Scorer,
     SpecimenMeta,
     build_arm_a_prompt,
-    extract_frontmatter,
     get_provider,
     is_free_provider,
     load_exemplars,

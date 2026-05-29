@@ -94,18 +94,18 @@ import os
 import re
 import sys
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _arm_common import (
     ALL_PROVIDER_NAMES,
-    BudgetExceeded,
-    CostMeter,
     DEFAULT_BUDGET_CEILING_USD,
     DEFAULT_PROVIDER,
+    BudgetExceeded,
+    CostMeter,
     ManifestReader,
     ResultPersister,
-    ScoreRecord,
     Scorer,
     SpecimenMeta,
     extract_frontmatter,
@@ -126,8 +126,6 @@ MIN_OPS = 1
 # ---------------------------------------------------------------------------
 # EditProposal types
 # ---------------------------------------------------------------------------
-
-from dataclasses import dataclass, field as dc_field
 
 
 @dataclass

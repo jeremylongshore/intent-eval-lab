@@ -5,11 +5,13 @@ on:
     paths:
       - "research/phase-a-0-baseline/**/*.py"
       - "pyproject.toml"
+      - "sitecustomize.py"
       - ".github/workflows/python-tests.yml"
   push:
     branches: [main]
     paths:
       - "research/phase-a-0-baseline/**/*.py"
+      - "pyproject.toml"
 
 permissions:
   contents: read
@@ -19,8 +21,40 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # ---------------------------------------------------------------------------
+  # L2 lint + format + type-check (advisory first run per Tidy First; tighten
+  # by dropping continue-on-error in a follow-up PR once corpus is clean.)
+  # ---------------------------------------------------------------------------
+  lint:
+    name: ruff lint + format (advisory)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install --no-cache-dir 'ruff>=0.8.4'
+      - run: ruff check research/phase-a-0-baseline/scripts/ research/phase-a-0-baseline/tests/
+      - run: ruff format --check research/phase-a-0-baseline/scripts/ research/phase-a-0-baseline/tests/
+
+  typecheck:
+    name: mypy (advisory)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install --no-cache-dir 'mypy>=1.18' pyyaml pytest
+      - run: mypy research/phase-a-0-baseline/scripts/
+
+  # ---------------------------------------------------------------------------
+  # L3 unit + coverage gate (with subprocess instrumentation)
+  # ---------------------------------------------------------------------------
   pytest:
-    name: pytest (research/phase-a-0-baseline)
+    name: pytest + coverage (research/phase-a-0-baseline)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,7 +62,22 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install deps
+        run: pip install --no-cache-dir 'pytest>=8' 'pytest-cov>=5' 'coverage>=7' pyyaml
+      - name: Run pytest with subprocess-aware coverage
+        env:
+          # Tells child Pythons (subprocess.run from smoke tests) to auto-init
+          # coverage. sitecustomize.py at repo root reads this and registers.
+          COVERAGE_PROCESS_START: ${{ github.workspace }}/pyproject.toml
+          # Make sitecustomize.py findable by child Pythons via PYTHONPATH
+          PYTHONPATH: ${{ github.workspace }}
         run: |
-          pip install --no-cache-dir pytest pyyaml
-      - name: Run pytest (pure-logic + smoke)
-        run: pytest research/phase-a-0-baseline/tests/ -v --tb=short
+          coverage run -m pytest research/phase-a-0-baseline/tests/ -v --tb=short
+          coverage combine
+          coverage report
+      - name: Upload coverage to Codecov
+        if: always()
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: python
+          fail_ci_if_error: false

@@ -36,9 +36,9 @@ import json
 import os
 import random
 import subprocess
-import sys
+from collections.abc import Generator, Sequence  # noqa: F401 — Sequence used by callers
 from pathlib import Path
-from typing import Generator, Protocol, Sequence  # noqa: F401 — Sequence used by callers
+from typing import Protocol
 
 # ---------------------------------------------------------------------------
 # Pricing constants (USD per million tokens)
@@ -92,7 +92,7 @@ class UsageRecord:
         output_tokens: int,
         input_usd_per_mtok: float = OPUS_INPUT_USD_PER_MTOK,
         output_usd_per_mtok: float = OPUS_OUTPUT_USD_PER_MTOK,
-    ) -> "UsageRecord":
+    ) -> UsageRecord:
         cost = (
             input_tokens / 1_000_000 * input_usd_per_mtok
             + output_tokens / 1_000_000 * output_usd_per_mtok
@@ -142,7 +142,7 @@ class ScoreRecord:
         return dataclasses.asdict(self)
 
     @classmethod
-    def from_dict(cls, d: dict) -> "ScoreRecord":
+    def from_dict(cls, d: dict) -> ScoreRecord:
         tiers = d.get("tiers", {})
         mkt = tiers.get("marketplace", {})
         return cls(
@@ -157,7 +157,7 @@ class ScoreRecord:
             is_extras_present=d.get("is_extras_present", 0),
         )
 
-    def is_strict_improvement_over(self, baseline: "ScoreRecord") -> bool:
+    def is_strict_improvement_over(self, baseline: ScoreRecord) -> bool:
         """Arm B accept() predicate per DESIGN.md § 4.
 
         Returns True iff marketplace_score_pct is >= baseline AND no other
@@ -316,7 +316,7 @@ class AnthropicProvider:
             ) from exc
         api_key = os.environ.get("ANTHROPIC_API_KEY", "")
         if not api_key:
-            raise EnvironmentError(
+            raise OSError(
                 "ANTHROPIC_API_KEY is not set. Export the key before running arm scripts."
             )
         self._client = anthropic.Anthropic(api_key=api_key)
@@ -412,7 +412,7 @@ class NVIDIAProvider:
             ) from exc
         api_key = os.environ.get("NVIDIA_API_KEY", "")
         if not api_key:
-            raise EnvironmentError(
+            raise OSError(
                 "NVIDIA_API_KEY is not set. Export the key before running arm scripts."
             )
         self._client = OpenAI(base_url=self._BASE_URL, api_key=api_key)
@@ -502,7 +502,7 @@ class GroqProvider:
             ) from exc
         api_key = os.environ.get("GROQ_API_KEY", "")
         if not api_key:
-            raise EnvironmentError(
+            raise OSError(
                 "GROQ_API_KEY is not set. Export the key before running arm scripts."
             )
         self._client = OpenAI(base_url=self._BASE_URL, api_key=api_key)
@@ -578,7 +578,7 @@ def get_provider(
     name: str,
     temperature: float = DEFAULT_TEMPERATURE,
     dry_run: bool = False,
-) -> "AnthropicProvider | NVIDIAProvider | GroqProvider":
+) -> AnthropicProvider | NVIDIAProvider | GroqProvider:
     """Factory: provider-name string -> provider instance.
 
     Names:
