@@ -1,0 +1,20 @@
+{
+  "proseWrap": "preserve",
+  "printWidth": 100,
+  "overrides": [
+    {
+      "files": ["*.md"],
+      "options": {
+        "proseWrap": "preserve",
+        "printWidth": 100,
+        "embeddedLanguageFormatting": "auto"
+      }
+    },
+    {
+      "files": ["*.json", "*.yaml", "*.yml"],
+      "options": {
+        "printWidth": 120
+      }
+    }
+  ]
+}

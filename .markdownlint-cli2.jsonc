@@ -1,0 +1,21 @@
+// markdownlint-cli2 config for intent-eval-lab
+//
+// Spec / methodology / blueprint repo — tables and code fences are heavy;
+// long lines are common in normative spec text. Tune rules to match.
+{
+  "config": {
+    "default": true,
+    "MD013": false, // line-length — specs use long lines for cross-references
+    "MD024": { "siblings_only": true }, // allow duplicate headings in different sections
+    "MD033": false, // inline HTML allowed (badges, details/summary)
+    "MD041": false, // first line need not be H1 (frontmatter or banner first)
+    "MD007": { "indent": 2 }, // unordered list indent
+    "MD026": { "punctuation": ".,;:!?" } // trailing punctuation in headings — allow ?
+  },
+  "globs": ["**/*.md"],
+  "ignores": [
+    ".audit-harness/**",
+    "node_modules/**",
+    "research/phase-a-0-baseline/results/raw/**"
+  ]
+}
