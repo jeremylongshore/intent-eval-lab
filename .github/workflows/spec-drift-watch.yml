@@ -1,0 +1,160 @@
+name: Spec drift watch
+
+# Polls 6 upstream spec sources (Claude Code changelog, npm version, Anthropic
+# platform docs, engineering blog, anthropics/skills repo, agentskills.io) and
+# reports drift. The eval-set bootstrap (per DR-029) requires an anchored
+# snapshot timestamp; without it, every Refiner score delta is indistinguishable
+# from upstream spec drift. This workflow IS the anchor.
+#
+# Authority: 000-docs/030-AT-DECR-eval-set-bootstrap-decisions-2026-05-28.md § 6
+# Sources + extraction logic: scripts/spec-drift-check.sh (DRY — workflow only
+# handles CI side effects, not the polling logic itself).
+#
+# Side effects on drift:
+#   1. Workflow fails (visible red X)
+#   2. ntfy push to prod-alerts (subscribed on Jeremy's phone)
+#   3. GH issue opened with diff summary (auto-deduped by title)
+#
+# Trigger:
+#   - Daily cron at 09:00 UTC
+#   - Manual workflow_dispatch
+#   - PR + push that touches the script or snapshot baselines (self-test)
+
+on:
+  schedule:
+    - cron: '0 9 * * *'   # daily 09:00 UTC
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/spec-drift-watch.yml'
+      - 'scripts/spec-drift-check.sh'
+      - 'specs/snapshots/.sha/**'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/spec-drift-watch.yml'
+      - 'scripts/spec-drift-check.sh'
+      - 'specs/snapshots/.sha/**'
+
+permissions:
+  contents: read
+  issues: write   # for auto-opening drift issues
+
+jobs:
+  spec-drift-check:
+    name: Poll 6 spec sources + report drift
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Run drift check
+        id: check
+        shell: bash
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          # Capture both stdout and exit code
+          if scripts/spec-drift-check.sh > /tmp/drift-report.txt 2>&1; then
+            echo "drift=false" >> "${GITHUB_OUTPUT}"
+          else
+            echo "drift=true" >> "${GITHUB_OUTPUT}"
+          fi
+          cat /tmp/drift-report.txt
+          # Also build JSON for issue body
+          scripts/spec-drift-check.sh --json > /tmp/drift-report.json 2>/dev/null || true
+
+      - name: Summarize
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## Spec drift watch"
+            echo ""
+            if [[ "${{ steps.check.outputs.drift }}" == "true" ]]; then
+              echo "**DRIFT DETECTED** — at least one upstream spec source changed."
+            else
+              echo "All 6 upstream spec sources match committed snapshots. No drift."
+            fi
+            echo ""
+            echo "### Report"
+            echo '```'
+            cat /tmp/drift-report.txt
+            echo '```'
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Fire ntfy notification on drift
+        if: steps.check.outputs.drift == 'true' && github.event_name == 'schedule'
+        shell: bash
+        run: |
+          # NTFY_URL secret optional — if absent, skip silently (workflow still
+          # opens an issue + fails, so the signal isn't lost).
+          if [[ -z "${NTFY_URL:-}" ]]; then
+            echo "NTFY_URL secret not set; skipping ntfy push."
+            exit 0
+          fi
+          curl -fsSL \
+            -H "Title: Spec drift detected (intent-eval-lab)" \
+            -H "Priority: high" \
+            -H "Tags: warning,page_facing_up" \
+            -d "$(head -20 /tmp/drift-report.txt)" \
+            "${NTFY_URL}/prod-alerts" || echo "ntfy push failed (non-fatal)"
+        env:
+          NTFY_URL: ${{ secrets.NTFY_URL }}
+
+      - name: Open or update drift issue
+        if: steps.check.outputs.drift == 'true' && github.event_name == 'schedule'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          TITLE="Spec drift detected — $(date -u +%Y-%m-%d)"
+          # Dedup: if any open issue with same date-prefix title exists, skip.
+          existing=$(gh issue list --state open --search "in:title \"Spec drift detected\"" --json number,title --jq '.[] | select(.title | startswith("Spec drift detected — '"$(date -u +%Y-%m-%d)"'")) | .number' | head -1)
+          if [[ -n "${existing}" ]]; then
+            echo "Already opened issue #${existing} today; skipping duplicate."
+            exit 0
+          fi
+          body=$(cat <<EOF
+          Daily spec-drift-watch detected drift in at least one of the 6 upstream sources monitored per DR-029 § 6.
+
+          See workflow run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+
+          ## Drift report
+
+          \`\`\`
+          $(cat /tmp/drift-report.txt)
+          \`\`\`
+
+          ## Next steps
+
+          1. Inspect the drifted source(s) above to determine whether the change is material to the Skill Refiner spec surface.
+          2. If material: update the relevant local snapshot at \`claude-code-plugins/000-docs/*-snapshot.md\` AND the eval-set spec-version pin in \`specs/eval-sets/validate-skillmd/v*/manifest.json\`, then refresh the baseline via \`scripts/spec-drift-check.sh --refresh\`.
+          3. If immaterial (cookie banner / build-ID noise / extractor flake): tighten the extractor in \`scripts/spec-drift-check.sh\`, then refresh the baseline.
+          4. Commit the refreshed \`.sha\` file in the same PR as any downstream snapshot/manifest updates.
+
+          ## Authority
+
+          - DR-029 § 6 (this watcher): \`000-docs/030-AT-DECR-eval-set-bootstrap-decisions-2026-05-28.md\`
+          - Plan 027 § 13 Step 9 (long-term spec snapshot refresh)
+          - DR-028 P0-RATIFY-1 (predicate integrity requires stable spec anchor)
+
+          - Jeremy Longshore
+          intentsolutions.io
+          EOF
+          )
+          gh issue create \
+            --title "${TITLE}" \
+            --body "${body}" \
+            --label "spec-drift" \
+            --label "refiner"
+
+      - name: Fail the run on drift
+        if: steps.check.outputs.drift == 'true'
+        run: |
+          echo "::error::Spec drift detected — see report above + auto-opened issue."
+          exit 1

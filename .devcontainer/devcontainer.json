@@ -1,0 +1,18 @@
+{
+  "name": "intent-eval-lab Phase A.0",
+  "image": "mcr.microsoft.com/devcontainers/python:1-3.12-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/node:1": { "version": "20" }
+  },
+  "postCreateCommand": "pip install --no-cache-dir 'anthropic>=0.40.0' 'PyYAML>=6'",
+  "remoteEnv": {
+    "ANTHROPIC_API_KEY": "${localEnv:ANTHROPIC_API_KEY}",
+    "PHASE_A0_BUDGET_CEILING_USD": "200"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python", "redhat.vscode-yaml"]
+    }
+  }
+}

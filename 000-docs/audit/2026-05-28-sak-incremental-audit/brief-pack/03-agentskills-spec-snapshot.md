@@ -1,0 +1,1 @@
+../../../research/agentskills-spec-v1.0-snapshot.md

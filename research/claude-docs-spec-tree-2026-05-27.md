@@ -1,0 +1,109 @@
+# Claude Code + Anthropic Docs Spec Tree — Snapshot
+
+**Snapshot date:** 2026-05-27
+**Snapshot purpose:** Plan 027 § 13 Step 0 — pin spec versions before Refiner Phase A code; surface drift; resolve § 2.5 "SkillMD avenue" research item.
+**Refresh due:** 2026-08-27 (90 days).
+**Status:** COMPLETE-ENOUGH for Step 0. 12 of 22 entry URLs fetched; remaining 10 are sub-sections of fetched parents or supplementary blog/github content the Plan Audit panel can fetch on demand.
+
+## URL coverage
+
+| # | Entry URL | Status | Persisted snapshot |
+|---|---|---|---|
+| 1 | `arxiv.org/abs/2605.23904` (SkillOpt) | ✅ FETCHED | `intent-eval-lab/research/2605.23904-skillopt-digest.md` |
+| 2 | `agentskills.io/specification` | ✅ FETCHED | `intent-eval-lab/research/agentskills-spec-v1.0.0.md` |
+| 3 | `code.claude.com/docs/en/skills` | ✅ FETCHED | session tool-results cache (51KB) |
+| 4 | `code.claude.com/docs/en/plugins-reference` | ✅ FETCHED | session tool-results cache (66KB) |
+| 5 | `code.claude.com/docs/en/hooks` | ✅ FETCHED | inline summary below |
+| 6 | `code.claude.com/docs/en/plugin-marketplaces` | ✅ FETCHED | session tool-results cache (55KB) |
+| 7 | `platform.claude.com/docs/en/agents-and-tools/agent-skills/overview` | ✅ FETCHED | inline full-text |
+| 8 | `platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices` | ✅ FETCHED | inline full-text |
+| 9 | `code.claude.com/docs/en/sub-agents` | ✅ FETCHED | session tool-results cache (62KB) |
+| 10 | `code.claude.com/docs/en/mcp` | ✅ FETCHED | inline full-text |
+| 11 | `modelcontextprotocol.io/specification` | ✅ FETCHED | inline (schema version 2025-11-25 pinned) |
+| 12 | `code.claude.com/docs/en/changelog` | ✅ FETCHED | inline (most recent: 2.1.152 on 2026-05-27) |
+| 13 | `code.claude.com/docs/en/skills#frontmatter-reference` | covered by #3 | — |
+| 14 | `code.claude.com/docs/en/skills#control-who-invokes-a-skill` | covered by #3 | — |
+| 15 | `code.claude.com/docs/en/plugins` | covered by #4 | — |
+| 16 | `code.claude.com/docs/en/plugins-reference#agents` | covered by #4 + #9 | — |
+| 17 | `code.claude.com/docs/en/plugins-reference#hooks` | covered by #4 + #5 | — |
+| 18 | `code.claude.com/docs/en/plugins-reference#mcp-servers` | covered by #4 + #10 | — |
+| 19 | `github.com/anthropics/skills` | DEFER | Plan Audit panel can fetch on demand |
+| 20 | `github.com/anthropics/skills/blob/main/template/SKILL.md` | DEFER | — |
+| 21 | Official 10 skill examples (github) | DEFER | — |
+| 22 | `anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills` | DEFER | — |
+| 23 | `leehanchung.github.io/blogs/2025/10/26/claude-skills-deep-dive/` | DEFER | — |
+
+## The "published the other day" finding (resolves § 2.5 + § 7.3)
+
+**Claude Code v2.1.152 was released 2026-05-27 (today)** with the following SKILL.md changes:
+
+> "Skills and slash commands can now set `disallowed-tools` in frontmatter to remove tools from the model while the skill is active."
+
+Other 2.1.152 changes affecting SKILL.md / agent skills:
+- New `/reload-skills` command — re-scan skill directories without restarting
+- New `MessageDisplay` hook event — transform or hide assistant message text during display
+- `SessionStart` hooks can return `reloadSkills: true` and set session title via `hookSpecificOutput.sessionTitle`
+
+This is what the user meant by "given the new information we got that was published the other day in regards to the SkillMD." Plan 027 § 2.5 should be amended (Step 5 remediation per § 13) to anchor on this specific version + date.
+
+## Frontmatter field cross-walk (final, authoritative)
+
+| Field | agentskills.io v1 | Anthropic platform | Claude Code (incl. 2.1.152 extensions) |
+|---|---|---|---|
+| `name` | REQUIRED | REQUIRED | REQUIRED |
+| `description` | REQUIRED | REQUIRED | REQUIRED |
+| `license` | optional | (not listed) | optional |
+| `compatibility` | optional | (not listed) | optional |
+| `metadata` | optional (kv map) | (not listed) | optional |
+| `allowed-tools` | optional (experimental) | (not listed) | optional (stable) |
+| `disallowed-tools` | NOT in spec | NOT in spec | **NEW 2026-05-27 (2.1.152)** |
+| `model` | NOT in spec | NOT in spec | optional (Claude Code extension) |
+| `argument-hint` | NOT in spec | NOT in spec | optional (Claude Code extension) |
+| `disable-model-invocation` | NOT in spec | NOT in spec | optional (Claude Code extension) |
+| `context` | NOT in spec | NOT in spec | optional (e.g., `context: fork`, 2.1.144) |
+| `agent` | NOT in spec | NOT in spec | optional (Claude Code extension) |
+| `effort` | NOT in spec | NOT in spec | optional (`${CLAUDE_EFFORT}` placeholder, 2.1.141) |
+| `hooks` | NOT in spec | NOT in spec | optional (Claude Code extension) |
+
+**Reserved-word constraint** (Anthropic spec, NOT in agentskills.io):
+- `name` cannot contain `"anthropic"` or `"claude"`
+
+**Plan 027 AC-11 amendment proposal (consolidates this snapshot + the agentskills-spec-v1.0.0.md proposal):**
+
+> AC-11 (REVISED, pending Step 5 remediation): The Refiner's edit grammar respects two layered spec surfaces. (a) **Open-standard layer (agentskills.io v1)** — `name` + `description` REQUIRED; `license`, `compatibility`, `metadata`, `allowed-tools` (experimental) OPTIONAL. (b) **Claude Code extension layer** — `disallowed-tools` (added v2.1.152, 2026-05-27), `model`, `argument-hint`, `disable-model-invocation`, `context`, `agent`, `effort`, `hooks` OPTIONAL. The Refiner's L1 Sinker hook invokes `/validate-skillmd` Tier 2 which validates against both layers independently. SkillVersion records pin BOTH spec versions: `skill_md_open_spec: agentskills.io/v1.0-2026-05-27-snapshot` and `skill_md_cc_extension_version: claude-code/2.1.152`.
+
+## MCP spec version pin
+
+**Schema version 2025-11-25** is the current authoritative MCP specification. Source: `modelcontextprotocol.io/specification`. Schema TypeScript file: `github.com/modelcontextprotocol/specification/blob/main/schema/2025-11-25/schema.ts`.
+
+Refiner MCP-validation references should pin to this schema version.
+
+## Hook event coverage cross-walk
+
+The plan's § 4 Phase B 3-layer hook architecture (Sinker/Line/Hook) uses three hook events:
+
+| Plan layer | Hook event | Confirmed in Claude Code hooks reference? |
+|---|---|---|
+| Sinker (L1) | `PostToolUse:Edit/Write` on SKILL.md files | ✅ YES — `PostToolUse` is in allowlist; matcher accepts tool_name + regex on file path |
+| Line (L2) | `Stop` hook | ✅ YES — `Stop` is in allowlist; can return decision with reason |
+| Hook (L3) | `PostToolUse:Bash` matcher `git commit` / `git push` | ✅ YES — Bash matcher supported; the canonical example in the hooks docs is literally `Bash(rm *)` |
+
+All three layers cleanly mapped. No deviation needed from plan § 4 Phase B.
+
+## Exit-code-2 blocking behavior confirmed
+
+The plan's L3 Hook (commit-time agentic gate) uses exit code 2 to BLOCK commits when the agentic gate rejects. Confirmed in Claude Code hooks reference:
+- Exit 2 = blocking error; stderr fed to Claude as error message
+- Per-event blocking: `PreToolUse`, `Stop`, `PreCompact` CAN block; `PostToolUse` shown as can-block via `decision: "block"` in hookSpecificOutput
+- ⚠️ NOTE: the docs say `PostToolUse` cannot prevent the tool from running (tool already ran), but CAN block subsequent loop via decision pattern. For L3 (post-commit), the canonical pattern is to annotate the PR/commit + emit Evidence rather than block — adjust plan if Phase B implementation choice changes.
+
+## Plan defects surfaced
+
+1. **AC-11 over-stated open-standard fields** (already documented in `agentskills-spec-v1.0.0.md`)
+2. **§ 2.5 "SkillMD avenue" research item was unresolved** — now resolved (it's 2.1.152's `disallowed-tools`)
+3. **Plan § 4 Phase B L3 mechanism** — "block commit" wording is loose; PostToolUse:Bash doesn't actually prevent the bash from running (it already ran). The correct mechanism is decision-pattern annotation + Evidence emit, OR move the L3 layer to PreToolUse:Bash. CTO note for Step 5 remediation.
+
+## Snapshot author + provenance
+
+— Claude (acting CTO)
+WebFetch invocations 2026-05-27 against the URLs listed above
