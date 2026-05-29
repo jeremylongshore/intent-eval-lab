@@ -1,0 +1,4 @@
+# Q4: raw API outputs are gitignored; aggregated/ is committed
+raw/
+!aggregated/
+!.gitignore
