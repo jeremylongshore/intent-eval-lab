@@ -26,7 +26,7 @@ Reject H₀ → ship Phase B as planned. Fail to reject H₀ → DESCOPE Phase B
 
 ## 3. Arms
 
-### Arm A — Naive Opus-in-context (null hypothesis)
+### Arm A — Naive {provider}-in-context (null hypothesis)
 
 **Prompt template:**
 ```
@@ -48,10 +48,32 @@ score. Return only the updated frontmatter block.
 <input SKILL.md frontmatter>
 ```
 
-**Model:** `claude-opus-4-7` via Anthropic API.
+**Provider:** parameterized via `--provider` CLI flag (see § 3.5). Canonical run:
+`meta/llama-3.1-405b-instruct` via NVIDIA NIM (free tier). Spot-check run:
+`claude-haiku-4-5` (Anthropic, ~$1-2 total).
 **K (exemplar count):** sweep K ∈ {0, 3, 8, 16} to map the in-context lift curve.
 **Temperature:** 0.0 (deterministic for replication).
-**No iteration:** single forward pass. No accept/reject. No rejected-edit buffer. **Whatever Opus emits is the candidate.**
+**No iteration:** single forward pass. No accept/reject. No rejected-edit buffer.
+**Whatever the provider emits is the candidate.**
+
+### 3.5 Cross-provider parallel runs (pre-registered)
+
+Two Arm A run variants are pre-registered under ADR 030:
+
+| Run | Provider | Model | Cost | Purpose |
+|---|---|---|---|---|
+| **canonical** | NVIDIA NIM | `meta/llama-3.1-405b-instruct` | $0.00 | Primary baseline H₀ measurement |
+| **spot-check** | Anthropic | `claude-haiku-4-5` | ~$1-2 | Cross-provider consistency validation |
+
+Arm B runs the same canonical/spot-check pattern. Arm B canonical = NVIDIA 405B.
+
+The mechanism question is model-agnostic: if the Refiner loop fails to beat naive
+prompting on Llama-405B, the bitter-lesson result is at least as strong as failing
+on Opus (larger audience, harder to dismiss as "just use a bigger model"). If it
+succeeds on the free model but not on Haiku, that is also a publishable finding.
+
+Results from each provider are stored independently under
+`results/raw/<arm>/<provider>/` for clean comparison.
 
 ### Arm B — Proposed Refiner mechanism (alternative)
 
@@ -154,15 +176,28 @@ Manifest + first 60 fixtures: Session 2 deliverable.
 4. **All raw inputs + outputs persisted** to `results/<arm>/<sample>/{prompt.json,response.json,score.json}` content-addressed by SHA. Append-only per AC-2.
 5. **No silent retries** — failed API calls land in `results/errors.jsonl` and the sample is excluded from headline stats (reported separately).
 
-## 7. Cost ceiling (DR-028 plan-033 § 14.4 binding)
+## 7. Cost ceiling (ADR 030 amendment to DR-028 P0-RATIFY-3)
 
-- **Mean per sample:** $50 ceiling (Refiner mechanism, full pass with up-to-3 iterations + judge)
-- **Max per sample:** $200 ceiling (Wave B outlier handling)
-- **Total Wave B budget:** $35,000 (Phase 4 migration corpus; Phase A.0 is a tiny prefix)
-- **Phase A.0 estimated burn:**
-  - Arm A: 60 samples × 4 K-values × ~2K tokens × Opus = ~$120
-  - Arm B: ~10 samples × Refiner pass (avg 2 iterations × 2K tokens) × Opus = ~$40
-  - **Total Phase A.0 budget: $200 hard ceiling.** Stop the experiment if burn exceeds. File AAR + remediation bead.
+**Anthropic spend ceiling: $20 hard stop** (amended from $200 per user constraint 2026-05-29;
+see `000-docs/030-AT-DECR-dr028-amendment-phase-a0-provider-choice-2026-05-29.md`).
+
+| Provider | Cost model | Ceiling behavior |
+|---|---|---|
+| NVIDIA NIM (`nvidia-llama-405b`) | Free within NVIDIA credits | Ceiling informational; `BudgetExceeded` never raised for $0 calls |
+| Groq (`groq-llama-70b`) | Free within 30 req/min | Same — informational only |
+| Anthropic Haiku 4.5 | ~$1-2 for Phase A.0 full run | $20 hard stop |
+| Anthropic Sonnet 4.6 | ~$8-12 for Phase A.0 full run | $20 hard stop |
+| Anthropic Opus 4.7 | ~$120 for Arm A + ~$40 Arm B | $20 hard stop — **budget too small for full run; use --limit** |
+
+**Phase A.0 canonical run cost:** $0.00 (NVIDIA NIM free tier).
+**Phase A.0 Anthropic spot-check cost:** ~$1-2 (Haiku 4.5, Arm A K=0 + K=3 subset).
+
+**Env var override:** `PHASE_A0_BUDGET_CEILING_USD` (read at runner startup; Makefile passes
+it through from the shell environment).
+
+**Decision rule unchanged (DR-028 P0-RATIFY-3):** if naive-{provider}-in-context achieves
+> 70% of projected Refiner lift on the Phase B demo skill, DESCOPE Phase B mechanism.
+The 70% threshold is provider-agnostic and model-agnostic.
 
 ## 8. Output deliverables (Session N final)
 
@@ -172,15 +207,15 @@ Manifest + first 60 fixtures: Session 2 deliverable.
 4. Updated `031-PP-PLAN-...` or follow-on amendment if H₀ holds
 5. Closed bead `bd_000-projects-214c.8` with link to RESULTS
 
-## 9. Open items requiring CTO resolution BEFORE Session 2 begins
+## 9. Open items — resolution status (updated 2026-05-29)
 
-| # | Question | Recommendation |
+| # | Question | Resolution |
 |---|---|---|
-| Q1 | Numeric projected-Refiner-lift pre-registration value | 1.5pp marketplace-tier score lift |
-| Q2 | API budget approval ($200 hard ceiling) | Approve via DR-BAND amendment |
-| Q3 | Anthropic API key location for harness scripts | Confirm `pass anthropic/api-key` or env var path |
-| Q4 | Where to commit experiment artifacts (gitignore policy) | `results/raw/` gitignored; `results/aggregated/` committed |
-| Q5 | Pre-register vs adaptive on K-sweep ({0,3,8,16}) | Pre-register; no mid-experiment expansion |
+| Q1 | Numeric projected-Refiner-lift pre-registration value | **RESOLVED: 1.5pp** marketplace-tier score lift (pre-registered) |
+| Q2 | API budget approval | **RESOLVED: $20 Anthropic ceiling** per ADR 030; canonical run is free (NVIDIA NIM) |
+| Q3 | Anthropic API key location | **RESOLVED:** `ANTHROPIC_API_KEY` env var; `NVIDIA_API_KEY` / `GROQ_API_KEY` for free providers |
+| Q4 | Where to commit experiment artifacts | **RESOLVED:** `results/raw/` gitignored; `results/aggregated/` committed |
+| Q5 | Pre-register vs adaptive on K-sweep ({0,3,8,16}) | **RESOLVED:** pre-registered; no mid-experiment expansion |
 
 ## 10. What this session (Session 1) produces
 

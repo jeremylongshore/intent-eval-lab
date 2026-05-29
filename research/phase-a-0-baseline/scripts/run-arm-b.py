@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """run-arm-b.py — Proposed Refiner mechanism arm (alternative hypothesis, Arm B).
 
-Phase A.0 baseline experiment per DESIGN.md § 3 Arm B.
+Phase A.0 baseline experiment per DESIGN.md § 3 Arm B. Provider-aware per ADR 030.
 
 Implements the Refiner loop per Plan 027 § 4 Phase A + § 14 SAK § 14.4:
     1. propose(input, scored_rollouts) -> EditProposal (bounded add/del/replace ops)
@@ -74,19 +74,23 @@ Why bounded ops instead of full-frontmatter rewrite (contrast to Arm A):
 
 Usage:
     run-arm-b.py --manifest <path> --out <dir> \\
-                 --budget-ceiling-usd 200 \\
+                 --provider nvidia-llama-405b \\
+                 --budget-ceiling-usd 20 \\
                  [--max-iterations 3] \\
                  [--dry-run] [--force] [--limit N]
 
---dry-run: simulates propose/apply/score/accept on each specimen with
-           synthetic Opus responses. Zero API spend. Validates pipeline.
---limit N: process only the first N specimens (smoke test).
+--provider: one of nvidia-llama-405b (default, free), groq-llama-70b,
+            anthropic-haiku, anthropic-sonnet, anthropic-opus.
+--dry-run:  simulates propose/apply/score/accept on each specimen with
+            synthetic provider responses. Zero API spend. Validates pipeline.
+--limit N:  process only the first N specimens (smoke test).
 """
 from __future__ import annotations
 
 import argparse
 import datetime as dt
 import json
+import os
 import re
 import sys
 import tempfile
@@ -94,15 +98,19 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _arm_common import (
-    AnthropicClient,
+    ALL_PROVIDER_NAMES,
     BudgetExceeded,
     CostMeter,
+    DEFAULT_BUDGET_CEILING_USD,
+    DEFAULT_PROVIDER,
     ManifestReader,
     ResultPersister,
     ScoreRecord,
     Scorer,
     SpecimenMeta,
     extract_frontmatter,
+    get_provider,
+    is_free_provider,
 )
 
 ARM_NAME = "arm-b"
@@ -350,7 +358,7 @@ Rules:
 def run_refiner(
     specimen: SpecimenMeta,
     input_text: str,
-    client: AnthropicClient,
+    client: object,  # any LLMProvider instance
     meter: CostMeter,
     persister: ResultPersister,
     scorer: Scorer,
@@ -437,6 +445,8 @@ def run_refiner(
             "iteration": iteration,
             "prompt": prompt,
             "response_text": completion.text,
+            "provider": completion.provider,
+            "model": completion.model,
             "raw_proposal": raw_proposal,
             "parse_error": parse_error,
             "input_tokens": completion.usage.input_tokens,
@@ -564,6 +574,8 @@ def run_refiner(
     result = {
         "sha8": specimen.sha8,
         "stratum": specimen.stratum,
+        "provider": getattr(client, "name", "unknown"),
+        "model": getattr(client, "model", "unknown"),
         "accepted": accepted,
         "iterations_to_accept": iterations_to_accept,
         "baseline_marketplace_score_pct": score_v1.marketplace_score_pct,
@@ -586,8 +598,9 @@ def write_summary(
     all_results: list[dict],
     meter: CostMeter,
     dry_run: bool,
+    provider: str = "unknown",
 ) -> Path:
-    """Emit _summary.json per DESIGN.md § 3 Arm B."""
+    """Emit _summary.json under the provider-scoped directory per DESIGN.md § 3 Arm B."""
     import statistics as _stats
 
     accepted_results = [r for r in all_results if r.get("accepted")]
@@ -607,6 +620,7 @@ def write_summary(
 
     summary = {
         "arm": ARM_NAME,
+        "provider": provider,
         "generated_at": dt.datetime.now(dt.UTC).isoformat(),
         "dry_run": dry_run,
         "cost_meter": meter.summary(),
@@ -628,7 +642,8 @@ def write_summary(
         "per_specimen_results": all_results,
     }
 
-    path = out_dir / ARM_NAME / "_summary.json"
+    path = out_dir / ARM_NAME / provider / "_summary.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return path
 
@@ -645,8 +660,24 @@ def main() -> int:
                     help="Path to corpus/manifest.json")
     ap.add_argument("--out", type=Path, required=True,
                     help="Root output directory (results/raw/)")
-    ap.add_argument("--budget-ceiling-usd", type=float, default=200.0,
-                    help="Hard cost ceiling USD. Default: 200")
+    ap.add_argument(
+        "--provider",
+        default=os.environ.get("PHASE_A0_PROVIDER", DEFAULT_PROVIDER),
+        choices=ALL_PROVIDER_NAMES,
+        help=(
+            f"LLM provider to use. Default: {DEFAULT_PROVIDER} (free tier). "
+            "Set PHASE_A0_PROVIDER env var to change default."
+        ),
+    )
+    ap.add_argument(
+        "--budget-ceiling-usd",
+        type=float,
+        default=float(os.environ.get("PHASE_A0_BUDGET_CEILING_USD", DEFAULT_BUDGET_CEILING_USD)),
+        help=(
+            f"Hard cost ceiling USD (paid providers only). Default: {DEFAULT_BUDGET_CEILING_USD}. "
+            "Override via PHASE_A0_BUDGET_CEILING_USD env var."
+        ),
+    )
     ap.add_argument("--max-iterations", type=int, default=3,
                     help="Maximum Refiner propose/reject iterations per specimen. Default: 3")
     ap.add_argument("--dry-run", action="store_true",
@@ -670,16 +701,19 @@ def main() -> int:
     if args.limit:
         specimens = specimens[: args.limit]
 
+    free = is_free_provider(args.provider)
     meter = CostMeter(ceiling_usd=args.budget_ceiling_usd)
-    client = AnthropicClient(dry_run=args.dry_run)
-    persister = ResultPersister(args.out, ARM_NAME, force=args.force)
+    client = get_provider(args.provider, dry_run=args.dry_run)
+    persister = ResultPersister(args.out, ARM_NAME, provider=args.provider, force=args.force)
     scorer = Scorer(validator_path=args.validator_path)
 
     all_results: list[dict] = []
 
     print(
         f"[arm-b] specimens={len(specimens)} max_iterations={args.max_iterations} "
-        f"ceiling=${args.budget_ceiling_usd:.0f} dry_run={args.dry_run}"
+        f"provider={args.provider} model={client.model} "
+        f"ceiling=${args.budget_ceiling_usd:.0f} "
+        f"free_tier={free} dry_run={args.dry_run}"
     )
 
     with tempfile.TemporaryDirectory(prefix="arm_b_score_") as tmp_str:
@@ -731,16 +765,19 @@ def main() -> int:
 
         except BudgetExceeded as exc:
             print(f"\nSTOP: {exc}", file=sys.stderr)
-            summary_path = write_summary(args.out, all_results, meter, args.dry_run)
+            summary_path = write_summary(
+                args.out, all_results, meter, args.dry_run, args.provider
+            )
             print(f"Partial summary: {summary_path}", file=sys.stderr)
             return 1
 
-    summary_path = write_summary(args.out, all_results, meter, args.dry_run)
+    summary_path = write_summary(args.out, all_results, meter, args.dry_run, args.provider)
 
     accepted = sum(1 for r in all_results if r.get("accepted"))
     total = len(all_results)
     print(f"\n[arm-b] DONE: {total} specimens. Accepted: {accepted}/{total}.")
-    print(f"  cost: ${meter.spent_usd:.4f} of ${meter.ceiling_usd:.2f}")
+    cost_note = "(free tier)" if free else f"of ${meter.ceiling_usd:.2f}"
+    print(f"  cost: ${meter.spent_usd:.4f} {cost_note}")
     print(f"  summary: {summary_path}")
 
     return 0
