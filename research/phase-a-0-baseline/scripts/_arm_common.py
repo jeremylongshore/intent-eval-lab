@@ -4,7 +4,12 @@
 NOT a CLI entry point. Import only.
 
 Provides:
-    AnthropicClient     thin SDK wrapper with cost accounting
+    LLMProvider         Protocol that all provider classes implement
+    CompletionResult    unified output shape across all providers
+    AnthropicProvider   Anthropic SDK wrapper (opus/sonnet/haiku)
+    NVIDIAProvider      NVIDIA NIM via openai-compatible SDK (free tier)
+    GroqProvider        Groq via openai-compatible SDK (free tier)
+    get_provider        factory: provider-name -> LLMProvider instance
     BudgetExceeded      raised when cumulative spend exceeds ceiling
     CostMeter           tracks cumulative spend, enforces ceiling
     ManifestReader      loads corpus/manifest.json, yields specimens
@@ -13,9 +18,15 @@ Provides:
     Scorer              calls score-fixture.py subprocess, parses ScoreRecord
     load_exemplars      deterministic exemplar sampler for K-sweep
 
-Pricing (Opus 4.7 standard, 2026-05-28):
-    Input:  $15.00 per MTok (million tokens)
-    Output: $75.00 per MTok
+Pricing (standard pricing, 2026-05-29):
+    Anthropic Opus 4.7:   Input $15.00 / Output $75.00 per MTok
+    Anthropic Sonnet 4.6: Input  $3.00 / Output $15.00 per MTok
+    Anthropic Haiku 4.5:  Input  $1.00 / Output  $5.00 per MTok
+    NVIDIA NIM (free):    $0.00 within free-tier credits
+    Groq (free):          $0.00 within free tier (30 req/min limit)
+
+Default provider: nvidia-llama-405b (zero cost, $20 Anthropic ceiling reserved
+for paid spot-checks per DR-028 P0-RATIFY-3 amendment).
 """
 from __future__ import annotations
 
@@ -27,16 +38,24 @@ import random
 import subprocess
 import sys
 from pathlib import Path
-from typing import Generator, Sequence  # noqa: F401 — Sequence used by callers
+from typing import Generator, Protocol, Sequence  # noqa: F401 — Sequence used by callers
 
 # ---------------------------------------------------------------------------
-# Pricing constants — Opus 4.7 standard pricing (USD per million tokens)
+# Pricing constants (USD per million tokens)
 # ---------------------------------------------------------------------------
 OPUS_INPUT_USD_PER_MTOK: float = 15.00
 OPUS_OUTPUT_USD_PER_MTOK: float = 75.00
+SONNET_INPUT_USD_PER_MTOK: float = 3.00
+SONNET_OUTPUT_USD_PER_MTOK: float = 15.00
+HAIKU_INPUT_USD_PER_MTOK: float = 1.00
+HAIKU_OUTPUT_USD_PER_MTOK: float = 5.00
 
 DEFAULT_MODEL: str = "claude-opus-4-7"
 DEFAULT_TEMPERATURE: float = 0.0
+
+# Default provider per DR-028 P0-RATIFY-3 amendment (ADR 030): NVIDIA free tier
+DEFAULT_PROVIDER: str = "nvidia-llama-405b"
+DEFAULT_BUDGET_CEILING_USD: float = 20.0
 
 
 # ---------------------------------------------------------------------------
@@ -61,27 +80,34 @@ class BudgetExceeded(RuntimeError):
 
 @dataclasses.dataclass(frozen=True)
 class UsageRecord:
-    """Token usage + cost from a single Anthropic completion."""
+    """Token usage + cost from a single completion (any provider)."""
     input_tokens: int
     output_tokens: int
     cost_usd: float
 
     @classmethod
-    def from_tokens(cls, input_tokens: int, output_tokens: int) -> "UsageRecord":
+    def from_tokens(
+        cls,
+        input_tokens: int,
+        output_tokens: int,
+        input_usd_per_mtok: float = OPUS_INPUT_USD_PER_MTOK,
+        output_usd_per_mtok: float = OPUS_OUTPUT_USD_PER_MTOK,
+    ) -> "UsageRecord":
         cost = (
-            input_tokens / 1_000_000 * OPUS_INPUT_USD_PER_MTOK
-            + output_tokens / 1_000_000 * OPUS_OUTPUT_USD_PER_MTOK
+            input_tokens / 1_000_000 * input_usd_per_mtok
+            + output_tokens / 1_000_000 * output_usd_per_mtok
         )
         return cls(input_tokens=input_tokens, output_tokens=output_tokens, cost_usd=cost)
 
 
 @dataclasses.dataclass(frozen=True)
 class CompletionResult:
-    """Output of a single Anthropic API completion."""
+    """Unified output shape from any provider completion."""
     text: str
     usage: UsageRecord
     model: str
     stop_reason: str
+    provider: str = "unknown"
 
 
 @dataclasses.dataclass(frozen=True)
@@ -160,10 +186,86 @@ class ScoreRecord:
 
 
 # ---------------------------------------------------------------------------
-# AnthropicClient
+# Provider Protocol + implementations
 # ---------------------------------------------------------------------------
 
-class AnthropicClient:
+class LLMProvider(Protocol):
+    """Protocol that all provider classes implement.
+
+    Every provider returns the same CompletionResult shape so the arm runners
+    are provider-agnostic. Cost accounting is provider-local: free-tier
+    providers set cost_usd=0.0; paid providers compute from pricing constants.
+    """
+
+    name: str
+    model: str
+
+    def complete(
+        self,
+        prompt: str,
+        *,
+        max_tokens: int = 4096,
+        temperature: float = 0.0,
+    ) -> CompletionResult: ...
+
+
+def _make_synthetic_response(
+    prompt: str,
+    model: str,
+    provider_name: str,
+    input_usd_per_mtok: float = 0.0,
+    output_usd_per_mtok: float = 0.0,
+) -> CompletionResult:
+    """Return a plausible dry-run synthetic response for any provider.
+
+    Sniffs the prompt to decide format (Arm B JSON vs Arm A frontmatter).
+    Annotates the provider name in the synthetic text for dry-run traceability.
+    """
+    est_input = max(1, len(prompt) // 4)
+    if "arm-b-proposal/v1" in prompt:
+        est_output = 120
+        synthetic_text = json.dumps({
+            "schema_version": "arm-b-proposal/v1",
+            "rationale": (
+                f"Dry-run synthetic proposal ({provider_name}/{model}): "
+                "adds version field if missing to satisfy IS marketplace required set."
+            ),
+            "ops": [
+                {"op": "add", "field": "version", "value": "1.0.0"},
+            ],
+        }, indent=2)
+    else:
+        est_output = 180
+        synthetic_text = (
+            "---\n"
+            "name: example-skill\n"
+            f"description: 'Dry-run placeholder ({provider_name}/{model}).'\n"
+            "allowed-tools: Read, Write, Edit, Bash\n"
+            "version: 1.0.0\n"
+            "author: Jeremy Longshore <jeremy@intentsolutions.io>\n"
+            "license: Apache-2.0\n"
+            "compatibility: Designed for Claude Code\n"
+            "tags:\n"
+            "- example\n"
+            "- dry-run\n"
+            f"- provider-{provider_name}\n"
+            "---\n"
+        )
+    usage = UsageRecord.from_tokens(
+        est_input, est_output,
+        input_usd_per_mtok=input_usd_per_mtok,
+        output_usd_per_mtok=output_usd_per_mtok,
+    )
+    return CompletionResult(
+        text=synthetic_text,
+        usage=usage,
+        model=model,
+        stop_reason="end_turn",
+        provider=provider_name,
+    )
+
+
+class AnthropicProvider:
     """Thin wrapper around the Anthropic SDK's messages.create API.
 
     Raises EnvironmentError on import or missing key — fail fast, no silent
@@ -172,13 +274,21 @@ class AnthropicClient:
     Parameters
     ----------
     model:
-        Anthropic model ID. Default: claude-opus-4-7.
+        Anthropic model ID. Supported: claude-opus-4-7, claude-sonnet-4-6,
+        claude-haiku-4-5.
     temperature:
         Sampling temperature. DR-028 mandates 0.0 for replication.
     dry_run:
         When True, never calls the API; returns a synthetic response instead.
-        Used by --dry-run CLI modes to validate the pipeline without spend.
     """
+
+    name: str = "anthropic"
+
+    _PRICING: dict[str, tuple[float, float]] = {
+        "claude-opus-4-7":   (OPUS_INPUT_USD_PER_MTOK,   OPUS_OUTPUT_USD_PER_MTOK),
+        "claude-sonnet-4-6": (SONNET_INPUT_USD_PER_MTOK, SONNET_OUTPUT_USD_PER_MTOK),
+        "claude-haiku-4-5":  (HAIKU_INPUT_USD_PER_MTOK,  HAIKU_OUTPUT_USD_PER_MTOK),
+    }
 
     def __init__(
         self,
@@ -190,6 +300,10 @@ class AnthropicClient:
         self.temperature = temperature
         self.dry_run = dry_run
         self._client = None  # lazy-init so import doesn't error without key
+
+    def _pricing(self) -> tuple[float, float]:
+        """Return (input_usd_per_mtok, output_usd_per_mtok) for self.model."""
+        return self._PRICING.get(self.model, (OPUS_INPUT_USD_PER_MTOK, OPUS_OUTPUT_USD_PER_MTOK))
 
     def _get_client(self):  # type: ignore[return]
         if self._client is not None:
@@ -211,77 +325,24 @@ class AnthropicClient:
     def complete(
         self,
         prompt: str,
-        max_tokens: int = 2048,
         *,
-        model: str | None = None,
+        max_tokens: int = 2048,
         temperature: float | None = None,
     ) -> CompletionResult:
-        """Call the Anthropic messages API; return CompletionResult.
-
-        In dry_run mode returns a synthetic result with realistic token
-        estimates and zero actual API spend.
-
-        Parameters
-        ----------
-        prompt:
-            The full user-turn text.
-        max_tokens:
-            Hard cap on output tokens.
-        model:
-            Override instance model for this call.
-        temperature:
-            Override instance temperature for this call.
-        """
-        effective_model = model or self.model
+        """Call the Anthropic messages API; return CompletionResult."""
         effective_temp = temperature if temperature is not None else self.temperature
+        in_rate, out_rate = self._pricing()
 
         if self.dry_run:
-            # Synthetic response: sniff the prompt to decide format.
-            # Arm B propose prompts ask for JSON (schema_version arm-b-proposal/v1).
-            # Arm A prompts ask for a frontmatter block.
-            est_input = max(1, len(prompt) // 4)
-            if "arm-b-proposal/v1" in prompt:
-                # Arm B: return a valid JSON edit-proposal that adds the
-                # "version" field (common gap in low-scoring fixtures).
-                est_output = 120
-                synthetic_text = json.dumps({
-                    "schema_version": "arm-b-proposal/v1",
-                    "rationale": (
-                        "Dry-run synthetic proposal: adds version field if missing "
-                        "to satisfy IS marketplace required set."
-                    ),
-                    "ops": [
-                        {"op": "add", "field": "version", "value": "1.0.0"},
-                    ],
-                }, indent=2)
-            else:
-                # Arm A: return a plausible SKILL.md frontmatter block.
-                est_output = 180
-                synthetic_text = (
-                    "---\n"
-                    "name: example-skill\n"
-                    "description: 'A placeholder response generated in dry-run mode.'\n"
-                    "allowed-tools: Read, Write, Edit, Bash\n"
-                    "version: 1.0.0\n"
-                    "author: Jeremy Longshore <jeremy@intentsolutions.io>\n"
-                    "license: Apache-2.0\n"
-                    "compatibility: Designed for Claude Code\n"
-                    "tags:\n"
-                    "- example\n"
-                    "- dry-run\n"
-                    "---\n"
-                )
-            usage = UsageRecord.from_tokens(est_input, est_output)
-            return CompletionResult(
-                text=synthetic_text,
-                usage=usage,
-                model=effective_model,
-                stop_reason="end_turn",
+            return _make_synthetic_response(
+                prompt, self.model, self.name,
+                input_usd_per_mtok=in_rate,
+                output_usd_per_mtok=out_rate,
             )
 
         client = self._get_client()
         message = client.messages.create(
-            model=effective_model,
+            model=self.model,
             max_tokens=max_tokens,
             temperature=effective_temp,
             messages=[{"role": "user", "content": prompt}],
@@ -294,13 +355,291 @@ class AnthropicClient:
         usage = UsageRecord.from_tokens(
             input_tokens=message.usage.input_tokens,
             output_tokens=message.usage.output_tokens,
+            input_usd_per_mtok=in_rate,
+            output_usd_per_mtok=out_rate,
         )
         return CompletionResult(
             text=text,
             usage=usage,
-            model=effective_model,
+            model=self.model,
             stop_reason=str(message.stop_reason),
+            provider=self.name,
         )
+
+
+class NVIDIAProvider:
+    """NVIDIA NIM inference via openai-compatible SDK.
+
+    Base URL: https://integrate.api.nvidia.com/v1
+    Auth env var: NVIDIA_API_KEY
+    Cost: $0.00 within free-tier credits.
+
+    Supported model aliases (canonical NVIDIA NIM identifiers):
+        meta/llama-3.1-405b-instruct   (default — closest to Opus capacity)
+        meta/llama-3.1-70b-instruct
+        nvidia/nemotron-4-340b-instruct
+    """
+
+    name: str = "nvidia"
+
+    _BASE_URL: str = "https://integrate.api.nvidia.com/v1"
+    _MODELS: dict[str, str] = {
+        "nvidia-llama-405b":  "meta/llama-3.1-405b-instruct",
+        "nvidia-llama-70b":   "meta/llama-3.1-70b-instruct",
+        "nvidia-nemotron":    "nvidia/nemotron-4-340b-instruct",
+    }
+
+    def __init__(
+        self,
+        model_alias: str = "nvidia-llama-405b",
+        temperature: float = DEFAULT_TEMPERATURE,
+        dry_run: bool = False,
+    ) -> None:
+        self.model = self._MODELS.get(model_alias, self._MODELS["nvidia-llama-405b"])
+        self.model_alias = model_alias
+        self.temperature = temperature
+        self.dry_run = dry_run
+        self._client = None
+
+    def _get_client(self):  # type: ignore[return]
+        if self._client is not None:
+            return self._client
+        try:
+            from openai import OpenAI  # type: ignore[import]
+        except ImportError as exc:
+            raise ImportError(
+                "openai SDK not installed. Run: pip install 'openai>=1.0'"
+            ) from exc
+        api_key = os.environ.get("NVIDIA_API_KEY", "")
+        if not api_key:
+            raise EnvironmentError(
+                "NVIDIA_API_KEY is not set. Export the key before running arm scripts."
+            )
+        self._client = OpenAI(base_url=self._BASE_URL, api_key=api_key)
+        return self._client
+
+    def complete(
+        self,
+        prompt: str,
+        *,
+        max_tokens: int = 4096,
+        temperature: float | None = None,
+    ) -> CompletionResult:
+        """Call NVIDIA NIM; return CompletionResult with cost_usd=0.0."""
+        effective_temp = temperature if temperature is not None else self.temperature
+
+        if self.dry_run:
+            return _make_synthetic_response(
+                prompt, self.model, self.name,
+                input_usd_per_mtok=0.0,
+                output_usd_per_mtok=0.0,
+            )
+
+        client = self._get_client()
+        response = client.chat.completions.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=max_tokens,
+            temperature=effective_temp,
+        )
+        text = response.choices[0].message.content or ""
+        stop_reason = str(response.choices[0].finish_reason or "stop")
+        usage_obj = response.usage
+        in_toks = usage_obj.prompt_tokens if usage_obj else max(1, len(prompt) // 4)
+        out_toks = usage_obj.completion_tokens if usage_obj else 150
+        usage = UsageRecord.from_tokens(in_toks, out_toks, 0.0, 0.0)
+        return CompletionResult(
+            text=text,
+            usage=usage,
+            model=self.model,
+            stop_reason=stop_reason,
+            provider=self.name,
+        )
+
+
+class GroqProvider:
+    """Groq inference via openai-compatible SDK.
+
+    Base URL: https://api.groq.com/openai/v1
+    Auth env var: GROQ_API_KEY
+    Cost: $0.00 within free tier (30 req/min rate limit).
+
+    Supported model aliases:
+        groq-llama-70b            llama-3.1-70b-versatile
+        groq-llama-70b-specdec    llama-3.3-70b-specdec
+        groq-mixtral              mixtral-8x7b-32768
+    """
+
+    name: str = "groq"
+
+    _BASE_URL: str = "https://api.groq.com/openai/v1"
+    _MODELS: dict[str, str] = {
+        "groq-llama-70b":          "llama-3.1-70b-versatile",
+        "groq-llama-70b-specdec":  "llama-3.3-70b-specdec",
+        "groq-mixtral":            "mixtral-8x7b-32768",
+    }
+
+    def __init__(
+        self,
+        model_alias: str = "groq-llama-70b",
+        temperature: float = DEFAULT_TEMPERATURE,
+        dry_run: bool = False,
+    ) -> None:
+        self.model = self._MODELS.get(model_alias, self._MODELS["groq-llama-70b"])
+        self.model_alias = model_alias
+        self.temperature = temperature
+        self.dry_run = dry_run
+        self._client = None
+
+    def _get_client(self):  # type: ignore[return]
+        if self._client is not None:
+            return self._client
+        try:
+            from openai import OpenAI  # type: ignore[import]
+        except ImportError as exc:
+            raise ImportError(
+                "openai SDK not installed. Run: pip install 'openai>=1.0'"
+            ) from exc
+        api_key = os.environ.get("GROQ_API_KEY", "")
+        if not api_key:
+            raise EnvironmentError(
+                "GROQ_API_KEY is not set. Export the key before running arm scripts."
+            )
+        self._client = OpenAI(base_url=self._BASE_URL, api_key=api_key)
+        return self._client
+
+    def complete(
+        self,
+        prompt: str,
+        *,
+        max_tokens: int = 4096,
+        temperature: float | None = None,
+    ) -> CompletionResult:
+        """Call Groq API; return CompletionResult with cost_usd=0.0."""
+        effective_temp = temperature if temperature is not None else self.temperature
+
+        if self.dry_run:
+            return _make_synthetic_response(
+                prompt, self.model, self.name,
+                input_usd_per_mtok=0.0,
+                output_usd_per_mtok=0.0,
+            )
+
+        client = self._get_client()
+        response = client.chat.completions.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=max_tokens,
+            temperature=effective_temp,
+        )
+        text = response.choices[0].message.content or ""
+        stop_reason = str(response.choices[0].finish_reason or "stop")
+        usage_obj = response.usage
+        in_toks = usage_obj.prompt_tokens if usage_obj else max(1, len(prompt) // 4)
+        out_toks = usage_obj.completion_tokens if usage_obj else 150
+        usage = UsageRecord.from_tokens(in_toks, out_toks, 0.0, 0.0)
+        return CompletionResult(
+            text=text,
+            usage=usage,
+            model=self.model,
+            stop_reason=stop_reason,
+            provider=self.name,
+        )
+
+
+# ---------------------------------------------------------------------------
+# Provider factory
+# ---------------------------------------------------------------------------
+
+_ANTHROPIC_ALIASES: dict[str, str] = {
+    "anthropic-opus":   "claude-opus-4-7",
+    "anthropic-sonnet": "claude-sonnet-4-6",
+    "anthropic-haiku":  "claude-haiku-4-5",
+}
+
+_FREE_PROVIDERS: set[str] = {
+    "nvidia-llama-405b", "nvidia-llama-70b", "nvidia-nemotron",
+    "groq-llama-70b", "groq-llama-70b-specdec", "groq-mixtral",
+}
+
+ALL_PROVIDER_NAMES: list[str] = [
+    "anthropic-opus", "anthropic-sonnet", "anthropic-haiku",
+    "nvidia-llama-405b", "nvidia-llama-70b", "nvidia-nemotron",
+    "groq-llama-70b", "groq-llama-70b-specdec", "groq-mixtral",
+]
+
+
+def is_free_provider(provider_name: str) -> bool:
+    """Return True if the provider has zero cost per call."""
+    return provider_name in _FREE_PROVIDERS
+
+
+def get_provider(
+    name: str,
+    temperature: float = DEFAULT_TEMPERATURE,
+    dry_run: bool = False,
+) -> "AnthropicProvider | NVIDIAProvider | GroqProvider":
+    """Factory: provider-name string -> provider instance.
+
+    Names:
+        anthropic-opus, anthropic-sonnet, anthropic-haiku
+        nvidia-llama-405b, nvidia-llama-70b, nvidia-nemotron
+        groq-llama-70b, groq-llama-70b-specdec, groq-mixtral
+
+    Raises ValueError for unknown names.
+    """
+    if name in _ANTHROPIC_ALIASES:
+        return AnthropicProvider(
+            model=_ANTHROPIC_ALIASES[name],
+            temperature=temperature,
+            dry_run=dry_run,
+        )
+    if name in NVIDIAProvider._MODELS:
+        return NVIDIAProvider(
+            model_alias=name,
+            temperature=temperature,
+            dry_run=dry_run,
+        )
+    if name in GroqProvider._MODELS:
+        return GroqProvider(
+            model_alias=name,
+            temperature=temperature,
+            dry_run=dry_run,
+        )
+    raise ValueError(
+        f"Unknown provider name {name!r}. "
+        f"Valid names: {ALL_PROVIDER_NAMES}"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Backward-compat alias: AnthropicClient -> AnthropicProvider
+# ---------------------------------------------------------------------------
+
+class AnthropicClient(AnthropicProvider):
+    """Deprecated alias for AnthropicProvider. Use get_provider() instead.
+
+    Kept for backward compatibility with any callers that instantiate
+    AnthropicClient directly. All arm runners now use get_provider().
+    """
+
+    def complete(  # type: ignore[override]
+        self,
+        prompt: str,
+        max_tokens: int = 2048,
+        *,
+        model: str | None = None,
+        temperature: float | None = None,
+    ) -> CompletionResult:
+        """Backward-compat signature: positional max_tokens + keyword model override."""
+        if model is not None:
+            orig_model = self.model
+            self.model = model
+            try:
+                return super().complete(prompt, max_tokens=max_tokens, temperature=temperature)
+            finally:
+                self.model = orig_model
+        return super().complete(prompt, max_tokens=max_tokens, temperature=temperature)
 
 
 # ---------------------------------------------------------------------------
@@ -313,11 +652,22 @@ class CostMeter:
     Parameters
     ----------
     ceiling_usd:
-        Hard ceiling per DESIGN.md § 7. Raises BudgetExceeded when exceeded.
+        Hard ceiling. Raises BudgetExceeded if spend reaches this value.
+        When ceiling_usd=0.0 (free-tier runs), the check is informational
+        only (BudgetExceeded is never raised for zero-cost usage).
+    enforce_paid_only:
+        When True (default), only raise BudgetExceeded when cost_usd > 0
+        and cumulative spend crosses the ceiling. Free-tier calls are
+        always allowed regardless of ceiling value.
     """
 
-    def __init__(self, ceiling_usd: float) -> None:
+    def __init__(
+        self,
+        ceiling_usd: float,
+        enforce_paid_only: bool = True,
+    ) -> None:
         self.ceiling_usd = ceiling_usd
+        self.enforce_paid_only = enforce_paid_only
         self._spent_usd: float = 0.0
         self._calls: int = 0
 
@@ -330,11 +680,17 @@ class CostMeter:
         return self._calls
 
     def record(self, usage: UsageRecord) -> None:
-        """Add usage to the meter; raise BudgetExceeded if ceiling crossed."""
+        """Add usage to the meter; raise BudgetExceeded if ceiling crossed.
+
+        When enforce_paid_only=True, zero-cost calls (free providers) do
+        not trigger BudgetExceeded even if ceiling is 0.0.
+        """
         self._spent_usd += usage.cost_usd
         self._calls += 1
-        if self._spent_usd >= self.ceiling_usd:
-            raise BudgetExceeded(spent=self._spent_usd, ceiling=self.ceiling_usd)
+        is_paid_call = usage.cost_usd > 0.0
+        if self.ceiling_usd > 0.0 and self._spent_usd >= self.ceiling_usd:
+            if not self.enforce_paid_only or is_paid_call:
+                raise BudgetExceeded(spent=self._spent_usd, ceiling=self.ceiling_usd)
 
     def remaining_usd(self) -> float:
         return max(0.0, self.ceiling_usd - self._spent_usd)
@@ -412,10 +768,10 @@ class ManifestReader:
 # ---------------------------------------------------------------------------
 
 class ResultPersister:
-    """Write content-addressed result files to results/raw/<arm>/<sha8>/.
+    """Write content-addressed result files under results/raw/<arm>/<provider>/<sha8>/.
 
-    The directory layout follows DESIGN.md § 6:
-        results/raw/<arm>/<sha8>/
+    Directory layout (provider layer added per ADR 030):
+        results/raw/<arm>/<provider>/<sha8>/
             prompt.json
             response.json
             score.json
@@ -423,20 +779,39 @@ class ResultPersister:
     Files are written atomically (write-then-rename where pathlib allows).
     Existing files are NOT overwritten unless force=True — idempotency for
     resume-on-failure.
+
+    Parameters
+    ----------
+    out_dir:
+        Root output directory (results/raw/).
+    arm:
+        "arm-a" or "arm-b".
+    provider:
+        Provider name string (e.g. "nvidia-llama-405b", "anthropic-haiku").
+        Creates a provider-scoped subtree so multi-provider runs coexist.
+    force:
+        When True, overwrite existing files.
     """
 
-    def __init__(self, out_dir: Path, arm: str, force: bool = False) -> None:
+    def __init__(
+        self,
+        out_dir: Path,
+        arm: str,
+        provider: str = "unknown",
+        force: bool = False,
+    ) -> None:
         self.out_dir = out_dir
         self.arm = arm
+        self.provider = provider
         self.force = force
-        (out_dir / arm).mkdir(parents=True, exist_ok=True)
+        (out_dir / arm / provider).mkdir(parents=True, exist_ok=True)
 
     def _slot_dir(self, sha: str, sub: str = "") -> Path:
         """Return (and create) the per-specimen slot directory.
 
         sub: optional subdirectory within the slot (e.g. "k=3")
         """
-        d = self.out_dir / self.arm / sha[:8]
+        d = self.out_dir / self.arm / self.provider / sha[:8]
         if sub:
             d = d / sub
         d.mkdir(parents=True, exist_ok=True)
@@ -462,9 +837,9 @@ class ResultPersister:
         return target
 
     def log_error(self, sha: str, error: str, context: dict | None = None) -> None:
-        """Append an error record to the arm-level errors.jsonl file."""
+        """Append an error record to the provider-scoped errors.jsonl file."""
         import datetime as dt
-        error_file = self.out_dir / self.arm / "errors.jsonl"
+        error_file = self.out_dir / self.arm / self.provider / "errors.jsonl"
         record = {
             "sha8": sha[:8],
             "error": error,

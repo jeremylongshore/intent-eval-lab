@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""run-arm-a.py — Naive Opus-in-context arm (null hypothesis, Arm A).
+"""run-arm-a.py — Naive {provider}-in-context arm (null hypothesis, Arm A).
 
 Phase A.0 baseline experiment per DESIGN.md § 3 Arm A.
 
@@ -8,27 +8,32 @@ Per run:
   1. Load specimen SKILL.md.
   2. Sample K passing exemplars from the same corpus (exclude self).
   3. Build prompt per DESIGN.md § 3 Arm A template.
-  4. Call claude-opus-4-7 at temperature=0.0 (or --dry-run synthetic).
+  4. Call the selected provider at temperature=0.0 (or --dry-run synthetic).
   5. Score the response as if it were the new SKILL.md frontmatter.
   6. Persist prompt.json + response.json + score.json content-addressed.
 
-Idempotent: if results/raw/arm-a/<sha8>/k=<N>/response.json already exists,
-the run is skipped (no re-call). Pass --force to override.
+Idempotent: if results/raw/arm-a/<provider>/<sha8>/k=<N>/response.json already
+exists, the run is skipped (no re-call). Pass --force to override.
 
-Stops loudly with BudgetExceeded when CostMeter triggers.
+Default provider: nvidia-llama-405b (NVIDIA NIM, free tier, zero cost).
+Stops loudly with BudgetExceeded when CostMeter triggers on paid providers.
 
-Emits results/raw/arm-a/_summary.json at end: per-K mean+std marketplace_score_pct
-delta vs input baseline.
+Emits results/raw/arm-a/<provider>/_summary.json at end: per-K mean+std
+marketplace_score_pct delta vs input baseline.
 
 Usage:
     run-arm-a.py --manifest <path> --out <dir> \\
                  --k-sweep 0,3,8,16 \\
-                 --budget-ceiling-usd 200 \\
+                 --provider nvidia-llama-405b \\
+                 --budget-ceiling-usd 20 \\
                  [--dry-run] [--force] [--limit N]
 
---dry-run: builds prompts, prints estimated costs and synthetic responses,
-           scores them. Zero API spend. Validates pipeline end-to-end.
---limit N: process only the first N specimens (useful for smoke tests).
+--provider: one of nvidia-llama-405b (default), nvidia-llama-70b,
+            nvidia-nemotron, groq-llama-70b, groq-llama-70b-specdec,
+            groq-mixtral, anthropic-opus, anthropic-sonnet, anthropic-haiku.
+--dry-run:  builds prompts, prints estimated costs and synthetic responses,
+            scores them. Zero API spend. Validates pipeline end-to-end.
+--limit N:  process only the first N specimens (useful for smoke tests).
 """
 from __future__ import annotations
 
@@ -37,6 +42,7 @@ import datetime as dt
 import hashlib
 import json
 import math
+import os
 import statistics
 import sys
 import tempfile
@@ -45,15 +51,19 @@ from pathlib import Path
 # Resolve _arm_common relative to this script's location (avoids PYTHONPATH dep)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _arm_common import (
-    AnthropicClient,
+    ALL_PROVIDER_NAMES,
     BudgetExceeded,
     CostMeter,
+    DEFAULT_BUDGET_CEILING_USD,
+    DEFAULT_PROVIDER,
     ManifestReader,
     ResultPersister,
     Scorer,
     SpecimenMeta,
     build_arm_a_prompt,
     extract_frontmatter,
+    get_provider,
+    is_free_provider,
     load_exemplars,
 )
 
@@ -73,7 +83,7 @@ def run_single(
     specimen: SpecimenMeta,
     k: int,
     manifest: ManifestReader,
-    client: AnthropicClient,
+    client: object,  # any LLMProvider instance
     meter: CostMeter,
     persister: ResultPersister,
     scorer: Scorer,
@@ -108,26 +118,19 @@ def run_single(
     # Build prompt
     prompt = build_arm_a_prompt(input_text, exemplars)
 
-    # Dry-run: print summary and skip actual call
+    # Dry-run: print summary before actual call
     if dry_run:
         est_tokens = estimate_prompt_tokens(prompt)
-        from _arm_common import (
-            OPUS_INPUT_USD_PER_MTOK,
-            OPUS_OUTPUT_USD_PER_MTOK,
-        )
-        est_cost = (
-            est_tokens / 1_000_000 * OPUS_INPUT_USD_PER_MTOK
-            + 180 / 1_000_000 * OPUS_OUTPUT_USD_PER_MTOK
-        )
+        # cost is $0 for free providers; synthetic response will reflect this
         print(
             f"[dry-run] specimen={specimen.sha8} k={k} "
-            f"est_input_tokens={est_tokens} est_cost=${est_cost:.4f}"
+            f"provider={getattr(client, 'name', '?')}/{getattr(client, 'model', '?')} "
+            f"est_input_tokens={est_tokens}"
         )
-        # Print a truncated prompt sample
         prompt_preview = prompt[:300].replace("\n", " ")
         print(f"  prompt[:300]: {prompt_preview!r}")
 
-    # Call Opus (or get synthetic response in dry-run mode)
+    # Call provider (or get synthetic response in dry-run mode)
     try:
         completion = client.complete(prompt, max_tokens=1024)
     except Exception as exc:
@@ -150,6 +153,7 @@ def run_single(
         "specimen_sha256": sha,
         "k": k,
         "response_text": completion.text,
+        "provider": completion.provider,
         "model": completion.model,
         "stop_reason": completion.stop_reason,
         "input_tokens": completion.usage.input_tokens,
@@ -199,6 +203,8 @@ def run_single(
         "sha8": specimen.sha8,
         "stratum": specimen.stratum,
         "k": k,
+        "provider": completion.provider,
+        "model": completion.model,
         "baseline_score": specimen.marketplace_score,
         "candidate_score": candidate_score.marketplace_score_pct,
         "delta": score_data["delta_marketplace_score_pct"],
@@ -238,11 +244,13 @@ def write_summary(
     k_values: list[int],
     meter: CostMeter,
     dry_run: bool,
+    provider: str = "unknown",
 ) -> Path:
-    """Write _summary.json; return its path."""
+    """Write _summary.json under the provider-scoped directory; return its path."""
     per_k = aggregate_results(all_results, k_values)
     summary = {
         "arm": ARM_NAME,
+        "provider": provider,
         "generated_at": dt.datetime.now(dt.UTC).isoformat(),
         "dry_run": dry_run,
         "cost_meter": meter.summary(),
@@ -250,14 +258,15 @@ def write_summary(
         "per_k_marketplace_score_pct_delta": per_k,
         "per_run_results": all_results,
     }
-    path = out_dir / ARM_NAME / "_summary.json"
+    path = out_dir / ARM_NAME / provider / "_summary.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return path
 
 
 def main() -> int:
     ap = argparse.ArgumentParser(
-        description="Run Arm A (naive Opus-in-context) of Phase A.0 baseline experiment."
+        description="Run Arm A (naive provider-in-context) of Phase A.0 baseline experiment."
     )
     ap.add_argument("--manifest", type=Path, required=True,
                     help="Path to corpus/manifest.json")
@@ -265,8 +274,24 @@ def main() -> int:
                     help="Root output directory (results/raw/)")
     ap.add_argument("--k-sweep", default="0,3,8,16",
                     help="Comma-separated K values (exemplar counts). Default: 0,3,8,16")
-    ap.add_argument("--budget-ceiling-usd", type=float, default=200.0,
-                    help="Hard cost ceiling USD. Default: 200")
+    ap.add_argument(
+        "--provider",
+        default=os.environ.get("PHASE_A0_PROVIDER", DEFAULT_PROVIDER),
+        choices=ALL_PROVIDER_NAMES,
+        help=(
+            f"LLM provider to use. Default: {DEFAULT_PROVIDER} (free tier). "
+            "Set PHASE_A0_PROVIDER env var to change default."
+        ),
+    )
+    ap.add_argument(
+        "--budget-ceiling-usd",
+        type=float,
+        default=float(os.environ.get("PHASE_A0_BUDGET_CEILING_USD", DEFAULT_BUDGET_CEILING_USD)),
+        help=(
+            f"Hard cost ceiling USD (paid providers only). Default: {DEFAULT_BUDGET_CEILING_USD}. "
+            "Override via PHASE_A0_BUDGET_CEILING_USD env var."
+        ),
+    )
     ap.add_argument("--dry-run", action="store_true",
                     help="Simulate pipeline without real API calls. Validates end-to-end.")
     ap.add_argument("--force", action="store_true",
@@ -295,9 +320,10 @@ def main() -> int:
     if args.limit:
         specimens = specimens[: args.limit]
 
+    free = is_free_provider(args.provider)
     meter = CostMeter(ceiling_usd=args.budget_ceiling_usd)
-    client = AnthropicClient(dry_run=args.dry_run)
-    persister = ResultPersister(args.out, ARM_NAME, force=args.force)
+    client = get_provider(args.provider, dry_run=args.dry_run)
+    persister = ResultPersister(args.out, ARM_NAME, provider=args.provider, force=args.force)
     scorer = Scorer(validator_path=args.validator_path)
 
     all_results: list[dict] = []
@@ -305,7 +331,9 @@ def main() -> int:
 
     print(
         f"[arm-a] specimens={len(specimens)} k_sweep={k_values} "
-        f"ceiling=${args.budget_ceiling_usd:.0f} dry_run={args.dry_run}"
+        f"provider={args.provider} model={client.model} "
+        f"ceiling=${args.budget_ceiling_usd:.0f} "
+        f"free_tier={free} dry_run={args.dry_run}"
     )
 
     with tempfile.TemporaryDirectory(prefix="arm_a_score_") as tmp_str:
@@ -338,17 +366,22 @@ def main() -> int:
                 file=sys.stderr,
             )
             # Still write partial summary so the experiment is auditable
-            summary_path = write_summary(args.out, all_results, k_values, meter, args.dry_run)
+            summary_path = write_summary(
+                args.out, all_results, k_values, meter, args.dry_run, args.provider
+            )
             print(f"Partial summary: {summary_path}", file=sys.stderr)
             return 1
 
-    summary_path = write_summary(args.out, all_results, k_values, meter, args.dry_run)
+    summary_path = write_summary(
+        args.out, all_results, k_values, meter, args.dry_run, args.provider
+    )
 
     print(
         f"\n[arm-a] DONE: {len(all_results)} runs completed, "
         f"{skipped_count} skipped (idempotent)."
     )
-    print(f"  cost: ${meter.spent_usd:.4f} of ${meter.ceiling_usd:.2f}")
+    cost_note = "(free tier)" if free else f"of ${meter.ceiling_usd:.2f}"
+    print(f"  cost: ${meter.spent_usd:.4f} {cost_note}")
     print(f"  summary: {summary_path}")
 
     # Print per-K stats to stdout

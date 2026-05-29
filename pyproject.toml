@@ -1,0 +1,24 @@
+[project]
+name = "intent-eval-lab"
+version = "0.0.0"
+description = "Intent Eval Lab — methodology repo. The pyproject is only here for pytest config; no Python package is built."
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = [
+  "research/phase-a-0-baseline/tests",
+]
+addopts = [
+  "-v",
+  "--strict-markers",
+  "--strict-config",
+  "--tb=short",
+]
+markers = [
+  "smoke: end-to-end smoke tests (may shell out to subprocess but never hit network)",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
