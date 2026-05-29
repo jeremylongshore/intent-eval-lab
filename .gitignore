@@ -62,3 +62,21 @@ out/
 .dolt/
 *.db
 .beads-credential-key
+
+# >>> sops-init managed block (do not edit this fence) >>>
+# Plaintext secrets — block explicitly. Encrypted forms (.env.sops, *.sops.yaml) are committed.
+.env
+.env.local
+.env.dev
+.env.staging
+.env.prod
+secrets.dev.yaml
+secrets.staging.yaml
+secrets.prod.yaml
+*.pem
+*.key
+secrets/
+credentials/
+# SOPS temp files (decrypted to /dev/shm during sops-env exec)
+*.sops.tmp
+# <<< sops-init managed block <<<
