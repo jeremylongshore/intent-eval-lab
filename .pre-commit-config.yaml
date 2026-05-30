@@ -1,0 +1,52 @@
+# Pre-commit framework — local fast gates before push.
+# Reference: https://pre-commit.com
+#
+# Install once per checkout:
+#   pip install --user pre-commit  (or: pipx install pre-commit)
+#   pre-commit install
+#
+# After that, hooks run automatically on `git commit`.
+# Run manually:  pre-commit run --all-files
+#
+# Posture: advisory on first install (no required check yet).
+
+repos:
+  # ---------------------------------------------------------------------------
+  # L2 code lint + format (Python)
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # ---------------------------------------------------------------------------
+  # L2 doc-quality (markdown + prose)
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.18.1
+    hooks:
+      - id: markdownlint-cli2
+        # Use the in-repo .markdownlint-cli2.jsonc; skip vendored + research raw output
+        exclude: ^(\.audit-harness/|research/phase-a-0-baseline/results/raw/)
+
+  # ---------------------------------------------------------------------------
+  # L1 hygiene
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: \.md$  # markdownlint handles MD009; avoid double-fix
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=500]
+
+# Run config: only on commit by default. To wire pre-push or CI mirror,
+# extend stages or add a separate workflow that calls `pre-commit run --all-files`.
+default_stages: [pre-commit]
+fail_fast: false

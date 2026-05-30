@@ -1,8 +1,12 @@
 [project]
 name = "intent-eval-lab"
 version = "0.0.0"
-description = "Intent Eval Lab — methodology repo. The pyproject is only here for pytest config; no Python package is built."
+description = "Intent Eval Lab — methodology repo. The pyproject is only here for pytest/ruff/mypy/coverage config; no Python package is built."
 requires-python = ">=3.11"
+
+# ----------------------------------------------------------------------------
+# pytest (L3)
+# ----------------------------------------------------------------------------
 
 [tool.pytest.ini_options]
 minversion = "8.0"
@@ -19,6 +23,91 @@ markers = [
   "smoke: end-to-end smoke tests (may shell out to subprocess but never hit network)",
 ]
 
+# ----------------------------------------------------------------------------
+# ruff (L2 code lint + format)
+# ----------------------------------------------------------------------------
+
 [tool.ruff]
 line-length = 120
 target-version = "py311"
+extend-exclude = [
+  ".audit-harness",
+  "research/phase-a-0-baseline/results",
+]
+
+[tool.ruff.lint]
+# Conservative starter rule set; tighten in follow-up PRs as the corpus stabilizes.
+select = [
+  "E",    # pycodestyle errors
+  "W",    # pycodestyle warnings
+  "F",    # pyflakes (unused imports, undefined names)
+  "I",    # isort (import order)
+  "B",    # flake8-bugbear (likely-bug patterns)
+  "UP",   # pyupgrade (modern Python idioms)
+  "SIM",  # flake8-simplify
+]
+ignore = [
+  "E501",  # line length — handled by ruff format
+  "B008",  # function call in default argument (Argparse defaults trip this)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"research/phase-a-0-baseline/tests/**" = ["B011"]  # pytest assert idioms
+
+# ----------------------------------------------------------------------------
+# mypy (L2 type checking)
+# ----------------------------------------------------------------------------
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_return_any = true
+# Phase A.0 runners import third-party SDKs (anthropic, openai) that may not
+# ship type stubs in all environments. Allow missing imports for now; tighten
+# once stubs are installed in CI.
+ignore_missing_imports = true
+# Subprocess + dynamic dataclass patterns in the runners trip strict checks
+# in a few spots; relax those locally in the affected files via inline
+# `# type: ignore` rather than relaxing project-wide.
+exclude = [
+  ".audit-harness/.*",
+  "research/phase-a-0-baseline/results/.*",
+]
+
+# ----------------------------------------------------------------------------
+# coverage.py (L3 coverage gate + subprocess instrumentation)
+# ----------------------------------------------------------------------------
+
+[tool.coverage.run]
+source = ["research/phase-a-0-baseline/scripts"]
+omit = [
+  "research/phase-a-0-baseline/tests/*",
+  "*/__pycache__/*",
+  ".audit-harness/*",
+]
+# Subprocess instrumentation: smoke tests invoke runners via subprocess.run.
+# parallel=True + concurrency=multiprocessing causes coverage to write a
+# separate .coverage.<pid> file per process; `coverage combine` then merges
+# them before report. The CI workflow sets COVERAGE_PROCESS_START to the
+# pyproject.toml path so child Pythons auto-init.
+parallel = true
+concurrency = ["multiprocessing"]
+
+[tool.coverage.report]
+# Floor starts at 60% (current measured: 20% with subprocess gap fixed will
+# rise toward 80+). Ratchet up in follow-up PRs as un-tested branches land tests.
+fail_under = 60
+precision = 1
+show_missing = true
+skip_covered = false
+exclude_also = [
+  "raise NotImplementedError",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+  "pragma: no cover",
+]
+
+[tool.coverage.paths]
+source = ["research/phase-a-0-baseline/scripts"]

@@ -16,10 +16,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-import pytest
-
 import _arm_common as ac  # noqa: E402
-
+import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 SCRIPTS = REPO_ROOT / "research" / "phase-a-0-baseline" / "scripts"

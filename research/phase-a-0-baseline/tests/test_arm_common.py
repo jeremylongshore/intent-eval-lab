@@ -5,10 +5,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import pytest
-
 import _arm_common as ac  # noqa: E402
-
+import pytest
 
 # --- get_provider factory ----------------------------------------------------
 
@@ -91,7 +89,7 @@ def test_cost_meter_zero_cost_does_not_raise_at_zero_ceiling() -> None:
 # --- ResultPersister idempotency --------------------------------------------
 
 def test_result_persister_creates_provider_scoped_subtree(tmp_path: Path) -> None:
-    rp = ac.ResultPersister(
+    ac.ResultPersister(
         out_dir=tmp_path, arm="arm-a", provider="nvidia-llama-405b",
     )
     expected = tmp_path / "arm-a" / "nvidia-llama-405b"
