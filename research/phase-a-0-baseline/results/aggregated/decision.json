@@ -1,0 +1,14 @@
+{
+  "cohens_d": 1.4856567490539363,
+  "descope_threshold_fraction": 0.7,
+  "naive_lift_as_fraction_of_projected": 0.0,
+  "naive_lift_pp": 0.0,
+  "notes": "Primary one-sided test asks: is Refiner final score significantly > Naive best-K score per specimen? Outcome DESCOPE iff naive baseline achieves > 70% of projected Refiner lift (1.5pp), per DR-028 P0-RATIFY-3.",
+  "outcome": "PROCEED",
+  "primary_p_value": 2.5610025061383843e-10,
+  "primary_significant_at_alpha_0_05": true,
+  "primary_test": "Wilcoxon signed-rank one-sided (B > A)",
+  "projected_refiner_lift_pp": 1.5,
+  "refiner_lift_as_fraction_of_projected": 0.3888888888888889,
+  "refiner_lift_pp": 0.5833333333333334
+}

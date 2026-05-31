@@ -1,0 +1,129 @@
+{
+  "decision": {
+    "cohens_d": 1.4856567490539363,
+    "descope_threshold_fraction": 0.7,
+    "naive_lift_as_fraction_of_projected": 0.0,
+    "naive_lift_pp": 0.0,
+    "notes": "Primary one-sided test asks: is Refiner final score significantly > Naive best-K score per specimen? Outcome DESCOPE iff naive baseline achieves > 70% of projected Refiner lift (1.5pp), per DR-028 P0-RATIFY-3.",
+    "outcome": "PROCEED",
+    "primary_p_value": 2.5610025061383843e-10,
+    "primary_significant_at_alpha_0_05": true,
+    "primary_test": "Wilcoxon signed-rank one-sided (B > A)",
+    "projected_refiner_lift_pp": 1.5,
+    "refiner_lift_as_fraction_of_projected": 0.3888888888888889,
+    "refiner_lift_pp": 0.5833333333333334
+  },
+  "effect_size_cohens_d": 1.4856567490539363,
+  "generated_at": "2026-05-31",
+  "goodhart_audit": {
+    "accepted_rate": 0.15,
+    "accepted_specimens": 9,
+    "approach": "v0.1 \u2014 uses Arm B per-specimen final accepted flag as proxy",
+    "note": "Full 5-dim audit requires reading per-iteration score-N.json files; deferred to follow-up bead. Acceptance gate already enforces strict improvement on marketplace_score_pct + non-degradation on the 4 other dims."
+  },
+  "k_sweep_contrasts": {
+    "K16-K8": {
+      "mean_diff": 0.0,
+      "n": 60,
+      "p_value": 0.5,
+      "significant": false,
+      "t_stat": 0.0
+    },
+    "K3-K0": {
+      "mean_diff": 0.06666666666666667,
+      "n": 60,
+      "p_value": 0.49245183592801156,
+      "significant": false,
+      "t_stat": 0.019001941920555692
+    },
+    "K8-K3": {
+      "mean_diff": -2.6333333333333333,
+      "n": 60,
+      "p_value": 0.8569854144217706,
+      "significant": false,
+      "t_stat": -1.0766280217775894
+    }
+  },
+  "n_specimens_paired": 60,
+  "per_k_arm_a": {
+    "0": {
+      "max": 4,
+      "mean": -12.333333333333334,
+      "median": -7.0,
+      "min": -92,
+      "n": 60,
+      "std": 17.039999469510082
+    },
+    "16": {
+      "max": 6,
+      "mean": -14.9,
+      "median": -6.5,
+      "min": -86,
+      "n": 60,
+      "std": 22.612206093320037
+    },
+    "3": {
+      "max": 9,
+      "mean": -12.266666666666667,
+      "median": -5.5,
+      "min": -94,
+      "n": 60,
+      "std": 20.359370196601365
+    },
+    "8": {
+      "max": 11,
+      "mean": -14.9,
+      "median": -6.0,
+      "min": -94,
+      "n": 60,
+      "std": 25.13536235422052
+    }
+  },
+  "per_stratum_test": {
+    "A": {
+      "b_minus_a": 9.15,
+      "mean_a": -7.7,
+      "mean_b": 1.45,
+      "n_a": 20,
+      "n_b": 20,
+      "p_value": 3.924481272505851e-05,
+      "significant": true,
+      "t_stat": 4.751538799109573
+    },
+    "B": {
+      "b_minus_a": 7.45,
+      "mean_a": -7.45,
+      "mean_b": 0.0,
+      "n_a": 20,
+      "n_b": 20,
+      "p_value": 4.748010545974817e-07,
+      "significant": true,
+      "t_stat": 7.095238095238097
+    },
+    "C": {
+      "b_minus_a": 3.4499999999999997,
+      "mean_a": -3.15,
+      "mean_b": 0.3,
+      "n_a": 20,
+      "n_b": 20,
+      "p_value": 0.00029588032351909464,
+      "significant": true,
+      "t_stat": 4.05734598166371
+    }
+  },
+  "primary_paired_test": {
+    "alpha": 0.05,
+    "p_value": 2.5610025061383843e-10,
+    "shapiro_normal": false,
+    "shapiro_p": 2.3170850368670306e-05,
+    "significant": true,
+    "statistic": 1755.5,
+    "test_name": "Wilcoxon signed-rank one-sided (B > A)"
+  },
+  "raw_means": {
+    "arm_a_best_k_mean": -6.1,
+    "arm_b_mean": 0.5833333333333334,
+    "b_minus_a_mean": 6.683333333333334
+  },
+  "schema_version": "phase-a-0-statistics/v0.1"
+}
