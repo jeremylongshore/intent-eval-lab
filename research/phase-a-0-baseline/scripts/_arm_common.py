@@ -909,15 +909,26 @@ class Scorer:
         """Score an in-memory SKILL.md string by writing to a temp file.
 
         tmp_dir must be a writable directory that persists for the call duration.
-        The temp file is named by SHA8 of the content to avoid collisions.
+        The temp file MUST be named SKILL.md — validate-skills-schema.py
+        refuses any other filename (file-type detection by path). Each call
+        gets its own SHA8-named subdirectory so concurrent scoring + idempotent
+        re-runs don't collide. Without this discipline the validator silently
+        emits no GRADE line and parse_grade defaults to ('F', 0), producing
+        spurious zero-scores for valid candidate content.
         """
         sha8 = hashlib.sha256(skill_md_text.encode()).hexdigest()[:8]
-        tmp_path = tmp_dir / f"_score_tmp_{sha8}.md"
+        slot = tmp_dir / f"_score_{sha8}"
+        slot.mkdir(parents=True, exist_ok=True)
+        tmp_path = slot / "SKILL.md"
         tmp_path.write_text(skill_md_text, encoding="utf-8")
         try:
             return self.score_file(tmp_path)
         finally:
             tmp_path.unlink(missing_ok=True)
+            try:
+                slot.rmdir()
+            except OSError:
+                pass  # non-empty (parallel call still using it); safe to leave
 
 
 # ---------------------------------------------------------------------------
