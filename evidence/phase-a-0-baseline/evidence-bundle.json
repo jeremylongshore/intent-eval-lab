@@ -1,0 +1,38 @@
+{
+  "created_at": "2026-06-01T00:00:00.000Z",
+  "eval_run_id": "0197f8a0-0000-7000-8000-000000000000",
+  "id": "0197f8a0-0000-7000-8000-000000000001",
+  "predicate_uri_set": [],
+  "rekor_log_indices": [],
+  "row_count": 0,
+  "signing_mode": "unsigned_experimental",
+  "storage_key": "git:jeremylongshore/intent-eval-lab@0f06187543fe8bd1394ddac92082dc34d0bf7456:evidence/phase-a-0-baseline/evidence-bundle.json",
+  "subject_set": [
+    {
+      "digest": {
+        "sha256": "21ca4121d7725dfc9921bd4bd360b8c0c0b17e46b33bd8791bfbf16fd8168d38"
+      },
+      "name": "phase-a0:ci:decision"
+    },
+    {
+      "digest": {
+        "sha256": "cb21bae85c733253b830eb396a400dc1bcac8140b720966a049bf0b6f43ea088"
+      },
+      "name": "phase-a0:ci:statistics"
+    },
+    {
+      "digest": {
+        "sha256": "35caf7e36b5ab71b9e3140a12785f180d5a0d15374a0e5adbc98a72feb4cbb53"
+      },
+      "name": "phase-a0:ci:results-md"
+    },
+    {
+      "digest": {
+        "sha256": "1af9e9be90587a56b16428328340a64344e976c8d1c38ff9253e4afef6aec904"
+      },
+      "name": "phase-a0:ci:decision-record"
+    }
+  ],
+  "verification_last_checked_at": "2026-06-01T00:00:00.000Z",
+  "verification_status": "unverified"
+}

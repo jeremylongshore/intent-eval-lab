@@ -1,0 +1,166 @@
+name: Sign Evidence Bundle (Phase A.0)
+
+# Signs the Phase A.0 Evidence Bundle as a BLOB against PRODUCTION sigstore
+# (Fulcio + rekor.sigstore.dev), keyless, under this workflow's GitHub OIDC
+# identity. The result is a permanent, publicly verifiable transparency-log
+# entry that anyone can check with `cosign verify-blob`.
+#
+# WHAT THIS ATTESTS:
+#   That the exact Phase A.0 result artifacts (by SHA-256 digest) existed and
+#   were signed at this time, by the identity
+#   `github.com/jeremylongshore/intent-eval-lab/.github/workflows/sign-evidence-bundle.yml`.
+#
+# WHAT THIS DOES NOT DO (deliberate, per DR-018 + DR-010 Q3):
+#   It declares NO predicate URI. `cosign sign-blob` signs raw bytes — it makes
+#   no predicate claim. The `skill-binary-eval/v1` predicate remains RESERVED,
+#   not declared; production-Rekor predicate declaration is gated on SPEC.md
+#   normative + DNSSEC + CAA clearing for evals.intentsolutions.io, which have
+#   not. A blob signature attests file integrity + identity + time, NOT
+#   predicate conformance, and NOT that the statistics are "correct."
+#
+# Manual trigger only — a permanent public Rekor entry must be deliberate.
+
+on:
+  workflow_dispatch:
+    inputs:
+      created_at:
+        description: "RFC3339 UTC timestamp baked into the bundle (deterministic)"
+        required: true
+        default: "2026-06-01T00:00:00.000Z"
+      eval_run_id:
+        description: "UUIDv7 eval_run_id for the bundle"
+        required: true
+        default: "0197f8a0-0000-7000-8000-000000000000"
+      bundle_id:
+        description: "UUIDv7 bundle id"
+        required: true
+        default: "0197f8a0-0000-7000-8000-000000000001"
+
+permissions:
+  contents: read
+  id-token: write   # REQUIRED: Fulcio keyless signing via GitHub OIDC
+
+jobs:
+  sign:
+    name: Build + sign Phase A.0 Evidence Bundle (production Rekor)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Stash committed bundle, rebuild in-CI (deterministic)
+        # Rebuild from the committed source artifacts so the signed bytes are
+        # reproducible from a clean checkout — not trusting a committed blob.
+        run: |
+          set -euo pipefail
+          BUNDLE=evidence/phase-a-0-baseline/evidence-bundle.json
+          if [ -f "$BUNDLE" ]; then cp "$BUNDLE" /tmp/committed-bundle.json; fi
+          python3 scripts/build-evidence-bundle.py \
+            --created-at "${{ github.event.inputs.created_at }}" \
+            --eval-run-id "${{ github.event.inputs.eval_run_id }}" \
+            --bundle-id "${{ github.event.inputs.bundle_id }}" \
+            --git-commit "${GITHUB_SHA}" \
+            --out "$BUNDLE"
+          echo "Bundle sha256:"
+          sha256sum "$BUNDLE"
+
+      - name: Drift check — in-CI rebuild must match committed bytes
+        # Same inputs → same bytes. If the committed bundle differs from the
+        # clean-checkout rebuild, refuse to sign (tamper / stale-input guard).
+        run: |
+          set -euo pipefail
+          BUNDLE=evidence/phase-a-0-baseline/evidence-bundle.json
+          if [ -f /tmp/committed-bundle.json ]; then
+            if diff "$BUNDLE" /tmp/committed-bundle.json >/dev/null; then
+              echo "✓ in-CI rebuild matches committed bundle byte-for-byte"
+            else
+              echo "::error::committed bundle differs from clean-checkout rebuild — refusing to sign"
+              diff "$BUNDLE" /tmp/committed-bundle.json || true
+              exit 1
+            fi
+          else
+            echo "no committed reference bundle — signing the freshly built one"
+          fi
+
+      - name: Sign blob (keyless, PRODUCTION sigstore + Rekor)
+        # Defaults target production: fulcio.sigstore.dev + rekor.sigstore.dev.
+        # --new-bundle-format emits a single .sigstore.json carrying the Fulcio
+        # cert chain + Rekor inclusion proof (offline-verifiable).
+        run: |
+          set -euo pipefail
+          cosign sign-blob \
+            --yes \
+            --new-bundle-format \
+            --bundle evidence/phase-a-0-baseline/evidence-bundle.sigstore.json \
+            evidence/phase-a-0-baseline/evidence-bundle.json
+          echo "Signed. Bundle written to evidence/phase-a-0-baseline/evidence-bundle.sigstore.json"
+
+      - name: Verify the signature we just made
+        # Prove the signature verifies against THIS workflow's OIDC identity
+        # before we trust/publish it. Fail the run if it does not.
+        run: |
+          set -euo pipefail
+          EXPECTED_IDENTITY="https://github.com/${GITHUB_REPOSITORY}/.github/workflows/sign-evidence-bundle.yml@${GITHUB_REF}"
+          echo "Expecting signer identity: ${EXPECTED_IDENTITY}"
+          cosign verify-blob \
+            --new-bundle-format \
+            --bundle evidence/phase-a-0-baseline/evidence-bundle.sigstore.json \
+            --certificate-identity "${EXPECTED_IDENTITY}" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            evidence/phase-a-0-baseline/evidence-bundle.json
+          echo "✓ signature verifies against workflow OIDC identity"
+
+      - name: Extract Rekor log index
+        id: rekor
+        # Pull the transparency-log index out of the bundle so we can publish a
+        # citable Rekor URL on the scorecard.
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os
+          b = json.load(open("evidence/phase-a-0-baseline/evidence-bundle.sigstore.json"))
+          # new-bundle-format: tlog entry under verificationMaterial
+          idx = None
+          try:
+              entries = b["verificationMaterial"]["tlogEntries"]
+              idx = entries[0]["logIndex"]
+          except Exception:
+              # fallback shapes
+              idx = b.get("rekorBundle", {}).get("Payload", {}).get("logIndex")
+          print(f"Rekor logIndex: {idx}")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
+              fh.write(f"log_index={idx}\n")
+          PY
+
+      - name: Upload signed artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase-a0-evidence-bundle-signed
+          path: |
+            evidence/phase-a-0-baseline/evidence-bundle.json
+            evidence/phase-a-0-baseline/evidence-bundle.sigstore.json
+
+      - name: Summary
+        run: |
+          echo "### Phase A.0 Evidence Bundle — SIGNED (production Rekor)" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Signer identity: \`github.com/${GITHUB_REPOSITORY}/.github/workflows/sign-evidence-bundle.yml@${GITHUB_REF}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- OIDC issuer: \`token.actions.githubusercontent.com\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Rekor log index: \`${{ steps.rekor.outputs.log_index }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Rekor entry: https://search.sigstore.dev/?logIndex=${{ steps.rekor.outputs.log_index }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Predicate URI: **none declared** (reserved; gated on evals.* DNSSEC+CAA+SPEC per DR-018)" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Download the \`phase-a0-evidence-bundle-signed\` artifact, then verify locally:" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "cosign verify-blob --new-bundle-format \\" >> "$GITHUB_STEP_SUMMARY"
+          echo "  --bundle evidence-bundle.sigstore.json \\" >> "$GITHUB_STEP_SUMMARY"
+          echo "  --certificate-identity 'https://github.com/${GITHUB_REPOSITORY}/.github/workflows/sign-evidence-bundle.yml@${GITHUB_REF}' \\" >> "$GITHUB_STEP_SUMMARY"
+          echo "  --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \\" >> "$GITHUB_STEP_SUMMARY"
+          echo "  evidence-bundle.json" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
