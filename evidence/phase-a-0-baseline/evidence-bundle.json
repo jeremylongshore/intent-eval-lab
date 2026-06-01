@@ -6,7 +6,7 @@
   "rekor_log_indices": [],
   "row_count": 0,
   "signing_mode": "unsigned_experimental",
-  "storage_key": "git:jeremylongshore/intent-eval-lab@0f06187543fe8bd1394ddac92082dc34d0bf7456:evidence/phase-a-0-baseline/evidence-bundle.json",
+  "storage_key": "git:jeremylongshore/intent-eval-lab:evidence/phase-a-0-baseline/evidence-bundle.json",
   "subject_set": [
     {
       "digest": {
