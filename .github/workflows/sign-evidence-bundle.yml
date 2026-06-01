@@ -65,7 +65,6 @@ jobs:
             --created-at "${{ github.event.inputs.created_at }}" \
             --eval-run-id "${{ github.event.inputs.eval_run_id }}" \
             --bundle-id "${{ github.event.inputs.bundle_id }}" \
-            --git-commit "${GITHUB_SHA}" \
             --out "$BUNDLE"
           echo "Bundle sha256:"
           sha256sum "$BUNDLE"

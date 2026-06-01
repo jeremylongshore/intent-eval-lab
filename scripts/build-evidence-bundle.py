@@ -23,16 +23,20 @@ What this bundle is NOT (deliberate, per DR-018 + DR-010 Q3):
     stands on the pre-registered analysis in RESULTS.md / DR-036.
 
 Determinism: this script takes ALL time-varying inputs as arguments
-(--created-at, --eval-run-id, --git-commit) so CI and local runs produce
+(--created-at, --eval-run-id, --bundle-id) so CI and local runs produce
 byte-identical output → identical signed digest → reproducible verification.
-No Date.now(), no random UUIDs generated here.
+No Date.now(), no random UUIDs generated here. NOTE: the signed bundle is
+deliberately COMMIT-INDEPENDENT — it does not embed a git SHA. The bundle
+attests content by digest; which commit signed it is recorded in the sigstore
+certificate's GitHub OIDC claims (GITHUB_SHA), not baked into the signed
+payload. Embedding the commit would be self-referential (committing the bundle
+changes the SHA the next rebuild embeds → can never match).
 
 Usage:
   build-evidence-bundle.py \
     --created-at 2026-06-01T00:00:00.000Z \
     --eval-run-id 0197f8a0-0000-7000-8000-000000000000 \
     --bundle-id   0197f8a0-0000-7000-8000-000000000001 \
-    --git-commit  <40-hex> \
     --out evidence/phase-a-0-baseline/evidence-bundle.json
 """
 
@@ -77,7 +81,7 @@ def sha256_file(path: Path) -> str:
     return h.hexdigest()
 
 
-def build_bundle(created_at: str, eval_run_id: str, bundle_id: str, git_commit: str) -> dict:
+def build_bundle(created_at: str, eval_run_id: str, bundle_id: str) -> dict:
     subject_set = []
     for name, rel in SUBJECTS:
         p = REPO_ROOT / rel
@@ -88,12 +92,11 @@ def build_bundle(created_at: str, eval_run_id: str, bundle_id: str, git_commit: 
             {"name": name, "digest": {"sha256": sha256_file(p)}}
         )
 
-    # storage_key: content-addressed key for the bundle's payload. We use the
-    # git commit + a stable path so the key is reproducible and resolvable.
-    storage_key = (
-        f"git:jeremylongshore/intent-eval-lab@{git_commit}"
-        f":evidence/phase-a-0-baseline/evidence-bundle.json"
-    )
+    # storage_key: a stable, commit-INDEPENDENT content-addressed key. Must not
+    # embed a git SHA (that would be self-referential — committing the bundle
+    # changes the SHA the next rebuild embeds, so it could never match). The
+    # signing commit is recorded in the sigstore certificate, not here.
+    storage_key = "git:jeremylongshore/intent-eval-lab:evidence/phase-a-0-baseline/evidence-bundle.json"
 
     bundle = {
         "id": bundle_id,
@@ -120,12 +123,11 @@ def main() -> int:
     ap.add_argument("--created-at", required=True)
     ap.add_argument("--eval-run-id", required=True)
     ap.add_argument("--bundle-id", required=True)
-    ap.add_argument("--git-commit", required=True)
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
 
     bundle = build_bundle(
-        args.created_at, args.eval_run_id, args.bundle_id, args.git_commit
+        args.created_at, args.eval_run_id, args.bundle_id
     )
 
     # Canonical serialization: sorted keys, compact-but-readable, trailing newline.
