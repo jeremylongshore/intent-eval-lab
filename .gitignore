@@ -84,3 +84,8 @@ credentials/
 # Coverage subprocess instrumentation artifacts
 .coverage
 .coverage.*
+
+# Phase A.0 signing artifacts are DURABLE, publicly-citable evidence — track them
+# explicitly (the general evidence/ ignore above is for ephemeral run telemetry).
+!evidence/phase-a-0-baseline/evidence-bundle.json
+!evidence/phase-a-0-baseline/evidence-bundle.sigstore.json
