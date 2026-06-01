@@ -12,6 +12,8 @@
 
 The Skill Refiner mechanism produces statistically-significant positive lift over the naive baseline, though the magnitude (+0.58 pp, 38.9% of projected 1.5 pp lift) falls below pre-registered projection. The Refiner thesis is **directionally validated** but **magnitude-shy** — Phase B continues with a tightening recommendation on the acceptance criterion.
 
+> **Scope caveat (frontmatter-only edit; full-rubric judge).** Both arms edited **only the SKILL.md frontmatter** (the prompt instructs "Return ONLY the updated frontmatter block"); the instruction body was never modified. The judge (`validate-skills-schema.py` 3.7.0) scores the **whole skill** on its 100-point rubric, of which roughly ~75 points are body-driven (Progressive Disclosure 30, Ease of Use 25, Utility 20, Writing Style 10) and only ~15–25 are frontmatter-movable (Spec Compliance 15 + the description-length / field-presence checks). Because the body was held fixed and identical across both arms, those body-driven points cancel out: every reported score delta is attributable to the frontmatter edit, and the A-vs-B comparison is apples-to-apples. **What this result therefore shows:** the Refiner's score-and-accept-only-if-better loop beats naive prompting *on the frontmatter-edit task*. **What it does not yet show:** improvement of a whole skill (body included). A whole-skill-editing variant scored on the full rubric against a fresh held-out set is the natural next experiment.
+
 | Quantity | Value |
 |---|---|
 | Specimens paired | 60 (full corpus) |
