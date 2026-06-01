@@ -5,6 +5,9 @@ null-hypothesis baseline result (DR-036, PROCEED).
 
 ## What is here
 
+> **SIGNED 2026-06-01.** Rekor log index **1689291334** — [view in the public transparency log](https://search.sigstore.dev/?logIndex=1689291334). Signer identity: `github.com/jeremylongshore/intent-eval-lab/.github/workflows/sign-evidence-bundle.yml@refs/heads/main`. Verified `Verified OK` against production sigstore.
+
+
 | File | What it is |
 |---|---|
 | `evidence-bundle.json` | The canonical Evidence Bundle. Names the four Phase A.0 result artifacts by their SHA-256 digests. Conforms to [`@intentsolutions/core` `schemas/v1/evidence-bundle.schema.json`](https://github.com/jeremylongshore/intent-eval-core/blob/main/schemas/v1/evidence-bundle.schema.json). |
