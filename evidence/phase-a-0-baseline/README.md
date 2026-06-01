@@ -5,7 +5,17 @@ null-hypothesis baseline result (DR-036, PROCEED).
 
 ## What is here
 
-> **SIGNED 2026-06-01.** Rekor log index **1689291334** — [view in the public transparency log](https://search.sigstore.dev/?logIndex=1689291334). Signer identity: `github.com/jeremylongshore/intent-eval-lab/.github/workflows/sign-evidence-bundle.yml@refs/heads/main`. Verified `Verified OK` against production sigstore.
+> **SIGNED 2026-06-01.** Rekor log index **1689291334** — [view the raw transparency-log entry](https://rekor.sigstore.dev/api/v1/log/entries?logIndex=1689291334). Signer identity: `github.com/jeremylongshore/intent-eval-lab/.github/workflows/sign-evidence-bundle.yml@refs/heads/main`. Verified `Verified OK` against production sigstore.
+>
+> **Annotation note (post-signing, 2026-06-01).** After signing, `RESULTS.md` and the
+> DR-036 decision record were annotated with a **frontmatter-only scope caveat** (disclosing
+> that both arms edited only the SKILL.md frontmatter while the judge scores the whole skill).
+> This added **disclosure only — no result or number changed.** The signed bundle therefore
+> attests the *pre-annotation* bytes of those two files (digests `35caf7e3…` for RESULTS.md and
+> `1af9e9be…` for DR-036), which is correct: a signature freezes exact bytes at sign-time.
+> Per the kernel's append-only Evidence Bundle discipline, a correction is a *new* bundle
+> referencing the prior one — never an in-place re-sign — so v1 stands as the honest historical
+> attestation and the next signature is produced at the next substantive result (Phase A.1).
 
 
 | File | What it is |
