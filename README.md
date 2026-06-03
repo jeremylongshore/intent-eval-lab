@@ -1,5 +1,7 @@
 # Intent Eval Lab
 
+Part of the **[Intent Eval Platform](https://github.com/intent-solutions-io/intent-eval-platform)** — the umbrella mapping the six repos that converge via a shared Evidence Bundle schema.
+
 A research umbrella for measuring AI plugin, agent, and MCP server quality across CLI runtimes — Claude Code, Gemini CLI, GitHub Copilot CLI, and OpenAI Codex CLI.
 
 The agentic-CLI ecosystem is converging on a small set of cross-tool conventions (`AGENTS.md`, MCP, `SKILL.md`) but the empirical question — *does my plugin actually get discovered and invoked correctly when the agent decides on its own?* — has no vendor-neutral answer. The vendors won't publish opinionated cross-CLI invocation-measurement frameworks because they're competing across the stack. That niche is structurally available to a third party.
