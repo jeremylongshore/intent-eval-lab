@@ -15,7 +15,7 @@ Production-deployed forecasting systems — whether classical (ARIMA / ETS / Pro
 
 These failure modes are not addressed by standard MAE / MAPE / sMAPE / MASE evaluation. They require operational telemetry layered on top: data-quality assertions on the feature pipeline, calibration tracking over deployment windows, drift-detection on the residual distribution, and leakage audits on the embedding layer.
 
-A spec under this module would codify what it means for a forecasting system to be *operationally ready* — including the runtime telemetry it must emit for an operator to detect drift before it shows up as a business-decision regression.
+A spec under this module would codify what it means for a forecasting system to be _operationally ready_ — including the runtime telemetry it must emit for an operator to detect drift before it shows up as a business-decision regression.
 
 ## When this module will graduate from placeholder
 

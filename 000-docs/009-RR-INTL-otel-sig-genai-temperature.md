@@ -1,13 +1,13 @@
 # 009-RR-INTL — OTel SIG-GenAI community-temperature engagement
 
-| Field | Value |
-|---|---|
-| **Date opened** | 2026-05-11 |
-| **Author** | Claude (Opus 4.7) drafting for Jeremy Longshore |
-| **Authority** | ISEDC v1 Q4 CSO sequence binding constraint (`000-docs/004-AT-DECR-isedc-council-record-2026-05-10.md`) re-affirmed by ISEDC v2 Q1 Option B decision (`000-docs/006-AT-DECR-isedc-council-2-phase-b-gate-2026-05-11.md`) |
-| **Plan reference** | Milestone 1 of `~/.claude/plans/se-the-council-bubbly-frog.md` |
-| **Bead** | `iel-p4a` (M1 sub-bead) under epic `iel-bbt` |
-| **Status** | Email DRAFTED. **Send is a Jeremy manual action.** This file is the GC-mandated paper-trail record. |
+| Field              | Value                                                                                                                                                                                                                    |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Date opened**    | 2026-05-11                                                                                                                                                                                                               |
+| **Author**         | Claude (Opus 4.7) drafting for Jeremy Longshore                                                                                                                                                                          |
+| **Authority**      | ISEDC v1 Q4 CSO sequence binding constraint (`000-docs/004-AT-DECR-isedc-council-record-2026-05-10.md`) re-affirmed by ISEDC v2 Q1 Option B decision (`000-docs/006-AT-DECR-isedc-council-2-phase-b-gate-2026-05-11.md`) |
+| **Plan reference** | Milestone 1 of `~/.claude/plans/se-the-council-bubbly-frog.md`                                                                                                                                                           |
+| **Bead**           | `iel-p4a` (M1 sub-bead) under epic `iel-bbt`                                                                                                                                                                             |
+| **Status**         | Email DRAFTED. **Send is a Jeremy manual action.** This file is the GC-mandated paper-trail record.                                                                                                                      |
 
 ---
 
@@ -39,7 +39,7 @@ The OpenTelemetry SIG-GenAI working group is the relevant group for AI-agent sem
 Verifying the current maintainer requires reading **fresh** OTel community sources (the maintainer
 roster rotates):
 
-1. Visit https://github.com/open-telemetry/community/blob/main/projects/gen-ai.md (the SIG charter
+1. Visit <https://github.com/open-telemetry/community/blob/main/projects/gen-ai.md> (the SIG charter
    page) to confirm the current named maintainers and the SIG's current active focus.
 2. Cross-check by reading the most recent SIG-GenAI meeting notes (the OTel community calendar
    links the meeting series).
@@ -111,13 +111,13 @@ intentsolutions.io
 Once sent, classify the response within 14 calendar days. Update this section with the actual
 outcome.
 
-| Outcome | What it means | Next action |
-|---|---|---|
-| **Routing-accept** — maintainer confirms SIG-GenAI scope and offers a follow-up channel (issue, meeting slot, sub-group thread) | Optimal outcome. M6 RFC filing follows the offered channel. | Schedule the offered channel. Update `001-DR-RFC` doc with maintainer's routing guidance. Plan M6 RFC filing for ~Week 4+ from email send. |
-| **Routing-redirect** — maintainer redirects to a different SIG / sub-group / approach | Useful outcome. The CSO sequence's whole point is to learn this BEFORE filing. | Re-do § 2 verification for the new SIG. Re-draft email. Send to new SIG. Restart the 14-day clock. |
-| **Routing-defer** — maintainer says "the underlying primitives aren't stable yet, come back when X" | Acceptable outcome. Records that the OTel community sees this work as premature; absorbs the feedback into the Phase B sequence. | Document X. Re-evaluate at the milestone X requires. Do NOT file the RFC against this maintainer's stated guidance. |
-| **No response within 14 days** | Triage signal, not failure. The maintainer may be busy, traveling, or simply not interested. | Re-verify maintainer is still active in the SIG. If yes, send a single 1-paragraph follow-up at day 14. If no response by day 28, document the silence and route to a different SIG-GenAI maintainer (re-do § 2). |
-| **Hostile / dismissive response** | Rare but possible. CSO seat: "first-impression is permanent" cuts both ways — a dismissive reply IS the first impression of IS. | Do NOT reply defensively. Document the response verbatim. Wait for next ISEDC convening before re-engaging. Consider a different SIG entirely. |
+| Outcome                                                                                                                         | What it means                                                                                                                    | Next action                                                                                                                                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Routing-accept** — maintainer confirms SIG-GenAI scope and offers a follow-up channel (issue, meeting slot, sub-group thread) | Optimal outcome. M6 RFC filing follows the offered channel.                                                                      | Schedule the offered channel. Update `001-DR-RFC` doc with maintainer's routing guidance. Plan M6 RFC filing for ~Week 4+ from email send.                                                                        |
+| **Routing-redirect** — maintainer redirects to a different SIG / sub-group / approach                                           | Useful outcome. The CSO sequence's whole point is to learn this BEFORE filing.                                                   | Re-do § 2 verification for the new SIG. Re-draft email. Send to new SIG. Restart the 14-day clock.                                                                                                                |
+| **Routing-defer** — maintainer says "the underlying primitives aren't stable yet, come back when X"                             | Acceptable outcome. Records that the OTel community sees this work as premature; absorbs the feedback into the Phase B sequence. | Document X. Re-evaluate at the milestone X requires. Do NOT file the RFC against this maintainer's stated guidance.                                                                                               |
+| **No response within 14 days**                                                                                                  | Triage signal, not failure. The maintainer may be busy, traveling, or simply not interested.                                     | Re-verify maintainer is still active in the SIG. If yes, send a single 1-paragraph follow-up at day 14. If no response by day 28, document the silence and route to a different SIG-GenAI maintainer (re-do § 2). |
+| **Hostile / dismissive response**                                                                                               | Rare but possible. CSO seat: "first-impression is permanent" cuts both ways — a dismissive reply IS the first impression of IS.  | Do NOT reply defensively. Document the response verbatim. Wait for next ISEDC convening before re-engaging. Consider a different SIG entirely.                                                                    |
 
 ## 5. Week 4+ RFC routing-decision criteria
 
@@ -148,6 +148,6 @@ routing guidance:
 
 ## 7. Update log
 
-| Date | Update |
-|---|---|
+| Date       | Update                                                                                  |
+| ---------- | --------------------------------------------------------------------------------------- |
 | 2026-05-11 | File opened; email drafted; § 2 verification + actual send pending Jeremy manual action |

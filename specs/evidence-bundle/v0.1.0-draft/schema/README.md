@@ -4,10 +4,10 @@
 
 ## Canonical sources
 
-| File | Canonical location |
-|---|---|
+| File                      | Canonical location                                                                                                                                             |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `gate-result.schema.json` | [`@intentsolutions/core/schemas/v1/gate-result.schema.json`](https://github.com/jeremylongshore/intent-eval-core/blob/main/schemas/v1/gate-result.schema.json) |
-| (other predicate URIs) | Pending — file each in the kernel before it leaves `sigstore_staging` per DR-010 Q3 |
+| (other predicate URIs)    | Pending — file each in the kernel before it leaves `sigstore_staging` per DR-010 Q3                                                                            |
 
 ## What changed (2026-05-21)
 
@@ -32,5 +32,5 @@ Full audit trail:
 
 - Spec (prose, in this repo): [`../SPEC.md`](../SPEC.md) — kernel-canonical declaration block at top
 - Normative prose: `intent-eval-lab/000-docs/012-AT-ARCH-platform-runtime-blueprint.md` § 7 (Blueprint B)
-- Kernel repo: https://github.com/jeremylongshore/intent-eval-core
+- Kernel repo: <https://github.com/jeremylongshore/intent-eval-core>
 - Predicate URI namespace: `https://evals.intentsolutions.io/gate-result/v1` (URI is immutable per Blueprint B § 7.2; only the schema location migrated)

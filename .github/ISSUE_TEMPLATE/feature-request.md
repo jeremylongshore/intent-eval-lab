@@ -3,7 +3,7 @@ name: Feature request
 about: Propose new methodology, a new experiment, or a new reusable script
 title: "[feat] "
 labels: enhancement
-assignees: ''
+assignees: ""
 ---
 
 ## What you want to add

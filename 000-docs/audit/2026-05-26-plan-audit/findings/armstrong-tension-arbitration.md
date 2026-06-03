@@ -34,7 +34,7 @@ Two honest paths:
 
 > Seven concurrent processes with no observable failure signal and no recovery action are not disciplines. They are hopes.
 
-The world is concurrent: the bd workspace, 5 sub-repos, 3 sync targets (bead/GH/Plane), CI, human writers — all writing concurrently. AC-12 tri-link doesn't fail; it *silently degrades*. That's the worst failure mode in any distributed system. Cunningham sees the accumulation; Hickey sees the place-orientation; both are right.
+The world is concurrent: the bd workspace, 5 sub-repos, 3 sync targets (bead/GH/Plane), CI, human writers — all writing concurrently. AC-12 tri-link doesn't fail; it _silently degrades_. That's the worst failure mode in any distributed system. Cunningham sees the accumulation; Hickey sees the place-orientation; both are right.
 
 **Arbitration:** every discipline must answer two questions or be deleted: (1) what is the observable failure signal? (2) what is the automatic recovery action? Disciplines that can answer both stay and get supervised properly (CI gate that fails loudly + idempotent recovery). Disciplines that can't answer both get deleted from the plan and re-labeled "advisory." No middle ground. My guess: 2 of 7 survive. That's fine — 2 supervised processes beat 7 hopeful ones.
 
@@ -52,12 +52,12 @@ If AC-7 means what it says — mechanism swappable — then the eval-set guarant
 
 ## VERDICT
 
-| Tension | Arbitration |
-|---|---|
-| T1 — SkillVersion/SkillSnapshot | **KEEP SEPARATE.** SkillSnapshot is a value; SkillVersion is a supervised process with explicit state machine + named supervisor entity. No FK. |
-| T2 — Phase D | **KILL (anti-goal).** Let-it-crash boundary not articulable today; zombie process worse than terminated one. Restart cheap if reality changes. |
-| T3 — Process discipline | **OBSERVABILITY-GATE.** Every discipline must name its failure signal + recovery action or be deleted. Likely 2 of 7 survive. |
-| T4 — Mechanism/product | **Eval-set decoupling IS the product.** Mechanism is swappable subordinate; define `RefinerStrategy` + ship second impl before AC-7 earns its citation. |
+| Tension                         | Arbitration                                                                                                                                             |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| T1 — SkillVersion/SkillSnapshot | **KEEP SEPARATE.** SkillSnapshot is a value; SkillVersion is a supervised process with explicit state machine + named supervisor entity. No FK.         |
+| T2 — Phase D                    | **KILL (anti-goal).** Let-it-crash boundary not articulable today; zombie process worse than terminated one. Restart cheap if reality changes.          |
+| T3 — Process discipline         | **OBSERVABILITY-GATE.** Every discipline must name its failure signal + recovery action or be deleted. Likely 2 of 7 survive.                           |
+| T4 — Mechanism/product          | **Eval-set decoupling IS the product.** Mechanism is swappable subordinate; define `RefinerStrategy` + ship second impl before AC-7 earns its citation. |
 
 — Joe Armstrong (channeled)
 2026-05-27

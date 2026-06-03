@@ -31,15 +31,15 @@ Intent Solutions will stand up a public-facing lab reports dashboard at `labs.in
 
 ## 1. Convening + seat roster
 
-| Seat | Lens | Argued |
-|---|---|---|
-| CTO | Technical correctness, repo topology, build systems | 12 of 14 decisions |
-| GC | Legal exposure, IP, partner contracts, disclosure | 5 of 14 |
-| CMO | Brand, audience inference, peer-org positioning | 6 of 14 |
-| CFO | Bandwidth, cost, opportunity cost, queue placement | 7 of 14 |
-| CSO | Strategic signal, partner dynamics, patent clocks, cross-tier | 5 of 14 |
-| CISO | Supply-chain security, attack surface, DNS posture | 8 of 14 |
-| VP DevRel | Community signal, developer experience, OSS posture | 7 of 14 |
+| Seat      | Lens                                                          | Argued             |
+| --------- | ------------------------------------------------------------- | ------------------ |
+| CTO       | Technical correctness, repo topology, build systems           | 12 of 14 decisions |
+| GC        | Legal exposure, IP, partner contracts, disclosure             | 5 of 14            |
+| CMO       | Brand, audience inference, peer-org positioning               | 6 of 14            |
+| CFO       | Bandwidth, cost, opportunity cost, queue placement            | 7 of 14            |
+| CSO       | Strategic signal, partner dynamics, patent clocks, cross-tier | 5 of 14            |
+| CISO      | Supply-chain security, attack surface, DNS posture            | 8 of 14            |
+| VP DevRel | Community signal, developer experience, OSS posture           | 7 of 14            |
 
 Adversarial-integrity protocol: verbatim positions preserved in session-folder `inputs/seat-*.md`. Steel-manned dissent surfaced. No suppression.
 
@@ -53,15 +53,15 @@ Adversarial-integrity protocol: verbatim positions preserved in session-folder `
 
 **Vote breakdown:**
 
-| Seat | Vote | Reasoning |
-|---|---|---|
-| CTO | NEW | Eat-our-own-ecosystem; dashboard is the most visible kernel consumer; Fowler's BoundedContext is technically correct |
-| GC | NEW | Litigation-hold + discovery-scope cleanliness; lab repo stays constitution-only |
-| CMO | NEW | Brand purity — methodology-authority brand can't co-exist with marketing surface |
-| CFO | NEW | 12-month amortized cost is lower; 0.5 FTE-day scaffold once vs ongoing dual-cognitive-load tax on every lab PR |
-| CSO | NEW | Strategic signal of architectural seriousness to external technical audiences |
-| VP DevRel | NEW | Reference consumer of `@intentsolutions/core` signals "consumable by anyone" far stronger than co-located |
-| CISO | NEW | Failure-domain isolation — dashboard deploy key must not inherit lab repo's constitution-authoring authority |
+| Seat      | Vote | Reasoning                                                                                                            |
+| --------- | ---- | -------------------------------------------------------------------------------------------------------------------- |
+| CTO       | NEW  | Eat-our-own-ecosystem; dashboard is the most visible kernel consumer; Fowler's BoundedContext is technically correct |
+| GC        | NEW  | Litigation-hold + discovery-scope cleanliness; lab repo stays constitution-only                                      |
+| CMO       | NEW  | Brand purity — methodology-authority brand can't co-exist with marketing surface                                     |
+| CFO       | NEW  | 12-month amortized cost is lower; 0.5 FTE-day scaffold once vs ongoing dual-cognitive-load tax on every lab PR       |
+| CSO       | NEW  | Strategic signal of architectural seriousness to external technical audiences                                        |
+| VP DevRel | NEW  | Reference consumer of `@intentsolutions/core` signals "consumable by anyone" far stronger than co-located            |
+| CISO      | NEW  | Failure-domain isolation — dashboard deploy key must not inherit lab repo's constitution-authoring authority         |
 
 **Implementation directive:** Create `jeremylongshore/intent-eval-dashboard` (Apache 2.0). Vendors `@intentsolutions/core` as published kernel consumer, exactly as any external integrator would. Lab repo CLAUDE.md scope line ("spec + methodology; no build system") is preserved unchanged.
 
@@ -86,6 +86,7 @@ Adversarial-integrity protocol: verbatim positions preserved in session-folder `
 **Outcome:** RATIFIED BINDING. Both CTO and CISO vote binding-non-negotiable.
 
 **Specification:**
+
 - Pinned OIDC issuer + subject AND `workflow_ref:` claim per source repo (CISO insists `repo:` pinning alone is insufficient — supply-chain compromise can preserve `repo:` while swapping `workflow_ref:`)
 - Rekor inclusion-proof verification at ingest, row-by-row
 - DSSE signature verification, row-by-row
@@ -107,6 +108,7 @@ Adversarial-integrity protocol: verbatim positions preserved in session-folder `
 **Outcome:** RATIFIED SEQUENCED. CTO + CISO concur on sequencing.
 
 **Specification:**
+
 - v0.1.0: STAGING-STAYS-STAGING — no `dashboard-render/v1` predicate URI declared; rendered HTML carries `<meta>` tags pointing at source bundle manifest + ingest snapshot hash, but NO claim of independent verification
 - v0.2.0+: introduce `dashboard-render/v1` predicate URI at **`evals.intentsolutions.io/dashboard-render/v1`** (NEVER `labs.*`) only after a second independent verifier exists (e.g., a partner-operated verifier, or a published verification script anyone can run)
 
@@ -117,11 +119,12 @@ Adversarial-integrity protocol: verbatim positions preserved in session-folder `
 **Outcome:** RATIFIED with GC's amendments.
 
 **Specification:**
+
 - `retractions.json` denylist in dashboard repo: `{predicate_input_hash, retracted_at, reason_class}`
 - **Closed-set `reason_class` taxonomy** (GC binding): `partner-request | methodology-error | data-quality | consent-withdrawn | legal-hold | pre-publication-recall`. **No open-text reason field.** Open reasons are admission-against-interest exposure.
 - **4-hour contractual SLO** from retraction request to public tombstone (GC binding)
 - Caddy-level kill-switch reads `/etc/caddy/retractions.snippet`; one SSH + `systemctl reload caddy` → 410 Gone at the URL. NO Hugo rebuild required for retraction.
-- Each retraction is itself a signed in-toto Statement with predicate type **`retraction/v1`** at `evals.intentsolutions.io/retraction/v1` (CISO binding — predicate URI at evals.* not labs.*)
+- Each retraction is itself a signed in-toto Statement with predicate type **`retraction/v1`** at `evals.intentsolutions.io/retraction/v1` (CISO binding — predicate URI at evals._not labs._)
 - Tombstone page states the truth: "this attestation exists in the transparency log and we have chosen not to surface it because `<reason_class>`." Sigstore is append-only — cannot pretend otherwise (Armstrong canonical position).
 
 **Hard refusal triggers:** GC refuses to ratify open-text retraction reasons or any retraction protocol that depends on Hugo/GHA rebuild.
@@ -136,17 +139,18 @@ Adversarial-integrity protocol: verbatim positions preserved in session-folder `
 
 **Final access model:**
 
-| Tier | Where | Auth | Audience |
-|---|---|---|---|
-| Public homepage + opt-in reports | `labs.intentsolutions.io` (anonymous) | None | External technical audience |
-| Per-partner views (future) | `labs.intentsolutions.io/<partner-slug>/` | Per-partner basicauth (5 CISO lift-overs apply) | Named partners |
-| Operator full internal view | `labs-internal.<tailnet-hostname>` OR `labs-internal.intentsolutions:9999` | Tailscale identity | Acting head (+ later: IS team members on tailnet) |
+| Tier                             | Where                                                                      | Auth                                            | Audience                                          |
+| -------------------------------- | -------------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------- |
+| Public homepage + opt-in reports | `labs.intentsolutions.io` (anonymous)                                      | None                                            | External technical audience                       |
+| Per-partner views (future)       | `labs.intentsolutions.io/<partner-slug>/`                                  | Per-partner basicauth (5 CISO lift-overs apply) | Named partners                                    |
+| Operator full internal view      | `labs-internal.<tailnet-hostname>` OR `labs-internal.intentsolutions:9999` | Tailscale identity                              | Acting head (+ later: IS team members on tailnet) |
 
 **Rationale (VP DevRel):** basicauth-locked route on public origin signals "real data behind paywall" to outsiders — worst possible community signal. Tailnet-only hostname for internal view matches existing infrastructure (Netdata at `intentsolutions:19999`, ntfy at `intentsolutions:8080`).
 
 **Anonymous root substance constraint (CMO):** root must carry enough material — eval-set browser, freshness strip, methodology docs, end-to-end signed example — that cold visitors don't read tiers as "real data hidden."
 
 **CISO's 5 lift-overs for per-partner basicauth on public origin (when first per-partner view ships):**
+
 1. 90-day rotation for low-sensitivity; 180-day for high-sensitivity
 2. Caddy access-log audit logging enabled per-partner-path
 3. Weekly leakage-detection grep job (greps public sources for known basicauth values)
@@ -159,11 +163,11 @@ Adversarial-integrity protocol: verbatim positions preserved in session-folder `
 
 **Final policy:**
 
-| Source | Default | Override mechanism | Reason |
-|---|---|---|---|
-| **Tier 1 — IS-internal artifacts** (intent-eval-core, intent-eval-lab, intent-audit-harness, j-rig, intent-rollout-gate, claude-code-plugins) | **Eventually-public with disclosed embargo** | Tag `embargo_until:<date>` on the report; embargo window itself is published metadata | Public status-page precedent: internal-default biases toward optimism, external trust erodes (Gregg canonical) |
-| **Tier 2 — partner-implicated artifacts** | **Internal-default + affirmative written consent gate** | Per-partner publication clause required in engagement contract; written sign-off per artifact | No current partner has a publication clause; GC hard refusal otherwise |
-| **Tier 3 — third-party non-contract evals** | **Case-by-case** | GC review per artifact | Case-by-case until pattern emerges |
+| Source                                                                                                                                        | Default                                                 | Override mechanism                                                                            | Reason                                                                                                         |
+| --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **Tier 1 — IS-internal artifacts** (intent-eval-core, intent-eval-lab, intent-audit-harness, j-rig, intent-rollout-gate, claude-code-plugins) | **Eventually-public with disclosed embargo**            | Tag `embargo_until:<date>` on the report; embargo window itself is published metadata         | Public status-page precedent: internal-default biases toward optimism, external trust erodes (Gregg canonical) |
+| **Tier 2 — partner-implicated artifacts**                                                                                                     | **Internal-default + affirmative written consent gate** | Per-partner publication clause required in engagement contract; written sign-off per artifact | No current partner has a publication clause; GC hard refusal otherwise                                         |
+| **Tier 3 — third-party non-contract evals**                                                                                                   | **Case-by-case**                                        | GC review per artifact                                                                        | Case-by-case until pattern emerges                                                                             |
 
 **4 of 4 primary seats** (CMO, GC, CSO, VP DevRel) rejected internal-default. CSO's hybrid synthesizes CMO's eventually-public + GC's tiered-by-source.
 
@@ -174,6 +178,7 @@ Adversarial-integrity protocol: verbatim positions preserved in session-folder `
 **Outcome:** RATIFIED BINDING type-level lock.
 
 **Specification:**
+
 - Schema-level type prevents constructing an aggregate PASS% across rows of mixed predicate semantics
 - CI lint enforces — any HTML/MD/JSON output containing `<X>/<N> pass` or `<X>% pass` where the denominator spans multiple predicate URIs fails the lint gate
 - Headline slot on landing page is filled by **eval-set browser entry point** (per VP DevRel + CMO): "what we measure" beats "how we did"
@@ -187,6 +192,7 @@ Adversarial-integrity protocol: verbatim positions preserved in session-folder `
 **Outcome:** RATIFIED MANDATORY with CMO's color addendum.
 
 **Specification:**
+
 - Top strip on landing page: one row per source repo, columns = last 24h hourly buckets, color = mix of `{pass, fail, advisory, error, no-data}` of `gate-result/v1` rows ingested in that window (Gregg's "if absent makes dashboard useless" view)
 - **`no-data` gets distinct visually-loud color equal weight with `fail`** (CMO addendum) — silent failures must surface as loud as red failures
 - USE-method analogues for ingest pipeline itself surface on a `/status` route (CTO's right-sizing of CISO's D3 binding)
@@ -202,6 +208,7 @@ Adversarial-integrity protocol: verbatim positions preserved in session-folder `
 **Status:** ADOPTED 2026-05-29 by acting head pre-Session. Carried forward as constraint, not decision.
 
 **Council reinforcement:**
+
 - CMO amplifies: eval-set browser becomes THE brand asset — OG image, social card, SEO landing. Resource it like it IS the product.
 - VP DevRel: "publish the spec first" framing aligns with Karpathy's eval-set-as-spec Software 2.0 frame.
 
@@ -212,6 +219,7 @@ Adversarial-integrity protocol: verbatim positions preserved in session-folder `
 **Outcome:** RATIFIED BINDING with HTML structural diff CI test + GC pre-pub review + blog-only fallback.
 
 **Specification:**
+
 - New schema field `pre_registration_hash` in Evidence Bundle (NORMATIVE addition; predicate spec evolution)
 - Both arms (Naive-Opus-in-context + Refiner) rendered with **identical layout, identical font weights, identical chart axes, identical headline slot** (Karpathy canonical)
 - **Null result rendered identically to positive result** — no green/red badges, no "winner" UI, no asymmetric font weighting
@@ -226,6 +234,7 @@ Adversarial-integrity protocol: verbatim positions preserved in session-folder `
 **Outcome:** RATIFIED as **"ops-lite"** — threads the needle between CFO's refusal of production-system commitment and CISO's "silent ingest > 7d MUST page" security signal.
 
 **Specification:**
+
 - **Alerting:** ntfy push notifications to `prod-alerts` topic (existing tailnet-only ntfy on VPS). NO PagerDuty, NO email-blast, NO 24/7 rota.
 - **Response:** best-effort waking-hours (US Central). No SLO commitment.
 - **Public `/status` route:** ingest health, per-repo freshness, last-successful-ingest-per-source visible to anyone. Trust calibration in the open.
@@ -233,6 +242,7 @@ Adversarial-integrity protocol: verbatim positions preserved in session-folder `
 - **Public commitment language:** "best-effort, single-operator, see /status for liveness." No "99.9% uptime" claims.
 
 **Tensions resolved:**
+
 - CFO refused production-system commitment with paging — preserved.
 - CISO required pager threshold for security signal — preserved as the only paging trigger.
 - CTO's right-sizing made the compromise viable.
@@ -242,6 +252,7 @@ Adversarial-integrity protocol: verbatim positions preserved in session-folder `
 **Outcome:** RATIFIED — **CSO primary**, with consultative roles for GC and VP DevRel.
 
 **Specification:**
+
 - **CSO primary:** narrative-integrity red-team is CSO scope extension. Boundary: cryptographic integrity = CISO; narrative integrity = CSO.
 - **GC consulted:** on partner-implicated narrative attacks + litigation-narrative adversary scenarios
 - **VP DevRel signal-source:** for external technical-audience attacks (community is VP DevRel's listening surface)
@@ -254,6 +265,7 @@ Adversarial-integrity protocol: verbatim positions preserved in session-folder `
 **Outcome:** RATIFIED CSO's hard-line — net-new decision surfaced during deliberation.
 
 **Specification:**
+
 - **Tier 1 platform repos** (intent-eval-core, intent-eval-lab, intent-audit-harness, j-rig, intent-rollout-gate, intent-eval-dashboard, claude-code-plugins): full ingest worker per Armstrong's supervision tree
 - **Tier 2 patent-clock projects** (semantic-flux patent clock 2026-06-12, ICOS): **ZERO surface** on `labs.intentsolutions.io` until patent clocks run
 - **ICOS removed** from Armstrong's 7-worker supervision tree → revised to 6 workers (iec, iel, iah, iaj, iar, ccp/claude-code-plugins) plus self-ingest from `intent-eval-dashboard` itself (sign-your-own-homework feeder)
@@ -265,11 +277,12 @@ Adversarial-integrity protocol: verbatim positions preserved in session-folder `
 **Outcome:** RATIFIED as HARD GATE before any labs content publishes.
 
 **Specification:**
+
 - `labs.intentsolutions.io` A-record creation via Porkbun
 - **CAA record:** `issue "letsencrypt.org"` only; bans wildcards; no other issuers
 - **DNSSEC** zone-signed; DS record published at Porkbun
 - **HSTS preload** submission before first published report
-- **No CNAME-takeover surface** — labs.* MUST resolve to a static A record, never a CNAME chain
+- **No CNAME-takeover surface** — labs.\* MUST resolve to a static A record, never a CNAME chain
 - Verification gate before first content publish
 
 **Hard refusal triggers:** CISO refuses to ratify any content publish before DNS + CAA + DNSSEC + HSTS posture is in place.
@@ -282,10 +295,10 @@ Adversarial-integrity protocol: verbatim positions preserved in session-folder `
 
 **Acting-head decision: Option C — synthesis compromise.**
 
-| Phase | What | Bandwidth | When |
-|---|---|---|---|
-| Parallel-with-A.0 | Eval-set browser MVP + DNS posture + repo bootstrap | ~1.5 FTE-weeks | Start now in parallel with `D28-PHASE-A0` |
-| Phase C external-wait slot | Results browser + ingest infrastructure + supervision tree + ops-lite | ~4 FTE-weeks | Defers to Skill Refiner Phase C external-wait slot |
+| Phase                      | What                                                                  | Bandwidth      | When                                               |
+| -------------------------- | --------------------------------------------------------------------- | -------------- | -------------------------------------------------- |
+| Parallel-with-A.0          | Eval-set browser MVP + DNS posture + repo bootstrap                   | ~1.5 FTE-weeks | Start now in parallel with `D28-PHASE-A0`          |
+| Phase C external-wait slot | Results browser + ingest infrastructure + supervision tree + ops-lite | ~4 FTE-weeks   | Defers to Skill Refiner Phase C external-wait slot |
 
 **Rationale:** Eval-set browser doesn't depend on A.0 outcome (the eval-set is the spec; A.0 tests whether Refiner improves against that spec). CMO's brand-asset framing + VP DevRel's "publish the spec first" binding both pull eval-set browser to the front. If A.0 nulls and Refiner descopes, the eval-set browser still has standalone value as the spec-publication surface. The remaining ~4 FTE-weeks of ingest + results infrastructure honor CFO's bandwidth concern by waiting for A.0 to return.
 
@@ -295,11 +308,11 @@ Adversarial-integrity protocol: verbatim positions preserved in session-folder `
 
 ## 7. Acting-head decisions (RATIFIED 2026-05-29)
 
-| # | Decision | Outcome |
-|---|---|---|
-| 1 | A3 TUI: v0.1.0 inclusion vs defer to v0.2.0 | **DEFER to v0.2.0.** C1's tailnet-only internal web view obviates the original TUI use-case. Reserve `cmd/labs-tui/` module path; ship at v0.2.0+ only with validated demand signal. |
-| 2 | Queue placement: Option A / B / C | **Option C — synthesis compromise.** Eval-set browser MVP parallel with A.0 (~1.5 FTE-weeks); results browser + ingest infra deferred to Phase C external-wait slot (~4 FTE-weeks). |
-| 3 | Override of unanimous (A1) or near-unanimous (C2, C3) | **NO OVERRIDES.** Council reasoning sound across all three positions; ratified as stated. |
+| #   | Decision                                              | Outcome                                                                                                                                                                              |
+| --- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | A3 TUI: v0.1.0 inclusion vs defer to v0.2.0           | **DEFER to v0.2.0.** C1's tailnet-only internal web view obviates the original TUI use-case. Reserve `cmd/labs-tui/` module path; ship at v0.2.0+ only with validated demand signal. |
+| 2   | Queue placement: Option A / B / C                     | **Option C — synthesis compromise.** Eval-set browser MVP parallel with A.0 (~1.5 FTE-weeks); results browser + ingest infra deferred to Phase C external-wait slot (~4 FTE-weeks).  |
+| 3   | Override of unanimous (A1) or near-unanimous (C2, C3) | **NO OVERRIDES.** Council reasoning sound across all three positions; ratified as stated.                                                                                            |
 
 ---
 
@@ -307,28 +320,28 @@ Adversarial-integrity protocol: verbatim positions preserved in session-folder `
 
 Any future acting-head override of these items must be recorded as formal dissent in a successor DR, with the refusing seat's name + reasoning preserved verbatim:
 
-| Seat | Refusal | Trigger |
-|---|---|---|
-| CTO | B1 re-verify bypass | Renderer trusting unverified manifests |
-| CTO | C3 aggregate PASS% | Any rendering publishing top-line aggregate PASS% across heterogeneous predicates |
-| GC | Partner consent | Publishing partner-implicated bundles without written consent |
-| GC | Open-text retraction reasons | Any retraction protocol without closed reason_class taxonomy |
-| GC | Hugo-dependent retraction | Retraction protocol that requires Hugo/GHA rebuild |
-| CMO | Hero-stat / leaderboard | Any aggregate PASS% or leaderboard-style ranking |
-| CMO | Internal-default steady-state | Internal-default as the long-term visibility policy |
-| CMO | Eval-set deferral | Shipping results browser before eval-set browser |
-| CFO | Production SLO with paging | Beyond CISO's 7-day-silence threshold |
-| CSO | Tier-2 premature surfacing | semantic-flux, ICOS before patent clocks |
-| CSO | Narrative red-team bypass | Skipping CSO narrative-integrity review |
-| VP DevRel | C3 aggregate PASS% | (Independent refusal — same as CTO + CMO) |
-| VP DevRel | Public-origin basicauth on operator views | Operator full view on public origin (must be tailnet) |
-| VP DevRel | Asymmetric A.0 render | Phase A.0 dashboard render that differs structurally between arms |
-| CISO | DNS/CAA/DNSSEC bypass | Publishing any labs content before posture in place |
-| CISO | B1 bypass | Same as CTO B1 refusal — independent |
-| CISO | Co-located deploy keys | Dashboard sharing lab repo's deploy key authority |
-| CISO | Premature B3 | Sign-your-own-homework before second independent verifier exists |
-| CISO | Predicate URI at labs.* | Any predicate URI declared under labs.intentsolutions.io (must be evals.*) |
-| CISO | GCP object storage | Storage backend on GCP (violates VPS-as-the-home exodus) |
+| Seat      | Refusal                                   | Trigger                                                                           |
+| --------- | ----------------------------------------- | --------------------------------------------------------------------------------- |
+| CTO       | B1 re-verify bypass                       | Renderer trusting unverified manifests                                            |
+| CTO       | C3 aggregate PASS%                        | Any rendering publishing top-line aggregate PASS% across heterogeneous predicates |
+| GC        | Partner consent                           | Publishing partner-implicated bundles without written consent                     |
+| GC        | Open-text retraction reasons              | Any retraction protocol without closed reason_class taxonomy                      |
+| GC        | Hugo-dependent retraction                 | Retraction protocol that requires Hugo/GHA rebuild                                |
+| CMO       | Hero-stat / leaderboard                   | Any aggregate PASS% or leaderboard-style ranking                                  |
+| CMO       | Internal-default steady-state             | Internal-default as the long-term visibility policy                               |
+| CMO       | Eval-set deferral                         | Shipping results browser before eval-set browser                                  |
+| CFO       | Production SLO with paging                | Beyond CISO's 7-day-silence threshold                                             |
+| CSO       | Tier-2 premature surfacing                | semantic-flux, ICOS before patent clocks                                          |
+| CSO       | Narrative red-team bypass                 | Skipping CSO narrative-integrity review                                           |
+| VP DevRel | C3 aggregate PASS%                        | (Independent refusal — same as CTO + CMO)                                         |
+| VP DevRel | Public-origin basicauth on operator views | Operator full view on public origin (must be tailnet)                             |
+| VP DevRel | Asymmetric A.0 render                     | Phase A.0 dashboard render that differs structurally between arms                 |
+| CISO      | DNS/CAA/DNSSEC bypass                     | Publishing any labs content before posture in place                               |
+| CISO      | B1 bypass                                 | Same as CTO B1 refusal — independent                                              |
+| CISO      | Co-located deploy keys                    | Dashboard sharing lab repo's deploy key authority                                 |
+| CISO      | Premature B3                              | Sign-your-own-homework before second independent verifier exists                  |
+| CISO      | Predicate URI at labs.\*                  | Any predicate URI declared under labs.intentsolutions.io (must be evals.\*)       |
+| CISO      | GCP object storage                        | Storage backend on GCP (violates VPS-as-the-home exodus)                          |
 
 ---
 
@@ -354,10 +367,12 @@ Any future acting-head override of these items must be recorded as formal dissen
 Plan-file to be authored at `~/.claude/plans/intent-solutions-lab-reports-<color>-<noun>.md` (random color-noun slug per established pattern).
 
 Epic structure:
+
 - **Umbrella epic:** "Public lab reports dashboard at labs.intentsolutions.io"
   - Children clustered by theme: A (repo + scope), B (trust + integrity), C (public surface), D (sequencing + ops), DNS posture, cross-tier policy
 
 Three-layer mirror via `bd-sync`:
+
 - bd workspace: `~/000-projects/.beads/` (existing IEP workspace; new prefix `ied-` for intent-eval-dashboard)
 - GH umbrella issue: `jeremylongshore/intent-eval-dashboard#1` (created with repo)
 - Plane LAB-N (new module under LAB project)

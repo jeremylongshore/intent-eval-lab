@@ -1,24 +1,24 @@
 # ISEDC v2 Decision Record — Terminology Rename (matcher-map → Intentional Mapping)
 
-| Field | Value |
-|---|---|
-| **Date** | 2026-05-10 |
-| **Acting Head of Board** | Claude (Anthropic, `claude-opus-4-7`), designated by Jeremy Longshore |
-| **Council** | 7 seats convened (CTO · GC · CMO · CFO · CSO · CISO · VP DevRel); all 7 returned |
-| **User override at decision-lock** | "nothing changes but the name" — locks scope to rename only, no architectural concept addition |
-| **Status** | Decision-locked; execution underway in same session |
-| **Predecessor** | ISEDC v1 (`004-AT-DECR-isedc-council-record-2026-05-10.md`) — frozen, receives appended Terminology Note per Q3 |
-| **Reusable pattern** | `~/.claude/skills/exec-decision-council/SKILL.md` v1.0.0 |
+| Field                              | Value                                                                                                           |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| **Date**                           | 2026-05-10                                                                                                      |
+| **Acting Head of Board**           | Claude (Anthropic, `claude-opus-4-7`), designated by Jeremy Longshore                                           |
+| **Council**                        | 7 seats convened (CTO · GC · CMO · CFO · CSO · CISO · VP DevRel); all 7 returned                                |
+| **User override at decision-lock** | "nothing changes but the name" — locks scope to rename only, no architectural concept addition                  |
+| **Status**                         | Decision-locked; execution underway in same session                                                             |
+| **Predecessor**                    | ISEDC v1 (`004-AT-DECR-isedc-council-record-2026-05-10.md`) — frozen, receives appended Terminology Note per Q3 |
+| **Reusable pattern**               | `~/.claude/skills/exec-decision-council/SKILL.md` v1.0.0                                                        |
 
 ## Decisions (5)
 
-| Q | Decision | Vote | Rationale |
-|---|---|---|---|
-| **Q1** Adopt rename | YES — rename "matcher-map" → "Intentional Mapping" | 7/7 adopt | Tactical → foundational vocabulary; aligns with Intent Solutions brand spine (Intentional Cognition OS, intent-driven systems) |
-| **Q2** Identifier strategy | KEEP `MM-1..MM-6` as immutable category codes | 5/7 keep · 2/7 rename (CMO, CSO) | Citation stability across spec, RFC draft, primary-engagement case study, bead history, blog drafts. HTTP-status-code precedent — stable codes survive conceptual reframings. VP DevRel: "the #1 OSS-trust violation is renaming identifiers under developers' feet." |
-| **Q3** Scope | GOING-FORWARD ONLY — frozen artifacts get appended Terminology Note; bodies preserved | 6/7 going-forward · 1/7 rewrite all (CMO) | Audit-trail integrity (GC + CISO non-negotiable). ISEDC v1 Decision Record is signed; rewriting destroys the pattern. R1/R2 deliverables already delivered to Stu/Frank — frozen. |
-| **Q4** Add Intent Resolution Layer | **NO — user override.** Council voted 6/7 to adopt the two-concept architecture (Intentional Mapping + Intent Resolution Layer), but user directed *"nothing changes but the name."* Scope locked to rename only — no new concept introduced. | User override | Simplest path; no architecture churn during R3 prep |
-| **Q5** Timing | NOW — execute in same session | 3/7 now · 3/7 defer · 1/7 conditional · **user override** "fix it" | OTel community-temperature email hasn't been sent; window to lock terminology before maintainer first-impression is open. No predicates signed yet. |
+| Q                                  | Decision                                                                                                                                                                                                                                      | Vote                                                               | Rationale                                                                                                                                                                                                                                                             |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Q1** Adopt rename                | YES — rename "matcher-map" → "Intentional Mapping"                                                                                                                                                                                            | 7/7 adopt                                                          | Tactical → foundational vocabulary; aligns with Intent Solutions brand spine (Intentional Cognition OS, intent-driven systems)                                                                                                                                        |
+| **Q2** Identifier strategy         | KEEP `MM-1..MM-6` as immutable category codes                                                                                                                                                                                                 | 5/7 keep · 2/7 rename (CMO, CSO)                                   | Citation stability across spec, RFC draft, primary-engagement case study, bead history, blog drafts. HTTP-status-code precedent — stable codes survive conceptual reframings. VP DevRel: "the #1 OSS-trust violation is renaming identifiers under developers' feet." |
+| **Q3** Scope                       | GOING-FORWARD ONLY — frozen artifacts get appended Terminology Note; bodies preserved                                                                                                                                                         | 6/7 going-forward · 1/7 rewrite all (CMO)                          | Audit-trail integrity (GC + CISO non-negotiable). ISEDC v1 Decision Record is signed; rewriting destroys the pattern. R1/R2 deliverables already delivered to Stu/Frank — frozen.                                                                                     |
+| **Q4** Add Intent Resolution Layer | **NO — user override.** Council voted 6/7 to adopt the two-concept architecture (Intentional Mapping + Intent Resolution Layer), but user directed _"nothing changes but the name."_ Scope locked to rename only — no new concept introduced. | User override                                                      | Simplest path; no architecture churn during R3 prep                                                                                                                                                                                                                   |
+| **Q5** Timing                      | NOW — execute in same session                                                                                                                                                                                                                 | 3/7 now · 3/7 defer · 1/7 conditional · **user override** "fix it" | OTel community-temperature email hasn't been sent; window to lock terminology before maintainer first-impression is open. No predicates signed yet.                                                                                                                   |
 
 ## Stacked minority protections (binding)
 
@@ -71,6 +71,7 @@ Per user override on Q4, this rename is a **string replacement**, not an archite
 ## Acting Head of Board declaration
 
 I, **Claude (Anthropic, `claude-opus-4-7`)**, find that:
+
 - All 7 ISEDC seats convened and returned adversarial structured assessments
 - The user issued two direct overrides: Q5 timing ("fix it" → NOW) and Q4 scope ("nothing changes but the name" → rename only, no architectural concept addition)
 - Decisions Q1, Q2, Q3 reflect council majority with stacked minority protections honored

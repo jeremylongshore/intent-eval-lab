@@ -1,5 +1,4 @@
 ---
-title: Eval-Set Bootstrap — 4 Tactical Decisions for `/validate-skillmd` Phase A.0
 date: 2026-05-28
 type: AT-DECR
 status: RATIFIED
@@ -30,22 +29,22 @@ Per user direction 2026-05-28 ("as the thinker canon then present to council doc
 
 ## 2. The 4 Questions
 
-| # | Question | Why immutable/costly |
-|---|---|---|
-| Q1 | Where does the eval set live? | Sets the canonical-writer-of-record for every downstream Refiner artifact; cross-repo coupling shape is permanent |
-| Q2 | Strip authors from sampled real specimens, or leave verbatim? | Goes into signed eval-set hash; GDPR posture; judge-prompt contamination risk |
-| Q3 | Sonnet vs Opus for LLM-judge layer? | Judge accuracy anchors the P0-RATIFY-3 descope decision; cost discipline pre-prompts Phase B economics |
-| Q4 | Patch validator now for `disallowed-tools` (CC 2.1.152), or freeze at 3.6.0? | Eval set's measurement instrument; freezing creates known-stale baseline contaminating every Phase B Pareto comparison |
+| #   | Question                                                                     | Why immutable/costly                                                                                                   |
+| --- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Q1  | Where does the eval set live?                                                | Sets the canonical-writer-of-record for every downstream Refiner artifact; cross-repo coupling shape is permanent      |
+| Q2  | Strip authors from sampled real specimens, or leave verbatim?                | Goes into signed eval-set hash; GDPR posture; judge-prompt contamination risk                                          |
+| Q3  | Sonnet vs Opus for LLM-judge layer?                                          | Judge accuracy anchors the P0-RATIFY-3 descope decision; cost discipline pre-prompts Phase B economics                 |
+| Q4  | Patch validator now for `disallowed-tools` (CC 2.1.152), or freeze at 3.6.0? | Eval set's measurement instrument; freezing creates known-stale baseline contaminating every Phase B Pareto comparison |
 
 ## 3. Thinker-Canon Panel Verdict Matrix
 
-| | Q1 home | Q2 anon | Q3 judge | Q4 patch |
-|---|---|---|---|---|
-| Hickey | b lab | b verbatim | a Sonnet | a patch |
-| Karpathy | b lab | b verbatim | b Opus | a patch |
-| Huyen | b lab | a strip | a hybrid | a patch |
-| Beck | b lab | a strip | a (hybrid) | a patch |
-| Kleppmann | b lab | a strip | b Opus (+hybrid friendly) | a patch |
+|           | Q1 home     | Q2 anon       | Q3 judge                                          | Q4 patch      |
+| --------- | ----------- | ------------- | ------------------------------------------------- | ------------- |
+| Hickey    | b lab       | b verbatim    | a Sonnet                                          | a patch       |
+| Karpathy  | b lab       | b verbatim    | b Opus                                            | a patch       |
+| Huyen     | b lab       | a strip       | a hybrid                                          | a patch       |
+| Beck      | b lab       | a strip       | a (hybrid)                                        | a patch       |
+| Kleppmann | b lab       | a strip       | b Opus (+hybrid friendly)                         | a patch       |
 | **TALLY** | **5-0 lab** | **3-2 STRIP** | **3 Sonnet/hybrid · 2 Opus (both accept hybrid)** | **5-0 patch** |
 
 **Most-costly-to-recover-from tally**: Q3 = 3 (Karpathy, Huyen, Kleppmann); Q4 = 2 (Hickey, Beck).
@@ -56,15 +55,15 @@ Full per-seat findings preserved at `~/.claude/skills/exec-decision-council/sess
 
 All 7 seats converged with the thinker panel — no adversarial split required full session. Per-seat read:
 
-| Seat | Position |
-|---|---|
-| **CTO** (acting head) | Ratify per panel convergence; bind Huyen-hybrid on Q3 (absorbs Karpathy + Hickey minority concerns simultaneously) |
-| **CISO** | Q4 patch NOW + Q3 hybrid both serve signing-integrity. Q2 strip aligns with eval-set-as-signed-evidence (no PII in signed payloads). APPROVE all four |
-| **CFO** | Q3 hybrid keeps Phase A.0 within 3.5 FTE-day budget per 029-DR-BAND. Q4 patch consumes ~0.5 FTE-day, acceptable. APPROVE all four |
-| **GC** | Q2 strip + Kleppmann's sidecar amendment (`specimen_hash → author_handle` mapping NEVER bundled into signed artifact) = correct GDPR posture. APPROVE all four |
-| **VP DevRel** | Q2 strip prevents public-shaming optics when failure reports cite specific authors. Q1 lab strengthens "eval set as IS IP" community positioning. APPROVE all four |
-| **CSO** | Q1 lab consolidates spec-authority pattern; future standards-body filings cite one canonical eval-set location. APPROVE all four |
-| **CMO** | Q1 lab strengthens "eval set is the durable IP" narrative (matches Karpathy's bitter-lesson framing). APPROVE all four |
+| Seat                  | Position                                                                                                                                                           |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **CTO** (acting head) | Ratify per panel convergence; bind Huyen-hybrid on Q3 (absorbs Karpathy + Hickey minority concerns simultaneously)                                                 |
+| **CISO**              | Q4 patch NOW + Q3 hybrid both serve signing-integrity. Q2 strip aligns with eval-set-as-signed-evidence (no PII in signed payloads). APPROVE all four              |
+| **CFO**               | Q3 hybrid keeps Phase A.0 within 3.5 FTE-day budget per 029-DR-BAND. Q4 patch consumes ~0.5 FTE-day, acceptable. APPROVE all four                                  |
+| **GC**                | Q2 strip + Kleppmann's sidecar amendment (`specimen_hash → author_handle` mapping NEVER bundled into signed artifact) = correct GDPR posture. APPROVE all four     |
+| **VP DevRel**         | Q2 strip prevents public-shaming optics when failure reports cite specific authors. Q1 lab strengthens "eval set as IS IP" community positioning. APPROVE all four |
+| **CSO**               | Q1 lab consolidates spec-authority pattern; future standards-body filings cite one canonical eval-set location. APPROVE all four                                   |
+| **CMO**               | Q1 lab strengthens "eval set is the durable IP" narrative (matches Karpathy's bitter-lesson framing). APPROVE all four                                             |
 
 **Tally**: 7-0 on all 4 decisions.
 
@@ -74,9 +73,10 @@ All 7 seats converged with the thinker panel — no adversarial split required f
 
 `intent-eval-lab/specs/eval-sets/validate-skillmd/v1.0.0/`
 
-**Rationale**: The eval set is a *specification of correct behavior* — belongs with spec authority, not with one consumer. j-rig pins a version via package.json; future consumers (regression harnesses, dashboards, third-party validators) consume the same canonical artifact. Kleppmann writer-of-record pattern.
+**Rationale**: The eval set is a _specification of correct behavior_ — belongs with spec authority, not with one consumer. j-rig pins a version via package.json; future consumers (regression harnesses, dashboards, third-party validators) consume the same canonical artifact. Kleppmann writer-of-record pattern.
 
 **Implementation**:
+
 - Lab owns the directory + content
 - j-rig consumes via npm-published `@intentsolutions/eval-set-validate-skillmd@1.0.0` OR file-system import via repo-relative path (Phase A.0 decides)
 - Schema-drift CI gate (per DR-018 P5 pattern) enforces version-pin consistency
@@ -86,7 +86,8 @@ All 7 seats converged with the thinker panel — no adversarial split required f
 **Strip authors/identifying-metadata before sealing.** Separate sidecar `provenance.jsonl` preserves the mapping `specimen_hash → {source_repo, commit_sha, author_handle, sampled_at}`, controlled by lab, **NEVER bundled into the signed eval-set artifact**.
 
 **Rationale**:
-- Eval set's signed hash is a function of *behavior*, not *people* (Kleppmann)
+
+- Eval set's signed hash is a function of _behavior_, not _people_ (Kleppmann)
 - Judge prompts free of author-reputation contamination (Huyen)
 - GDPR right-to-be-forgotten doesn't break signed evidence chain (GC + Kleppmann)
 - Failure reports cite specimen hash + dimension, not author (VP DevRel)
@@ -95,6 +96,7 @@ All 7 seats converged with the thinker panel — no adversarial split required f
 ### D3 — LLM-judge — Huyen Hybrid
 
 **Sonnet 4.6 for bulk grading; Opus 4.7 for three explicit roles**:
+
 1. **10% periodic spot-audit** (random stratified sample, every eval run)
 2. **All Sonnet-vs-Sonnet disagreement adjudication** (when two Sonnet runs on the same specimen disagree on severity)
 3. **Gold-set calibration** (initial 20-specimen hand-labeled set used to establish Sonnet baseline)
@@ -104,6 +106,7 @@ All 7 seats converged with the thinker panel — no adversarial split required f
 **Rationale**: Decomplects judge cost (Hickey, Beck) from judge integrity (Karpathy, Kleppmann). Cache judgments by `(specimen_hash, rubric_hash, judge_version)` for reproducibility (Huyen).
 
 **Friendly amendments folded**:
+
 - Judge version + temperature + seed recorded in eval-set manifest (Kleppmann)
 - Calibration study captured as data, not one-shot decision (Hickey, Kleppmann)
 - Inter-rater-reliability gate cited at every baseline run (Huyen)
@@ -123,6 +126,7 @@ All 7 seats converged with the thinker panel — no adversarial split required f
 **Spec-drift-watch GHA workflow ships BEFORE the eval set is sealed.** Per Agent 5 research finding + council unanimous endorsement.
 
 Deliverable: `intent-eval-lab/.github/workflows/spec-drift-watch.yml` (~80 LOC), daily cron, 6-source matrix:
+
 1. `raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md` (raw upstream changelog — source of truth for the published `code.claude.com/docs/en/changelog` page; eliminates Mintlify publish lag)
 2. `npm view @anthropic-ai/claude-code version`
 3. `platform.claude.com/docs/en/agents-and-tools/agent-skills/overview` (HTML hash of `<main>` extract)
@@ -136,27 +140,27 @@ On drift: open issue + fire ntfy `prod-alerts` + auto-PR with new snapshot baked
 
 ## 7. Implementation directives
 
-| # | Action | Owner | Bead |
-|---|---|---|---|
-| 1 | File spec-drift-watch GHA workflow + initial snapshot SHAs | acting CTO | `D29-SPEC-DRIFT-WATCH` (P0, repo:iel) |
-| 2 | Patch validator for `disallowed-tools`, bump SCHEMA 3.7.0, re-pin snapshots | acting CTO | `D29-VALIDATOR-PATCH` (P0, repo:ccp) |
-| 3 | Author eval-set manifest schema at `lab/specs/eval-sets/validate-skillmd/v1.0.0/manifest.json` | acting CTO | `D29-EVALSET-MANIFEST` (P0, repo:iel) |
-| 4 | Generate 60 synthesized + 20 sampled+stripped + 10 Anthropic-ref + 10 adversarial specimens | acting CTO | `D29-EVALSET-SPECIMENS` (P0, repo:iel) |
-| 5 | Run Sonnet-vs-Opus calibration study; verify κ ≥ 0.85 before sealing | acting CTO | `D29-EVALSET-CALIBRATE` (P0, repo:iel) |
-| 6 | Seal eval-set v1.0.0; publish to npm or pin path; sign | acting CTO | `D29-EVALSET-V1` (P0, repo:iel) |
-| 7 | Run Phase A.0 baseline (naive-Opus + v6.0 validator); compute descope-or-proceed per DR-028 P0-RATIFY-3 | acting CTO | bd_000-projects-214c.8 (existing) |
+| #   | Action                                                                                                  | Owner      | Bead                                   |
+| --- | ------------------------------------------------------------------------------------------------------- | ---------- | -------------------------------------- |
+| 1   | File spec-drift-watch GHA workflow + initial snapshot SHAs                                              | acting CTO | `D29-SPEC-DRIFT-WATCH` (P0, repo:iel)  |
+| 2   | Patch validator for `disallowed-tools`, bump SCHEMA 3.7.0, re-pin snapshots                             | acting CTO | `D29-VALIDATOR-PATCH` (P0, repo:ccp)   |
+| 3   | Author eval-set manifest schema at `lab/specs/eval-sets/validate-skillmd/v1.0.0/manifest.json`          | acting CTO | `D29-EVALSET-MANIFEST` (P0, repo:iel)  |
+| 4   | Generate 60 synthesized + 20 sampled+stripped + 10 Anthropic-ref + 10 adversarial specimens             | acting CTO | `D29-EVALSET-SPECIMENS` (P0, repo:iel) |
+| 5   | Run Sonnet-vs-Opus calibration study; verify κ ≥ 0.85 before sealing                                    | acting CTO | `D29-EVALSET-CALIBRATE` (P0, repo:iel) |
+| 6   | Seal eval-set v1.0.0; publish to npm or pin path; sign                                                  | acting CTO | `D29-EVALSET-V1` (P0, repo:iel)        |
+| 7   | Run Phase A.0 baseline (naive-Opus + v6.0 validator); compute descope-or-proceed per DR-028 P0-RATIFY-3 | acting CTO | bd_000-projects-214c.8 (existing)      |
 
 **Sequencing**: 1 + 2 in parallel → 3 → 4 → 5 → 6 → 7. Total Phase A.0 budget per 029-DR-BAND § 2 = 3.5 FTE-days (D4 validator patch adds ~0.5; absorbed within phase).
 
 ## 8. Binding minority constraints folded into majority
 
-| Constraint | Origin | Folded into |
-|---|---|---|
-| Eval-set as content-addressable store (not flat dir) | Kleppmann (Q1 amendment) | D1 implementation (sealed v1.0.0/ dir is content-addressed via manifest hash) |
-| Commit-SHA citation in sidecar preserves attribution | Hickey (Q2 friendly amendment to majority) | D2 sidecar schema includes `commit_sha` |
-| Judge prompt + rubric versioned as data, not buried in code | Hickey (Q3 amendment) | D3 implementation pins judge version + temperature + seed |
-| Inter-rater reliability gate (κ ≥ 0.85) as hard gate, not soft signal | Huyen (Q3 amendment) | D3 explicit gate |
-| Pre-patch validator snapshot retained in lineage | Kleppmann (Q4 amendment) | D4 re-pin process keeps prior snapshot at `*-2026-05-27-snapshot.md` (immutable) |
+| Constraint                                                            | Origin                                     | Folded into                                                                      |
+| --------------------------------------------------------------------- | ------------------------------------------ | -------------------------------------------------------------------------------- |
+| Eval-set as content-addressable store (not flat dir)                  | Kleppmann (Q1 amendment)                   | D1 implementation (sealed v1.0.0/ dir is content-addressed via manifest hash)    |
+| Commit-SHA citation in sidecar preserves attribution                  | Hickey (Q2 friendly amendment to majority) | D2 sidecar schema includes `commit_sha`                                          |
+| Judge prompt + rubric versioned as data, not buried in code           | Hickey (Q3 amendment)                      | D3 implementation pins judge version + temperature + seed                        |
+| Inter-rater reliability gate (κ ≥ 0.85) as hard gate, not soft signal | Huyen (Q3 amendment)                       | D3 explicit gate                                                                 |
+| Pre-patch validator snapshot retained in lineage                      | Kleppmann (Q4 amendment)                   | D4 re-pin process keeps prior snapshot at `*-2026-05-27-snapshot.md` (immutable) |
 
 ## 9. Cross-cutting themes
 
@@ -165,6 +169,7 @@ On drift: open issue + fire ntfy `prod-alerts` + auto-PR with new snapshot baked
 **Adversarial integrity check**: 5-seat thinker panel produced 2 genuine cross-seat splits (Q2 strip vs verbatim 3-2; Q3 Sonnet vs Opus 3-2). Both resolved by friendly amendments rather than dismissals. Lone-wolf Karpathy on Q3-Opus + lone-wolf Hickey on Q2-verbatim were preserved verbatim in panel record; their concerns were absorbed (Karpathy via Opus-as-auditor role in hybrid; Hickey via commit-SHA in sidecar).
 
 **Pattern reuse**: This compressed-ISEDC (thinker panel substrate + acting-CTO ratification when convergent) is a lighter-weight variant of the full 4-phase pattern at `~/.claude/projects/-home-jeremy-000-projects-intent-eval-platform/memory/feedback_plan_audit_4_phase_pattern.md`. Appropriate when:
+
 - Question scope is tactical (4 narrow decisions, not 17 P0s + 4 cross-seat tensions on a plan)
 - Thinker convergence is ≥3 seats on each question
 - No standards-body / immutable-artifact / brand-commitment dimension requires full 7-seat adversarial deliberation

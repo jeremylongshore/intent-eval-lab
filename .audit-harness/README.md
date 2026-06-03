@@ -6,16 +6,16 @@ Deterministic test-enforcement toolkit. Companion to the `audit-tests` and `impl
 
 A small CLI wrapping 6 deterministic scripts:
 
-| Command | Purpose |
-|---|---|
-| `audit-harness verify` | Verify hash-pinned artifacts haven't changed since `--init` |
-| `audit-harness init` | Pin the current state of engineer-owned policy files |
-| `audit-harness list` | Show pinned files |
-| `audit-harness escape-scan --staged` | Detect AI attempts to lower test thresholds, delete tests, bypass architecture rules |
-| `audit-harness arch` | Run language-appropriate architecture-rule checker (dependency-cruiser / import-linter / ArchUnit / deptrac / arch-go) |
-| `audit-harness bias` | Count common test-bias patterns |
-| `audit-harness gherkin-lint` | Advisory Gherkin quality check |
-| `audit-harness crap` | CRAP (Complexity × Coverage) scorer — Python, Go, JS/TS, Rust |
+| Command                              | Purpose                                                                                                                |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| `audit-harness verify`               | Verify hash-pinned artifacts haven't changed since `--init`                                                            |
+| `audit-harness init`                 | Pin the current state of engineer-owned policy files                                                                   |
+| `audit-harness list`                 | Show pinned files                                                                                                      |
+| `audit-harness escape-scan --staged` | Detect AI attempts to lower test thresholds, delete tests, bypass architecture rules                                   |
+| `audit-harness arch`                 | Run language-appropriate architecture-rule checker (dependency-cruiser / import-linter / ArchUnit / deptrac / arch-go) |
+| `audit-harness bias`                 | Count common test-bias patterns                                                                                        |
+| `audit-harness gherkin-lint`         | Advisory Gherkin quality check                                                                                         |
+| `audit-harness crap`                 | CRAP (Complexity × Coverage) scorer — Python, Go, JS/TS, Rust                                                          |
 
 ## Install
 
@@ -62,16 +62,16 @@ pnpm exec audit-harness verify
 ### CI workflow (`.github/workflows/ci.yml`)
 
 ```yaml
-  containment:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v5
-      - uses: actions/setup-node@v6
-        with: { node-version: '20', cache: 'pnpm' }
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm exec audit-harness verify
-      - run: pnpm exec audit-harness escape-scan --range origin/main..HEAD
+containment:
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v6
+    - uses: pnpm/action-setup@v5
+    - uses: actions/setup-node@v6
+      with: { node-version: "20", cache: "pnpm" }
+    - run: pnpm install --frozen-lockfile
+    - run: pnpm exec audit-harness verify
+    - run: pnpm exec audit-harness escape-scan --range origin/main..HEAD
 ```
 
 ### Engineer workflow — change a policy threshold
@@ -115,27 +115,27 @@ The harness commands serve L1 (escape-scan in pre-commit + CI) and L3 (CRAP, arc
 
 Important for CI scripting:
 
-| Exit | Command | Meaning |
-|---|---|---|
-| 0 | any | Clean |
-| 1 | escape-scan | CHALLENGE — requires engineer-approved comment |
-| 2 | verify | `HARNESS_TAMPERED` — pinned file changed |
-| 2 | escape-scan | REFUSE — pipeline halted |
-| 3 | verify | No manifest (fresh repo, not an error) |
+| Exit | Command     | Meaning                                        |
+| ---- | ----------- | ---------------------------------------------- |
+| 0    | any         | Clean                                          |
+| 1    | escape-scan | CHALLENGE — requires engineer-approved comment |
+| 2    | verify      | `HARNESS_TAMPERED` — pinned file changed       |
+| 2    | escape-scan | REFUSE — pipeline halted                       |
+| 3    | verify      | No manifest (fresh repo, not an error)         |
 
 ## Language support
 
 Most scripts are language-agnostic (shell + regex). CRAP has per-language backends:
 
-| Language | CRAP | Arch | Notes |
-|---|---|---|---|
-| Python | radon + coverage.py | import-linter | full support |
-| JS/TS | complexity-report + c8 | dependency-cruiser | full support |
-| Go | gocyclo + go test -cover | arch-go | full support |
-| Rust | rust-code-analysis + tarpaulin | (custom) | coverage integration pending |
-| Java/Kotlin | — | ArchUnit | via language-native tooling |
-| .NET | — | ArchUnitNET | via language-native tooling |
-| PHP | — | deptrac | via language-native tooling |
+| Language    | CRAP                           | Arch               | Notes                        |
+| ----------- | ------------------------------ | ------------------ | ---------------------------- |
+| Python      | radon + coverage.py            | import-linter      | full support                 |
+| JS/TS       | complexity-report + c8         | dependency-cruiser | full support                 |
+| Go          | gocyclo + go test -cover       | arch-go            | full support                 |
+| Rust        | rust-code-analysis + tarpaulin | (custom)           | coverage integration pending |
+| Java/Kotlin | —                              | ArchUnit           | via language-native tooling  |
+| .NET        | —                              | ArchUnitNET        | via language-native tooling  |
+| PHP         | —                              | deptrac            | via language-native tooling  |
 
 ## License
 

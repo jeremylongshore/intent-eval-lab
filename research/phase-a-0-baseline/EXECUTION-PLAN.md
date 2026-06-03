@@ -23,20 +23,21 @@ The runners already support what we need — this plan composes their existing f
 
 ## Pre-flight inventory (no API calls)
 
-| Asset | Path |
-|---|---|
-| Corpus manifest | `corpus/manifest.json` (80 fixtures × A/B/C strata) |
-| Arm A runner | `scripts/run-arm-a.py` (naive in-context baseline) |
-| Arm B runner | `scripts/run-arm-b.py` (Refiner stub) |
-| Common harness | `scripts/_arm_common.py` (CostMeter, BudgetExceeded, ResultPersister) |
-| Score function | `scripts/score-fixture.py` (wraps validate-skills-schema.py SCHEMA 3.7.0) |
-| Results template | `RESULTS-TEMPLATE.md` (statistical analysis pre-registered) |
-| Outcome blog posts | Both DESCOPE + PROCEED variants pre-drafted (per VP DevRel binding) |
-| API keys | `intent-eval-lab/.env.sops` keys `GROQ_API_KEY`, `NVIDIA_API_KEY` (+ Anthropic via `pass anthropic/api-key` for paid spot-checks) |
+| Asset              | Path                                                                                                                              |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| Corpus manifest    | `corpus/manifest.json` (80 fixtures × A/B/C strata)                                                                               |
+| Arm A runner       | `scripts/run-arm-a.py` (naive in-context baseline)                                                                                |
+| Arm B runner       | `scripts/run-arm-b.py` (Refiner stub)                                                                                             |
+| Common harness     | `scripts/_arm_common.py` (CostMeter, BudgetExceeded, ResultPersister)                                                             |
+| Score function     | `scripts/score-fixture.py` (wraps validate-skills-schema.py SCHEMA 3.7.0)                                                         |
+| Results template   | `RESULTS-TEMPLATE.md` (statistical analysis pre-registered)                                                                       |
+| Outcome blog posts | Both DESCOPE + PROCEED variants pre-drafted (per VP DevRel binding)                                                               |
+| API keys           | `intent-eval-lab/.env.sops` keys `GROQ_API_KEY`, `NVIDIA_API_KEY` (+ Anthropic via `pass anthropic/api-key` for paid spot-checks) |
 
 **Budget ceiling (locked):** $20 USD total across both arms.
 
 **Pre-registered parameters (locked, not changeable post-run):**
+
 - Projected Refiner lift: **1.5 pp** (Q1)
 - K-sweep: **{0, 3, 8, 16}** (Q5)
 - Statistical analysis: one-sided t-test (Wilcoxon fallback if non-normal) + two-way ANOVA stratum interaction + K-sweep diminishing-returns sequential contrasts + 5-dim Bonferroni Goodhart audit
@@ -48,10 +49,10 @@ The runners already support what we need — this plan composes their existing f
 
 **Purpose:** Confirm API keys load correctly. Spend zero unless we hit a provider-side ping endpoint.
 
-```bash
+````bash
 cd /home/jeremy/000-projects/intent-eval-platform/intent-eval-lab
 scripts/sops-env -- env | grep -E "GROQ_API_KEY|NVIDIA_API_KEY"  # confirm both present
-```
+```text
 
 **Checkpoint:** both keys present (`length > 0`); no key value printed to stdout.
 
@@ -71,7 +72,7 @@ python3 scripts/run-arm-a.py --manifest corpus/manifest.json --out results/dryru
 # Arm B dry-run on the same 3
 python3 scripts/run-arm-b.py --manifest corpus/manifest.json --out results/dryrun \
   --k-sweep 0,3,8,16 --provider nvidia-llama-405b --dry-run --limit 3
-```
+````
 
 **Checkpoint:** `results/dryrun/arm-a/.../response.json` and `results/dryrun/arm-b/.../response.json` exist for 3 specimens × 4 K-values = 12 files per arm. Each file has the expected schema (prompt + response + score). CostMeter reports $0.00.
 
@@ -85,16 +86,17 @@ python3 scripts/run-arm-b.py --manifest corpus/manifest.json --out results/dryru
 
 **Purpose:** First real API calls. Validate that NVIDIA NIM responds + CostMeter increments + idempotency works on the real path.
 
-```bash
+````bash
 # Arm A smoke on 3 specimens × 4 K-values = 12 real calls
 python3 scripts/run-arm-a.py --manifest corpus/manifest.json --out results/smoke \
   --k-sweep 0,3,8,16 --provider nvidia-llama-405b --budget-ceiling-usd 1 --limit 3
 # Arm B smoke on same 3
 python3 scripts/run-arm-b.py --manifest corpus/manifest.json --out results/smoke \
   --k-sweep 0,3,8,16 --provider nvidia-llama-405b --budget-ceiling-usd 1 --limit 3
-```
+```text
 
 **Checkpoint:**
+
 - 24 real responses materialized at `results/smoke/arm-{a,b}/nvidia-llama-405b/<sha8>/k=<N>/response.json`
 - CostMeter total reported: $0.00 (NVIDIA NIM free tier)
 - No `BudgetExceeded` thrown
@@ -114,11 +116,12 @@ python3 scripts/run-arm-b.py --manifest corpus/manifest.json --out results/smoke
 ```bash
 python3 scripts/run-arm-a.py --manifest corpus/manifest.json --out results \
   --k-sweep 0,3,8,16 --provider nvidia-llama-405b --budget-ceiling-usd 10
-```
+````
 
 Wall-time: estimate ~20-40 min depending on NIM rate limits. Runner is idempotent — Ctrl+C resumes cleanly.
 
 **Checkpoint:**
+
 - 80 specimens × 4 K-values = 320 calls completed
 - CostMeter total: $0.00 (or < $1 if Groq fallback fires)
 - `results/raw/arm-a/nvidia-llama-405b/_summary.json` materializes with per-K mean+std
@@ -133,10 +136,10 @@ Wall-time: estimate ~20-40 min depending on NIM rate limits. Runner is idempoten
 
 **Purpose:** Complete Refiner-stub arm.
 
-```bash
+````bash
 python3 scripts/run-arm-b.py --manifest corpus/manifest.json --out results \
   --k-sweep 0,3,8,16 --provider nvidia-llama-405b --budget-ceiling-usd 10
-```
+```text
 
 Same checkpoint shape as Phase 3.
 
@@ -160,12 +163,15 @@ Apply to: per-stratum + held-out + overall pooled.
 
 Compute the **decision-rule scalar** per DR-028 P0-RATIFY-3:
 
-```
+````
+
 naive_lift_pct = max(0, mean_arm_a_score_delta) / projected_refiner_lift_pp
 DESCOPE if naive_lift_pct > 0.70
-```
+
+````text
 
 **Outputs:**
+
 - `results/aggregated/statistics.json` — full numerical results
 - `results/aggregated/decision.json` — `{ outcome: "DESCOPE" | "PROCEED", naive_lift_pct, ... }`
 - `RESULTS.md` filled in (replaces RESULTS-TEMPLATE.md placeholders with real numbers)
@@ -194,7 +200,7 @@ DESCOPE if naive_lift_pct > 0.70
 ```bash
 bd-sync note bd_000-projects-214c.8 "Phase A.0 complete. Outcome: <DESCOPE|PROCEED>. naive_lift_pct=<X>. Decision record: 000-docs/0NN-AT-DECR-... Blog: <URL>."
 bd-sync close bd_000-projects-214c.8 --reason "Phase A.0 baseline executed; outcome ratified by ISEDC; blog published per VP DevRel binding."
-```
+````
 
 This unblocks (or descopes) the entire IAJ-N1..N5 + dashboard puxu.4-12 cascade.
 
@@ -202,28 +208,28 @@ This unblocks (or descopes) the entire IAJ-N1..N5 + dashboard puxu.4-12 cascade.
 
 ## Hard refusals (cannot be overridden mid-execution)
 
-| Refusal | Why |
-|---|---|
-| Changing K-sweep values after Phase 2 begins | Pre-registered (Q5). Adjusting mid-run is p-hacking. |
-| Changing the decision rule's 70% threshold | DR-028 P0-RATIFY-3 binding. |
-| Skipping the held-out stratum | Pre-registered. |
-| Publishing only one outcome (favorable) | VP DevRel binding: both outcomes publish. |
-| Substituting paid Anthropic for free NVIDIA mid-stream without re-running prior specimens | Mixes signal; biases the comparison. |
+| Refusal                                                                                   | Why                                                  |
+| ----------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| Changing K-sweep values after Phase 2 begins                                              | Pre-registered (Q5). Adjusting mid-run is p-hacking. |
+| Changing the decision rule's 70% threshold                                                | DR-028 P0-RATIFY-3 binding.                          |
+| Skipping the held-out stratum                                                             | Pre-registered.                                      |
+| Publishing only one outcome (favorable)                                                   | VP DevRel binding: both outcomes publish.            |
+| Substituting paid Anthropic for free NVIDIA mid-stream without re-running prior specimens | Mixes signal; biases the comparison.                 |
 
 ---
 
 ## Cost-meter accounting at each checkpoint
 
-| Phase | Expected cost | Cumulative ceiling |
-|---|---|---|
-| 0 | $0.00 | $0.00 |
-| 1 | $0.00 | $0.00 |
-| 2 | $0.00 (NIM free) | $1.00 (hard) |
-| 3 | $0.00 (NIM free) | $10.00 (hard) |
-| 4 | $0.00 (NIM free) | $10.00 (hard) |
-| 5 | $0.00 | $10.00 |
-| 6 | $0.00 | $10.00 |
-| 7 | $0.00 | $10.00 |
+| Phase | Expected cost    | Cumulative ceiling |
+| ----- | ---------------- | ------------------ |
+| 0     | $0.00            | $0.00              |
+| 1     | $0.00            | $0.00              |
+| 2     | $0.00 (NIM free) | $1.00 (hard)       |
+| 3     | $0.00 (NIM free) | $10.00 (hard)      |
+| 4     | $0.00 (NIM free) | $10.00 (hard)      |
+| 5     | $0.00            | $10.00             |
+| 6     | $0.00            | $10.00             |
+| 7     | $0.00            | $10.00             |
 
 Total upper bound: $10 (well under the $20 ceiling). If Groq fallback fires for any specimen, that's still free-tier. Anthropic spot-checks (paid) NOT included in this plan — would be a separate Phase 3.5 if you decide to add them, with its own $5-10 sub-budget.
 

@@ -69,28 +69,28 @@ This is the j-rig YAML eval-contract format for the 7-layer skill-eval framework
 
 **Kernel `EvidenceBundle`** (`intent-eval-core/src/entities/EvidenceBundle.ts:62-113`):
 
-| Field | Type | Semantics |
-|---|---|---|
-| `id` | `Uuidv7` | PK. The bundle's database-row identity. |
-| `eval_run_id` | `Uuidv7` | FK → EvalRun.id. |
-| `created_at` | `Rfc3339` | When the bundle row was created. |
-| `predicate_uri_set` | `readonly (KnownPredicateUri \| (string & {}))[]` | Which predicate URIs appear in the bundle's rows. |
-| `row_count` | `number` | How many rows are in the bundle. |
-| `subject_set` | `readonly InTotoSubject[]` | Deduplicated subjects across rows. |
-| `storage_key` | `StorageKey` | sha256-content-addressed object-storage key for the **payload** (the actual rows). The bundle row carries only the pointer. |
-| `signing_mode` | `'sigstore_staging' \| 'rekor_production' \| 'unsigned_experimental'` | Signing posture. |
-| `rekor_log_indices` | `readonly number[]` | Rekor transparency-log indices when applicable. |
-| `verification_status` | `'verified' \| 'unverified' \| 'failed'` | Most-recent verification result. |
-| `verification_last_checked_at` | `Rfc3339` | When verification was last checked. |
+| Field                          | Type                                                                  | Semantics                                                                                                                   |
+| ------------------------------ | --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `id`                           | `Uuidv7`                                                              | PK. The bundle's database-row identity.                                                                                     |
+| `eval_run_id`                  | `Uuidv7`                                                              | FK → EvalRun.id.                                                                                                            |
+| `created_at`                   | `Rfc3339`                                                             | When the bundle row was created.                                                                                            |
+| `predicate_uri_set`            | `readonly (KnownPredicateUri \| (string & {}))[]`                     | Which predicate URIs appear in the bundle's rows.                                                                           |
+| `row_count`                    | `number`                                                              | How many rows are in the bundle.                                                                                            |
+| `subject_set`                  | `readonly InTotoSubject[]`                                            | Deduplicated subjects across rows.                                                                                          |
+| `storage_key`                  | `StorageKey`                                                          | sha256-content-addressed object-storage key for the **payload** (the actual rows). The bundle row carries only the pointer. |
+| `signing_mode`                 | `'sigstore_staging' \| 'rekor_production' \| 'unsigned_experimental'` | Signing posture.                                                                                                            |
+| `rekor_log_indices`            | `readonly number[]`                                                   | Rekor transparency-log indices when applicable.                                                                             |
+| `verification_status`          | `'verified' \| 'unverified' \| 'failed'`                              | Most-recent verification result.                                                                                            |
+| `verification_last_checked_at` | `Rfc3339`                                                             | When verification was last checked.                                                                                         |
 
 **Abstraction layer**: this is the **bundle index row** — metadata about a content-addressed storage object plus signing/verification state. The actual rows live behind `storage_key`. The kernel models the bundle-as-database-row.
 
 **j-rig `EvidenceBundleSchema`** (`j-rig-binary-eval/packages/core/src/schemas/evidence-bundle.ts:139-145`):
 
-| Field | Type | Semantics |
-|---|---|---|
-| `bundle_format` | `z.literal("json-array")` | Container format tag. |
-| `rows` | `z.array(EvidenceStatementSchema)` | The actual in-toto Statements. |
+| Field           | Type                               | Semantics                      |
+| --------------- | ---------------------------------- | ------------------------------ |
+| `bundle_format` | `z.literal("json-array")`          | Container format tag.          |
+| `rows`          | `z.array(EvidenceStatementSchema)` | The actual in-toto Statements. |
 
 **Abstraction layer**: this is the **bundle payload** — the literal JSON array of in-toto Statement rows. j-rig models the bundle-as-payload.
 
@@ -108,16 +108,19 @@ The two concepts are complementary, not duplicative. Both legitimately exist; bo
 Three legitimate paths. The user/ISEDC picks one:
 
 **Option α** — Kernel adds a distinct payload type; j-rig re-exports it.
+
 - Kernel introduces `EvidenceBundlePayload` (or similar) as the canonical wire format. j-rig deletes its local `EvidenceBundleSchema` and re-exports `EvidenceBundlePayloadSchema` from kernel.
 - Pro: full unification at both the database-row AND wire-format layers. DR-010 Q3 unification thesis maximally satisfied.
 - Con: requires a kernel change (new Class-1 contract surface). Subsequent minor version of `@intentsolutions/core`. Coordinated migration.
 
 **Option β** — j-rig renames; kernel keeps current `EvidenceBundle`; no re-export.
+
 - j-rig renames `EvidenceBundleSchema` → `EvidenceBundlePayloadSchema` (or `EvidenceRowBundleSchema`, `StatementsContainerSchema`, etc.). Local to j-rig.
 - Pro: minimal change. No kernel modification. Resolves name collision.
 - Con: leaves two parallel concepts with no shared codepath. Future drift risk if kernel later grows a payload type.
 
 **Option γ** — Kernel absorbs j-rig's wire format; j-rig deletes.
+
 - Kernel adopts j-rig's `EvidenceBundleSchema` as a sibling type under a different name; j-rig codemod-imports from kernel.
 - Same as Option α effectively. Worth listing only to make explicit that "kernel grows the new type" is the path forward — kernel never shrinks.
 
@@ -135,30 +138,30 @@ This is the consequential finding. The j-rig `GateResultPredicate` mirrors the *
 
 ### 4.1 Required-field comparison
 
-| Kernel `GateResultV1Required` field | j-rig `GateResultPredicateSchema` field | Status |
-|---|---|---|
-| `gate_id: string` | `gate_id: z.string()` | ✅ Match (same regex enforced in both). |
-| `gate_name: string` | — | ❌ **Missing in j-rig.** Required in kernel per § 7.4 line 803. |
-| `gate_version: string` (SemVer) | — | ❌ **Missing in j-rig.** Required in kernel per § 7.4 line 804. |
-| `gate_decision: GateDecision` (`'pass'\|'fail'\|'advisory'\|'error'`) | `result: GateResultEnum` (`"PASS"\|"FAIL"\|"ADVISORY"\|"NOT_APPLICABLE"`) | ⚠️ **Divergent.** Field name differs (`gate_decision` vs `result`); enum case differs (lowercase vs uppercase); fourth value differs (kernel has `'error'`, j-rig has `"NOT_APPLICABLE"`). See § 5 for enum reconciliation. |
-| `gate_reasons: readonly string[]` | — | ❌ **Missing in j-rig.** Required in kernel per § 7.4 line 806. Empty array permitted for unconditional pass; required ≥1 entry for fail/advisory/error per kernel doc. |
-| `coverage: Coverage` (`dimensions_evaluated[] + dimensions_skipped[]`) | — | ❌ **Missing in j-rig.** Required in kernel per § 7.4 line 807. NOT_APPLICABLE encoding flows through `coverage.dimensions_skipped`, not through the decision enum. |
-| `policy_ref: string` (`sha256:<hex>:<repo-relative-path>`) | — | ❌ **Missing in j-rig.** Required in kernel per § 7.4 line 808. Defends against mid-flight policy mutation. |
-| `policy_hash: Sha256Prefixed` | `policy_hash: z.string().regex(SHA256_PREFIXED_REGEX)` | ✅ Match. |
-| `input_hash: Sha256Prefixed` | `input_hash: z.string().regex(SHA256_PREFIXED_REGEX)` | ✅ Match. |
-| `evaluated_at: Rfc3339` | `timestamp: z.string().datetime()` | ⚠️ **Field name differs.** Same semantic; kernel renamed for clarity. |
-| `runner: string` | `runner: z.string().regex(RUNNER_REGEX)` | ✅ Match. |
-| `commit_sha: string` | `commit_sha: z.string().regex(COMMIT_SHA_REGEX)` | ✅ Match. |
+| Kernel `GateResultV1Required` field                                    | j-rig `GateResultPredicateSchema` field                                   | Status                                                                                                                                                                                                                      |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `gate_id: string`                                                      | `gate_id: z.string()`                                                     | ✅ Match (same regex enforced in both).                                                                                                                                                                                     |
+| `gate_name: string`                                                    | —                                                                         | ❌ **Missing in j-rig.** Required in kernel per § 7.4 line 803.                                                                                                                                                             |
+| `gate_version: string` (SemVer)                                        | —                                                                         | ❌ **Missing in j-rig.** Required in kernel per § 7.4 line 804.                                                                                                                                                             |
+| `gate_decision: GateDecision` (`'pass'\|'fail'\|'advisory'\|'error'`)  | `result: GateResultEnum` (`"PASS"\|"FAIL"\|"ADVISORY"\|"NOT_APPLICABLE"`) | ⚠️ **Divergent.** Field name differs (`gate_decision` vs `result`); enum case differs (lowercase vs uppercase); fourth value differs (kernel has `'error'`, j-rig has `"NOT_APPLICABLE"`). See § 5 for enum reconciliation. |
+| `gate_reasons: readonly string[]`                                      | —                                                                         | ❌ **Missing in j-rig.** Required in kernel per § 7.4 line 806. Empty array permitted for unconditional pass; required ≥1 entry for fail/advisory/error per kernel doc.                                                     |
+| `coverage: Coverage` (`dimensions_evaluated[] + dimensions_skipped[]`) | —                                                                         | ❌ **Missing in j-rig.** Required in kernel per § 7.4 line 807. NOT_APPLICABLE encoding flows through `coverage.dimensions_skipped`, not through the decision enum.                                                         |
+| `policy_ref: string` (`sha256:<hex>:<repo-relative-path>`)             | —                                                                         | ❌ **Missing in j-rig.** Required in kernel per § 7.4 line 808. Defends against mid-flight policy mutation.                                                                                                                 |
+| `policy_hash: Sha256Prefixed`                                          | `policy_hash: z.string().regex(SHA256_PREFIXED_REGEX)`                    | ✅ Match.                                                                                                                                                                                                                   |
+| `input_hash: Sha256Prefixed`                                           | `input_hash: z.string().regex(SHA256_PREFIXED_REGEX)`                     | ✅ Match.                                                                                                                                                                                                                   |
+| `evaluated_at: Rfc3339`                                                | `timestamp: z.string().datetime()`                                        | ⚠️ **Field name differs.** Same semantic; kernel renamed for clarity.                                                                                                                                                       |
+| `runner: string`                                                       | `runner: z.string().regex(RUNNER_REGEX)`                                  | ✅ Match.                                                                                                                                                                                                                   |
+| `commit_sha: string`                                                   | `commit_sha: z.string().regex(COMMIT_SHA_REGEX)`                          | ✅ Match.                                                                                                                                                                                                                   |
 
 ### 4.2 Optional-field comparison
 
-| Kernel `GateResultV1Optional` field | j-rig field | Status |
-|---|---|---|
-| `metadata?: Record<string, unknown>` | `metadata: z.record(...).optional()` | ✅ Match. |
-| `failure_mode?: string` | `failure_mode: z.string().optional()` | ✅ Match. |
-| `advisory_severity?: AdvisorySeverity` | `advisory_severity: AdvisorySeverityEnum.optional()` | ✅ Match (same 3-value enum: `'info'|'warn'|'error'`). |
-| `cost_record_ref?: Uuidv7` | — | ❌ **Missing in j-rig.** Kernel addition. |
-| `replay_fidelity_level?: ReplayFidelityLevel` | — | ❌ **Missing in j-rig.** Kernel addition (forward-ref to iel-E11 RF-0..RF-4). |
+| Kernel `GateResultV1Optional` field           | j-rig field                                          | Status                                                                        |
+| --------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------- | ------ | ---------- |
+| `metadata?: Record<string, unknown>`          | `metadata: z.record(...).optional()`                 | ✅ Match.                                                                     |
+| `failure_mode?: string`                       | `failure_mode: z.string().optional()`                | ✅ Match.                                                                     |
+| `advisory_severity?: AdvisorySeverity`        | `advisory_severity: AdvisorySeverityEnum.optional()` | ✅ Match (same 3-value enum: `'info'                                          | 'warn' | 'error'`). |
+| `cost_record_ref?: Uuidv7`                    | —                                                    | ❌ **Missing in j-rig.** Kernel addition.                                     |
+| `replay_fidelity_level?: ReplayFidelityLevel` | —                                                    | ❌ **Missing in j-rig.** Kernel addition (forward-ref to iel-E11 RF-0..RF-4). |
 
 ### 4.3 Cross-field invariants
 
@@ -203,6 +206,7 @@ Per 016 § 4.2, the following j-rig files consume `GateResultPredicate` / `Evide
 - `packages/db/src/schema.ts`
 
 Each must be updated to:
+
 - Emit the new field set (`gate_name`, `gate_version`, `gate_reasons`, `coverage`, `policy_ref` — sites that produce rows must now construct these fields).
 - Read using the new field names (`gate_decision` not `result`; `evaluated_at` not `timestamp`).
 - Map the `NOT_APPLICABLE` decision pattern through `coverage.dimensions_skipped` per the kernel doctrine.
@@ -236,7 +240,7 @@ This is **substantively more than a codemod** — the producing sites must now k
 **Kernel `GateDecision`** (`intent-eval-core/src/predicates/gate-result-v1.ts:35`):
 
 ```typescript
-export type GateDecision = 'pass' | 'fail' | 'advisory' | 'error';
+export type GateDecision = "pass" | "fail" | "advisory" | "error";
 ```
 
 **j-rig `GateResult`** (`j-rig-binary-eval/packages/core/src/schemas/evidence-bundle.ts:22-23`):
@@ -275,13 +279,13 @@ This is the same migration as § 4. The enum is a sub-concern of the predicate-b
 
 The inventory § 4.2 table classified four j-rig items as "DUPLICATES kernel." Corrected classification per this addendum:
 
-| Local definition | Original (016) | Corrected (017) |
-|---|---|---|
-| `eval-spec.ts:31` — `EvalSpecSchema` | DUPLICATES kernel | **NAME COLLISION** — rename j-rig local |
-| `eval-spec.ts:52` — `EvalSpec` type | DUPLICATES kernel | **NAME COLLISION** — rename j-rig local |
-| `evidence-bundle.ts:22-23` — `GateResultEnum` + `GateResult` | OVERLAPS kernel | **DIVERGENT (subset of § 4 migration)** — kernel wins; rides on § 4 PR |
+| Local definition                                                                 | Original (016)    | Corrected (017)                                                                                   |
+| -------------------------------------------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------- |
+| `eval-spec.ts:31` — `EvalSpecSchema`                                             | DUPLICATES kernel | **NAME COLLISION** — rename j-rig local                                                           |
+| `eval-spec.ts:52` — `EvalSpec` type                                              | DUPLICATES kernel | **NAME COLLISION** — rename j-rig local                                                           |
+| `evidence-bundle.ts:22-23` — `GateResultEnum` + `GateResult`                     | OVERLAPS kernel   | **DIVERGENT (subset of § 4 migration)** — kernel wins; rides on § 4 PR                            |
 | `evidence-bundle.ts:54-83` — `GateResultPredicateSchema` + `GateResultPredicate` | DUPLICATES kernel | **NORMATIVE DIVERGENCE** — j-rig upgrades to kernel's normative shape (breaking change for j-rig) |
-| `evidence-bundle.ts:139-145` — `EvidenceBundleSchema` + `EvidenceBundle` | DUPLICATES kernel | **DIVERGENT ABSTRACTION LAYERS** — kernel grows a payload type (Option α); j-rig re-exports |
+| `evidence-bundle.ts:139-145` — `EvidenceBundleSchema` + `EvidenceBundle`         | DUPLICATES kernel | **DIVERGENT ABSTRACTION LAYERS** — kernel grows a payload type (Option α); j-rig re-exports       |
 
 The corrected classifications materially change the migration scope:
 

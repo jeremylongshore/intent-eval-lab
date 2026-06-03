@@ -4,13 +4,13 @@ Part of the **[Intent Eval Platform](https://github.com/intent-solutions-io/inte
 
 A research umbrella for measuring AI plugin, agent, and MCP server quality across CLI runtimes — Claude Code, Gemini CLI, GitHub Copilot CLI, and OpenAI Codex CLI.
 
-The agentic-CLI ecosystem is converging on a small set of cross-tool conventions (`AGENTS.md`, MCP, `SKILL.md`) but the empirical question — *does my plugin actually get discovered and invoked correctly when the agent decides on its own?* — has no vendor-neutral answer. The vendors won't publish opinionated cross-CLI invocation-measurement frameworks because they're competing across the stack. That niche is structurally available to a third party.
+The agentic-CLI ecosystem is converging on a small set of cross-tool conventions (`AGENTS.md`, MCP, `SKILL.md`) but the empirical question — _does my plugin actually get discovered and invoked correctly when the agent decides on its own?_ — has no vendor-neutral answer. The vendors won't publish opinionated cross-CLI invocation-measurement frameworks because they're competing across the stack. That niche is structurally available to a third party.
 
 This repo is the working surface for that work.
 
 ## What's here
 
-```
+```text
 intent-eval-lab/
 ├── 000-docs/        ← numbered docs (research summaries, methodology, plans, AAR)
 ├── specs/           ← normative methodology output — versioned, testable specs
@@ -38,10 +38,10 @@ intent-eval-lab/
 
 ## Adjacent projects
 
-| Project | Role |
-|---|---|
-| [`jeremylongshore/j-rig-skill-binary-eval`](https://github.com/jeremylongshore/j-rig-skill-binary-eval) | 7-layer binary-criteria evaluation harness for SKILL.md artifacts. Natural extension target — the layers are artifact-type-polymorphic; specializing executor + judgment for plugin/agent/MCP is the core build axis. |
-| [`jeremylongshore/audit-harness`](https://github.com/jeremylongshore/audit-harness) | `@intentsolutions/audit-harness` — source-code test-policy containment. Composes with the lab's L4-L7 sandbox work. JRig vendors it via a copied `.audit-harness/` directory for self-validation in its own CI (not an npm dep). The three-repo convergence integrates these at the shared Evidence Bundle schema layer rather than via package coupling — see [`000-docs/003-PP-PLAN-phase-b-scope-refinement.md`](./000-docs/003-PP-PLAN-phase-b-scope-refinement.md). |
+| Project                                                                                                 | Role                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [`jeremylongshore/j-rig-skill-binary-eval`](https://github.com/jeremylongshore/j-rig-skill-binary-eval) | 7-layer binary-criteria evaluation harness for SKILL.md artifacts. Natural extension target — the layers are artifact-type-polymorphic; specializing executor + judgment for plugin/agent/MCP is the core build axis.                                                                                                                                                                                                                                                    |
+| [`jeremylongshore/audit-harness`](https://github.com/jeremylongshore/audit-harness)                     | `@intentsolutions/audit-harness` — source-code test-policy containment. Composes with the lab's L4-L7 sandbox work. JRig vendors it via a copied `.audit-harness/` directory for self-validation in its own CI (not an npm dep). The three-repo convergence integrates these at the shared Evidence Bundle schema layer rather than via package coupling — see [`000-docs/003-PP-PLAN-phase-b-scope-refinement.md`](./000-docs/003-PP-PLAN-phase-b-scope-refinement.md). |
 
 ## Working pattern
 

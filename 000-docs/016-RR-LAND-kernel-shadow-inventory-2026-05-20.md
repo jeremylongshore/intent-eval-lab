@@ -27,11 +27,11 @@ The 2026-05-20 IEP Convergence Debt plan named "11 canonical types" to inventory
 
 **3 of those 11 names do not exist in the kernel surface as defined in `intent-eval-core/src/entities/index.ts`:**
 
-| Plan-listed name | Status in kernel |
-|---|---|
-| `EvalCase` | **Not a kernel export.** Closest analogue: cases live as fields inside `EvalSpec`. No standalone entity. |
-| `Provider` | **Not a kernel export.** "Provider" appears only in code comments (e.g., `CostRecord.ts` says "Provider identifier (e.g., anthropic, openai)") and toolspecs (`ToolInvocation.ts` describes "provider:vendor:model" format). Not an entity type. |
-| `JudgeAdapter` | **Not a kernel export.** Closest analogue: `JudgeDecision` entity. No "adapter" abstraction. |
+| Plan-listed name | Status in kernel                                                                                                                                                                                                                                 |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `EvalCase`       | **Not a kernel export.** Closest analogue: cases live as fields inside `EvalSpec`. No standalone entity.                                                                                                                                         |
+| `Provider`       | **Not a kernel export.** "Provider" appears only in code comments (e.g., `CostRecord.ts` says "Provider identifier (e.g., anthropic, openai)") and toolspecs (`ToolInvocation.ts` describes "provider:vendor:model" format). Not an entity type. |
+| `JudgeAdapter`   | **Not a kernel export.** Closest analogue: `JudgeDecision` entity. No "adapter" abstraction.                                                                                                                                                     |
 
 These are plan-recollection errors (the plan was drafted from memory rather than from the kernel's `src/entities/index.ts`). They do not represent gaps in the kernel — they represent names the plan invented. **The inventory below uses the ACTUAL kernel surface, not the plan-listed names.**
 
@@ -55,7 +55,7 @@ Per `intent-eval-core/src/entities/index.ts` (verified 2026-05-20), the kernel r
 
 Plus from `src/predicates/`:
 
-14. `GateResultV1` (the `gate-result/v1` predicate type — NORMATIVE per Blueprint B § 7)
+1. `GateResultV1` (the `gate-result/v1` predicate type — NORMATIVE per Blueprint B § 7)
 
 Plus sub-types inside the entity files (kernel-exported, but not standalone entities):
 
@@ -73,12 +73,12 @@ The kernel publishes JSON Schemas for the 13 entities + `gate-result.schema.json
 
 Grep verification across all 4 consumer repos' `package.json` and per-workspace `packages/*/package.json` files:
 
-| Repo | `@intentsolutions/core` in deps? |
-|---|---|
-| audit-harness | NO |
-| j-rig-binary-eval | NO |
-| intent-rollout-gate | NO |
-| intent-eval-lab | NO |
+| Repo                | `@intentsolutions/core` in deps? |
+| ------------------- | -------------------------------- |
+| audit-harness       | NO                               |
+| j-rig-binary-eval   | NO                               |
+| intent-rollout-gate | NO                               |
+| intent-eval-lab     | NO                               |
 
 **Conclusion**: kernel adoption is at 0% across the platform. Priority 1's `iah-E02a`, `iaj-E02a`, and `iar-consumer-migration` will each be the **first** consumption of the kernel in their respective repos.
 
@@ -94,8 +94,8 @@ Grep verification across all 4 consumer repos' `package.json` and per-workspace 
 
 **Retention site (acceptable; needs allowlist on the kernel-shadow-check CI gate)**:
 
-| Path | Reason for retention |
-|---|---|
+| Path                                                               | Reason for retention                                                                                                                                                                                                                                                                                                                                                                                          |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `audit-harness/tests/fixtures/gate-result.schema.json` (109 lines) | Test fixture used by audit-harness's own test suite to validate that its `emit-evidence` output conforms to a known-good predicate shape. Acceptable retention: tests need a stable on-disk copy that's not re-pinned every kernel release. Future allowlist entry on `audit-harness kernel-shadow-check` should permit this path with a comment-reference to this inventory and a periodic sync expectation. |
 
 **Migration cost**: `iah-E02a` (add dep), `iah-E02b` (no codemod needed — no local types), `iah-E02c` (no deletions needed), `iah-E02d` (regression suite green — minimal risk).
@@ -110,29 +110,29 @@ Grep verification across all 4 consumer repos' `package.json` and per-workspace 
 
 All in `j-rig-binary-eval/packages/core/src/schemas/`:
 
-| Local definition | Kernel canonical | Status |
-|---|---|---|
-| `packages/core/src/schemas/eval-spec.ts:31` — `export const EvalSpecSchema = z.object({...})` | `intent-eval-core/src/validators/v1/eval-spec.ts` — `EvalSpecSchema` | **DUPLICATES kernel** |
-| `packages/core/src/schemas/eval-spec.ts:52` — `export type EvalSpec = z.infer<typeof EvalSpecSchema>` | `intent-eval-core/src/entities/EvalSpec.ts` — `EvalSpec` interface | **DUPLICATES kernel** |
-| `packages/core/src/schemas/evidence-bundle.ts:22-23` — `GateResultEnum` + `GateResult` type (`"PASS" \| "FAIL" \| "ADVISORY" \| "NOT_APPLICABLE"`) | Kernel's `GateResultV1` predicate value space | **OVERLAPS kernel.** Probably a value-space subset of kernel's predicate result enum. Needs reconciliation: either re-export kernel's, or define j-rig's as a transformation of kernel's. |
-| `packages/core/src/schemas/evidence-bundle.ts:54-83` — `GateResultPredicateSchema` + `GateResultPredicate` type | `intent-eval-core/src/predicates/gate-result-v1.ts` — `GateResultV1` | **DUPLICATES kernel.** This is the most consequential duplication — the predicate is NORMATIVE per Blueprint B § 7 and the kernel is the single source of truth. |
-| `packages/core/src/schemas/evidence-bundle.ts:139-145` — `EvidenceBundleSchema` + `EvidenceBundle` type | `intent-eval-core/src/entities/EvidenceBundle.ts` — `EvidenceBundle` + `EvidenceBundleSchema` | **DUPLICATES kernel** |
+| Local definition                                                                                                                                   | Kernel canonical                                                                              | Status                                                                                                                                                                                    |
+| -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/core/src/schemas/eval-spec.ts:31` — `export const EvalSpecSchema = z.object({...})`                                                      | `intent-eval-core/src/validators/v1/eval-spec.ts` — `EvalSpecSchema`                          | **DUPLICATES kernel**                                                                                                                                                                     |
+| `packages/core/src/schemas/eval-spec.ts:52` — `export type EvalSpec = z.infer<typeof EvalSpecSchema>`                                              | `intent-eval-core/src/entities/EvalSpec.ts` — `EvalSpec` interface                            | **DUPLICATES kernel**                                                                                                                                                                     |
+| `packages/core/src/schemas/evidence-bundle.ts:22-23` — `GateResultEnum` + `GateResult` type (`"PASS" \| "FAIL" \| "ADVISORY" \| "NOT_APPLICABLE"`) | Kernel's `GateResultV1` predicate value space                                                 | **OVERLAPS kernel.** Probably a value-space subset of kernel's predicate result enum. Needs reconciliation: either re-export kernel's, or define j-rig's as a transformation of kernel's. |
+| `packages/core/src/schemas/evidence-bundle.ts:54-83` — `GateResultPredicateSchema` + `GateResultPredicate` type                                    | `intent-eval-core/src/predicates/gate-result-v1.ts` — `GateResultV1`                          | **DUPLICATES kernel.** This is the most consequential duplication — the predicate is NORMATIVE per Blueprint B § 7 and the kernel is the single source of truth.                          |
+| `packages/core/src/schemas/evidence-bundle.ts:139-145` — `EvidenceBundleSchema` + `EvidenceBundle` type                                            | `intent-eval-core/src/entities/EvidenceBundle.ts` — `EvidenceBundle` + `EvidenceBundleSchema` | **DUPLICATES kernel**                                                                                                                                                                     |
 
 **j-rig-specific types in the same files (not in kernel; retain locally)**:
 
-| Local definition | Why it's j-rig-local |
-|---|---|
-| `eval-spec.ts:8-9` — `ModelTarget` ("haiku"\|"sonnet"\|"opus") | Provider-specific enum; not a kernel concern |
-| `eval-spec.ts:14-23` — `SiblingSkill` (Schema + type) | j-rig regression-pack concept; not a kernel entity |
-| `evidence-bundle.ts:25-26` — `AdvisorySeverity` ("info"\|"warn"\|"error") | Application-layer concern; not in kernel |
-| `evidence-bundle.ts:29-30` — `PipelineSide` ("client"\|"server"\|"ci"\|"sandbox"\|"local") | Runtime-classification enum; not in kernel |
-| `evidence-bundle.ts:86-96` — `Subject` (Schema + type) | in-toto envelope subject; kernel may absorb later, but currently j-rig-local |
-| `evidence-bundle.ts:105-132` — `EvidenceStatement` (Schema + type) | Composition of Subject + Predicate; could be folded if kernel grows this, but currently j-rig-local |
-| `eval-contract.ts:12-60` — `EvalContractSchema` + `EvalContract` type | j-rig's adoption surface for eval contracts; distinct from kernel's `EvalSpec` |
+| Local definition                                                                           | Why it's j-rig-local                                                                                |
+| ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| `eval-spec.ts:8-9` — `ModelTarget` ("haiku"\|"sonnet"\|"opus")                             | Provider-specific enum; not a kernel concern                                                        |
+| `eval-spec.ts:14-23` — `SiblingSkill` (Schema + type)                                      | j-rig regression-pack concept; not a kernel entity                                                  |
+| `evidence-bundle.ts:25-26` — `AdvisorySeverity` ("info"\|"warn"\|"error")                  | Application-layer concern; not in kernel                                                            |
+| `evidence-bundle.ts:29-30` — `PipelineSide` ("client"\|"server"\|"ci"\|"sandbox"\|"local") | Runtime-classification enum; not in kernel                                                          |
+| `evidence-bundle.ts:86-96` — `Subject` (Schema + type)                                     | in-toto envelope subject; kernel may absorb later, but currently j-rig-local                        |
+| `evidence-bundle.ts:105-132` — `EvidenceStatement` (Schema + type)                         | Composition of Subject + Predicate; could be folded if kernel grows this, but currently j-rig-local |
+| `eval-contract.ts:12-60` — `EvalContractSchema` + `EvalContract` type                      | j-rig's adoption surface for eval contracts; distinct from kernel's `EvalSpec`                      |
 
 **Migration target file list for `iaj-E02b` (codemod)**:
 
-```
+```text
 j-rig-binary-eval/packages/core/src/schemas/eval-spec.ts        (lines 31, 52)
 j-rig-binary-eval/packages/core/src/schemas/evidence-bundle.ts  (lines 22-23, 54-83, 139-145)
 ```
@@ -145,7 +145,7 @@ After codemod, the duplicated exports at lines 31+52 (eval-spec.ts) and 54-83+13
 
 Files known to import from `packages/core/src/schemas/`:
 
-```
+```text
 j-rig-binary-eval/packages/core/src/index.ts                    (workspace re-exports)
 j-rig-binary-eval/packages/core/src/evidence/writer.ts          (uses EvidenceBundleSchema)
 j-rig-binary-eval/packages/core/src/evidence/reader.ts          (uses EvidenceBundleSchema)
@@ -166,7 +166,7 @@ Full grep would expand this list — codemod (`iaj-E02b`) must walk every TS fil
 
 Repository contents (full file listing, non-node_modules, non-git):
 
-```
+```text
 intent-rollout-gate/action.yml
 intent-rollout-gate/.github/workflows/ci.yml
 intent-rollout-gate/.claude/settings.json
@@ -185,11 +185,11 @@ No `package.json`, no `src/`, no TS, no schema files. The Action is the no-op co
 
 **Schema content (Priority 5 target):**
 
-| Path | Lines | Status |
-|---|---|---|
-| `intent-eval-lab/specs/evidence-bundle/v0.1.0-draft/schema/gate-result.schema.json` | 109 | **DUPLICATES kernel** — this is the JSON Schema version of what `@intentsolutions/core/schemas/v1/gate-result.schema.json` publishes. Priority 5 (`iel-link-schemas-to-kernel`) target. |
-| `intent-eval-lab/specs/evidence-bundle/v0.1.0-draft/schema/README.md` | TBD | Documentation of the predicate; references SPEC.md. |
-| `intent-eval-lab/specs/evidence-bundle/v0.1.0-draft/SPEC.md` | 333 | Contains the predicate contract text. Lines 94-278 describe the `gate-result/v1` predicate with URI `https://evals.intentsolutions.io/gate-result/v1`. **NORMATIVE per Blueprint B § 7.** Per Priority 5 work, this gets a kernel-canonical declaration; the schema file gets replaced with a pointer. |
+| Path                                                                                | Lines | Status                                                                                                                                                                                                                                                                                                 |
+| ----------------------------------------------------------------------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `intent-eval-lab/specs/evidence-bundle/v0.1.0-draft/schema/gate-result.schema.json` | 109   | **DUPLICATES kernel** — this is the JSON Schema version of what `@intentsolutions/core/schemas/v1/gate-result.schema.json` publishes. Priority 5 (`iel-link-schemas-to-kernel`) target.                                                                                                                |
+| `intent-eval-lab/specs/evidence-bundle/v0.1.0-draft/schema/README.md`               | TBD   | Documentation of the predicate; references SPEC.md.                                                                                                                                                                                                                                                    |
+| `intent-eval-lab/specs/evidence-bundle/v0.1.0-draft/SPEC.md`                        | 333   | Contains the predicate contract text. Lines 94-278 describe the `gate-result/v1` predicate with URI `https://evals.intentsolutions.io/gate-result/v1`. **NORMATIVE per Blueprint B § 7.** Per Priority 5 work, this gets a kernel-canonical declaration; the schema file gets replaced with a pointer. |
 
 **Plan correction**: the plan referenced `intent-eval-lab/specs/evidence-bundle/schema/gate-result.schema.json` (top-level `schema/` under `evidence-bundle/`). **This path does not exist.** The actual schema lives in the `v0.1.0-draft/schema/` subdirectory. Priority 5 work must target the actual path.
 
@@ -205,24 +205,24 @@ After Priority 5: this sentence updates to declare `@intentsolutions/core/schema
 
 ## 5. Migration target master list (file path → bead)
 
-| File | Action | Bead |
-|---|---|---|
-| `audit-harness/package.json` | Add `@intentsolutions/core` dep | `iah-E02a` (`bd_000-projects-urxx`) |
-| `audit-harness/bin/audit-harness.js` | Future `kernel-shadow-check` subcommand | `iah-kernel-shadow-check` (`bd_000-projects-873c`) — NEW |
-| `audit-harness/tests/fixtures/gate-result.schema.json` | Retain; add to allowlist | `iah-kernel-shadow-check` allowlist (post-implementation) |
-| `j-rig-binary-eval/packages/core/package.json` (and per-package package.json files) | Add `@intentsolutions/core` dep | `iaj-E02a` (`bd_000-projects-fzjx`) |
-| `j-rig-binary-eval/packages/core/src/schemas/eval-spec.ts` lines 31, 52 | Replace with re-export from kernel | `iaj-E02b` (`bd_000-projects-qklh`) |
-| `j-rig-binary-eval/packages/core/src/schemas/evidence-bundle.ts` lines 54-83, 139-145 | Replace with re-export from kernel | `iaj-E02b` |
-| `j-rig-binary-eval/packages/core/src/schemas/evidence-bundle.ts` lines 22-23 (`GateResult` enum) | RECONCILIATION DISCUSSION — see § 6 | `iaj-E02b` + open question |
-| j-rig consumers of the above (`evidence/writer.ts`, `reader.ts`, `index.ts`, `cli/commands/emit-evidence.ts`, `db/schema.ts`) | Update import paths | `iaj-E02b` |
-| `j-rig-binary-eval/packages/core/src/schemas/eval-spec.ts` (after codemod) | Delete duplicated `EvalSpecSchema` + `EvalSpec` (keep `ModelTarget` + `SiblingSkill`) | `iaj-E02c` (`bd_000-projects-m1mn`) |
-| `j-rig-binary-eval/packages/core/src/schemas/evidence-bundle.ts` (after codemod) | Delete duplicated `EvidenceBundle*` + `GateResultPredicate*` (keep `AdvisorySeverity`, `PipelineSide`, `Subject`, `EvidenceStatement`) | `iaj-E02c` |
-| j-rig regression suite | Re-run; verify green | `iaj-E02d` (`bd_000-projects-5018`) |
-| `intent-eval-lab/specs/evidence-bundle/v0.1.0-draft/schema/gate-result.schema.json` | Replace content with pointer stub | `iel-link-schemas-to-kernel` (`bd_000-projects-i4jh`) |
-| `intent-eval-lab/000-docs/012-AT-ARCH-platform-runtime-blueprint.md` § 7 | Add kernel-canonical declaration sentence | `iel-link-schemas-blueprint-b` (`bd_000-projects-v1ao`) — NEW |
-| `intent-eval-lab/000-docs/014-DR-GLOS-canonical-glossary.md` | Add kernel pointers per term | `iel-link-schemas-glossary` (`bd_000-projects-7vvz`) — NEW |
-| `intent-eval-lab/.github/workflows/schema-drift.yml` | NEW — CI drift-check gate | `iel-link-schemas-drift-ci` (`bd_000-projects-1zr1`) — NEW |
-| intent-rollout-gate | No direct kernel-adoption work; flows in via `@j-rig/rollout-gate` per Option-A | `iar-consumer-migration` (`bd_000-projects-cab3`) — wait on `iaj-E02` + `iaj-E03` + `iaj-E09b` |
+| File                                                                                                                          | Action                                                                                                                                 | Bead                                                                                           |
+| ----------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `audit-harness/package.json`                                                                                                  | Add `@intentsolutions/core` dep                                                                                                        | `iah-E02a` (`bd_000-projects-urxx`)                                                            |
+| `audit-harness/bin/audit-harness.js`                                                                                          | Future `kernel-shadow-check` subcommand                                                                                                | `iah-kernel-shadow-check` (`bd_000-projects-873c`) — NEW                                       |
+| `audit-harness/tests/fixtures/gate-result.schema.json`                                                                        | Retain; add to allowlist                                                                                                               | `iah-kernel-shadow-check` allowlist (post-implementation)                                      |
+| `j-rig-binary-eval/packages/core/package.json` (and per-package package.json files)                                           | Add `@intentsolutions/core` dep                                                                                                        | `iaj-E02a` (`bd_000-projects-fzjx`)                                                            |
+| `j-rig-binary-eval/packages/core/src/schemas/eval-spec.ts` lines 31, 52                                                       | Replace with re-export from kernel                                                                                                     | `iaj-E02b` (`bd_000-projects-qklh`)                                                            |
+| `j-rig-binary-eval/packages/core/src/schemas/evidence-bundle.ts` lines 54-83, 139-145                                         | Replace with re-export from kernel                                                                                                     | `iaj-E02b`                                                                                     |
+| `j-rig-binary-eval/packages/core/src/schemas/evidence-bundle.ts` lines 22-23 (`GateResult` enum)                              | RECONCILIATION DISCUSSION — see § 6                                                                                                    | `iaj-E02b` + open question                                                                     |
+| j-rig consumers of the above (`evidence/writer.ts`, `reader.ts`, `index.ts`, `cli/commands/emit-evidence.ts`, `db/schema.ts`) | Update import paths                                                                                                                    | `iaj-E02b`                                                                                     |
+| `j-rig-binary-eval/packages/core/src/schemas/eval-spec.ts` (after codemod)                                                    | Delete duplicated `EvalSpecSchema` + `EvalSpec` (keep `ModelTarget` + `SiblingSkill`)                                                  | `iaj-E02c` (`bd_000-projects-m1mn`)                                                            |
+| `j-rig-binary-eval/packages/core/src/schemas/evidence-bundle.ts` (after codemod)                                              | Delete duplicated `EvidenceBundle*` + `GateResultPredicate*` (keep `AdvisorySeverity`, `PipelineSide`, `Subject`, `EvidenceStatement`) | `iaj-E02c`                                                                                     |
+| j-rig regression suite                                                                                                        | Re-run; verify green                                                                                                                   | `iaj-E02d` (`bd_000-projects-5018`)                                                            |
+| `intent-eval-lab/specs/evidence-bundle/v0.1.0-draft/schema/gate-result.schema.json`                                           | Replace content with pointer stub                                                                                                      | `iel-link-schemas-to-kernel` (`bd_000-projects-i4jh`)                                          |
+| `intent-eval-lab/000-docs/012-AT-ARCH-platform-runtime-blueprint.md` § 7                                                      | Add kernel-canonical declaration sentence                                                                                              | `iel-link-schemas-blueprint-b` (`bd_000-projects-v1ao`) — NEW                                  |
+| `intent-eval-lab/000-docs/014-DR-GLOS-canonical-glossary.md`                                                                  | Add kernel pointers per term                                                                                                           | `iel-link-schemas-glossary` (`bd_000-projects-7vvz`) — NEW                                     |
+| `intent-eval-lab/.github/workflows/schema-drift.yml`                                                                          | NEW — CI drift-check gate                                                                                                              | `iel-link-schemas-drift-ci` (`bd_000-projects-1zr1`) — NEW                                     |
+| intent-rollout-gate                                                                                                           | No direct kernel-adoption work; flows in via `@j-rig/rollout-gate` per Option-A                                                        | `iar-consumer-migration` (`bd_000-projects-cab3`) — wait on `iaj-E02` + `iaj-E03` + `iaj-E09b` |
 
 ---
 
@@ -230,10 +230,10 @@ After Priority 5: this sentence updates to declare `@intentsolutions/core/schema
 
 j-rig's `evidence-bundle.ts:22-23` defines:
 
-```typescript
+````typescript
 export const GateResultEnum = z.enum(["PASS", "FAIL", "ADVISORY", "NOT_APPLICABLE"]);
 export type GateResult = z.infer<typeof GateResultEnum>;
-```
+```text
 
 Kernel's `intent-eval-core/src/predicates/gate-result-v1.ts` defines `GateResultV1` as the full predicate object (the in-toto attestation predicate, including subject, decision, gate findings, scoring, evidence pointers, etc.). The j-rig enum is a **value-space subset** — the four possible decision values.
 
@@ -251,12 +251,12 @@ Two possible reconciliations, both legitimate:
 
 When `iah-kernel-shadow-check` (`bd_000-projects-873c`) ships, it will need an allowlist format. Seed entries this inventory recommends:
 
-| Path | Reason | Renewal cadence |
-|---|---|---|
-| `audit-harness/tests/fixtures/gate-result.schema.json` | Test fixture for emit-evidence regression suite | Re-pin on each kernel major version bump |
-| `j-rig-binary-eval/packages/core/src/schemas/evidence-bundle.ts` lines 22-23 (`GateResultEnum`) | Pending § 6 reconciliation | Remove allowlist after § 6 resolved |
-| `intent-eval-lab/specs/evidence-bundle/v0.1.0-draft/schema/gate-result.schema.json` | Will be replaced with pointer stub by `iel-link-schemas-to-kernel`; retention is transient until that lands | Remove allowlist when stub lands |
-| Anywhere a test fixture lives under `*/tests/fixtures/` | Test data; not production code | Per-test review |
+| Path                                                                                            | Reason                                                                                                      | Renewal cadence                          |
+| ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| `audit-harness/tests/fixtures/gate-result.schema.json`                                          | Test fixture for emit-evidence regression suite                                                             | Re-pin on each kernel major version bump |
+| `j-rig-binary-eval/packages/core/src/schemas/evidence-bundle.ts` lines 22-23 (`GateResultEnum`) | Pending § 6 reconciliation                                                                                  | Remove allowlist after § 6 resolved      |
+| `intent-eval-lab/specs/evidence-bundle/v0.1.0-draft/schema/gate-result.schema.json`             | Will be replaced with pointer stub by `iel-link-schemas-to-kernel`; retention is transient until that lands | Remove allowlist when stub lands         |
+| Anywhere a test fixture lives under `*/tests/fixtures/`                                         | Test data; not production code                                                                              | Per-test review                          |
 
 The allowlist format itself is `iah-kernel-shadow-check`'s implementation detail (probably YAML or JSON with `path`, `reason`, `decision_record_ref`, `expires_at`, `owner` fields).
 
@@ -329,3 +329,4 @@ This inventory satisfies the acceptance criteria for `bd_000-projects-x6dd` (iep
 
 — Jeremy Longshore
 intentsolutions.io
+````

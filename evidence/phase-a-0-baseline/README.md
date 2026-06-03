@@ -11,17 +11,16 @@ null-hypothesis baseline result (DR-036, PROCEED).
 > DR-036 decision record were annotated with a **frontmatter-only scope caveat** (disclosing
 > that both arms edited only the SKILL.md frontmatter while the judge scores the whole skill).
 > This added **disclosure only — no result or number changed.** The signed bundle therefore
-> attests the *pre-annotation* bytes of those two files (digests `35caf7e3…` for RESULTS.md and
+> attests the _pre-annotation_ bytes of those two files (digests `35caf7e3…` for RESULTS.md and
 > `1af9e9be…` for DR-036), which is correct: a signature freezes exact bytes at sign-time.
-> Per the kernel's append-only Evidence Bundle discipline, a correction is a *new* bundle
+> Per the kernel's append-only Evidence Bundle discipline, a correction is a _new_ bundle
 > referencing the prior one — never an in-place re-sign — so v1 stands as the honest historical
 > attestation and the next signature is produced at the next substantive result (Phase A.1).
 
-
-| File | What it is |
-|---|---|
-| `evidence-bundle.json` | The canonical Evidence Bundle. Names the four Phase A.0 result artifacts by their SHA-256 digests. Conforms to [`@intentsolutions/core` `schemas/v1/evidence-bundle.schema.json`](https://github.com/jeremylongshore/intent-eval-core/blob/main/schemas/v1/evidence-bundle.schema.json). |
-| `evidence-bundle.sigstore.json` | The sigstore bundle (`--new-bundle-format`): Fulcio certificate chain + signature + Rekor inclusion proof. Produced by the `Sign Evidence Bundle (Phase A.0)` GitHub Actions workflow. *(present after the signing run)* |
+| File                            | What it is                                                                                                                                                                                                                                                                               |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `evidence-bundle.json`          | The canonical Evidence Bundle. Names the four Phase A.0 result artifacts by their SHA-256 digests. Conforms to [`@intentsolutions/core` `schemas/v1/evidence-bundle.schema.json`](https://github.com/jeremylongshore/intent-eval-core/blob/main/schemas/v1/evidence-bundle.schema.json). |
+| `evidence-bundle.sigstore.json` | The sigstore bundle (`--new-bundle-format`): Fulcio certificate chain + signature + Rekor inclusion proof. Produced by the `Sign Evidence Bundle (Phase A.0)` GitHub Actions workflow. _(present after the signing run)_                                                                 |
 
 ## What the signature attests — and what it does not
 
@@ -38,7 +37,7 @@ reproducible CI identity, not a person's laptop.
 1. **It declares no predicate URI.** `cosign sign-blob` signs raw bytes. The
    `predicate_uri_set` in the bundle is **empty by design**. The
    `evals.intentsolutions.io/skill-binary-eval/v1` predicate is **reserved, not
-   declared** — production-Rekor *predicate declaration* is gated (per DR-018 and
+   declared** — production-Rekor _predicate declaration_ is gated (per DR-018 and
    DR-010 Q3) on a normative SPEC.md + DNSSEC + CAA clearing for
    `evals.intentsolutions.io`, none of which have. A blob signature attests file
    integrity + identity + time; it is **not** a predicate-conformance claim.

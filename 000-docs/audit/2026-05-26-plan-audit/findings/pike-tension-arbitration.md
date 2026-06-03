@@ -9,9 +9,9 @@
 
 ## T1 — SkillVersion / SkillSnapshot
 
-> *"Data dominates. If you've chosen the right data structures and organized things well, the algorithms will almost always be self-evident."* — Rule 5
-
-> *"Don't communicate by sharing memory; share memory by communicating."*
+> _"Data dominates. If you've chosen the right data structures and organized things well, the algorithms will almost always be self-evident."_ — Rule 5
+>
+> _"Don't communicate by sharing memory; share memory by communicating."_
 
 Two types. Orthogonal. No FK.
 
@@ -28,7 +28,7 @@ Errors are values: add `version_kind: edit | revert | restore` as a typed enum o
 
 ## T2 — Phase D resolution
 
-> *"Clear is better than clever."*
+> _"Clear is better than clever."_
 
 "Deferred indefinitely at P3" is three hedges in one phrase. Pick the sentence:
 
@@ -42,7 +42,7 @@ Karpathy's "quarterly re-measurement" is well-intentioned but adds a recurring p
 
 ## T3 — Process discipline weight
 
-> *"A little copying is better than a little dependency."*
+> _"A little copying is better than a little dependency."_
 
 AC-12 tri-link couples bd ↔ GH ↔ Plane through `bd-sync` + a verifier + a CI gate + § 3.5 PR-1 + D7. Five mechanisms enforcing one invariant across three writable stores. That's the dependency. The copy is cheaper.
 
@@ -58,7 +58,7 @@ Cunningham wants 7 → 1-2 abstractions. Hickey wants AC-12 gone. Both correct; 
 
 Intent Solutions sells the **eval discipline**, not the refiner.
 
-> *"Show me your eval set and I'll tell you what you sell."*
+> _"Show me your eval set and I'll tell you what you sell."_
 
 The refiner is an implementation of one strategy against the discipline. Karpathy's RefinerStrategy interface (F-AK-002) is the giveaway: if it's swappable, it's not the product. The eval set + the acceptance predicate + the signed evidence — that's the product.
 
@@ -72,15 +72,14 @@ The plan currently treats Skill Refiner as the second product in a three-product
 
 **AMEND.**
 
-| Tension | Resolution |
-|---|---|
-| T1 | Two orthogonal types, no FK (architect P1-1) |
-| T2 | Cunningham — anti-goal sentence, delete the row |
-| T3 | bd-as-writer; GH/Plane as projections; six disciplines delete |
-| T4 | Demote refiner to a J-Rig feature; two products, not three |
+| Tension | Resolution                                                    |
+| ------- | ------------------------------------------------------------- |
+| T1      | Two orthogonal types, no FK (architect P1-1)                  |
+| T2      | Cunningham — anti-goal sentence, delete the row               |
+| T3      | bd-as-writer; GH/Plane as projections; six disciplines delete |
+| T4      | Demote refiner to a J-Rig feature; two products, not three    |
 
 Five things removed. Zero added. Data structures do the work the prose was trying to do.
 
 — Pike (channeled)
 2026-05-27
-

@@ -6,6 +6,7 @@
 **Trigger**: Step 0.5 of the "Run /release ceremony across 5 IEP repos + /gist-auditor sweep" plan, 2026-05-25
 **Status**: ACTIVE — findings synthesized; 9 new beads filed; 2 PRs in flight; remaining Steps 3-7 deferred to a focused future session
 **Cross-references**:
+
 - Master release-sweep plan: in transcript, not committed (per CLAUDE.md no-plan-files rule)
 - Durable agent assets: 13 thinker-canon agents at `~/.claude/agents/<thinker>-reviewer.md` (created this session)
 - New beads filed: P0 `bd_000-projects-uprg` (compat policy), P0 `bd_000-projects-9pi3` (OTel semconv), P0 `bd_000-projects-59tx` (Release CI alerting) + 6 more (listed below)
@@ -70,7 +71,7 @@ Adversarial-integrity discipline per DR-022 § "verify-before-claim": each seat'
 
 1. P0 — **Decomplect `EvalRun`**: split into `EvalRunSpec` (immutable value), `EvalRunLease` (ephemeral place, explicitly Redis-shaped not Postgres-shaped), append-only `EvalRunTransition` events. Terminal-state derivation becomes a fold over transitions, not a mutable column.
 
-2. P1 — **Convert bd ↔ GH ↔ Plane from three-way sync to canonical-bd + computed projections**. Three databases hold "the same" task; `bd-sync` is the cure-that-is-also-the-cause. Beads is already source of truth — make GH and Plane *projections* (computed, not synced). When a view drifts, re-derive; never reconcile.
+2. P1 — **Convert bd ↔ GH ↔ Plane from three-way sync to canonical-bd + computed projections**. Three databases hold "the same" task; `bd-sync` is the cure-that-is-also-the-cause. Beads is already source of truth — make GH and Plane _projections_ (computed, not synced). When a view drifts, re-derive; never reconcile.
 
 3. P1 — **Split `gate-result` predicate body from attestation metadata**. The predicate body is the value; the signing envelope (signing_mode, rekor_log_index, signed_at) is a separate `GateResultAttestation` relation keyed by `content_hash(predicate_body)`. One predicate body MAY have N attestations.
 
@@ -168,17 +169,17 @@ Adversarial-integrity discipline per DR-022 § "verify-before-claim": each seat'
 
 ### 3.1 Cross-cutting themes (3+ seats convergent)
 
-| Theme | Seats | Action |
-|---|---|---|
-| **One-way door: predicate compatibility before Rekor anchor** | Kleppmann #4, Fowler most-costly | **P0 bead filed** (`uprg`); becomes precondition for `iec-E12` v0.2.0 |
-| **OTel attribute drift across 5 emitters** | Gregg #2, Kleppmann (indirectly) | **P0 bead filed** (`9pi3`); becomes child of `iel-E12` |
+| Theme                                                          | Seats                                                              | Action                                                                  |
+| -------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| **One-way door: predicate compatibility before Rekor anchor**  | Kleppmann #4, Fowler most-costly                                   | **P0 bead filed** (`uprg`); becomes precondition for `iec-E12` v0.2.0   |
+| **OTel attribute drift across 5 emitters**                     | Gregg #2, Kleppmann (indirectly)                                   | **P0 bead filed** (`9pi3`); becomes child of `iel-E12`                  |
 | **bd ↔ GH ↔ Plane three-layer mirror = sync-debt accumulator** | Hickey #2, Kleppmann #3, Cunningham #3, Fowler #4 (counter-argues) | **P1 design spike bead** to file: convert to canonical-bd + projections |
-| **`bd memories` empty — knowledge channel unused** | Cunningham #5 (most-costly), aligned with Hickey #5 framing | **P1 bead** to file: backfill from 22 DRs |
-| **j-rig CI feedback gap (build-before-test asymmetry)** | Beck #1 | **APPLIED** — PR #76 in flight; resolves Step 1 of release sweep |
-| **CHANGELOG repair = 2 PRs (Tidy First)** | Beck #5 | **APPLIED** to Step 3 plan (lab v0.2.0 split) |
-| **Three release workflows diverging silently** | Beck #6, Fowler #3 (related) | **P2 bead** to file: extract reusable release workflow |
-| **ISEDC adversariality erosion over time** | Fowler #5 | **P2 bead** to file: quarterly outside-reviewer or different-LLM seat |
-| **Constitution-as-Speculative-Generality** | Fowler #1 | **P3 bead**: mark Blueprint A § 2.3 cadence PROVISIONAL |
+| **`bd memories` empty — knowledge channel unused**             | Cunningham #5 (most-costly), aligned with Hickey #5 framing        | **P1 bead** to file: backfill from 22 DRs                               |
+| **j-rig CI feedback gap (build-before-test asymmetry)**        | Beck #1                                                            | **APPLIED** — PR #76 in flight; resolves Step 1 of release sweep        |
+| **CHANGELOG repair = 2 PRs (Tidy First)**                      | Beck #5                                                            | **APPLIED** to Step 3 plan (lab v0.2.0 split)                           |
+| **Three release workflows diverging silently**                 | Beck #6, Fowler #3 (related)                                       | **P2 bead** to file: extract reusable release workflow                  |
+| **ISEDC adversariality erosion over time**                     | Fowler #5                                                          | **P2 bead** to file: quarterly outside-reviewer or different-LLM seat   |
+| **Constitution-as-Speculative-Generality**                     | Fowler #1                                                          | **P3 bead**: mark Blueprint A § 2.3 cadence PROVISIONAL                 |
 
 ### 3.2 Productive disagreements (preserved per adversarial-integrity)
 
@@ -195,23 +196,23 @@ Adversarial-integrity discipline per DR-022 § "verify-before-claim": each seat'
 
 ### 3.4 CTO decisions deferred (bead-only, no immediate work)
 
-| Decision | Reason for deferral | Bead |
-|---|---|---|
-| Decompose `EvalRun` into spec/lease/transitions (Hickey #1) | Kernel architecture change; needs ISEDC ratification | P1 bead to file |
-| Hash-chain DRs into signed append-only ledger (Kleppmann #1) | Substantial infra work; not blocking; ironic but not urgent | P1 bead to file |
-| Physical immutability for EvidenceBundle blobs (Kleppmann #2) | Storage substrate change; coordinated with v0.2.0 work | P1 bead to file |
-| State-machine spec single-sourced (Kleppmann #5) | Codegen pipeline addition; medium effort | P1 bead to file |
-| bd-canonical + GH/Plane projections (Hickey #2 + Cunningham #3 + Kleppmann #3) | Workflow change; affects every Intent Solutions repo, not just IEP | P2 design spike bead |
-| `gate-result` body/attestation split (Hickey #3) | v2 schema change; major bump territory | P1 bead, gated on v0.2.0 |
-| Per-repo Blueprint C via template + identity-yaml (Hickey #6) | Big DRY win but invalidates 25 in-flight P0 beads | P1 bead with migration plan |
-| Golden-master test for harness stdout (Fowler #2) | Adds to audit-harness test suite; non-trivial fixture corpus | P1 bead |
-| ISEDC adversariality fitness function (Fowler #5) | Quarterly cadence — bead to revisit in Q3 | P2 bead |
-| audit-harness verify --emit-otel (Gregg #3) | New flag; backward-compat addition | P1 bead |
-| Dev-flow flame graph (Gregg #4) | Tooling — not architectural | P2 bead |
-| DR status-banding (Cunningham #1) | Convention; can apply incrementally | P2 bead |
-| DR post-decision learnings appendix (Cunningham #2) | Template update + retroactive backfill | P2 bead |
-| `bd memories` backfill (Cunningham #5) | Mechanical effort; high leverage | **P1 bead** — high priority for filing |
-| FUTURE.md first-class promotion (Cunningham #6) | Filing-system change | P3 bead |
+| Decision                                                                       | Reason for deferral                                                | Bead                                   |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------ | -------------------------------------- |
+| Decompose `EvalRun` into spec/lease/transitions (Hickey #1)                    | Kernel architecture change; needs ISEDC ratification               | P1 bead to file                        |
+| Hash-chain DRs into signed append-only ledger (Kleppmann #1)                   | Substantial infra work; not blocking; ironic but not urgent        | P1 bead to file                        |
+| Physical immutability for EvidenceBundle blobs (Kleppmann #2)                  | Storage substrate change; coordinated with v0.2.0 work             | P1 bead to file                        |
+| State-machine spec single-sourced (Kleppmann #5)                               | Codegen pipeline addition; medium effort                           | P1 bead to file                        |
+| bd-canonical + GH/Plane projections (Hickey #2 + Cunningham #3 + Kleppmann #3) | Workflow change; affects every Intent Solutions repo, not just IEP | P2 design spike bead                   |
+| `gate-result` body/attestation split (Hickey #3)                               | v2 schema change; major bump territory                             | P1 bead, gated on v0.2.0               |
+| Per-repo Blueprint C via template + identity-yaml (Hickey #6)                  | Big DRY win but invalidates 25 in-flight P0 beads                  | P1 bead with migration plan            |
+| Golden-master test for harness stdout (Fowler #2)                              | Adds to audit-harness test suite; non-trivial fixture corpus       | P1 bead                                |
+| ISEDC adversariality fitness function (Fowler #5)                              | Quarterly cadence — bead to revisit in Q3                          | P2 bead                                |
+| audit-harness verify --emit-otel (Gregg #3)                                    | New flag; backward-compat addition                                 | P1 bead                                |
+| Dev-flow flame graph (Gregg #4)                                                | Tooling — not architectural                                        | P2 bead                                |
+| DR status-banding (Cunningham #1)                                              | Convention; can apply incrementally                                | P2 bead                                |
+| DR post-decision learnings appendix (Cunningham #2)                            | Template update + retroactive backfill                             | P2 bead                                |
+| `bd memories` backfill (Cunningham #5)                                         | Mechanical effort; high leverage                                   | **P1 bead** — high priority for filing |
+| FUTURE.md first-class promotion (Cunningham #6)                                | Filing-system change                                               | P3 bead                                |
 
 ---
 
@@ -219,11 +220,11 @@ Adversarial-integrity discipline per DR-022 § "verify-before-claim": each seat'
 
 Filed during execution (P0s, immediate):
 
-| ID | Priority | Title |
-|---|---|---|
-| `bd_000-projects-uprg` | P0 | Write Evidence Bundle predicate compatibility policy BEFORE first prod-Rekor anchor |
-| `bd_000-projects-9pi3` | P0 | Pin OTel semantic conventions in @intentsolutions/core BEFORE v0.2.0 ships |
-| `bd_000-projects-59tx` | P0 | Add Release workflow failure alerting (ntfy 'prod-alerts' topic) across IEP repos |
+| ID                     | Priority | Title                                                                               |
+| ---------------------- | -------- | ----------------------------------------------------------------------------------- |
+| `bd_000-projects-uprg` | P0       | Write Evidence Bundle predicate compatibility policy BEFORE first prod-Rekor anchor |
+| `bd_000-projects-9pi3` | P0       | Pin OTel semantic conventions in @intentsolutions/core BEFORE v0.2.0 ships          |
+| `bd_000-projects-59tx` | P0       | Add Release workflow failure alerting (ntfy 'prod-alerts' topic) across IEP repos   |
 
 To file as session-close action (synthesized from panel, P1-P3, queue):
 
@@ -257,12 +258,12 @@ To file as session-close action (synthesized from panel, P1-P3, queue):
 
 ## 5. Constraints applied to release-sweep plan
 
-| Constraint | Source | Where applied |
-|---|---|---|
-| CHANGELOG repair = 2 PRs | Beck #5 | Plan Step 3 (lab v0.2.0) |
-| Hash-pinned compat policy is P0 BEFORE prod Rekor | Kleppmann #4 + Fowler most-costly | `bd_000-projects-uprg` filed; gates future v0.2.0 release; v0.1.1 unaffected (no Rekor anchoring yet) |
-| OTel semconv pinned BEFORE v0.2.0 | Gregg #2 | `bd_000-projects-9pi3` filed; gates future v0.2.0 release; v0.1.1 unaffected |
-| j-rig build-before-test in release.yml | Beck #1 (refined to actual root cause) | PR #76 filed; CI green; awaiting Gemini |
+| Constraint                                        | Source                                 | Where applied                                                                                         |
+| ------------------------------------------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| CHANGELOG repair = 2 PRs                          | Beck #5                                | Plan Step 3 (lab v0.2.0)                                                                              |
+| Hash-pinned compat policy is P0 BEFORE prod Rekor | Kleppmann #4 + Fowler most-costly      | `bd_000-projects-uprg` filed; gates future v0.2.0 release; v0.1.1 unaffected (no Rekor anchoring yet) |
+| OTel semconv pinned BEFORE v0.2.0                 | Gregg #2                               | `bd_000-projects-9pi3` filed; gates future v0.2.0 release; v0.1.1 unaffected                          |
+| j-rig build-before-test in release.yml            | Beck #1 (refined to actual root cause) | PR #76 filed; CI green; awaiting Gemini                                                               |
 
 ---
 
@@ -280,7 +281,7 @@ Read-only enforcement is load-bearing — the acting CTO remains sole executor; 
 
 Two reasons documented in the plan:
 
-1. The review MAY have surfaced a deeper cause for the j-rig CI failure. It did (Beck #1 — though Beck's recon hit `ci.yml` and the actual bug was in `release.yml`; the *shape* of the finding was correct: asymmetric build-before-test). The fix landed (PR #76) and CI is now green.
+1. The review MAY have surfaced a deeper cause for the j-rig CI failure. It did (Beck #1 — though Beck's recon hit `ci.yml` and the actual bug was in `release.yml`; the _shape_ of the finding was correct: asymmetric build-before-test). The fix landed (PR #76) and CI is now green.
 
 2. The review MAY have surfaced a release-sequencing issue. It did — Beck #2 argued the CI fix should have come BEFORE the agent ceremony (Tidy First). Sequence-wise that's a moot lesson for this plan, but it becomes a constraint for future similar plans.
 
@@ -321,7 +322,7 @@ Two reasons documented in the plan:
 
 ---
 
-*Filed by acting CTO during cross-repo release sweep, 2026-05-25. Companion to in-flight PR `intent-eval-core#11` (v0.1.1) and `j-rig-skill-binary-eval#76` (release CI fix).*
+_Filed by acting CTO during cross-repo release sweep, 2026-05-25. Companion to in-flight PR `intent-eval-core#11` (v0.1.1) and `j-rig-skill-binary-eval#76` (release CI fix)._
 
 — Jeremy Longshore
 intentsolutions.io

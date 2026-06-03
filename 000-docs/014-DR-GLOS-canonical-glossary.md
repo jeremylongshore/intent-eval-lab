@@ -1,5 +1,4 @@
 ---
-title: Canonical Glossary — Intent Eval Platform
 date: 2026-05-14
 authors:
   - Jeremy Longshore (Intent Solutions)
@@ -180,27 +179,27 @@ The six canonical categories below are vendor-neutral by construction — they d
 
 ### MM-1 — Async write success / stale-read failure
 
-An asynchronous write operation returns success, but a read-after-write observes stale state. The failure shape is a race condition between async completion and the downstream read that depends on the write's effect being visible. The discriminating question: *"did the write's success-return outpace the visibility of the effect on the read side?"* Observable from OTel trace context propagated through the asynchronous boundary (Dapper-style). Citation: DR-004 + DR-005 + Blueprint B § 2.3; `002-RR-LAND-mcp-testing-bridge.md` § 4 for the empirical landscape.
+An asynchronous write operation returns success, but a read-after-write observes stale state. The failure shape is a race condition between async completion and the downstream read that depends on the write's effect being visible. The discriminating question: _"did the write's success-return outpace the visibility of the effect on the read side?"_ Observable from OTel trace context propagated through the asynchronous boundary (Dapper-style). Citation: DR-004 + DR-005 + Blueprint B § 2.3; `002-RR-LAND-mcp-testing-bridge.md` § 4 for the empirical landscape.
 
 ### MM-2 — Response-shape drift across consecutive calls
 
-The read-side response shape drifts across consecutive calls — list-shape vs detail-shape inconsistency, paginated drift, schema variance between calls that should return structurally identical payloads. The discriminating question: *"do two adjacent calls to the same logical endpoint return payloads whose shape differs in a way the caller's parser cannot accommodate?"* Observable on `tool_result` events via response payload structural comparison. Citation: DR-004 + DR-005 + Blueprint B § 2.3.
+The read-side response shape drifts across consecutive calls — list-shape vs detail-shape inconsistency, paginated drift, schema variance between calls that should return structurally identical payloads. The discriminating question: _"do two adjacent calls to the same logical endpoint return payloads whose shape differs in a way the caller's parser cannot accommodate?"_ Observable on `tool_result` events via response payload structural comparison. Citation: DR-004 + DR-005 + Blueprint B § 2.3.
 
 ### MM-3 — Cooldown / debounce window required
 
-The operation requires a cooldown or debouncing window before the next equivalent operation. Rate-limiting, debounce, anti-flood. The discriminating question: *"does the protocol require a minimum interval between equivalent calls that the model's default invocation pattern does not honor?"* Observable as the protocol-emitted `decision: block` signal followed by a retry attempt within the cooldown window. Citation: DR-004 + DR-005 + Blueprint B § 2.3.
+The operation requires a cooldown or debouncing window before the next equivalent operation. Rate-limiting, debounce, anti-flood. The discriminating question: _"does the protocol require a minimum interval between equivalent calls that the model's default invocation pattern does not honor?"_ Observable as the protocol-emitted `decision: block` signal followed by a retry attempt within the cooldown window. Citation: DR-004 + DR-005 + Blueprint B § 2.3.
 
 ### MM-4 — Side-effect verification before reliance
 
-The operation requires verification of side-effect completion before downstream reliance is safe. Poll-until-verified, propagation-aware waits, happens-before discipline. The discriminating question: *"did the caller proceed to a dependent operation before confirming the upstream side-effect was actually visible at the relying surface?"* Observable as the missing-confirmation span in the trace DAG (the dependent tool fired before the verification tool returned). Citation: DR-004 + DR-005 + Blueprint B § 2.3.
+The operation requires verification of side-effect completion before downstream reliance is safe. Poll-until-verified, propagation-aware waits, happens-before discipline. The discriminating question: _"did the caller proceed to a dependent operation before confirming the upstream side-effect was actually visible at the relying surface?"_ Observable as the missing-confirmation span in the trace DAG (the dependent tool fired before the verification tool returned). Citation: DR-004 + DR-005 + Blueprint B § 2.3.
 
 ### MM-5 — Tool inputs need mandatory context
 
-The tool requires mandatory context that the model is not reliably providing — caller identity, intent string, policy tag injection. The discriminating question: *"is the tool signature requiring a context field the model is omitting or filling with a placeholder?"* Observable on `tool_input` events by checking the presence and shape of the required context field against the tool's declared input schema. Citation: DR-004 + DR-005 + Blueprint B § 2.3.
+The tool requires mandatory context that the model is not reliably providing — caller identity, intent string, policy tag injection. The discriminating question: _"is the tool signature requiring a context field the model is omitting or filling with a placeholder?"_ Observable on `tool_input` events by checking the presence and shape of the required context field against the tool's declared input schema. Citation: DR-004 + DR-005 + Blueprint B § 2.3.
 
 ### MM-6 — Strict-mode protocol compliance
 
-The server-side endpoint requires strict-mode protocol compliance that the model's default input does not enforce — W3C-strict / RFC-strict payload reformatting, schema-tight validation. The discriminating question: *"is the server returning a protocol-conformance error against an input the model considered well-formed?"* Observable on the `tool_result` error class — a `400 schema-violation`-class response against an input that lint at the looser tier accepted. Citation: DR-004 + DR-005 + Blueprint B § 2.3.
+The server-side endpoint requires strict-mode protocol compliance that the model's default input does not enforce — W3C-strict / RFC-strict payload reformatting, schema-tight validation. The discriminating question: _"is the server returning a protocol-conformance error against an input the model considered well-formed?"_ Observable on the `tool_result` error class — a `400 schema-violation`-class response against an input that lint at the looser tier accepted. Citation: DR-004 + DR-005 + Blueprint B § 2.3.
 
 ### MM-7 — DEFERRED
 
@@ -288,7 +287,7 @@ This section catalogues disciplines that **cannot be silently violated**. Each e
 
 **Approximate reproducibility (anti-pattern).** Replay in the Intent Eval Platform is **audit-grade deterministic**, not approximately reproducible. A replay produces the same verdict as the original at the RF level declared by the originating predicate, or it produces a replay-failed verdict — there is no "close enough" zone. Documentation that hedges replay claims with phrases like "approximately reproducible," "broadly deterministic," or "reproducible in most cases" is reframing the discipline downward. The correct framing is RF-N: state the RF level explicitly, and if the predicate's RF level is RF-best-effort, document the sources of non-determinism explicitly. Citation: Blueprint A § 1.2 principle 2; Blueprint B § 3.2.
 
-**No new platform initiation in next 6 months.** Per DR-010 Q1 reaffirmation, no new sub-platform under the Intent Eval Platform umbrella may be **initiated** in the next 6 months. The bandwidth math (3-5 hrs/wk, ~12 founder-hours/year governance overhead) does not support an additional brand surface. The two **named future** sub-platforms catalogued in `FUTURE.md` — *LLM Harness Lab* and *Agent Runtime Sandbox* — are **design-doc-only, bandwidth-gated**. Initiation of either as an actual build is a Class-1 ISEDC trigger. Citation: Blueprint A § 3.7; DR-010 § 7 Q1 reaffirmation.
+**No new platform initiation in next 6 months.** Per DR-010 Q1 reaffirmation, no new sub-platform under the Intent Eval Platform umbrella may be **initiated** in the next 6 months. The bandwidth math (3-5 hrs/wk, ~12 founder-hours/year governance overhead) does not support an additional brand surface. The two **named future** sub-platforms catalogued in `FUTURE.md` — _LLM Harness Lab_ and _Agent Runtime Sandbox_ — are **design-doc-only, bandwidth-gated**. Initiation of either as an actual build is a Class-1 ISEDC trigger. Citation: Blueprint A § 3.7; DR-010 § 7 Q1 reaffirmation.
 
 **Decoupled distribution from publishing.** Per Blueprint A § 1.2 principle 11, every release artifact confirms successful **publish** through an out-of-band check — not just successful local **write**. CI pipelines treat "the artifact is readable from its public URL by an unauthenticated client" as the definition of done, not "the publish command exited 0." This principle exists because of the observed failure mode where local write succeeded but downstream propagation failed silently, producing drift that looks like success. Citation: Blueprint A § 1.2 principle 11.
 
@@ -300,76 +299,76 @@ This section catalogues disciplines that **cannot be silently violated**. Each e
 
 This index points each term to its primary section in this glossary and to the 2-4 most relevant documents that use it. When a term has a "see also" entry in another section here, the index entry lists the primary section only — readers traverse from there.
 
-| Term | Section here | Used in |
-|---|---|---|
-| Acting head of board | § 5 | Blueprint A § 1.1; DR-010 § 13.5 + § 13.6; ISEDC skill |
-| Active predicate types | § 6 | Blueprint A § 4.2; Blueprint B § 7.2; DR-010 § 7 Q3 |
-| Anti-goals (binding scope control) | § 8 | Blueprint A § 3; DR-010 § 7 Q1 |
-| Approximate reproducibility (anti-pattern) | § 8 | Blueprint A § 1.2; Blueprint B § 3.2 |
-| `bd-sync` | § 7 | `~/000-projects/CLAUDE.md`; v2.1 epic plan |
-| Class 1 routing | § 5 | Blueprint A § 2.3; DR-010 § 7 Q6 |
-| Class 2 routing | § 5 | Blueprint A § 2.3; DR-010 § 7 Q6 |
-| Class 3 routing | § 5 | Blueprint A § 2.3; DR-010 § 7 Q6 |
-| cosign | § 6 | Blueprint A § 4.2; Blueprint B § 7.5 |
-| CostRecord | § 2.12 | Blueprint B § 2.12; Blueprint B § 4.2 |
-| Decision Record | § 5 | Blueprint A § 2.3; all DRs `004`/`005`/`006`/`010` |
-| Decoupled distribution from publishing | § 8 | Blueprint A § 1.2 principle 11 |
-| Deferred predicate types | § 6 | DR-010 § 7 Q3 |
-| DNSSEC + CAA | § 6 | DR-004 Q1; DR-010 § 7 Q5; Blueprint A § 4.2 |
-| DSSE | § 6 | Blueprint A § 4.2; Blueprint B § 7.1 + § 7.5 |
-| EvalRun | § 2.2 | Blueprint B § 2.2; Blueprint B § 1.2 + § 3.1 |
-| EvalSpec | § 2.1 | Blueprint B § 2.1 |
-| EvidenceBundle | § 2.4 | Blueprint A § 1.2 principle 10; Blueprint B § 2.4 + § 7 |
-| EXPERIMENTAL mode | § 7 | DR-010 § 7 Q5 |
-| External-pattern non-borrow | § 8 | DR-010 § 13.6; Blueprint A § 4.2 |
-| FailureTaxonomy | § 2.13 | Blueprint B § 2.13; DR-004 S1Q3 |
-| gate | § 3 | Blueprint A § 1.2 principle 10; Blueprint B § 7 |
-| harness | § 3 | Blueprint A § 2.1 + § 4.2 |
-| in-toto Statement v1 | § 6 | Blueprint A § 1.2 principle 3; Blueprint B § 7.1 |
-| intent resolution | § 3 | Blueprint B § 1.2; DR-005 S2Q4 |
-| ISEDC | § 5 | Blueprint A § 1.2 principle 12; ISEDC skill v1.0.0; all DRs |
-| judge | § 3 | Blueprint B § 2.5 |
-| JudgeDecision | § 2.5 | Blueprint B § 2.5 |
-| `labs.intentsolutions.io` reserved-don't-touch | § 8 | DR-004 Q1; DR-010 § 10; Blueprint A § 4.2 |
-| matcher | § 3 | Blueprint B § 2.3 + § 2.5 |
-| MatcherMap | § 2.3 | Blueprint B § 2.3; DR-005 |
-| mapping | § 3 | Blueprint B § 2.3 |
-| MM-1 (async write / stale read) | § 4 | DR-004; DR-005; `002-RR-LAND` § 4 |
-| MM-2 (response-shape drift) | § 4 | DR-004; DR-005; `002-RR-LAND` § 4 |
-| MM-3 (cooldown / debounce) | § 4 | DR-004; DR-005; `002-RR-LAND` § 4 |
-| MM-4 (side-effect verification) | § 4 | DR-004; DR-005; `002-RR-LAND` § 4 |
-| MM-5 (mandatory context) | § 4 | DR-004; DR-005; `002-RR-LAND` § 4 |
-| MM-6 (strict-mode compliance) | § 4 | DR-004; DR-005; `002-RR-LAND` § 4 |
-| MM-7 (DEFERRED) | § 4 | DR-004 S1Q3; DR-010 § 10; CONTRIBUTING-failure-shape |
-| No new platform initiation (6mo) | § 8 | Blueprint A § 3.7; DR-010 § 7 Q1 |
-| Override | § 5 | DR-010 § 13.5 + § 13.6 |
-| Phase A | § 7 | Blueprint A § 4.2; DR-010 § 7 Q5 |
-| Phase A-conditional predicate types | § 6 | DR-010 § 7 Q3 |
-| Phase B | § 7 | DR-010 § 13.5; Blueprint A § 4.2 |
-| Phase C | § 7 | Blueprint A § 2.3 |
-| Predicate URI | § 6 | DR-004 Q1; DR-010 § 7 Q3; Blueprint A § 4.2; Blueprint B § 7.2 |
-| Production Rekor | § 7 | DR-010 § 7 Q5; Blueprint A § 4.2 |
-| Ratification | § 5 | DR-010 § 10 |
-| Rejected predicate types | § 6 | DR-010 § 7 Q3 CISO veto |
-| Rekor | § 6 | Blueprint A § 4.2; Blueprint B § 7.5 |
-| RegressionPack | § 2.7 | Blueprint A § 1.2 principle 5; Blueprint B § 2.7 |
-| Replay | § 3 | Blueprint A § 1.2 principle 2; Blueprint B § 3.2 |
-| Replay Fidelity N (RF-N) | § 7 | Blueprint A § 4.2; iel-E11 (forward-ref) |
-| Receipt | § 3 | Blueprint B § 2.6 |
-| RolloutGate | § 2.8 | Blueprint A § 4.1; Blueprint B § 2.8 + § 7 |
-| Routing | § 3 | Blueprint A § 2.3; DR-010 § 7 Q6 |
-| RuntimeReceipt | § 2.6 | Blueprint B § 2.6 |
-| SessionTrace | § 2.10 | Blueprint B § 2.10 |
-| sigstore staging | § 7 | Blueprint A § 4.2; DR-010 § 7 Q5 |
-| SkillSnapshot | § 2.9 | Blueprint A § 4.1; Blueprint B § 2.9 |
-| Subject naming | § 6 | Blueprint B § 7.3 |
-| ToolInvocation | § 2.11 | Blueprint B § 2.11 |
-| trace | § 3 | Blueprint A § 4.2; iel-E12 (forward-ref) |
-| Vendor-generic discipline | § 8 | DR-004 S1Q2; DR-010 § 10; PRIVATE ~/000-projects/CLAUDE.md |
+| Term                                           | Section here | Used in                                                        |
+| ---------------------------------------------- | ------------ | -------------------------------------------------------------- |
+| Acting head of board                           | § 5          | Blueprint A § 1.1; DR-010 § 13.5 + § 13.6; ISEDC skill         |
+| Active predicate types                         | § 6          | Blueprint A § 4.2; Blueprint B § 7.2; DR-010 § 7 Q3            |
+| Anti-goals (binding scope control)             | § 8          | Blueprint A § 3; DR-010 § 7 Q1                                 |
+| Approximate reproducibility (anti-pattern)     | § 8          | Blueprint A § 1.2; Blueprint B § 3.2                           |
+| `bd-sync`                                      | § 7          | `~/000-projects/CLAUDE.md`; v2.1 epic plan                     |
+| Class 1 routing                                | § 5          | Blueprint A § 2.3; DR-010 § 7 Q6                               |
+| Class 2 routing                                | § 5          | Blueprint A § 2.3; DR-010 § 7 Q6                               |
+| Class 3 routing                                | § 5          | Blueprint A § 2.3; DR-010 § 7 Q6                               |
+| cosign                                         | § 6          | Blueprint A § 4.2; Blueprint B § 7.5                           |
+| CostRecord                                     | § 2.12       | Blueprint B § 2.12; Blueprint B § 4.2                          |
+| Decision Record                                | § 5          | Blueprint A § 2.3; all DRs `004`/`005`/`006`/`010`             |
+| Decoupled distribution from publishing         | § 8          | Blueprint A § 1.2 principle 11                                 |
+| Deferred predicate types                       | § 6          | DR-010 § 7 Q3                                                  |
+| DNSSEC + CAA                                   | § 6          | DR-004 Q1; DR-010 § 7 Q5; Blueprint A § 4.2                    |
+| DSSE                                           | § 6          | Blueprint A § 4.2; Blueprint B § 7.1 + § 7.5                   |
+| EvalRun                                        | § 2.2        | Blueprint B § 2.2; Blueprint B § 1.2 + § 3.1                   |
+| EvalSpec                                       | § 2.1        | Blueprint B § 2.1                                              |
+| EvidenceBundle                                 | § 2.4        | Blueprint A § 1.2 principle 10; Blueprint B § 2.4 + § 7        |
+| EXPERIMENTAL mode                              | § 7          | DR-010 § 7 Q5                                                  |
+| External-pattern non-borrow                    | § 8          | DR-010 § 13.6; Blueprint A § 4.2                               |
+| FailureTaxonomy                                | § 2.13       | Blueprint B § 2.13; DR-004 S1Q3                                |
+| gate                                           | § 3          | Blueprint A § 1.2 principle 10; Blueprint B § 7                |
+| harness                                        | § 3          | Blueprint A § 2.1 + § 4.2                                      |
+| in-toto Statement v1                           | § 6          | Blueprint A § 1.2 principle 3; Blueprint B § 7.1               |
+| intent resolution                              | § 3          | Blueprint B § 1.2; DR-005 S2Q4                                 |
+| ISEDC                                          | § 5          | Blueprint A § 1.2 principle 12; ISEDC skill v1.0.0; all DRs    |
+| judge                                          | § 3          | Blueprint B § 2.5                                              |
+| JudgeDecision                                  | § 2.5        | Blueprint B § 2.5                                              |
+| `labs.intentsolutions.io` reserved-don't-touch | § 8          | DR-004 Q1; DR-010 § 10; Blueprint A § 4.2                      |
+| matcher                                        | § 3          | Blueprint B § 2.3 + § 2.5                                      |
+| MatcherMap                                     | § 2.3        | Blueprint B § 2.3; DR-005                                      |
+| mapping                                        | § 3          | Blueprint B § 2.3                                              |
+| MM-1 (async write / stale read)                | § 4          | DR-004; DR-005; `002-RR-LAND` § 4                              |
+| MM-2 (response-shape drift)                    | § 4          | DR-004; DR-005; `002-RR-LAND` § 4                              |
+| MM-3 (cooldown / debounce)                     | § 4          | DR-004; DR-005; `002-RR-LAND` § 4                              |
+| MM-4 (side-effect verification)                | § 4          | DR-004; DR-005; `002-RR-LAND` § 4                              |
+| MM-5 (mandatory context)                       | § 4          | DR-004; DR-005; `002-RR-LAND` § 4                              |
+| MM-6 (strict-mode compliance)                  | § 4          | DR-004; DR-005; `002-RR-LAND` § 4                              |
+| MM-7 (DEFERRED)                                | § 4          | DR-004 S1Q3; DR-010 § 10; CONTRIBUTING-failure-shape           |
+| No new platform initiation (6mo)               | § 8          | Blueprint A § 3.7; DR-010 § 7 Q1                               |
+| Override                                       | § 5          | DR-010 § 13.5 + § 13.6                                         |
+| Phase A                                        | § 7          | Blueprint A § 4.2; DR-010 § 7 Q5                               |
+| Phase A-conditional predicate types            | § 6          | DR-010 § 7 Q3                                                  |
+| Phase B                                        | § 7          | DR-010 § 13.5; Blueprint A § 4.2                               |
+| Phase C                                        | § 7          | Blueprint A § 2.3                                              |
+| Predicate URI                                  | § 6          | DR-004 Q1; DR-010 § 7 Q3; Blueprint A § 4.2; Blueprint B § 7.2 |
+| Production Rekor                               | § 7          | DR-010 § 7 Q5; Blueprint A § 4.2                               |
+| Ratification                                   | § 5          | DR-010 § 10                                                    |
+| Rejected predicate types                       | § 6          | DR-010 § 7 Q3 CISO veto                                        |
+| Rekor                                          | § 6          | Blueprint A § 4.2; Blueprint B § 7.5                           |
+| RegressionPack                                 | § 2.7        | Blueprint A § 1.2 principle 5; Blueprint B § 2.7               |
+| Replay                                         | § 3          | Blueprint A § 1.2 principle 2; Blueprint B § 3.2               |
+| Replay Fidelity N (RF-N)                       | § 7          | Blueprint A § 4.2; iel-E11 (forward-ref)                       |
+| Receipt                                        | § 3          | Blueprint B § 2.6                                              |
+| RolloutGate                                    | § 2.8        | Blueprint A § 4.1; Blueprint B § 2.8 + § 7                     |
+| Routing                                        | § 3          | Blueprint A § 2.3; DR-010 § 7 Q6                               |
+| RuntimeReceipt                                 | § 2.6        | Blueprint B § 2.6                                              |
+| SessionTrace                                   | § 2.10       | Blueprint B § 2.10                                             |
+| sigstore staging                               | § 7          | Blueprint A § 4.2; DR-010 § 7 Q5                               |
+| SkillSnapshot                                  | § 2.9        | Blueprint A § 4.1; Blueprint B § 2.9                           |
+| Subject naming                                 | § 6          | Blueprint B § 7.3                                              |
+| ToolInvocation                                 | § 2.11       | Blueprint B § 2.11                                             |
+| trace                                          | § 3          | Blueprint A § 4.2; iel-E12 (forward-ref)                       |
+| Vendor-generic discipline                      | § 8          | DR-004 S1Q2; DR-010 § 10; PRIVATE ~/000-projects/CLAUDE.md     |
 
 ---
 
-*Acting head of board: Jeremy Longshore (Intent Solutions). Decision date: 2026-05-14. Authority: DR-010 (ISEDC Session 4, 2026-05-13) + Blueprint A (`011-AT-ARCH`) + Blueprint B (`012-AT-ARCH`) + v2.1 epic plan § iel-E03 acceptance criteria.*
+_Acting head of board: Jeremy Longshore (Intent Solutions). Decision date: 2026-05-14. Authority: DR-010 (ISEDC Session 4, 2026-05-13) + Blueprint A (`011-AT-ARCH`) + Blueprint B (`012-AT-ARCH`) + v2.1 epic plan § iel-E03 acceptance criteria._
 
 - Jeremy Longshore
-intentsolutions.io
+  intentsolutions.io

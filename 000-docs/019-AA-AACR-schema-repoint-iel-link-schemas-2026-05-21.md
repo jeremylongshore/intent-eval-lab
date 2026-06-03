@@ -15,16 +15,16 @@ Priority 5 of the IEP Convergence Debt Plan is the lab-side schema migration: re
 
 ## 2. What changed
 
-| # | Change | File | Reason |
-|---|---|---|---|
-| 1 | Replaced normative schema content with redirect stub (valid JSON Schema 2020-12; `$ref` to kernel; `x-redirect` marker; description-as-comment block) | `specs/evidence-bundle/v0.1.0-draft/schema/gate-result.schema.json` | Kernel is canonical per DR 018 Option α-minus; lab MUST NOT host normative schema content |
-| 2 | Rewrote README to describe the redirect + cross-link the canonical sources + migration history | `specs/evidence-bundle/v0.1.0-draft/schema/README.md` | Discoverability for consumers following old links |
-| 3 | Added "Schema-authority notice" block at top of SPEC | `specs/evidence-bundle/v0.1.0-draft/SPEC.md` | The lab spec page remains the public-facing mirror but explicitly cedes normative authority to the kernel |
-| 4 | Added new § 7.0 "Schema authority (effective 2026-05-21)" to Blueprint B; updated § 7.4 + § 7.6 + versioning-policy references to point to the kernel as canonical | `000-docs/012-AT-ARCH-platform-runtime-blueprint.md` | Reverses the 2026-05-11 "lab JSON Schema file wins" framing; the kernel schema now wins |
-| 5 | Updated `EvidenceBundle` entry + `Predicate URI` entry + `Active predicate types` entry to cite kernel canonical surface | `000-docs/014-DR-GLOS-canonical-glossary.md` | Glossary is the platform's single source of truth for term canonical sites |
-| 6 | NEW: schema-drift CI workflow that fails any PR re-introducing normative schema content under `specs/evidence-bundle/*/schema/` | `.github/workflows/schema-drift.yml` | Structural enforcement of DR 018 Option α-minus; allowlist for redirect stubs via `x-redirect` marker |
-| 7 | Filed this AAR | `000-docs/019-AA-AACR-schema-repoint-iel-link-schemas-2026-05-21.md` | Closeout per IEP Convergence Debt Plan Priority 5 acceptance criteria |
-| 8 | Updated `000-INDEX.md` | `000-docs/000-INDEX.md` | New entry 019; new mention of Priority 5 work |
+| #   | Change                                                                                                                                                             | File                                                                 | Reason                                                                                                    |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| 1   | Replaced normative schema content with redirect stub (valid JSON Schema 2020-12; `$ref` to kernel; `x-redirect` marker; description-as-comment block)              | `specs/evidence-bundle/v0.1.0-draft/schema/gate-result.schema.json`  | Kernel is canonical per DR 018 Option α-minus; lab MUST NOT host normative schema content                 |
+| 2   | Rewrote README to describe the redirect + cross-link the canonical sources + migration history                                                                     | `specs/evidence-bundle/v0.1.0-draft/schema/README.md`                | Discoverability for consumers following old links                                                         |
+| 3   | Added "Schema-authority notice" block at top of SPEC                                                                                                               | `specs/evidence-bundle/v0.1.0-draft/SPEC.md`                         | The lab spec page remains the public-facing mirror but explicitly cedes normative authority to the kernel |
+| 4   | Added new § 7.0 "Schema authority (effective 2026-05-21)" to Blueprint B; updated § 7.4 + § 7.6 + versioning-policy references to point to the kernel as canonical | `000-docs/012-AT-ARCH-platform-runtime-blueprint.md`                 | Reverses the 2026-05-11 "lab JSON Schema file wins" framing; the kernel schema now wins                   |
+| 5   | Updated `EvidenceBundle` entry + `Predicate URI` entry + `Active predicate types` entry to cite kernel canonical surface                                           | `000-docs/014-DR-GLOS-canonical-glossary.md`                         | Glossary is the platform's single source of truth for term canonical sites                                |
+| 6   | NEW: schema-drift CI workflow that fails any PR re-introducing normative schema content under `specs/evidence-bundle/*/schema/`                                    | `.github/workflows/schema-drift.yml`                                 | Structural enforcement of DR 018 Option α-minus; allowlist for redirect stubs via `x-redirect` marker     |
+| 7   | Filed this AAR                                                                                                                                                     | `000-docs/019-AA-AACR-schema-repoint-iel-link-schemas-2026-05-21.md` | Closeout per IEP Convergence Debt Plan Priority 5 acceptance criteria                                     |
+| 8   | Updated `000-INDEX.md`                                                                                                                                             | `000-docs/000-INDEX.md`                                              | New entry 019; new mention of Priority 5 work                                                             |
 
 ## 3. What did NOT change
 
@@ -71,12 +71,12 @@ Those are follow-on items NOT in Priority 5 scope and will be tracked via the `i
 
 ## 7. Risks + open issues
 
-| Risk | Likelihood | Mitigation |
-|---|---|---|
-| SPEC.md § 5 prose tables remain stale (encode old shape) and a reader treats them as canonical | Medium | New schema-authority notice at top of SPEC.md tells readers "kernel wins on conflict"; § 5 tables are flagged for follow-up cleanup. |
-| Future contributor edits the lab schema redirect stub thinking they're editing the canonical | Low | CI drift-check guard catches normative-field reintroduction; README in `schema/` explicitly forbids edits. |
-| Cross-origin `$ref` resolution fails for some JSON Schema validators (e.g. validators that don't follow remote refs) | Low | The README directs implementers to fetch the kernel schema directly; the `$ref` is a discoverability nicety, not a load-bearing validation path. |
-| Drift-check CI workflow fires false positives on a future, legitimate predicate-URI schema landing in lab `specs/` | Low | The workflow allowlists `x-redirect` stubs; any future predicate schema landing in lab `specs/` SHOULD be a redirect stub anyway per Blueprint B § 7.0. |
+| Risk                                                                                                                 | Likelihood | Mitigation                                                                                                                                              |
+| -------------------------------------------------------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SPEC.md § 5 prose tables remain stale (encode old shape) and a reader treats them as canonical                       | Medium     | New schema-authority notice at top of SPEC.md tells readers "kernel wins on conflict"; § 5 tables are flagged for follow-up cleanup.                    |
+| Future contributor edits the lab schema redirect stub thinking they're editing the canonical                         | Low        | CI drift-check guard catches normative-field reintroduction; README in `schema/` explicitly forbids edits.                                              |
+| Cross-origin `$ref` resolution fails for some JSON Schema validators (e.g. validators that don't follow remote refs) | Low        | The README directs implementers to fetch the kernel schema directly; the `$ref` is a discoverability nicety, not a load-bearing validation path.        |
+| Drift-check CI workflow fires false positives on a future, legitimate predicate-URI schema landing in lab `specs/`   | Low        | The workflow allowlists `x-redirect` stubs; any future predicate schema landing in lab `specs/` SHOULD be a redirect stub anyway per Blueprint B § 7.0. |
 
 ## 8. References
 
@@ -86,8 +86,8 @@ Those are follow-on items NOT in Priority 5 scope and will be tracked via the `i
 - Blueprint B § 7.0 (new) — `000-docs/012-AT-ARCH-platform-runtime-blueprint.md`
 - Canonical Glossary § 2.4 + Predicate URI + Active predicate types — `000-docs/014-DR-GLOS-canonical-glossary.md`
 - DR-010 § 7 Q3 (unification thesis BINDING) — `000-docs/010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md`
-- Kernel canonical schema — https://github.com/jeremylongshore/intent-eval-core/blob/main/schemas/v1/gate-result.schema.json
-- Kernel npm package — https://www.npmjs.com/package/@intentsolutions/core
+- Kernel canonical schema — <https://github.com/jeremylongshore/intent-eval-core/blob/main/schemas/v1/gate-result.schema.json>
+- Kernel npm package — <https://www.npmjs.com/package/@intentsolutions/core>
 
 — Jeremy Longshore
 intentsolutions.io

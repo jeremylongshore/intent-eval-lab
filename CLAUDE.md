@@ -41,11 +41,11 @@ Run the partner-name grep guard against `specs/`, `000-docs/`, `README.md`, and 
 
 The lab and j-rig-skill-binary-eval are **coordinated repos with different scopes**. Open Claude Code in the right one based on what you're doing:
 
-| You're working on | Open Claude Code in |
-|---|---|
-| Methodology, research, literature review, sandbox experiments, evidence analysis, blog drafts | **`~/000-projects/intent-eval-platform/intent-eval-lab/`** (this dir) |
-| Implementing eval harness code (workspace packages, executor adapters per artifact type, CLI surface, schemas) | **`~/000-projects/intent-eval-platform/j-rig-binary-eval/`** |
-| A constituent project's own work (semantic-flux internals, audit-harness changes) | That project's own dir |
+| You're working on                                                                                              | Open Claude Code in                                                   |
+| -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Methodology, research, literature review, sandbox experiments, evidence analysis, blog drafts                  | **`~/000-projects/intent-eval-platform/intent-eval-lab/`** (this dir) |
+| Implementing eval harness code (workspace packages, executor adapters per artifact type, CLI surface, schemas) | **`~/000-projects/intent-eval-platform/j-rig-binary-eval/`**          |
+| A constituent project's own work (semantic-flux internals, audit-harness changes)                              | That project's own dir                                                |
 
 The lab session has full context for cross-project synthesis. The JRig session has full context for the harness code itself. They reference each other but stay scoped.
 
@@ -59,20 +59,20 @@ The lab session has full context for cross-project synthesis. The JRig session h
 
 Repos that **compose into one evaluation platform via the Evidence Bundle schema** (per LAB-6 / `IEL-CONV-1`). They share architectural coupling and live as siblings under the same umbrella dir.
 
-| Symlink | Real path | Convergence role |
-|---|---|---|
-| `projects/audit-harness` | `~/000-projects/intent-eval-platform/audit-harness` (sibling) | Deterministic gates — emits Evidence Bundle gate-result rows |
-| `projects/j-rig-binary-eval` | `~/000-projects/intent-eval-platform/j-rig-binary-eval` (sibling; GH-canonical repo name is `j-rig-skill-binary-eval`, local FS dir name retained for backward-compat) | 7-layer judgment harness — consumes + emits Evidence Bundle rows |
-| `projects/intent-rollout-gate` | `~/000-projects/intent-eval-platform/intent-rollout-gate` (sibling) | GitHub Action — consumes a bundle + a `tests/TESTING.md` policy → ship/no-ship decision (M5 implementation; M4 substantive bootstrap stub) |
+| Symlink                        | Real path                                                                                                                                                              | Convergence role                                                                                                                           |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `projects/audit-harness`       | `~/000-projects/intent-eval-platform/audit-harness` (sibling)                                                                                                          | Deterministic gates — emits Evidence Bundle gate-result rows                                                                               |
+| `projects/j-rig-binary-eval`   | `~/000-projects/intent-eval-platform/j-rig-binary-eval` (sibling; GH-canonical repo name is `j-rig-skill-binary-eval`, local FS dir name retained for backward-compat) | 7-layer judgment harness — consumes + emits Evidence Bundle rows                                                                           |
+| `projects/intent-rollout-gate` | `~/000-projects/intent-eval-platform/intent-rollout-gate` (sibling)                                                                                                    | GitHub Action — consumes a bundle + a `tests/TESTING.md` policy → ship/no-ship decision (M5 implementation; M4 substantive bootstrap stub) |
 
 ### Tier 2 — Independent lab research projects (outside the umbrella)
 
 Research-stage work the lab oversees **methodologically** but that runs on its own architecturally. Often patent-sensitive. Lives at `~/000-projects/<name>/` (NOT inside `intent-eval-platform/`).
 
-| Symlink | Real path | Why it's outside the umbrella |
-|---|---|---|
-| `projects/semantic-flux` | `~/000-projects/semantic-flux` | Query-Compiled Semantic Scan (QCSS), patent provisional clock 2026-06-12. No Evidence Bundle dependency. Has its own Plane project (SFX), separate from LAB + JRIG. |
-| (additional research projects added by symlink as the lab grows) | | |
+| Symlink                                                          | Real path                      | Why it's outside the umbrella                                                                                                                                       |
+| ---------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `projects/semantic-flux`                                         | `~/000-projects/semantic-flux` | Query-Compiled Semantic Scan (QCSS), patent provisional clock 2026-06-12. No Evidence Bundle dependency. Has its own Plane project (SFX), separate from LAB + JRIG. |
+| (additional research projects added by symlink as the lab grows) |                                |                                                                                                                                                                     |
 
 ### Rules
 
@@ -86,7 +86,7 @@ Research-stage work the lab oversees **methodologically** but that runs on its o
 
 Numbered + dated + category-coded (the `/doc-filing` standard).
 
-```
+```text
 000-docs/000-INDEX.md             ← index of all lab docs
 000-docs/001-RR-LAND-...md        ← research/landscape report
 000-docs/002-RR-LITS-...md        ← research/literature survey
@@ -133,17 +133,17 @@ The Skill Refiner buildout is the active multi-week effort under this lab umbrel
 
 **Canonical docs (read in order):**
 
-| Order | Doc | Purpose |
-|---|---|---|
-| 1 | `000-docs/027-PP-PLAN-skill-refiner-snoopy-fluttering-comet-v4-2026-05-26.md` | THE PLAN (v5 inline; ~1700 lines). DR-028 Amendments Index block at top is the v5 delta digest. |
-| 2 | `000-docs/028-AT-DECR-isedc-council-session-7-skill-refiner-plan-ratification-2026-05-27.md` | ISEDC Session 7 Decision Record — 10 ratified decisions (T1-T4 tensions + P0-RATIFY-1..6). Verbatim seat positions + binding minority constraints. |
-| 3 | `000-docs/029-DR-BAND-skill-refiner-bandwidth-model-2026-05-27.md` | FTE-week budget per phase (8.8 FTE-weeks total ≈ ~3 calendar months bandwidth-gated + external blockers). Critical-path beads. Pre-mortem. |
-| 4 | `000-docs/025-PP-PLAN-skill-refiner-2026-05-26.md` | Companion plan (v3 framing); SUPERSEDED-BY 027. |
-| 5 | `000-docs/audit/2026-05-26-plan-audit/STATUS.md` | Current state: **RATIFIED** as of 2026-05-27 |
-| 6 | `000-docs/audit/2026-05-26-plan-audit/synthesis.md` | 7-seat Plan Audit panel synthesis (Hickey/Beck/Karpathy/Huyen/Lamport/Cunningham/Kleppmann); 6 convergent P0s; 4 tensions |
-| 7 | `000-docs/audit/2026-05-26-plan-audit/findings/*-findings.md` | 7 individual Plan Audit seat reports + 6 thinker tension arbitrations |
-| 8 | `000-docs/audit/2026-05-26-plan-audit/remediation-map.md` | Finding → plan-section / bead-ID action map |
-| 9 | `000-docs/audit/2026-05-26-plan-audit/internal-review-2026-05-27.md` | Pre-flight 4-reviewer pass (article-consistency + architect + code + fact-checker) that produced v4.1 P0 patches |
+| Order | Doc                                                                                          | Purpose                                                                                                                                            |
+| ----- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | `000-docs/027-PP-PLAN-skill-refiner-snoopy-fluttering-comet-v4-2026-05-26.md`                | THE PLAN (v5 inline; ~1700 lines). DR-028 Amendments Index block at top is the v5 delta digest.                                                    |
+| 2     | `000-docs/028-AT-DECR-isedc-council-session-7-skill-refiner-plan-ratification-2026-05-27.md` | ISEDC Session 7 Decision Record — 10 ratified decisions (T1-T4 tensions + P0-RATIFY-1..6). Verbatim seat positions + binding minority constraints. |
+| 3     | `000-docs/029-DR-BAND-skill-refiner-bandwidth-model-2026-05-27.md`                           | FTE-week budget per phase (8.8 FTE-weeks total ≈ ~3 calendar months bandwidth-gated + external blockers). Critical-path beads. Pre-mortem.         |
+| 4     | `000-docs/025-PP-PLAN-skill-refiner-2026-05-26.md`                                           | Companion plan (v3 framing); SUPERSEDED-BY 027.                                                                                                    |
+| 5     | `000-docs/audit/2026-05-26-plan-audit/STATUS.md`                                             | Current state: **RATIFIED** as of 2026-05-27                                                                                                       |
+| 6     | `000-docs/audit/2026-05-26-plan-audit/synthesis.md`                                          | 7-seat Plan Audit panel synthesis (Hickey/Beck/Karpathy/Huyen/Lamport/Cunningham/Kleppmann); 6 convergent P0s; 4 tensions                          |
+| 7     | `000-docs/audit/2026-05-26-plan-audit/findings/*-findings.md`                                | 7 individual Plan Audit seat reports + 6 thinker tension arbitrations                                                                              |
+| 8     | `000-docs/audit/2026-05-26-plan-audit/remediation-map.md`                                    | Finding → plan-section / bead-ID action map                                                                                                        |
+| 9     | `000-docs/audit/2026-05-26-plan-audit/internal-review-2026-05-27.md`                         | Pre-flight 4-reviewer pass (article-consistency + architect + code + fact-checker) that produced v4.1 P0 patches                                   |
 
 **Headline decisions (DR-028 ratified):**
 
@@ -170,20 +170,20 @@ The Skill Refiner buildout is the active multi-week effort under this lab umbrel
 
 Detailed operational state (active engagements, sock-puppet observations, partner-specific notes, patent-sensitive cross-refs) lives in `.private/CLAUDE-private.md` — gitignored, local-only. Read that file in addition to this one when working in this dir on operational tasks.
 
-
 <!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:ca08a54f -->
+
 ## Beads Issue Tracker
 
 This project uses **bd (beads)** for issue tracking. Run `bd prime` to see full workflow context and commands.
 
 ### Quick Reference
 
-```bash
+````bash
 bd ready              # Find available work
 bd show <id>          # View issue details
 bd update <id> --claim  # Claim work
 bd close <id>         # Complete work
-```
+```text
 
 ### Rules
 
@@ -201,17 +201,20 @@ bd close <id>         # Complete work
 2. **Run quality gates** (if code changed) - Tests, linters, builds
 3. **Update issue status** - Close finished work, update in-progress items
 4. **PUSH TO REMOTE** - This is MANDATORY:
+
    ```bash
    git pull --rebase
    bd dolt push
    git push
    git status  # MUST show "up to date with origin"
-   ```
-5. **Clean up** - Clear stashes, prune remote branches
-6. **Verify** - All changes committed AND pushed
-7. **Hand off** - Provide context for next session
+````
+
+1. **Clean up** - Clear stashes, prune remote branches
+2. **Verify** - All changes committed AND pushed
+3. **Hand off** - Provide context for next session
 
 **CRITICAL RULES:**
+
 - Work is NOT complete until `git push` succeeds
 - NEVER stop before pushing - that leaves work stranded locally
 - NEVER say "ready to push when you are" - YOU must push

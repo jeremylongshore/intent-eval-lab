@@ -17,14 +17,14 @@ Pin scope for intent-eval-lab is deliberately tight — pin the load-bearing CI 
 
 ## 2. What changed
 
-| File | Change |
-|---|---|
-| `.audit-harness/` (NEW directory tree) | Vendored snapshot of audit-harness@846ff6a (v1.1.0). Contains scripts (arch-check.sh + bias-count.sh + crap-score.py + emit-evidence.sh + escape-scan.sh + gherkin-lint.sh + harness-hash.sh) + bin/audit-harness.js + LICENSE + NOTICE + README + CHANGELOG + VERSION + PROVENANCE (records source commit). |
-| `scripts/audit-harness` (NEW) | Wrapper that dispatches into `.audit-harness/scripts/*`. Matches the canonical install.sh-produced wrapper layout. |
-| `.harness-hash-extra-patterns` (NEW) | Pin scope declaration: `.github/workflows/*.yml`, `specs/evidence-bundle/v0.1.0-draft/schema/*.schema.json`, vendored harness + wrapper + the extras file itself. |
-| `.harness-hash` (NEW) | 15-file pin manifest. Committed. |
-| `.github/workflows/harness-hash-verify.yml` (NEW) | CI workflow runs `scripts/audit-harness verify` on every PR + push to main. Exit-2 hard-fails the PR. |
-| THIS AAR | Closeout for the lab side of the platform rollout. |
+| File                                              | Change                                                                                                                                                                                                                                                                                                       |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `.audit-harness/` (NEW directory tree)            | Vendored snapshot of audit-harness@846ff6a (v1.1.0). Contains scripts (arch-check.sh + bias-count.sh + crap-score.py + emit-evidence.sh + escape-scan.sh + gherkin-lint.sh + harness-hash.sh) + bin/audit-harness.js + LICENSE + NOTICE + README + CHANGELOG + VERSION + PROVENANCE (records source commit). |
+| `scripts/audit-harness` (NEW)                     | Wrapper that dispatches into `.audit-harness/scripts/*`. Matches the canonical install.sh-produced wrapper layout.                                                                                                                                                                                           |
+| `.harness-hash-extra-patterns` (NEW)              | Pin scope declaration: `.github/workflows/*.yml`, `specs/evidence-bundle/v0.1.0-draft/schema/*.schema.json`, vendored harness + wrapper + the extras file itself.                                                                                                                                            |
+| `.harness-hash` (NEW)                             | 15-file pin manifest. Committed.                                                                                                                                                                                                                                                                             |
+| `.github/workflows/harness-hash-verify.yml` (NEW) | CI workflow runs `scripts/audit-harness verify` on every PR + push to main. Exit-2 hard-fails the PR.                                                                                                                                                                                                        |
+| THIS AAR                                          | Closeout for the lab side of the platform rollout.                                                                                                                                                                                                                                                           |
 
 ## 3. Why this scope
 
@@ -83,13 +83,13 @@ This is a one-time vendoring-event false positive. Future PRs in this repo (wher
 
 ## 7. Bead lineage + sibling rollouts
 
-| Bead | Status | Notes |
-|---|---|---|
-| `bd_000-projects-itpl` (`iah-self-pin`) | ✅ CLOSED (PR #36 / audit-harness@846ff6a) | Upstream — landed the extras-patterns mechanism |
-| `bd_000-projects-g6zu` (`iep-harness-hash-platform-rollout`) | In-progress | Umbrella for the 4-repo rollout |
-| **`intent-eval-lab` rollout (this AAR)** | **🟢 OPEN — PR pending** | First downstream adopter |
-| j-rig-binary-eval rollout | ⏸ Pending | Next PR. j-rig already has a vendored `.audit-harness/` at v0.1.0; needs upgrade to v1.1.0-snapshot then same self-pin pattern. |
-| intent-rollout-gate rollout | ⏸ DEFERRED | Repo is largely empty (action.yml stub only). M5 MVP gated on `iaj-E02b` closure; harness install lands when policy surface exists to pin. |
+| Bead                                                         | Status                                     | Notes                                                                                                                                      |
+| ------------------------------------------------------------ | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `bd_000-projects-itpl` (`iah-self-pin`)                      | ✅ CLOSED (PR #36 / audit-harness@846ff6a) | Upstream — landed the extras-patterns mechanism                                                                                            |
+| `bd_000-projects-g6zu` (`iep-harness-hash-platform-rollout`) | In-progress                                | Umbrella for the 4-repo rollout                                                                                                            |
+| **`intent-eval-lab` rollout (this AAR)**                     | **🟢 OPEN — PR pending**                   | First downstream adopter                                                                                                                   |
+| j-rig-binary-eval rollout                                    | ⏸ Pending                                  | Next PR. j-rig already has a vendored `.audit-harness/` at v0.1.0; needs upgrade to v1.1.0-snapshot then same self-pin pattern.            |
+| intent-rollout-gate rollout                                  | ⏸ DEFERRED                                 | Repo is largely empty (action.yml stub only). M5 MVP gated on `iaj-E02b` closure; harness install lands when policy surface exists to pin. |
 
 When all 4 children resolve (j-rig adopts + rollout-gate deferral note recorded), the umbrella `g6zu` can close.
 

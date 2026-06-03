@@ -9,8 +9,8 @@
 ## Bias declaration
 
 I build things that work, then I make them simple. When in doubt, I use brute
-force. I trust what I sign myself and very little else (see *Reflections on
-Trusting Trust*). Do one thing well. Measure before you optimize. These are the
+force. I trust what I sign myself and very little else (see _Reflections on
+Trusting Trust_). Do one thing well. Measure before you optimize. These are the
 lenses I bring to all four tensions.
 
 ---
@@ -41,12 +41,12 @@ not.
 
 Premature optimization is the root of all evil — but the inverse is also true:
 you can't defer what you haven't measured. "Frontier-model release triggers
-re-open" is not a trigger; it's a vibe. What's the *test* that says
+re-open" is not a trigger; it's a vibe. What's the _test_ that says
 "self-generated skills now clear the bar"? Eval set, threshold, sample size,
 runtime. Until that test exists, Phase D is not deferred work — it's
 unspecified work pretending to be deferred work.
 
-Cunningham's Path A (Blueprint A anti-goal) is correct as the *current* state.
+Cunningham's Path A (Blueprint A anti-goal) is correct as the _current_ state.
 Karpathy's quarterly re-measurement becomes operationally meaningful only once
 someone writes the eval that the re-measurement runs against. Make writing
 that eval the precondition for re-opening Phase D from anti-goal status. No
@@ -80,7 +80,7 @@ set, signed by IS, anchored in IS-controlled Rekor, refreshed on an
 IS-documented cadence — that's the product.
 
 Implication for Huyen's F-CH-001 (eval-set lineage absent until Phase F):
-F-CH-001 is not a Phase F item. It is the *first* Phase A item. Without
+F-CH-001 is not a Phase F item. It is the _first_ Phase A item. Without
 signed, versioned, lineage-tracked eval sets, the rest of the platform signs
 verdicts against an unauthenticated oracle.
 

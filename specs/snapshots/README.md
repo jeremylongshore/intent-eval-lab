@@ -10,14 +10,14 @@ Per DR-029 § 6 and Agent 5's finding during the eval-set bootstrap scope resear
 
 ## Sources monitored
 
-| Snapshot file | Source | Extractor logic |
-|---|---|---|
-| `.sha/claude-code-changelog.sha` | `raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md` | Hash of raw GitHub CHANGELOG.md (upstream source of the published `code.claude.com/docs/en/changelog` page) |
-| `.sha/claude-code-npm.sha` | `npm view @anthropic-ai/claude-code version` | Raw version string |
-| `.sha/platform-skills-overview.sha` | `platform.claude.com/docs/en/agents-and-tools/agent-skills/overview.md` | Mintlify `.md` shim (raw markdown — deterministic) |
-| `.sha/anthropic-engineering.sha` | `anthropic.com/engineering` | First `<a href="/engineering/<slug>">` (top article sentinel) |
-| `.sha/skills-releases.sha` | `github.com/anthropics/skills/{releases,commits/main}.atom` | Concatenation of latest `<id>` from both feeds |
-| `.sha/agentskills-spec.sha` | `agentskills.io/specification.md` | Mintlify `.md` shim |
+| Snapshot file                       | Source                                                                  | Extractor logic                                                                                             |
+| ----------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `.sha/claude-code-changelog.sha`    | `raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md`    | Hash of raw GitHub CHANGELOG.md (upstream source of the published `code.claude.com/docs/en/changelog` page) |
+| `.sha/claude-code-npm.sha`          | `npm view @anthropic-ai/claude-code version`                            | Raw version string                                                                                          |
+| `.sha/platform-skills-overview.sha` | `platform.claude.com/docs/en/agents-and-tools/agent-skills/overview.md` | Mintlify `.md` shim (raw markdown — deterministic)                                                          |
+| `.sha/anthropic-engineering.sha`    | `anthropic.com/engineering`                                             | First `<a href="/engineering/<slug>">` (top article sentinel)                                               |
+| `.sha/skills-releases.sha`          | `github.com/anthropics/skills/{releases,commits/main}.atom`             | Concatenation of latest `<id>` from both feeds                                                              |
+| `.sha/agentskills-spec.sha`         | `agentskills.io/specification.md`                                       | Mintlify `.md` shim                                                                                         |
 
 ## How to use
 
@@ -51,9 +51,9 @@ The workflow opens a GitHub issue labeled `spec-drift` + `refiner` and (if `NTFY
 
 ## CI side effects (not in extractor — workflow-only)
 
-| Event | Effect |
-|---|---|
-| Scheduled run + drift | ntfy push (if `NTFY_URL` secret set) + GH issue + workflow fails red |
-| Manual `workflow_dispatch` + drift | Workflow fails red; no issue / no ntfy (manual run is a check, not an alert) |
-| PR touching the script or `.sha/` files + clean check | Workflow green; self-test passes |
-| PR or run + drift | Workflow fails; surfaces in PR status checks |
+| Event                                                 | Effect                                                                       |
+| ----------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Scheduled run + drift                                 | ntfy push (if `NTFY_URL` secret set) + GH issue + workflow fails red         |
+| Manual `workflow_dispatch` + drift                    | Workflow fails red; no issue / no ntfy (manual run is a check, not an alert) |
+| PR touching the script or `.sha/` files + clean check | Workflow green; self-test passes                                             |
+| PR or run + drift                                     | Workflow fails; surfaces in PR status checks                                 |

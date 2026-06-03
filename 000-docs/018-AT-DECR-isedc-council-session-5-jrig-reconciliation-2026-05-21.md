@@ -37,22 +37,22 @@ The 7-seat adversarial council produced verbatim positions across both questions
 
 ## 4. Questions verbatim
 
-| # | Question | Why immutable / costly |
-|---|---|---|
-| Q1 | Should j-rig migrate its local `GateResultPredicateSchema` to import + re-export kernel's normative `GateResultV1` shape? Sub-decisions: (a) major version bump for `@j-rig/*`; (b) re-emission vs staging-stays-staging for existing v0.1.0-draft attestations; (c) migration sequencing + release-note posture. | Direction binding (DR-010 Q3). What's adjudicated: SemVer/Rekor/community-posture choices that propagate permanently into npm + Rekor + standards-body memory. |
-| Q2 | Kernel `EvidenceBundle` wire-format growth. Three options: Option α (kernel adds `EvidenceBundlePayload` + folds j-rig's `EvidenceStatement` row shape + cross-field invariants; j-rig re-exports); Option β (j-rig renames locally; no kernel change); Option γ (kernel adopts j-rig's wire format). | Kernel contract-surface expansion is effectively immutable for the platform's lifetime; same immutability discipline as `gate-result/v1`. |
+| #   | Question                                                                                                                                                                                                                                                                                                          | Why immutable / costly                                                                                                                                         |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Q1  | Should j-rig migrate its local `GateResultPredicateSchema` to import + re-export kernel's normative `GateResultV1` shape? Sub-decisions: (a) major version bump for `@j-rig/*`; (b) re-emission vs staging-stays-staging for existing v0.1.0-draft attestations; (c) migration sequencing + release-note posture. | Direction binding (DR-010 Q3). What's adjudicated: SemVer/Rekor/community-posture choices that propagate permanently into npm + Rekor + standards-body memory. |
+| Q2  | Kernel `EvidenceBundle` wire-format growth. Three options: Option α (kernel adds `EvidenceBundlePayload` + folds j-rig's `EvidenceStatement` row shape + cross-field invariants; j-rig re-exports); Option β (j-rig renames locally; no kernel change); Option γ (kernel adopts j-rig's wire format).             | Kernel contract-surface expansion is effectively immutable for the platform's lifetime; same immutability discipline as `gate-result/v1`.                      |
 
 ## 5. Council composition
 
-| Seat | Value system | Bias | Typical adversaries |
-|---|---|---|---|
-| **CTO / Chief Architect** | Schema integrity · immutability · future-proofing | Deliberation > commit; empirical evidence > authorship claims; kernel-canonical | CMO, CSO, CFO |
-| **GC / General Counsel** | IP protection · partner-consent · audit-trail discipline · trademark/brand | Paper trail is sacrosanct; written consent before any partner reference; license-boundary drift is tort risk | CMO, CSO, CFO |
-| **CMO / Industry-Standard Strategist** | Positioning · narrative coherence · tagline alignment · first-mover authorship | Visible > silent; ambitious > conservative; frontier > operational | GC, CFO, CSO |
-| **CFO / Strategic Operator** | Sole-prop bandwidth · opportunity cost · customer-signal gating (REMOVED per DR-010 § 13.5 — pure bandwidth posture) | Defer until evidence; standards-body filings NOT costless; minimum-scope-that-satisfies-binding | CMO, CSO, CTO |
-| **CSO / Chief Standards Officer** | OTel SIG-GenAI / in-toto / SLSA / CNCF / OpenSSF / AgentSkills.io realpolitik · RFC sequencing | Community-temperature ALWAYS precedes RFC filing; first-impression with maintainer is permanent | CMO, CFO |
-| **CISO / Chief Information Security Officer** | Supply-chain attestation integrity · sigstore / cosign / Rekor / DSSE / in-toto · threat-model | Once a row is in Rekor production, permanent forever; cryptographic identity proofs only as strong as their underlying schema | CTO, CMO, CFO |
-| **VP DevRel / Head of OSS Community** | Developer-audience signal · OSS contribution dynamics · friction-to-adopt | "Saturday-afternoon-developer-tries-the-thing" test; informal > formal; reputation is permanent search-engine history | GC, CMO |
+| Seat                                          | Value system                                                                                                         | Bias                                                                                                                          | Typical adversaries |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| **CTO / Chief Architect**                     | Schema integrity · immutability · future-proofing                                                                    | Deliberation > commit; empirical evidence > authorship claims; kernel-canonical                                               | CMO, CSO, CFO       |
+| **GC / General Counsel**                      | IP protection · partner-consent · audit-trail discipline · trademark/brand                                           | Paper trail is sacrosanct; written consent before any partner reference; license-boundary drift is tort risk                  | CMO, CSO, CFO       |
+| **CMO / Industry-Standard Strategist**        | Positioning · narrative coherence · tagline alignment · first-mover authorship                                       | Visible > silent; ambitious > conservative; frontier > operational                                                            | GC, CFO, CSO        |
+| **CFO / Strategic Operator**                  | Sole-prop bandwidth · opportunity cost · customer-signal gating (REMOVED per DR-010 § 13.5 — pure bandwidth posture) | Defer until evidence; standards-body filings NOT costless; minimum-scope-that-satisfies-binding                               | CMO, CSO, CTO       |
+| **CSO / Chief Standards Officer**             | OTel SIG-GenAI / in-toto / SLSA / CNCF / OpenSSF / AgentSkills.io realpolitik · RFC sequencing                       | Community-temperature ALWAYS precedes RFC filing; first-impression with maintainer is permanent                               | CMO, CFO            |
+| **CISO / Chief Information Security Officer** | Supply-chain attestation integrity · sigstore / cosign / Rekor / DSSE / in-toto · threat-model                       | Once a row is in Rekor production, permanent forever; cryptographic identity proofs only as strong as their underlying schema | CTO, CMO, CFO       |
+| **VP DevRel / Head of OSS Community**         | Developer-audience signal · OSS contribution dynamics · friction-to-adopt                                            | "Saturday-afternoon-developer-tries-the-thing" test; informal > formal; reputation is permanent search-engine history         | GC, CMO             |
 
 Acting Head of Board: Claude (designated by Jeremy Longshore for this session).
 
@@ -117,14 +117,15 @@ Acting Head of Board: Claude (designated by Jeremy Longshore for this session).
 **Verbatim positions** (synthesized — every seat returned a position on this sub-question):
 
 - **CTO**: "Single coherent PR — kernel-import + schema re-export + all internal call-site migrations + CHANGELOG.md 'BREAKING' entry — not phased."
-- **GC**: "Decision Record captures *why* we broke the contract, *when*, *what changed*. Release notes must cite Blueprint B § 7.4 by name."
+- **GC**: "Decision Record captures _why_ we broke the contract, _when_, _what changed_. Release notes must cite Blueprint B § 7.4 by name."
 - **CMO**: "Headline reads 'j-rig v2 now speaks the kernel's language — one Evidence Bundle, every gate.'"
 - **CFO**: "Release notes are one clear statement: 'j-rig v2.0.0 aligns predicate-body format to Blueprint B § 7.4 NORMATIVE spec. Consumers must update schema handling. Migration guide: [link].'"
-- **CSO**: "Community-temperature post to SIG-GenAI + OpenSSF Securing AI WG *before* any external blog… blog/X only after one full week of list silence-or-engagement."
+- **CSO**: "Community-temperature post to SIG-GenAI + OpenSSF Securing AI WG _before_ any external blog… blog/X only after one full week of list silence-or-engagement."
 - **CISO**: "Release notes state plainly: 'v2.0 introduces the normative predicate shape per Blueprint B § 7.4; staging-tier attestations emitted by prior versions are non-conformant by design and will age out of the staging log.'"
 - **VP DevRel**: "Migration package: (i) CHANGELOG.md with verbatim before/after JSON blocks for every renamed field; (ii) MIGRATION.md with a field-rename table; (iii) `j-rig migrate <dir>` codemod that rewrites consumer fixture files and emits a diff; (iv) `j-rig@1.x` gets a deprecation notice on install (postinstall script, one-time, npm-friendly); (v) 90-day sunset window during which 1.x receives security patches only."
 
 **Primary tensions**:
+
 1. CMO ("announce loudly, narrate") vs CSO ("community-temperature before announcement").
 2. VP DevRel ("codemod is mandatory; saves five hours of GH Issue triage") vs CFO ("codemod = bandwidth tax we can't afford").
 3. GC ("cite Blueprint B § 7.4 by name in release notes") vs CMO ("cite the unification narrative first").
@@ -134,6 +135,7 @@ Acting Head of Board: Claude (designated by Jeremy Longshore for this session).
 **Single coherent PR.** kernel-import + schema re-export + all internal call-site migrations + CHANGELOG.md "BREAKING" entry land together. No phased schema-transition period. No deprecated-but-still-emitted alias. Per CTO, CFO, GC, CMO consensus.
 
 **Release-note structure** (verbatim ordering required):
+
 1. `## Breaking changes` (CHANGELOG.md opens with this — VP DevRel binding)
 2. Verbatim before/after JSON blocks for every renamed field (VP DevRel)
 3. Field-rename table (`result` → `gate_decision`, `timestamp` → `evaluated_at`)
@@ -144,6 +146,7 @@ Acting Head of Board: Claude (designated by Jeremy Longshore for this session).
 8. Citation: "Schema authority: Blueprint B § 7.4 NORMATIVE; canonical type at `@intentsolutions/core/predicates/gate-result-v1`." (GC binding)
 
 **MIGRATION.md** (separate file at j-rig repo root):
+
 - Field-rename table
 - Worked example: a v1 row + the same row in v2 form
 - Cross-link to a worked example repo if codemod isn't shipped at v2.0.0
@@ -153,6 +156,7 @@ Acting Head of Board: Claude (designated by Jeremy Longshore for this session).
 **j-rig 1.x sunset**: 90-day window after v2.0.0 release. v1.x receives security patches only. One-time postinstall deprecation notice (npm-friendly; not console.warn on every import — VP DevRel binding). At sunset, v1.x is marked deprecated on npm.
 
 **Announcement sequencing** (CSO/CMO compromise — IN PARALLEL, not in series):
+
 - Week 0 (release day): kernel v0.2.0 (with `EvidenceBundlePayload` per Q2 below) ships first → j-rig v2.0.0 ships → community-temperature posts to in-toto SIG-GenAI + OpenSSF Securing AI WG go up SAME WEEK (CMO compromise absorbed: parallel, not in series).
 - Week 1: monitor list responses; engage as a contributor, not as a vendor (CSO posture).
 - Week 1+: blog/X posts on `startaitools.com` per CMO. Headline framing per CMO: "j-rig v2 now speaks the kernel's language" or equivalent. NO partner-name references per DR-004 S1Q2 (vendor-generic enforced by CI guard — GC binding).
@@ -173,12 +177,12 @@ Acting Head of Board: Claude (designated by Jeremy Longshore for this session).
 
 **Verbatim positions**:
 
-- **CTO**: "Option α. The kernel is the canonical source of truth for *every* on-the-wire shape in this ecosystem; that's what DR-010 Q3 means in practice."
+- **CTO**: "Option α. The kernel is the canonical source of truth for _every_ on-the-wire shape in this ecosystem; that's what DR-010 Q3 means in practice."
 - **GC**: "Option α (kernel grows `EvidenceBundlePayload`, folds j-rig's `EvidenceStatement` row shape, j-rig re-exports) is the only option that keeps the PREDICATE-TYPES.md registry as the source of truth."
 - **CMO**: "Option α, unambiguously. The kernel IS the wire format. j-rig re-exports."
-- **CFO** (lone dissent): "Option β (j-rig renames locally; no kernel change). The kernel is a *contracts* layer — types, schemas, validators. It defines the boundary, not the implementation."
+- **CFO** (lone dissent): "Option β (j-rig renames locally; no kernel change). The kernel is a _contracts_ layer — types, schemas, validators. It defines the boundary, not the implementation."
 - **CSO**: "Option α with a constraint: the v1 payload schema MUST be designed against at least two prospective emitters on paper before it ships — current j-rig + projected audit-harness Phase B emit-evidence."
-- **CISO** (introducing α-minus variant): "Option α, and the cross-field invariants are the load-bearing reason — not the schema fold. Blueprint B § 7.3 line 792 makes `subject[0].name === predicate.gate_id` and `subject[0].digest.sha256 === predicate.input_hash` NORMATIVE. Today only j-rig enforces them… kernel adopts the shape and the invariants, but j-rig retains a *behavioral* secondary check (belt-and-suspenders) for one major version cycle, then removes it once kernel enforcement is proven in CI across all five consumer repos."
+- **CISO** (introducing α-minus variant): "Option α, and the cross-field invariants are the load-bearing reason — not the schema fold. Blueprint B § 7.3 line 792 makes `subject[0].name === predicate.gate_id` and `subject[0].digest.sha256 === predicate.input_hash` NORMATIVE. Today only j-rig enforces them… kernel adopts the shape and the invariants, but j-rig retains a _behavioral_ secondary check (belt-and-suspenders) for one major version cycle, then removes it once kernel enforcement is proven in CI across all five consumer repos."
 - **VP DevRel**: "Option α. Kernel grows `EvidenceBundlePayload`, j-rig re-exports. One mental model for consumers."
 
 **Primary tension**: CFO's structural concern (kernel surface growth = future-maintenance growth + creates precedent of "kernel absorbs downstream feedback") vs the unification thesis (DR-010 Q3 BINDING).
@@ -205,6 +209,7 @@ j-rig v2.0.0 re-exports `EvidenceBundlePayload` from kernel + RETAINS its existi
 3. **PREDICATE-TYPES.md registry entry** (GC binding): kernel v0.2.0 release coincides with a registry entry for `evidence-bundle-payload/v1` filed under `intent-eval-lab/specs/PREDICATE-TYPES.md`. Entry includes date, kernel version, j-rig co-author attribution, parent spec reference (Blueprint B § 7).
 
 **Lightweight RFC process for kernel-schema additions** (CMO/CTO joint compromise):
+
 - Each kernel schema addition opens a documented kernel-side bead (`iec-*` prefix)
 - Target: kernel-side RFC → patch release in ≤2 weeks worst case
 - Bead must declare the second-emitter on paper (per binding precondition #1)
@@ -232,28 +237,28 @@ The circuit-breaker preserves CFO's principle without blocking the binding direc
 
 ## 7. Council memos verbatim (cross-question themes)
 
-**CTO**: "Both questions are the same question wearing different clothes: *when the kernel's normative shape and a consumer's published shape disagree, who moves?* DR-010 Q3 already answered: the consumer moves… The deeper theme: **kernel-canonical is only real if it costs something to enforce.** This is the first time it costs something. If we flinch now — minor bump instead of major, β instead of α — we teach every future consumer that the kernel's normative status is negotiable under bandwidth pressure. That lesson is more expensive than either migration." **Most costly to recover from: Q2.**
+**CTO**: "Both questions are the same question wearing different clothes: _when the kernel's normative shape and a consumer's published shape disagree, who moves?_ DR-010 Q3 already answered: the consumer moves… The deeper theme: **kernel-canonical is only real if it costs something to enforce.** This is the first time it costs something. If we flinch now — minor bump instead of major, β instead of α — we teach every future consumer that the kernel's normative status is negotiable under bandwidth pressure. That lesson is more expensive than either migration." **Most costly to recover from: Q2.**
 
-**GC**: "Both questions converge on the same principle: *contracts are permanent, code is temporary*. Q1 forces us to name a contract boundary (v0.1.0-draft → v1.0.0). Q2 forces us to name where contracts are written (PREDICATE-TYPES.md, not j-rig's package.json). The overhead of writing these names down is not overhead — it's the legal record that lets us sleep at night when a consumer calls six months from now and says 'you changed the schema without telling me.'" **Most costly to recover from: Q2 — category error.**
+**GC**: "Both questions converge on the same principle: _contracts are permanent, code is temporary_. Q1 forces us to name a contract boundary (v0.1.0-draft → v1.0.0). Q2 forces us to name where contracts are written (PREDICATE-TYPES.md, not j-rig's package.json). The overhead of writing these names down is not overhead — it's the legal record that lets us sleep at night when a consumer calls six months from now and says 'you changed the schema without telling me.'" **Most costly to recover from: Q2 — category error.**
 
-**CMO**: "Q1 asks *will we narrate the unification thesis loud enough that the market believes it?* Q2 asks *will we structurally enforce the unification thesis in the dependency graph?* Both must be **yes**. A loud Q1 with a fragmented Q2 (option β or γ) is marketing without substrate — and developers will smell it within a release cycle. A unified Q2 (α) with a quiet Q1 wastes the structural advantage by failing to claim it publicly." **Most costly to recover from: Q2 — foundation Q1 rests on.**
+**CMO**: "Q1 asks _will we narrate the unification thesis loud enough that the market believes it?_ Q2 asks _will we structurally enforce the unification thesis in the dependency graph?_ Both must be **yes**. A loud Q1 with a fragmented Q2 (option β or γ) is marketing without substrate — and developers will smell it within a release cycle. A unified Q2 (α) with a quiet Q1 wastes the structural advantage by failing to claim it publicly." **Most costly to recover from: Q2 — foundation Q1 rests on.**
 
-**CFO**: "Both questions hinge on where we draw the line between *contracts* (kernel) and *implementations* (j-rig, audit-harness, agents). I'm arguing for a narrow kernel because every field we add to the kernel is a field we have to maintain, test, validate, and explain to every future consumer. We're one engineer. That's not a moral constraint; it's a bandwidth constraint, and DR-010 § 13.5 removed the customer-signal gate specifically because Phase B is *bandwidth*-gated now." **Most costly to recover from: Q2 — structural decision baked into dependency graph of five repos.**
+**CFO**: "Both questions hinge on where we draw the line between _contracts_ (kernel) and _implementations_ (j-rig, audit-harness, agents). I'm arguing for a narrow kernel because every field we add to the kernel is a field we have to maintain, test, validate, and explain to every future consumer. We're one engineer. That's not a moral constraint; it's a bandwidth constraint, and DR-010 § 13.5 removed the customer-signal gate specifically because Phase B is _bandwidth_-gated now." **Most costly to recover from: Q2 — structural decision baked into dependency graph of five repos.**
 
-**CSO**: "Both questions are really one question: *where does the canonical contract live, and how do we sequence its evolution so the standards community reads our timeline as competent?* Q1 says the predicate URI `gate-result/v1` is immutable and the migration is a conformance event, not a breaking-change event. Q2 says the wire-format envelope `EvidenceBundlePayload` belongs in the same kernel as the predicate body it carries. Both answers point at the same discipline: **the kernel is the citation surface**." **Most costly to recover from: Q1 — Rekor cannot be un-published.**
+**CSO**: "Both questions are really one question: _where does the canonical contract live, and how do we sequence its evolution so the standards community reads our timeline as competent?_ Q1 says the predicate URI `gate-result/v1` is immutable and the migration is a conformance event, not a breaking-change event. Q2 says the wire-format envelope `EvidenceBundlePayload` belongs in the same kernel as the predicate body it carries. Both answers point at the same discipline: **the kernel is the citation surface**." **Most costly to recover from: Q1 — Rekor cannot be un-published.**
 
-**CISO**: "Both questions are the same question under different surfaces: *where does normative enforcement live, and how do we keep what's signed from outrunning what's been ratified?* Q1 is about not writing non-conformant rows into a permanent log; Q2 is about making the kernel structurally incapable of allowing non-conformant rows in the first place." **Most costly to recover from: Q2 — kernel-shape decisions immutable on transparency log.**
+**CISO**: "Both questions are the same question under different surfaces: _where does normative enforcement live, and how do we keep what's signed from outrunning what's been ratified?_ Q1 is about not writing non-conformant rows into a permanent log; Q2 is about making the kernel structurally incapable of allowing non-conformant rows in the first place." **Most costly to recover from: Q2 — kernel-shape decisions immutable on transparency log.**
 
-**VP DevRel**: "*We are about to ship our first real ecosystem break. The world watches how Intent Solutions handles it.* Every choice in Q1 and Q2 is downstream of one question: do we treat external adopters as first-class users or as collateral? My seat votes first-class every time." **Most costly to recover from: Q1 — reputation for sloppy releases is permanent search-engine history.**
+**VP DevRel**: "_We are about to ship our first real ecosystem break. The world watches how Intent Solutions handles it._ Every choice in Q1 and Q2 is downstream of one question: do we treat external adopters as first-class users or as collateral? My seat votes first-class every time." **Most costly to recover from: Q1 — reputation for sloppy releases is permanent search-engine history.**
 
 ## 8. Cross-cutting themes
 
 ### 8.1 Most-costly tally
 
-| Question | Vote count for "most costly to recover from" |
-|---|---|
-| Q2 (kernel wire-format growth) | **5** — CTO, GC, CMO, CFO, CISO |
-| Q1 (j-rig predicate-body migration) | 2 — CSO, VP DevRel |
+| Question                            | Vote count for "most costly to recover from" |
+| ----------------------------------- | -------------------------------------------- |
+| Q2 (kernel wire-format growth)      | **5** — CTO, GC, CMO, CFO, CISO              |
+| Q1 (j-rig predicate-body migration) | 2 — CSO, VP DevRel                           |
 
 The council collectively identifies Q2 as the more consequential / less reversible decision. Q1 is "painful but recoverable" per CTO; Q2 ships a kernel contract surface that's immutable for the platform's lifetime per CISO. The CSO + VP DevRel minority on this question is steel-manned and absorbed: their concern (Rekor permanence + first-impression-permanence) is exactly what the staging-stays-staging decision in Q1(b) + the parallel-community-temperature sequencing in Q1(c) address. The acting-head call honors all 7 seats' weighting.
 
@@ -277,22 +282,22 @@ The session passes the adversarial-integrity check. Synthesis is not consensus t
 
 ### 9.1 Decisions routed to work items
 
-| Decision | Owner | Work item / bead |
-|---|---|---|
-| `@j-rig/*` major version bump to 2.0.0 | j-rig maintainer | `iaj-E02b` (scope-expanded — see § 9.2 below) |
-| Staging-stays-staging for existing attestations | CISO + j-rig maintainer | `iaj-staging-stays-staging-aar` (new — P1) — produces the forensics check + release-note language |
-| Single coherent migration PR with CHANGELOG.md "BREAKING" structure | j-rig maintainer | `iaj-E02b` |
-| MIGRATION.md doc at j-rig repo root | VP DevRel-flavored work | `iaj-migration-md` (new — P1) |
-| `j-rig migrate <dir>` codemod | j-rig maintainer | `iaj-migrate-codemod` (new — P1, **NOT** P3 per VP DevRel binding) |
-| 90-day sunset window + npm-postinstall deprecation notice for j-rig 1.x | j-rig maintainer | `iaj-sunset-1x` (new — P2) |
-| Community-temperature post (SIG-GenAI + OpenSSF) | CSO-flavored work | `iaj-community-temp-posts` (new — P1, **must land same week as v2.0.0**) |
-| Blog post on `startaitools.com` | CMO-flavored work | `iaj-blog-post-startaitools` (new — P2, **must land 1+ week after community-temp posts**) |
-| Kernel v0.2.0 with `EvidenceBundlePayload` + cross-field invariants + second-emitter sketch | kernel maintainer | new epic `iec-E12` (P0, feature) — "Kernel v0.2.0 wire-format growth (EvidenceBundlePayload)" |
-| CISO cross-field invariant enumeration | CISO | `iec-E12a` (sub-bead, P0) |
-| Audit-harness `iah-E04` second-emitter shape sketch (paper) | audit-harness maintainer | `iec-E12b` (sub-bead, P0) — must land before `iec-E12` final PR opens |
-| PREDICATE-TYPES.md registry entry for `evidence-bundle-payload/v1` | GC + kernel maintainer | `iel-predicate-types-evidence-bundle-payload` (new — P1) |
-| Update intent-rollout-gate M5 work to depend on `@j-rig/rollout-gate@2.0.0` | rollout-gate maintainer | `iar-M5` dep edge added to `iaj-E02b` |
-| Updated `iaj-E02b` scope: full normative schema upgrade, not name-based codemod | j-rig maintainer | bead description rewrite (see § 9.2) |
+| Decision                                                                                    | Owner                    | Work item / bead                                                                                  |
+| ------------------------------------------------------------------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------- |
+| `@j-rig/*` major version bump to 2.0.0                                                      | j-rig maintainer         | `iaj-E02b` (scope-expanded — see § 9.2 below)                                                     |
+| Staging-stays-staging for existing attestations                                             | CISO + j-rig maintainer  | `iaj-staging-stays-staging-aar` (new — P1) — produces the forensics check + release-note language |
+| Single coherent migration PR with CHANGELOG.md "BREAKING" structure                         | j-rig maintainer         | `iaj-E02b`                                                                                        |
+| MIGRATION.md doc at j-rig repo root                                                         | VP DevRel-flavored work  | `iaj-migration-md` (new — P1)                                                                     |
+| `j-rig migrate <dir>` codemod                                                               | j-rig maintainer         | `iaj-migrate-codemod` (new — P1, **NOT** P3 per VP DevRel binding)                                |
+| 90-day sunset window + npm-postinstall deprecation notice for j-rig 1.x                     | j-rig maintainer         | `iaj-sunset-1x` (new — P2)                                                                        |
+| Community-temperature post (SIG-GenAI + OpenSSF)                                            | CSO-flavored work        | `iaj-community-temp-posts` (new — P1, **must land same week as v2.0.0**)                          |
+| Blog post on `startaitools.com`                                                             | CMO-flavored work        | `iaj-blog-post-startaitools` (new — P2, **must land 1+ week after community-temp posts**)         |
+| Kernel v0.2.0 with `EvidenceBundlePayload` + cross-field invariants + second-emitter sketch | kernel maintainer        | new epic `iec-E12` (P0, feature) — "Kernel v0.2.0 wire-format growth (EvidenceBundlePayload)"     |
+| CISO cross-field invariant enumeration                                                      | CISO                     | `iec-E12a` (sub-bead, P0)                                                                         |
+| Audit-harness `iah-E04` second-emitter shape sketch (paper)                                 | audit-harness maintainer | `iec-E12b` (sub-bead, P0) — must land before `iec-E12` final PR opens                             |
+| PREDICATE-TYPES.md registry entry for `evidence-bundle-payload/v1`                          | GC + kernel maintainer   | `iel-predicate-types-evidence-bundle-payload` (new — P1)                                          |
+| Update intent-rollout-gate M5 work to depend on `@j-rig/rollout-gate@2.0.0`                 | rollout-gate maintainer  | `iar-M5` dep edge added to `iaj-E02b`                                                             |
+| Updated `iaj-E02b` scope: full normative schema upgrade, not name-based codemod             | j-rig maintainer         | bead description rewrite (see § 9.2)                                                              |
 
 ### 9.2 `iaj-E02b` scope rewrite (REPLACES prior scope per 017 § 4.5)
 
@@ -325,6 +330,7 @@ Old scope: "codemod imports from `@j-rig/core` schemas to `@intentsolutions/core
 12. `iaj-E02b` — scope-rewrite (existing bead, scope updated per § 9.2)
 
 Dependencies:
+
 - `iec-E12` depends on `iec-E12a` + `iec-E12b` (both must close before kernel v0.2.0 PR merges)
 - `iaj-E02b` depends on `iec-E12` (j-rig v2.0.0 consumes kernel v0.2.0)
 - `iar-M5*` (intent-rollout-gate M5 MVP) depends on `iaj-E02b` (consumes `@j-rig/rollout-gate@2.0.0`)
@@ -348,6 +354,7 @@ These dynamics are candidates for a future minor bump of the ISEDC skill (v1.1.0
 I ratify the decisions in § 6.1, § 6.2, § 6.3, and § 6.4 above with the minority binding constraints stacked as written. Verbatim seat positions are preserved in § 6 and § 7 for future readers; the dissents are real and were weighed.
 
 Two decisions absorbed minority positions verbatim rather than dismissing them:
+
 - CMO's Q1(b) dissent absorbed via the **public release-note language requirement**.
 - CFO's Q2 dissent absorbed via the **circuit-breaker minority constraint** (reconvene if kernel schema additions compound beyond 2/quarter or if `EvidenceBundlePayload` cannot articulate a second emitter).
 
@@ -368,7 +375,7 @@ intentsolutions.io
 - DR-004 S1Q2 — partner-name vendor-generic discipline (binding; enforced by CI guard)
 - ISEDC Session 1 DR (Class-1 precedent) — `004-AT-DECR-isedc-council-record-2026-05-10.md`
 - IEP Convergence Debt Plan (2026-05-20 enhanced 2026-05-21) — local plan reference
-- Tagline (always applied as positioning lens): *"We create industries that don't exist — we think outside of the box's box."*
+- Tagline (always applied as positioning lens): _"We create industries that don't exist — we think outside of the box's box."_
 
 — Jeremy Longshore
 intentsolutions.io

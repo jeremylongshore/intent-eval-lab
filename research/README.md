@@ -37,16 +37,16 @@ These twelve papers were reviewed in detail (via the `academic-research:paper-re
 ### Agent evaluation + LLM-system observability (Workstream C, 5 papers)
 
 - [**GAIA: A Benchmark for General AI Assistants**](https://arxiv.org/abs/2311.12983) — Mialon et al., ICLR 2024 · 716 citations
-  Outcome-only evaluation benchmark (466 questions). Diagnostic: GAIA cannot distinguish *right answer for wrong reason* from *right answer through correct protocol-level sequence*. The Intentional Mapping sits one level below GAIA — complementary, not competitive.
+  Outcome-only evaluation benchmark (466 questions). Diagnostic: GAIA cannot distinguish _right answer for wrong reason_ from _right answer through correct protocol-level sequence_. The Intentional Mapping sits one level below GAIA — complementary, not competitive.
 
 - [**Survey on Evaluation of LLM-based Agents**](https://arxiv.org/abs/2503.16416) — Yehudai et al., 2025 · 141 citations
-  First comprehensive survey of LLM-agent evaluation methods. Names three critical gaps: *cost-efficiency*, *safety*, *robustness*. Diagnostic: the survey is conducted entirely at the outcome-evaluation layer; protocol-level conformance is not a recognized perspective. Intent Eval Lab fills that gap.
+  First comprehensive survey of LLM-agent evaluation methods. Names three critical gaps: _cost-efficiency_, _safety_, _robustness_. Diagnostic: the survey is conducted entirely at the outcome-evaluation layer; protocol-level conformance is not a recognized perspective. Intent Eval Lab fills that gap.
 
 - [**Elle: Finding Isolation Violations in Real-World Databases**](https://doi.org/10.1145/3465084.3467483) — Kingsbury, ACM PODC 2021
   Companion paper to the Jepsen distributed-testing library. Linear-time history checker detecting Adya-formalism transactional anomalies. **Highest-leverage borrowable pattern this landscape identifies** — the nemesis-generator-checker model applied to OTel traces is the most direct prior art for the Intentional Mapping conformance harness.
 
 - [**Willful Disobedience: Automatically Detecting Failures in Agentic Traces (AgentPex)**](https://arxiv.org/abs/2603.23806) — Sharma, Barke, Zorn 2026 · 2 citations
-  First paper to operationalize *the trace itself is an evaluable target*. Evaluates 424 traces from τ2-bench. AgentPex extracts rules from prompts; the Intentional Mapping declares rules from failure-shape categories independent of any prompt. Deeply complementary.
+  First paper to operationalize _the trace itself is an evaluable target_. Evaluates 424 traces from τ2-bench. AgentPex extracts rules from prompts; the Intentional Mapping declares rules from failure-shape categories independent of any prompt. Deeply complementary.
 
 - [**Property-Based Testing in Practice**](https://doi.org/10.1145/3597503.3639581) — Goldstein et al., ICSE 2024 · 27 citations
   Qualitative study of PBT users at Jane Street. Finds that industrial PBT collapses to a small number of high-leverage idioms — structurally identical to the Intentional Mapping's MM-1..MM-6 collapse.
@@ -66,10 +66,10 @@ These twelve papers were reviewed in detail (via the `academic-research:paper-re
   1,000-PR benchmark for AI code reviewers. **Multi-reviewer aggregation boosts F1 by up to 43.67%**. Direct argument for the j-rig "binary eval" pattern — aggregate multiple gate verdicts into one evidence row, not one verdict.
 
 - [**Software Supply Chain Attribute Integrity (SCAI)**](https://www.semanticscholar.org/paper/2415020c4faaa61c9f78607f12299781690a8c25) — Melara · also at [arXiv:2210.05813](https://arxiv.org/abs/2210.05813)
-  Defines a data format for *functional attribute + integrity information* of software artifacts. SCAI is registered as an in-toto predicate type. Direct precedent for "test-gate result" as an in-toto predicate.
+  Defines a data format for _functional attribute + integrity information_ of software artifacts. SCAI is registered as an in-toto predicate type. Direct precedent for "test-gate result" as an in-toto predicate.
 
 - [**Agentic AI for Autonomous Defense in Software Supply Chain Security**](https://www.semanticscholar.org/paper/7ef12e7f28b538a044f3b2c2af4160446723a200) — Syed et al., Int. Conf. Computing Advancements 2025
-  Frames SLSA + SBOM + in-toto as **necessary but insufficient** — they prove what was built but not what's safe to merge. The Evidence Bundle plays the same role for *test quality* that SCAI plays for *binary integrity*.
+  Frames SLSA + SBOM + in-toto as **necessary but insufficient** — they prove what was built but not what's safe to merge. The Evidence Bundle plays the same role for _test quality_ that SCAI plays for _binary integrity_.
 
 - [**Advanced Mutation Testing with Zero and Few-Shot Evaluation Using GPT-V4**](https://www.semanticscholar.org/paper/eaac22fe50ba4fa2dd93224892963890f7f0d649) — Hemmat et al., IoT 2025
   LLM-driven mutation generation as a new branch of the field. Forward-looking flag: in 12-24 months the harness's mutation layer will likely dispatch an LLM-mutation step alongside Stryker/PIT.
@@ -269,12 +269,12 @@ The CRAP metric is industry-original (never had a peer-reviewed primary citation
 
 The four Part 2 research workstream landscape docs from which this Master Reading List was consolidated:
 
-| Workstream | Landscape doc | Size | URLs cited |
-|---|---|---|---|
-| **A** — audit-harness upgrade landscape | [`audit-harness/000-docs/002-RR-LAND-upgrade-landscape.md`](https://github.com/jeremylongshore/audit-harness/blob/main/000-docs/002-RR-LAND-upgrade-landscape.md) | 3,591w · 272 lines | 56 |
-| **B** — j-rig multi-provider spec matrix | [`j-rig-binary-eval/000-docs/018-RR-LAND-multi-provider-spec-matrix.md`](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/main/000-docs/018-RR-LAND-multi-provider-spec-matrix.md) | 5,990w · 508 lines | 32 |
-| **C** — MCP testing bridge | [`intent-eval-lab/000-docs/002-RR-LAND-mcp-testing-bridge.md`](../000-docs/002-RR-LAND-mcp-testing-bridge.md) | 6,386w · 461 lines | 75 |
-| **D** — Phase B scope synthesis | [`intent-eval-lab/000-docs/003-PP-PLAN-phase-b-scope-refinement.md`](../000-docs/003-PP-PLAN-phase-b-scope-refinement.md) | 6,151w · 447 lines | 14 |
+| Workstream                               | Landscape doc                                                                                                                                                                                     | Size               | URLs cited |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | ---------- |
+| **A** — audit-harness upgrade landscape  | [`audit-harness/000-docs/002-RR-LAND-upgrade-landscape.md`](https://github.com/jeremylongshore/audit-harness/blob/main/000-docs/002-RR-LAND-upgrade-landscape.md)                                 | 3,591w · 272 lines | 56         |
+| **B** — j-rig multi-provider spec matrix | [`j-rig-binary-eval/000-docs/018-RR-LAND-multi-provider-spec-matrix.md`](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/main/000-docs/018-RR-LAND-multi-provider-spec-matrix.md) | 5,990w · 508 lines | 32         |
+| **C** — MCP testing bridge               | [`intent-eval-lab/000-docs/002-RR-LAND-mcp-testing-bridge.md`](../000-docs/002-RR-LAND-mcp-testing-bridge.md)                                                                                     | 6,386w · 461 lines | 75         |
+| **D** — Phase B scope synthesis          | [`intent-eval-lab/000-docs/003-PP-PLAN-phase-b-scope-refinement.md`](../000-docs/003-PP-PLAN-phase-b-scope-refinement.md)                                                                         | 6,151w · 447 lines | 14         |
 
 For the full context behind each citation, click through to the source landscape doc — each URL above appears in context within one of the four docs.
 
@@ -282,6 +282,6 @@ For the full context behind each citation, click through to the source landscape
 
 ## Maintenance
 
-When a new research source surfaces during Intent Eval Lab work, add it here under the appropriate category. When a source becomes load-bearing for a published artifact, also cite it in the relevant `specs/` or `000-docs/` artifact. This file is the *canonical reading list*; landscape docs are the *contextual citation*.
+When a new research source surfaces during Intent Eval Lab work, add it here under the appropriate category. When a source becomes load-bearing for a published artifact, also cite it in the relevant `specs/` or `000-docs/` artifact. This file is the _canonical reading list_; landscape docs are the _contextual citation_.
 
-Compiled and committed 2026-05-10 per user direction *"i need to be able to go into the repo ui and click the links."*
+Compiled and committed 2026-05-10 per user direction _"i need to be able to go into the repo ui and click the links."_

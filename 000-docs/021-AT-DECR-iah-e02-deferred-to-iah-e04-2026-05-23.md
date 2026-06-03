@@ -1,15 +1,15 @@
 # Decision Record — `iah-E02` scope clarified and deferred to `iah-E04` (emit-evidence)
 
-| Field | Value |
-|---|---|
-| **Doc code** | AT-DECR (Architectural / Technical Decision Record) |
-| **Number** | 021 |
-| **Date** | 2026-05-23 |
-| **Author** | Jeremy Longshore (acting head of board, per CEO-mode delegation) |
-| **Status** | Ratified — single-signer call (NOT an ISEDC session) |
-| **Supersedes** | `iah-E02` scope as written in IEP Convergence Debt Plan Priority 1 |
-| **Closes** | `iah-E02` parent bead (`bd_000-projects-46x`) with reason "scope clarified by inventory" |
-| **Plan** | IEP Convergence Debt Plan Priority 1 (`iep-P1-kernel-adoption`), § Discovery 1 |
+| Field          | Value                                                                                    |
+| -------------- | ---------------------------------------------------------------------------------------- |
+| **Doc code**   | AT-DECR (Architectural / Technical Decision Record)                                      |
+| **Number**     | 021                                                                                      |
+| **Date**       | 2026-05-23                                                                               |
+| **Author**     | Jeremy Longshore (acting head of board, per CEO-mode delegation)                         |
+| **Status**     | Ratified — single-signer call (NOT an ISEDC session)                                     |
+| **Supersedes** | `iah-E02` scope as written in IEP Convergence Debt Plan Priority 1                       |
+| **Closes**     | `iah-E02` parent bead (`bd_000-projects-46x`) with reason "scope clarified by inventory" |
+| **Plan**       | IEP Convergence Debt Plan Priority 1 (`iep-P1-kernel-adoption`), § Discovery 1           |
 
 ## 1. Decision
 
@@ -36,15 +36,15 @@ The scripts speak Evidence Bundle by emitting JSON that **matches** the kernel's
 
 Three resolution paths were considered for `iah-E02` (per IEP Convergence Debt Plan § Discoveries):
 
-| Option | Action | Verdict |
-|---|---|---|
-| **(a)** | Defer until `iah-E04` (emit-evidence) is ready — kernel consumption naturally materializes there | **✅ Ratified** |
-| **(b)** | Add `@intentsolutions/core` as a `peerDependency` only — symbolic; no runtime cost | ❌ Rejected — theater |
-| **(c)** | Full TypeScript port of scripts so they can `import` from kernel | ❌ Rejected — violates audit-harness Rule 1 with no concrete justification |
+| Option  | Action                                                                                           | Verdict                                                                    |
+| ------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
+| **(a)** | Defer until `iah-E04` (emit-evidence) is ready — kernel consumption naturally materializes there | **✅ Ratified**                                                            |
+| **(b)** | Add `@intentsolutions/core` as a `peerDependency` only — symbolic; no runtime cost               | ❌ Rejected — theater                                                      |
+| **(c)** | Full TypeScript port of scripts so they can `import` from kernel                                 | ❌ Rejected — violates audit-harness Rule 1 with no concrete justification |
 
 ### Why (b) is theater
 
-A `peerDependency` declaration without an `import` is a metadata claim that audit-harness *would consume kernel if it consumed anything from any package*. It does not change behavior. It does not produce a runtime tie-in. It does not let audit-harness validate against kernel-published Zod schemas (scripts can't `import` from npm-published TypeScript in any meaningful way — they're bash + python). It would be a marketing change to the manifest that creates the impression of consumption without the substance.
+A `peerDependency` declaration without an `import` is a metadata claim that audit-harness _would consume kernel if it consumed anything from any package_. It does not change behavior. It does not produce a runtime tie-in. It does not let audit-harness validate against kernel-published Zod schemas (scripts can't `import` from npm-published TypeScript in any meaningful way — they're bash + python). It would be a marketing change to the manifest that creates the impression of consumption without the substance.
 
 ### Why (c) is out-of-scope for this DR
 
@@ -53,6 +53,7 @@ audit-harness's Rule 1 (from `audit-harness/CLAUDE.md` § "Core design rules"):
 > **Scripts are the source of truth.** The Node CLI (`bin/audit-harness.js`) is a thin dispatcher. All logic lives in `scripts/*.sh` and `scripts/*.py`. Don't port to TypeScript unless there's a concrete reason (cross-platform Windows bug, etc.).
 
 A full TS port would require:
+
 1. Re-implementing 6 scripts (escape-scan, harness-hash, crap-score, emit-evidence, bias-count, gherkin-lint) in TypeScript while preserving their bash/python deterministic behavior.
 2. Adding `@intentsolutions/core` as a runtime dependency — violates Rule 2 ("Zero runtime deps").
 3. Justifying the change against Rule 1 — needs a concrete cross-platform or correctness reason that does NOT exist today.
@@ -80,7 +81,7 @@ This DR re-anchors enforcement to `intent-eval-core/src/entities/index.ts` as th
 
 ## 6. Bead lifecycle action items
 
-1. **Close `iah-E02` parent** (`bd_000-projects-46x`) with reason: *"Scope clarified by 016-RR-LAND inventory — zero local kernel-canonical type re-defs in audit-harness production code. Consumption tie-in naturally materializes at iah-E04 emit-evidence subcommand. See AT-DECR 021."*
+1. **Close `iah-E02` parent** (`bd_000-projects-46x`) with reason: _"Scope clarified by 016-RR-LAND inventory — zero local kernel-canonical type re-defs in audit-harness production code. Consumption tie-in naturally materializes at iah-E04 emit-evidence subcommand. See AT-DECR 021."_
 2. **Close `iah-E02a/b/c/d`** with the same reason (children of a closed-no-work parent).
 3. **`iah-kernel-shadow-check`** (`bd_000-projects-873c`) — remove the blocker on `iah-E02` (was provisionally removed 2026-05-21). Re-scope acceptance criteria to: "grep-detector enforces against `intent-eval-core/src/entities/index.ts` live exports; today emits zero hits; after iah-E04 lands the detector becomes load-bearing."
 4. **`iep-P1-kernel-adoption`** umbrella — update notes to reflect 3-of-4-children scope (audit-harness arm is N/A, not pending). Umbrella can close after j-rig shape-reconciliation (`iaj-E02b`) and `iar-consumer-migration` close (Priority 4 M5 MVP).

@@ -1,21 +1,23 @@
 ---
-title: ISEDC Class-1 Charter — Spec Authority Kernel (kernel v0.4.0 authoring/v1)
 date: 2026-05-28
 status: DRAFT — DEFERRED 2026-05-28 pending plan 031 v7 amendment per § 14 SAK incremental Plan Audit verdict NEEDS-AMENDMENT (12 P0 + 17 P1; 3 convergent themes C1/C2/C3). Charter scope (6 decisions in § 3) is UNCHANGED — convening defers until v7 closes the P0 cluster. Audit synthesis: `intent-eval-lab/000-docs/audit/2026-05-28-sak-incremental-audit/synthesis.md`.
 class: Class-1 charter (entity-expansion / kernel-scope-bound; distinct from Session-N tension arbitration)
 author: Jeremy Longshore (drafter: Claude as acting CTO under CTO-mode delegation 2026-05-28)
 parent_plan: intent-eval-lab/000-docs/031-PP-PLAN-skill-refiner-sak-amendment-v6-2026-05-28.md § 14.8 directive 4
 beads: bd_000-projects-8vq0 (charter), bd_000-projects-3kye (SAK epic)
-
-# Tri-link block (per § 3.5 PR-1)
-Beads: bd_000-projects-8vq0, bd_000-projects-3kye
-GitHub: jeremylongshore/intent-eval-lab#<TBA>
 ---
 
 # ISEDC Class-1 Charter — Spec Authority Kernel (SAK) — kernel v0.4.0 authoring/v1
 
-> **What this is:** the ratifying decision record for the kernel scope expansion proposed by plan 031 v6 § 14. This doc is DRAFT until (a) user signoff via ExitPlanMode equivalent, (b) live 7-seat ISEDC convening (in person or asynchronous on bd), and (c) verbatim seat positions captured per adversarial-integrity protocol.
+## Tri-link block (per § 3.5 PR-1)
 
+```text
+Beads: bd_000-projects-8vq0, bd_000-projects-3kye
+GitHub: jeremylongshore/intent-eval-lab#<TBA>
+```
+
+> **What this is:** the ratifying decision record for the kernel scope expansion proposed by plan 031 v6 § 14. This doc is DRAFT until (a) user signoff via ExitPlanMode equivalent, (b) live 7-seat ISEDC convening (in person or asynchronous on bd), and (c) verbatim seat positions captured per adversarial-integrity protocol.
+>
 > **Why "Class-1" not "Session-N":** prior ISEDC sessions (Session 4 = DR-010 widened-scope lock; Session 5 = DR-018 j-rig reconciliation; Session 6 = DR-022 beads re-engage; Session 7 = DR-028 Skill Refiner plan ratification) ratified tension arbitrations against in-flight plans. This charter is **different in kind** — it expands the kernel's scope (the 14 → 14+6 entity surface) and requires written charter rather than tension arbitration. Class-1 = charter-class session; Class-2 = future entity-scope changes that follow this template; subsequent tension-arbitration sessions resume the Session-N numbering.
 
 ## Drafter's note
@@ -41,24 +43,24 @@ Each contract carries 3 `$defs` tiers per plan § 14.10: `standardFloor` (minima
 
 ### 1.2 Why this requires a Class-1 charter (not a CTO call)
 
-Per `claude-code-plugins/000-docs/SCHEMA_CHANGELOG.md` NON-NEGOTIABLES item 7: *"Architectural changes need explicit user approval BEFORE the change lands."* The kernel scope expansion is architectural (bicameral kernel; new entity family). It is NOT a tactical CTO call (cf. CTO calls § 14.6 Q1-Q5 in plan 031). The 5 CTO calls already made are tactical (charter scope, D4 sequencing, vendor pattern, quorum-pin, global-skills posture); they apply WITHIN the scope of a ratified charter. The charter itself is the ratification gate.
+Per `claude-code-plugins/000-docs/SCHEMA_CHANGELOG.md` NON-NEGOTIABLES item 7: _"Architectural changes need explicit user approval BEFORE the change lands."_ The kernel scope expansion is architectural (bicameral kernel; new entity family). It is NOT a tactical CTO call (cf. CTO calls § 14.6 Q1-Q5 in plan 031). The 5 CTO calls already made are tactical (charter scope, D4 sequencing, vendor pattern, quorum-pin, global-skills posture); they apply WITHIN the scope of a ratified charter. The charter itself is the ratification gate.
 
 ### 1.3 Triggering event
 
-User direction 2026-05-28 (verbatim): *"intent eval lab, jrig, all of this will be the source of truth for the schemas, the scaffolding, the context, all the rules, regulations regarded to building these items"* — and *"we want to make sure that we encode an enterprise standard"*.
+User direction 2026-05-28 (verbatim): _"intent eval lab, jrig, all of this will be the source of truth for the schemas, the scaffolding, the context, all the rules, regulations regarded to building these items"_ — and _"we want to make sure that we encode an enterprise standard"_.
 
 These statements established (a) kernel-as-source-of-truth for authoring artifacts (not just runtime) and (b) IS-marketplace-tier as the binding enterprise standard. Plan 031 § 14 operationalizes these directives; this charter ratifies the operationalization.
 
 ### 1.4 Cited authorities
 
-| Authority | Citation |
-|---|---|
-| Plan 027 v5 | Ratified per DR-028; binding for §§ 1-13 |
-| DR-018 § 6.4 (Option α-minus) | Kernel-canonical + lab redirect-stubs pattern; basis for SAK architecture |
+| Authority                                 | Citation                                                                                                      |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Plan 027 v5                               | Ratified per DR-028; binding for §§ 1-13                                                                      |
+| DR-018 § 6.4 (Option α-minus)             | Kernel-canonical + lab redirect-stubs pattern; basis for SAK architecture                                     |
 | CCP NON-NEGOTIABLES (SCHEMA_CHANGELOG.md) | 7-item discipline; item 1 (8-field IS set), item 3 (rubric-sits-on-top), item 7 (architectural change gating) |
-| 6767-h master spec | `claude-code-plugins/000-docs/6767-h-SPEC-DR-STND-claude-code-extensions-master.md` — prose authority |
-| agentskills.io v1.0 | `intent-eval-lab/research/agentskills-spec-v1.0-snapshot.md` — open standard floor |
-| Claude Code spec tree 2026-05-27 | `intent-eval-lab/research/claude-docs-spec-tree-2026-05-27.md` — 22-URL walk |
+| 6767-h master spec                        | `claude-code-plugins/000-docs/6767-h-SPEC-DR-STND-claude-code-extensions-master.md` — prose authority         |
+| agentskills.io v1.0                       | `intent-eval-lab/research/agentskills-spec-v1.0-snapshot.md` — open standard floor                            |
+| Claude Code spec tree 2026-05-27          | `intent-eval-lab/research/claude-docs-spec-tree-2026-05-27.md` — 22-URL walk                                  |
 
 ## 2. Pre-session briefing — what every seat must read
 
@@ -87,8 +89,9 @@ Each decision is presented as PROPOSED — seats discuss, vote, and the result i
 **Rationale (drafter):** authoring contracts have ≥16 consumers (8 CCP + 8 global validators) + 6 creators + 3,543 SKILL.md corpus + every CCP CI workflow. Lab placement would invert the dependency direction (lab → kernel rather than kernel → lab) and break DR-018 § 6.4 Option α-minus precedent.
 
 **Anticipated minority positions:**
-- *CSO*: kernel scope creep risk — every entity added is a future maintenance burden. Counter: the 6 contracts replace 16+ partial-knowledge validators with one canonical surface; net maintenance reduction.
-- *CTO*: prefer single-contract-at-a-time (skill-frontmatter first). Counter: § 14.6 Q1 CTO call already weighed this; one charter is cheaper than six convenings; package-deal honors DR-028 Session 7 precedent.
+
+- _CSO_: kernel scope creep risk — every entity added is a future maintenance burden. Counter: the 6 contracts replace 16+ partial-knowledge validators with one canonical surface; net maintenance reduction.
+- _CTO_: prefer single-contract-at-a-time (skill-frontmatter first). Counter: § 14.6 Q1 CTO call already weighed this; one charter is cheaper than six convenings; package-deal honors DR-028 Session 7 precedent.
 
 ### 3.2 Decision D-SAK-2: IS marketplace tier as canonical
 
@@ -99,7 +102,8 @@ Each decision is presented as PROPOSED — seats discuss, vote, and the result i
 **Rationale (drafter):** anchored on NON-NEGOTIABLES item 3 ("IS rubric SITS ON TOP of Anthropic's spec"). Sanded-down kernel = sanded-down Skill Refiner signal = brand promise dilution per § 14.10 "Why this matters beyond aesthetics".
 
 **Anticipated minority positions:**
-- *CMO/VP DevRel*: lower-tier defaults would expand TAM (cross-vendor distribution per § 2.5 Phase F consideration). Counter: tiers are still exposed via `$defs.openStandardCompliant` and `$defs.standardFloor`; external consumers opt-in to the strictness they need. Default-canonical is IS marketplace.
+
+- _CMO/VP DevRel_: lower-tier defaults would expand TAM (cross-vendor distribution per § 2.5 Phase F consideration). Counter: tiers are still exposed via `$defs.openStandardCompliant` and `$defs.standardFloor`; external consumers opt-in to the strictness they need. Default-canonical is IS marketplace.
 
 ### 3.3 Decision D-SAK-3: Anti-realignment guard CI gate
 
@@ -110,7 +114,8 @@ Each decision is presented as PROPOSED — seats discuss, vote, and the result i
 **Rationale (drafter):** mirrors CCP `SCHEMA_CHANGELOG.md` NON-NEGOTIABLES discipline (established 2026-04-28 after a one-day debacle). Machine-enforced beats honor system. NON-NEGOTIABLES item 1 already says no relaxation without explicit Jeremy approval; this gate operationalizes it for the kernel.
 
 **Anticipated minority positions:**
-- *CFO*: CI gate adds maintenance overhead. Counter: gate is one bash script; same cost as `harness-hash-verify.yml`. Trivial.
+
+- _CFO_: CI gate adds maintenance overhead. Counter: gate is one bash script; same cost as `harness-hash-verify.yml`. Trivial.
 
 ### 3.4 Decision D-SAK-4: 6767-h as upstream citation source
 
@@ -121,7 +126,8 @@ Each decision is presented as PROPOSED — seats discuss, vote, and the result i
 **Rationale (drafter):** 6767-h is the existing CCP-side prose authority that landed 2026-05-28 (supersedes 6767-a/b/c). Kernel schemas as its machine-readable shadow preserves the human-readable authority. `prose-schema-coherence.yml` CI gate (NEW per § 14.5) enforces the citation invariant.
 
 **Anticipated minority positions:**
-- *GC*: prose-schema coupling could create license/IP ambiguity if 6767-h moves outside CCP. Counter: 6767-h is repo-bound to claude-code-plugins; the citation is by section heading, not by content reproduction. Schemas remain license-clean.
+
+- _GC_: prose-schema coupling could create license/IP ambiguity if 6767-h moves outside CCP. Counter: 6767-h is repo-bound to claude-code-plugins; the citation is by section heading, not by content reproduction. Schemas remain license-clean.
 
 ### 3.5 Decision D-SAK-5: Phase 0 sequencing (D4 before convening; parallelizable)
 
@@ -132,6 +138,7 @@ Each decision is presented as PROPOSED — seats discuss, vote, and the result i
 **Rationale (drafter):** D4 is a single-validator local fix that doesn't touch the kernel. Sequencing it BEFORE convening un-blocks Skill Refiner Phase A.0 judge credibility. Class-1 charter scope does NOT include validator-only patches; D4 lives within tactical CTO authority.
 
 **Anticipated minority positions:**
+
 - None expected. CTO call is uncontroversial.
 
 ### 3.6 Decision D-SAK-6: Phase 4 advisory→blocking quorum-pin
@@ -143,22 +150,23 @@ Each decision is presented as PROPOSED — seats discuss, vote, and the result i
 **Rationale (drafter):** Phase 4 advisory→blocking is the SINGLE HIGHEST-BLAST-RADIUS moment in the SAK initiative. A premature flip breaks every plugin author. An indefinite-deferred flip keeps drift accumulating. Quorum + ceiling de-risks both.
 
 **Anticipated minority positions:**
-- *CTO*: 99.5% might be too lenient (15-ish files left ambiguous in a 3,543-file corpus). Counter: those 15 land in `eval-loop wave B` per § 14.4 Phase 4 — Skill Refiner handles them post-flip. Lenient is intentional.
-- *CSO*: 30-day ceiling might rush late-discovered edge cases. Counter: if true emergencies discovered, ISEDC Class-2 (future) can extend the ceiling; gate is overrideable by charter.
+
+- _CTO_: 99.5% might be too lenient (15-ish files left ambiguous in a 3,543-file corpus). Counter: those 15 land in `eval-loop wave B` per § 14.4 Phase 4 — Skill Refiner handles them post-flip. Lenient is intentional.
+- _CSO_: 30-day ceiling might rush late-discovered edge cases. Counter: if true emergencies discovered, ISEDC Class-2 (future) can extend the ceiling; gate is overrideable by charter.
 
 ## 4. Panel composition (7 seats)
 
 Same canonical ISEDC roster as DR-028 + prior sessions:
 
-| Seat | Acronym | Primary lens | Reading focus |
-|---|---|---|---|
-| Chief Technology Officer | CTO | Engineering durability | § 14.2 architecture; § 14.6 CTO calls already taken |
-| General Counsel | GC | License / IP / contractual | § 14.10 brand-promise; D-SAK-4 6767-h coupling |
-| Chief Marketing Officer | CMO | Brand / positioning / TAM | § 14.10 brand-promise; D-SAK-2 tier-default disposition |
-| Chief Financial Officer | CFO | Cost / bandwidth / overhead | § 14.6 Q1 charter scope (single vs six); D-SAK-3 CI gate cost |
-| Chief Strategy Officer | CSO | Long-horizon / risk surface | § 14.7 risks; D-SAK-1 scope creep counter; D-SAK-6 lenient-quorum counter |
-| Chief Information Security Officer | CISO | Supply chain / trust / drift | § 14.5 CI gate strategy; D-SAK-3 anti-realignment guard; D-SAK-6 30-day ceiling |
-| VP DevRel | VP DevRel | External adopter / community | § 14.3 consumer matrix; § 14.10 brand-promise; D-SAK-2 tier-default counter |
+| Seat                               | Acronym   | Primary lens                 | Reading focus                                                                   |
+| ---------------------------------- | --------- | ---------------------------- | ------------------------------------------------------------------------------- |
+| Chief Technology Officer           | CTO       | Engineering durability       | § 14.2 architecture; § 14.6 CTO calls already taken                             |
+| General Counsel                    | GC        | License / IP / contractual   | § 14.10 brand-promise; D-SAK-4 6767-h coupling                                  |
+| Chief Marketing Officer            | CMO       | Brand / positioning / TAM    | § 14.10 brand-promise; D-SAK-2 tier-default disposition                         |
+| Chief Financial Officer            | CFO       | Cost / bandwidth / overhead  | § 14.6 Q1 charter scope (single vs six); D-SAK-3 CI gate cost                   |
+| Chief Strategy Officer             | CSO       | Long-horizon / risk surface  | § 14.7 risks; D-SAK-1 scope creep counter; D-SAK-6 lenient-quorum counter       |
+| Chief Information Security Officer | CISO      | Supply chain / trust / drift | § 14.5 CI gate strategy; D-SAK-3 anti-realignment guard; D-SAK-6 30-day ceiling |
+| VP DevRel                          | VP DevRel | External adopter / community | § 14.3 consumer matrix; § 14.10 brand-promise; D-SAK-2 tier-default counter     |
 
 Acting head: user (Jeremy Longshore) or Claude per CTO-mode delegation (consistent with DR-028 acting-head pattern).
 
@@ -167,12 +175,14 @@ Acting head: user (Jeremy Longshore) or Claude per CTO-mode delegation (consiste
 Two acceptable forms (per DR-028 § established methodology):
 
 ### 5.1 Synchronous in-person convening
+
 ~2 hours; live capture of verbatim positions; acting head moderates; consensus per decision.
 
 ### 5.2 Asynchronous bd-channel convening
+
 Each seat issues their verbatim position by writing to a per-seat findings file (analogous to Plan Audit synthesis pattern but for charter ratification):
 
-```
+```text
 intent-eval-lab/000-docs/audit/2026-05-28-sak-charter/
 ├── README.md
 ├── brief-pack/   (the 7 pre-reading docs listed in § 2)
@@ -201,6 +211,7 @@ This charter is RATIFIED when:
 5. Companion implementation (bd updates): `bd_000-projects-3kye` (SAK epic) is unblocked from `bd_000-projects-8vq0` (this charter); Phase 1 schema beads become CLAIMABLE.
 
 If ANY decision is REJECTED:
+
 - `D-SAK-1` REJECTED → SAK is reverted to per-contract-at-a-time; v7 plan amendment authored
 - `D-SAK-2` REJECTED → re-plan § 14.10 to acknowledge lower-tier defaults
 - `D-SAK-3` REJECTED → kernel `$defs.isMarketplace.required` becomes honor-system; CI gate removed from plan
@@ -210,7 +221,7 @@ If ANY decision is REJECTED:
 
 ## 7. Verbatim seat positions (TO BE FILLED AT CONVENING)
 
-```
+```text
 CTO: [TO BE FILLED]
 GC: [TO BE FILLED]
 CMO: [TO BE FILLED]
@@ -224,7 +235,7 @@ Acting head ruling (if any binding minority overrides): [TO BE FILLED]
 
 ## 8. Final dispositions (TO BE FILLED AT CONVENING)
 
-```
+```text
 D-SAK-1: [RATIFIED | REJECTED | RATIFIED-WITH-DELTAS]  — vote tally  — minority binding (if any)
 D-SAK-2: [...]
 D-SAK-3: [...]
@@ -237,18 +248,19 @@ D-SAK-6: [...]
 
 Once RATIFIED:
 
-| Bead | Action |
-|---|---|
-| `bd_000-projects-3kye` (SAK epic) | Status: open (was blocked on charter; now claimable by Phase 1 work) |
-| `bd_000-projects-azj4` (E11a skill-frontmatter) | First Phase 1 schema; first claimable after charter |
-| `bd_000-projects-htsa/ggef/3f0i/9gu8/yc87` (E11b-f) | Claimable in parallel with E11a per dep graph (all dep on SAK epic + charter) |
-| `bd_000-projects-9l35` (E11h corpus migration) | Stays blocked on E11a shipping in kernel v0.4.0 (per § 14.4 Phase 4 sequencing) |
-| `bd_000-projects-yum7` (6767-h kernel-map) | Claimable in parallel; depends on at-least-one E11* schema for the map to have content |
-| `bd_000-projects-8vq0` (THIS charter) | Closed with reason "RATIFIED" + DR pointer |
+| Bead                                                | Action                                                                                  |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `bd_000-projects-3kye` (SAK epic)                   | Status: open (was blocked on charter; now claimable by Phase 1 work)                    |
+| `bd_000-projects-azj4` (E11a skill-frontmatter)     | First Phase 1 schema; first claimable after charter                                     |
+| `bd_000-projects-htsa/ggef/3f0i/9gu8/yc87` (E11b-f) | Claimable in parallel with E11a per dep graph (all dep on SAK epic + charter)           |
+| `bd_000-projects-9l35` (E11h corpus migration)      | Stays blocked on E11a shipping in kernel v0.4.0 (per § 14.4 Phase 4 sequencing)         |
+| `bd_000-projects-yum7` (6767-h kernel-map)          | Claimable in parallel; depends on at-least-one E11\* schema for the map to have content |
+| `bd_000-projects-8vq0` (THIS charter)               | Closed with reason "RATIFIED" + DR pointer                                              |
 
 ## 10. Status banding
 
 **DRAFT** — pending:
+
 - User signoff via ExitPlanMode equivalent (acting-CTO-drafted; user-as-acting-head must authorize convening per DR-028 precedent)
 - Live ISEDC convening (synchronous or asynchronous per § 5)
 - Verbatim seat positions captured (§ 7)

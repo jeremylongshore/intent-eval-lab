@@ -1,23 +1,23 @@
 # 024-AA-AACR — Cross-Repo Release Sweep (2026-05-25/26)
 
-| Field | Value |
-|---|---|
-| **Doc code** | AA-AACR (After-Action / Audit-Closure Report) |
-| **Date** | 2026-05-26 |
-| **Author** | Jeremy Longshore (acting CTO Claude as drafting executor; user-confirmed CEO-mode delegation) |
-| **Plan** | Cross-repo `/release` ceremony across 5 IEP sub-repos + `/gist-auditor` sweep |
+| Field                     | Value                                                                                                  |
+| ------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Doc code**              | AA-AACR (After-Action / Audit-Closure Report)                                                          |
+| **Date**                  | 2026-05-26                                                                                             |
+| **Author**                | Jeremy Longshore (acting CTO Claude as drafting executor; user-confirmed CEO-mode delegation)          |
+| **Plan**                  | Cross-repo `/release` ceremony across 5 IEP sub-repos + `/gist-auditor` sweep                          |
 | **Companion AAR (panel)** | [`./023-AA-AACR-thinker-panel-review-2026-05-25.md`](./023-AA-AACR-thinker-panel-review-2026-05-25.md) |
-| **Status** | ACTIVE — sweep complete; follow-ups filed as beads |
+| **Status**                | ACTIVE — sweep complete; follow-ups filed as beads                                                     |
 
 ## 1. Outcome summary — all 5 repos shipped
 
-| Repo | Pre-sweep state | Post-sweep state | Steps |
-|---|---|---|---|
-| `audit-harness` | v1.1.4 tagged ~4h ago, clean | v1.1.4 verified (no bump) + appendix AAR | Step 5 |
-| `intent-eval-core` | v0.1.0 (8 days), 7 commits ahead, missing 3 scaffolding files | **v0.1.1 npm-published with sigstore provenance** + GH release | Step 2 |
-| `intent-eval-lab` | v0.1.0 (15 days), 25 commits ahead, broken CHANGELOG | **v0.2.0 tagged + GH release** + Phase B research files committed | Step 3 (2 PRs: Tidy + Change) |
-| `j-rig-skill-binary-eval` | v1.0.0, 4 commits ahead, **Release CI failing on main** | **v1.1.0 tagged + GH release**; release.yml rewritten to tag-trigger-only | Steps 1 + 4 (2 PRs: workflow fix + release) |
-| `intent-rollout-gate` | Never tagged, no CHANGELOG, stub implementation | **v0.0.1 baseline tagged + GH release** + CODE_OF_CONDUCT scaffolding | Step 6 |
+| Repo                      | Pre-sweep state                                               | Post-sweep state                                                          | Steps                                       |
+| ------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------- |
+| `audit-harness`           | v1.1.4 tagged ~4h ago, clean                                  | v1.1.4 verified (no bump) + appendix AAR                                  | Step 5                                      |
+| `intent-eval-core`        | v0.1.0 (8 days), 7 commits ahead, missing 3 scaffolding files | **v0.1.1 npm-published with sigstore provenance** + GH release            | Step 2                                      |
+| `intent-eval-lab`         | v0.1.0 (15 days), 25 commits ahead, broken CHANGELOG          | **v0.2.0 tagged + GH release** + Phase B research files committed         | Step 3 (2 PRs: Tidy + Change)               |
+| `j-rig-skill-binary-eval` | v1.0.0, 4 commits ahead, **Release CI failing on main**       | **v1.1.0 tagged + GH release**; release.yml rewritten to tag-trigger-only | Steps 1 + 4 (2 PRs: workflow fix + release) |
+| `intent-rollout-gate`     | Never tagged, no CHANGELOG, stub implementation               | **v0.0.1 baseline tagged + GH release** + CODE_OF_CONDUCT scaffolding     | Step 6                                      |
 
 ### Release artifacts
 
@@ -27,7 +27,7 @@
 
 ## 2. Sequence executed (with deviations from original plan)
 
-```
+```text
 Step 0 — pre-flight state inventory                                                  ✅ DONE
 Step 0.5 — 13 thinker-canon agents + 6-seat panel + synthesis AAR                    ✅ DONE
 Step 1 — j-rig CI fix (build-before-test in release.yml)                             ✅ DONE (PR #76)
@@ -53,31 +53,31 @@ Step 7 — gist sweep + this AAR                                                
 
 ### Filed during execution (P0/critical)
 
-| Bead | Priority | Title |
-|---|---|---|
-| `bd_000-projects-uprg` | P0 | Write Evidence Bundle predicate compatibility policy BEFORE first prod-Rekor anchor (Kleppmann + Fowler) |
-| `bd_000-projects-9pi3` | P0 | Pin OTel semantic conventions in `@intentsolutions/core` BEFORE v0.2.0 ships (Gregg) |
-| `bd_000-projects-59tx` | P0 | Add Release workflow failure alerting (ntfy 'prod-alerts' topic) across IEP repos (Gregg) |
+| Bead                   | Priority | Title                                                                                                    |
+| ---------------------- | -------- | -------------------------------------------------------------------------------------------------------- |
+| `bd_000-projects-uprg` | P0       | Write Evidence Bundle predicate compatibility policy BEFORE first prod-Rekor anchor (Kleppmann + Fowler) |
+| `bd_000-projects-9pi3` | P0       | Pin OTel semantic conventions in `@intentsolutions/core` BEFORE v0.2.0 ships (Gregg)                     |
+| `bd_000-projects-59tx` | P0       | Add Release workflow failure alerting (ntfy 'prod-alerts' topic) across IEP repos (Gregg)                |
 
 ### Filed during execution (P1)
 
-| Bead | Priority | Title |
-|---|---|---|
-| `bd_000-projects-tyck` | P1 | Backfill bd memories from 22 DRs + 4 AACRs (Cunningham — most-costly-to-recover) |
-| `bd_000-projects-uop6` | P1 | Golden-master test for audit-harness gherkin-lint + crap-score stdout shapes (Fowler) |
-| `bd_000-projects-5qcy` | P1 | Hash-chain Decision Records into signed append-only ledger (Kleppmann) |
-| `bd_000-projects-9yhe` | P1 | Make state-machine spec single-sourced (Blueprint B ↔ kernel transition table); add CI drift gate (Kleppmann) |
-| `bd_000-projects-xcs4` | P1 | Add Parallel Change discipline to Blueprint B § 7 (expand-contract for schema additions) (Fowler) |
-| `bd_000-projects-bj5m` | P1 | iaj-release-yml-branch-protection-bypass — push to protected main fails after auto-bump (**closed by PR #80 release.yml rewrite**) |
+| Bead                   | Priority | Title                                                                                                                              |
+| ---------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `bd_000-projects-tyck` | P1       | Backfill bd memories from 22 DRs + 4 AACRs (Cunningham — most-costly-to-recover)                                                   |
+| `bd_000-projects-uop6` | P1       | Golden-master test for audit-harness gherkin-lint + crap-score stdout shapes (Fowler)                                              |
+| `bd_000-projects-5qcy` | P1       | Hash-chain Decision Records into signed append-only ledger (Kleppmann)                                                             |
+| `bd_000-projects-9yhe` | P1       | Make state-machine spec single-sourced (Blueprint B ↔ kernel transition table); add CI drift gate (Kleppmann)                      |
+| `bd_000-projects-xcs4` | P1       | Add Parallel Change discipline to Blueprint B § 7 (expand-contract for schema additions) (Fowler)                                  |
+| `bd_000-projects-bj5m` | P1       | iaj-release-yml-branch-protection-bypass — push to protected main fails after auto-bump (**closed by PR #80 release.yml rewrite**) |
 
 ### Discovered + filed during sweep (release-pipeline gaps)
 
-| Bead | Priority | Title |
-|---|---|---|
-| `bd_000-projects-4i8c` | P1 | iec-npm-token-refresh — v0.1.1 publish 404 (auth) — **closed: token retrieved from ~/.npmrc and set on GH secret** |
-| (new) | P1 | iah-npm-publish-gap — git v1.1.4 vs npm v0.1.0 — no release.yml in audit-harness |
-| (new) | P2 | iep-gist-coverage — 4 missing gists + 1 stale (j-rig from 2026-03-25) |
-| `bd_000-projects-q9vn` | P2 | Convert bd ↔ GH ↔ Plane from three-way sync to canonical-bd + computed projections (design spike — Hickey + Kleppmann + Cunningham convergent) |
+| Bead                   | Priority | Title                                                                                                                                          |
+| ---------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bd_000-projects-4i8c` | P1       | iec-npm-token-refresh — v0.1.1 publish 404 (auth) — **closed: token retrieved from ~/.npmrc and set on GH secret**                             |
+| (new)                  | P1       | iah-npm-publish-gap — git v1.1.4 vs npm v0.1.0 — no release.yml in audit-harness                                                               |
+| (new)                  | P2       | iep-gist-coverage — 4 missing gists + 1 stale (j-rig from 2026-03-25)                                                                          |
+| `bd_000-projects-q9vn` | P2       | Convert bd ↔ GH ↔ Plane from three-way sync to canonical-bd + computed projections (design spike — Hickey + Kleppmann + Cunningham convergent) |
 
 **Total**: 13 beads filed this sweep (3 P0 + 7 P1 + 3 P2). 2 closed during execution.
 
@@ -85,18 +85,18 @@ Step 7 — gist sweep + this AAR                                                
 
 The 6-seat thinker-canon adversarial review (Step 0.5) surfaced findings that directly shaped the sweep:
 
-| Finding | Sweep impact |
-|---|---|
-| **Beck #1** — j-rig CI `test` job asymmetric with `typecheck` (build-before-test gap) | Refined to actual root cause in `release.yml` (not `ci.yml` as Beck's recon hit); PR #76 lands the fix |
-| **Beck #2** — Step 1 CI fix should come BEFORE Step 0.5 agent ceremony | Sequence-moot for this plan (0.5 was complete by time finding surfaced); recorded as constraint for future plans |
-| **Beck #5** — lab CHANGELOG repair = 2 PRs (Tidy First) | Applied to Step 3: PR #74 (tidy format) → PR #75 (v0.2.0 entry) |
-| **Beck #5** (applied a second time) — j-rig Step 4 workflow rewrite = 2 commits in 1 PR (Tidy First) | Applied to PR #80: commit 1 (workflow rewrite) + commit 2 (version bump) |
-| **Kleppmann #4 + Fowler most-costly** — Evidence Bundle predicate compat policy MUST land before first prod-Rekor anchor | Filed P0 `uprg`; CHANGELOG `[Unreleased]` blocks reference; gates future v0.2.0 kernel work |
-| **Gregg #2 + most-costly** — OTel attribute drift across 5 emitters | Filed P0 `9pi3`; CHANGELOG `[Unreleased]` blocks reference; gates future v0.2.0 kernel work |
-| **Gregg #1** — Release workflow failure alerting | Filed P0 `59tx`; cross-cuts all 5 repos |
-| **Cunningham #5 + most-costly** — `bd memories` empty | Filed P1 `tyck`; high-leverage mechanical work |
-| **Hickey #2 + Kleppmann #3 + Cunningham #3 convergent** — bd ↔ GH ↔ Plane = sync-debt | Filed P2 `q9vn` design spike |
-| **Fowler #6** — Parallel Change discipline missing from Blueprint B § 7 | Filed P1 `xcs4` |
+| Finding                                                                                                                  | Sweep impact                                                                                                     |
+| ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| **Beck #1** — j-rig CI `test` job asymmetric with `typecheck` (build-before-test gap)                                    | Refined to actual root cause in `release.yml` (not `ci.yml` as Beck's recon hit); PR #76 lands the fix           |
+| **Beck #2** — Step 1 CI fix should come BEFORE Step 0.5 agent ceremony                                                   | Sequence-moot for this plan (0.5 was complete by time finding surfaced); recorded as constraint for future plans |
+| **Beck #5** — lab CHANGELOG repair = 2 PRs (Tidy First)                                                                  | Applied to Step 3: PR #74 (tidy format) → PR #75 (v0.2.0 entry)                                                  |
+| **Beck #5** (applied a second time) — j-rig Step 4 workflow rewrite = 2 commits in 1 PR (Tidy First)                     | Applied to PR #80: commit 1 (workflow rewrite) + commit 2 (version bump)                                         |
+| **Kleppmann #4 + Fowler most-costly** — Evidence Bundle predicate compat policy MUST land before first prod-Rekor anchor | Filed P0 `uprg`; CHANGELOG `[Unreleased]` blocks reference; gates future v0.2.0 kernel work                      |
+| **Gregg #2 + most-costly** — OTel attribute drift across 5 emitters                                                      | Filed P0 `9pi3`; CHANGELOG `[Unreleased]` blocks reference; gates future v0.2.0 kernel work                      |
+| **Gregg #1** — Release workflow failure alerting                                                                         | Filed P0 `59tx`; cross-cuts all 5 repos                                                                          |
+| **Cunningham #5 + most-costly** — `bd memories` empty                                                                    | Filed P1 `tyck`; high-leverage mechanical work                                                                   |
+| **Hickey #2 + Kleppmann #3 + Cunningham #3 convergent** — bd ↔ GH ↔ Plane = sync-debt                                    | Filed P2 `q9vn` design spike                                                                                     |
+| **Fowler #6** — Parallel Change discipline missing from Blueprint B § 7                                                  | Filed P1 `xcs4`                                                                                                  |
 
 **Verdict**: the 60-min adversarial-review investment generated 3 P0 + 5 P1 + 2 P2 beads + 1 specific code fix shape (PR #76). Net positive against the additional context spend.
 
@@ -123,13 +123,13 @@ The 6-seat thinker-canon adversarial review (Step 0.5) surfaced findings that di
 
 ### Repos
 
-| Repo | Latest tag | Notes |
-|---|---|---|
-| `intent-eval-core` | v0.1.1 | npm-published with sigstore provenance; CHANGELOG `[Unreleased]` blocks reference v0.2.0 gates |
-| `intent-eval-lab` | v0.2.0 | Phase A foundation complete; Phase B research deliverables committed; AAR + Tidy-First pattern proven |
-| `j-rig-skill-binary-eval` | v1.1.0 | release.yml rewritten to tag-trigger-only; stub-provider opt-in API shipped; CI fully green on main |
-| `audit-harness` | v1.1.4 | git tag healthy; **npm-publish gap discovered** (`iah-npm-publish-gap` P1) — downstream still consuming v0.1.0 |
-| `intent-rollout-gate` | v0.0.1 | Baseline established; M5 TS runtime remains the substantive deliverable |
+| Repo                      | Latest tag | Notes                                                                                                          |
+| ------------------------- | ---------- | -------------------------------------------------------------------------------------------------------------- |
+| `intent-eval-core`        | v0.1.1     | npm-published with sigstore provenance; CHANGELOG `[Unreleased]` blocks reference v0.2.0 gates                 |
+| `intent-eval-lab`         | v0.2.0     | Phase A foundation complete; Phase B research deliverables committed; AAR + Tidy-First pattern proven          |
+| `j-rig-skill-binary-eval` | v1.1.0     | release.yml rewritten to tag-trigger-only; stub-provider opt-in API shipped; CI fully green on main            |
+| `audit-harness`           | v1.1.4     | git tag healthy; **npm-publish gap discovered** (`iah-npm-publish-gap` P1) — downstream still consuming v0.1.0 |
+| `intent-rollout-gate`     | v0.0.1     | Baseline established; M5 TS runtime remains the substantive deliverable                                        |
 
 ### Blocks on future work
 

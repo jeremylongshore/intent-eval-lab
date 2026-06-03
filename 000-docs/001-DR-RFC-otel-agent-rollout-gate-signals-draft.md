@@ -8,7 +8,7 @@
 
 ## Title
 
-**Semantic Conventions for Agent Rollout Gate Signals**
+Semantic Conventions for Agent Rollout Gate Signals
 
 ## Author
 
@@ -24,7 +24,7 @@ This RFC proposes a small set of OpenTelemetry semantic conventions to make agen
 
 The agent-native CLI ecosystem is converging on a common pattern:
 
-```
+```text
   evidence ─→ policy evaluation ─→ ship | no-ship decision
 ```
 
@@ -50,30 +50,30 @@ This RFC proposes a vendor-neutral signal vocabulary that any agent rollout gate
 
 Four new events under the `agent.rollout.gate.*` and `agent.evidence_bundle.*` namespaces:
 
-| Event name | Trigger | Required attributes |
-|---|---|---|
-| `agent.rollout.gate.evaluated` | Emitted at the start of a rollout gate evaluation | `gate.id` (string), `gate.policy.uri` (string), `gate.policy.hash` (string) |
-| `agent.rollout.gate.decision` | Emitted at the end of a rollout gate evaluation | `decision` (enum: `"ship"`, `"no-ship"`), `reasons` (array of strings) |
-| `agent.evidence_bundle.signature_verified` | Emitted when an evidence bundle's signature has been checked | `bundle.uri` (string), `signer` (string), `verified` (boolean) |
-| `agent.evidence_bundle.schema_validated` | Emitted when an evidence bundle has been validated against its declared schema | `bundle.uri` (string), `schema.version` (string), `valid` (boolean) |
+| Event name                                 | Trigger                                                                        | Required attributes                                                         |
+| ------------------------------------------ | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| `agent.rollout.gate.evaluated`             | Emitted at the start of a rollout gate evaluation                              | `gate.id` (string), `gate.policy.uri` (string), `gate.policy.hash` (string) |
+| `agent.rollout.gate.decision`              | Emitted at the end of a rollout gate evaluation                                | `decision` (enum: `"ship"`, `"no-ship"`), `reasons` (array of strings)      |
+| `agent.evidence_bundle.signature_verified` | Emitted when an evidence bundle's signature has been checked                   | `bundle.uri` (string), `signer` (string), `verified` (boolean)              |
+| `agent.evidence_bundle.schema_validated`   | Emitted when an evidence bundle has been validated against its declared schema | `bundle.uri` (string), `schema.version` (string), `valid` (boolean)         |
 
 ### Span attributes
 
 When a rollout gate evaluation occurs inside a larger trace span (e.g., a CI workflow), these attributes SHOULD be added to the relevant span:
 
-| Attribute | Type | Description |
-|---|---|---|
-| `evidence.bundle.uri` | string | Stable URI for the evidence bundle being evaluated |
-| `evidence.bundle.version` | string | Bundle version (semver string) |
-| `evidence.bundle.signer` | string | Identity of the bundle signer (e.g., cosign issuer) |
-| `gate.framework` | string | Framework producing the gate decision (e.g., `"intent-eval-lab/rollout-gate"`) |
-| `gate.framework.version` | string | Framework version (semver string) |
+| Attribute                 | Type   | Description                                                                    |
+| ------------------------- | ------ | ------------------------------------------------------------------------------ |
+| `evidence.bundle.uri`     | string | Stable URI for the evidence bundle being evaluated                             |
+| `evidence.bundle.version` | string | Bundle version (semver string)                                                 |
+| `evidence.bundle.signer`  | string | Identity of the bundle signer (e.g., cosign issuer)                            |
+| `gate.framework`          | string | Framework producing the gate decision (e.g., `"intent-eval-lab/rollout-gate"`) |
+| `gate.framework.version`  | string | Framework version (semver string)                                              |
 
 ## Examples
 
 ### Example 1: a passing rollout gate
 
-```json
+````json
 {
   "name": "agent.rollout.gate.evaluated",
   "time": "2026-05-10T18:00:00Z",
@@ -83,7 +83,7 @@ When a rollout gate evaluation occurs inside a larger trace span (e.g., a CI wor
     "gate.policy.hash": "sha256:abc123..."
   }
 }
-```
+```text
 
 ```json
 {
@@ -91,18 +91,14 @@ When a rollout gate evaluation occurs inside a larger trace span (e.g., a CI wor
   "time": "2026-05-10T18:00:01Z",
   "attributes": {
     "decision": "ship",
-    "reasons": [
-      "all gate-result rows pass",
-      "schema validates",
-      "signature verified"
-    ]
+    "reasons": ["all gate-result rows pass", "schema validates", "signature verified"]
   }
 }
-```
+````
 
 ### Example 2: a blocking rollout gate
 
-```json
+````json
 {
   "name": "agent.rollout.gate.decision",
   "time": "2026-05-10T18:00:01Z",
@@ -114,7 +110,7 @@ When a rollout gate evaluation occurs inside a larger trace span (e.g., a CI wor
     ]
   }
 }
-```
+```text
 
 ## Alternatives considered
 
@@ -154,3 +150,4 @@ When filed, the RFC submission location will be:
 ## License
 
 This draft is licensed under [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) for the RFC text. The reference implementation is Apache 2.0.
+````

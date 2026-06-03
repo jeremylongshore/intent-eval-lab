@@ -15,7 +15,7 @@ When AI assistance is used to author or modify validator contracts, smart contra
 
 These failure modes are not addressed by general-purpose AI code review tools. The verification stack is domain-specific (formal verification, fuzzing harnesses, gas profilers, MEV simulators, consensus replay tooling). The evaluation methodology has to integrate with that stack, not replace it.
 
-A spec under this module would codify what it means for an AI-generated validator contract to be *operationally ready* — the equivalent of what the [`mcp-plugin-observability`](../mcp-plugin-observability/) module does for MCP plugins.
+A spec under this module would codify what it means for an AI-generated validator contract to be _operationally ready_ — the equivalent of what the [`mcp-plugin-observability`](../mcp-plugin-observability/) module does for MCP plugins.
 
 ## When this module will graduate from placeholder
 

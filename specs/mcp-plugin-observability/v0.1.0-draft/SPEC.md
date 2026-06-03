@@ -4,7 +4,7 @@
 
 ## Purpose
 
-This spec codifies what it means for an **MCP plugin** to be *operationally observable* — i.e., for a third party (a regression suite, a partner, an auditor, an operator) to assert on the plugin's behavior at the protocol level without modifying the plugin's MCP server.
+This spec codifies what it means for an **MCP plugin** to be _operationally observable_ — i.e., for a third party (a regression suite, a partner, an auditor, an operator) to assert on the plugin's behavior at the protocol level without modifying the plugin's MCP server.
 
 The spec is **vendor-neutral**. It applies to any MCP plugin published for any agentic-CLI runtime that emits OpenTelemetry signals (today: Claude Code; in the future: any harness that adopts equivalent telemetry primitives).
 
@@ -44,7 +44,7 @@ The keywords MUST, SHOULD, MAY are used per [RFC 2119](https://datatracker.ietf.
 
 A conformant plugin MUST be observable via the harness's `tool_decision` log event for every tool the plugin exposes via its MCP server. The event MUST include the tool name in the form `mcp__<server-name>__<tool-name>`.
 
-*(This requirement is automatically satisfied by Claude Code v2.1.x with `CLAUDE_CODE_ENABLE_TELEMETRY=1` and `OTEL_LOGS_EXPORTER=otlp`. The plugin needs to do nothing.)*
+_(This requirement is automatically satisfied by Claude Code v2.1.x with `CLAUDE_CODE_ENABLE_TELEMETRY=1` and `OTEL_LOGS_EXPORTER=otlp`. The plugin needs to do nothing.)_
 
 ### R2 — Hook-firing observability
 
