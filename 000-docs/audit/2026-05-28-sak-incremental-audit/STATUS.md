@@ -11,11 +11,13 @@
 7-seat incremental Plan Audit on § 14 SAK content of plan 031 v6 amendment completed. 42 findings total: **12 P0, 17 P1, 13 P2, 0 NIT**.
 
 Three convergent P0 themes (each surfaced by ≥3 independent seats):
+
 - **C1**: Phase 4 corpus migration lacks deployment discipline (no shadow-mode, no state machine, no snapshot rules, no rollback semantics, no cost ceiling) — 5 seats
 - **C2**: Schemas-as-policy ships without evals, formal predicate, or test corpus — 3 seats
 - **C3**: Bicameral kernel architecture has complecting + identity problems + bitter-lesson obsolescence risk — 3 seats
 
 Two convergent P1 themes:
+
 - **C4**: Governance owners + CI-gate re-eval cadence undefined — 2 seats
 - **C5**: Doc/changelog sprawl creating compounded reader cost — 2 seats
 
@@ -31,11 +33,13 @@ This STATUS file is read by `intent-eval-lab/scripts/bd-claim-precheck.sh`. Bead
 ## Outstanding actions for status flip
 
 To move from DRAFT → NEEDS-AMENDMENT (officially recognized state):
+
 1. Acting CTO reviews synthesis.md
 2. Acknowledges the 3 convergent P0 themes
 3. Sets disposition = NEEDS-AMENDMENT
 
 To move from NEEDS-AMENDMENT → RATIFIED-WITH-DELTAS:
+
 1. Plan 031 v7 amendment drafted folding C1/C2/C3 remediations
 2. ~25 new remediation beads filed per remediation-map in synthesis.md
 3. Incremental re-audit on v7 deltas only confirms all C1/C2/C3 P0s closed
@@ -43,12 +47,13 @@ To move from NEEDS-AMENDMENT → RATIFIED-WITH-DELTAS:
 5. Charter ratifies 6 decisions
 
 To move from RATIFIED-WITH-DELTAS → RATIFIED:
+
 1. All P1 remediations from C4/C5 + divergent P1s landed in plan + beads filed
 2. Phase 0 (D4 + ISEDC charter) shipped per § 14.4
 
 ## Files in this audit
 
-```
+```text
 audit/2026-05-28-sak-incremental-audit/
 ├── STATUS.md                                       (this file)
 ├── synthesis.md                                    (cross-seat synthesis + remediation map)

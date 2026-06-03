@@ -4,7 +4,7 @@
 > elevates this file from Phase A skeleton to normative draft. Subsequent reference implementations
 > (`audit-harness` v0.3.0 emission + `j-rig-binary-eval` v0.15.0 emission +
 > `intent-rollout-gate` v0.1.0 consumer) inform `v0.1.0-rc` / `v0.1.0` revisions.
-
+>
 > **Schema-authority notice (effective 2026-05-21).** The canonical JSON Schema for the
 > `gate-result/v1` predicate body is published in the kernel package
 > [`@intentsolutions/core@0.1.0+`](https://www.npmjs.com/package/@intentsolutions/core) at
@@ -48,16 +48,16 @@ records what was attested.
 
 ### 2.1 In scope (v0.1.0-draft)
 
-| Concern | Where in this spec |
-|---|---|
-| Bundle envelope structure (collection of in-toto Statement v1 rows) | § 4 |
-| Predicate URI for gate results | § 5 |
-| Predicate body schema (`gate_id`, `result`, hashes, timestamp, runner, commit) | § 5, schema file |
-| Subject naming convention (pipeline-hop discriminator) | § 6 |
-| Signing & verification (cosign-compatible, Rekor anchor) | § 7 |
-| Policy consumption — how `tests/TESTING.md` consumes bundles | § 8 |
-| Version evolution (`bundle_version` vs `predicateType` URI) | § 9 |
-| Conformance reporting | § 10 |
+| Concern                                                                        | Where in this spec |
+| ------------------------------------------------------------------------------ | ------------------ |
+| Bundle envelope structure (collection of in-toto Statement v1 rows)            | § 4                |
+| Predicate URI for gate results                                                 | § 5                |
+| Predicate body schema (`gate_id`, `result`, hashes, timestamp, runner, commit) | § 5, schema file   |
+| Subject naming convention (pipeline-hop discriminator)                         | § 6                |
+| Signing & verification (cosign-compatible, Rekor anchor)                       | § 7                |
+| Policy consumption — how `tests/TESTING.md` consumes bundles                   | § 8                |
+| Version evolution (`bundle_version` vs `predicateType` URI)                    | § 9                |
+| Conformance reporting                                                          | § 10               |
 
 ### 2.2 Out of scope (v0.1.0-draft)
 
@@ -119,7 +119,7 @@ bundle is split or merged across pipeline stages.
 A row attesting to a deterministic gate result **MUST** set
 `predicateType` to the exact URI:
 
-```
+```text
 https://evals.intentsolutions.io/gate-result/v1
 ```
 
@@ -136,23 +136,23 @@ The `predicate` field **MUST** validate against the JSON Schema at
 
 Required fields:
 
-| Field | Type | Description |
-|---|---|---|
-| `gate_id` | string | Pipeline-hop-qualified gate identifier (see § 6). |
-| `result` | enum: `PASS` / `FAIL` / `ADVISORY` / `NOT_APPLICABLE` | Verdict for this gate execution. |
-| `policy_hash` | string (sha256 prefix) | SHA-256 of the policy file the gate evaluated against, prefixed `sha256:`. |
-| `input_hash` | string (sha256 prefix) | SHA-256 of the input artifact the gate evaluated, prefixed `sha256:`. |
-| `timestamp` | string (RFC 3339 UTC) | Moment the gate emitted the result. |
-| `runner` | string | Identifier of the tool + version that produced the row, e.g. `audit-harness@0.3.0`. |
-| `commit_sha` | string | Git commit SHA the gate evaluated against (full 40-hex or short 7-hex acceptable). |
+| Field         | Type                                                  | Description                                                                         |
+| ------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `gate_id`     | string                                                | Pipeline-hop-qualified gate identifier (see § 6).                                   |
+| `result`      | enum: `PASS` / `FAIL` / `ADVISORY` / `NOT_APPLICABLE` | Verdict for this gate execution.                                                    |
+| `policy_hash` | string (sha256 prefix)                                | SHA-256 of the policy file the gate evaluated against, prefixed `sha256:`.          |
+| `input_hash`  | string (sha256 prefix)                                | SHA-256 of the input artifact the gate evaluated, prefixed `sha256:`.               |
+| `timestamp`   | string (RFC 3339 UTC)                                 | Moment the gate emitted the result.                                                 |
+| `runner`      | string                                                | Identifier of the tool + version that produced the row, e.g. `audit-harness@0.3.0`. |
+| `commit_sha`  | string                                                | Git commit SHA the gate evaluated against (full 40-hex or short 7-hex acceptable).  |
 
 Optional fields:
 
-| Field | Type | Description |
-|---|---|---|
-| `metadata` | object | Free-form tool-specific metadata. Consumers **MUST NOT** rely on metadata fields for ship/no-ship decisions; metadata is informative only. |
-| `failure_mode` | string | When `result` is `FAIL`, an identifier classifying the failure shape (e.g. `MM-4`). Refer to the originating tool's documentation for the value space. |
-| `advisory_severity` | enum: `info` / `warn` / `error` | When `result` is `ADVISORY`, the severity tier. |
+| Field               | Type                            | Description                                                                                                                                            |
+| ------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `metadata`          | object                          | Free-form tool-specific metadata. Consumers **MUST NOT** rely on metadata fields for ship/no-ship decisions; metadata is informative only.             |
+| `failure_mode`      | string                          | When `result` is `FAIL`, an identifier classifying the failure shape (e.g. `MM-4`). Refer to the originating tool's documentation for the value space. |
+| `advisory_severity` | enum: `info` / `warn` / `error` | When `result` is `ADVISORY`, the severity tier.                                                                                                        |
 
 ### R6 — Result semantics
 
@@ -181,17 +181,17 @@ for the row, not the bundle.
 The in-toto `subject` field of each row **MUST** contain at least one entry whose `name` matches
 the regular expression:
 
-```
+```text
 ^[a-z0-9][a-z0-9-]*:(client|server|ci|sandbox|local):[a-zA-Z0-9][a-zA-Z0-9.-]*$
 ```
 
 The three colon-separated segments are:
 
-| Segment | Meaning | Examples |
-|---|---|---|
-| **Tool** | The runner that produced the row. Lowercase, kebab-case. | `audit-harness`, `j-rig`, `intent-rollout-gate` |
-| **Side** | Which side of the pipeline emitted the row. Closed enum. | `client` (pre-commit, local), `server` (CI pipeline), `ci` (post-merge CI), `sandbox` (experimental), `local` (developer workstation, ad-hoc) |
-| **Gate ID** | Tool-specific gate or check identifier. Either lowercase kebab-case or the originating tool's documented identifier (e.g. `MM-1`..`MM-6` from the Intentional Mapping vocabulary). Mixed case is permitted; the originating tool's documentation defines the value space. | `escape-scan`, `crap-score`, `MM-3`, `harness-hash` |
+| Segment     | Meaning                                                                                                                                                                                                                                                                   | Examples                                                                                                                                      |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Tool**    | The runner that produced the row. Lowercase, kebab-case.                                                                                                                                                                                                                  | `audit-harness`, `j-rig`, `intent-rollout-gate`                                                                                               |
+| **Side**    | Which side of the pipeline emitted the row. Closed enum.                                                                                                                                                                                                                  | `client` (pre-commit, local), `server` (CI pipeline), `ci` (post-merge CI), `sandbox` (experimental), `local` (developer workstation, ad-hoc) |
+| **Gate ID** | Tool-specific gate or check identifier. Either lowercase kebab-case or the originating tool's documented identifier (e.g. `MM-1`..`MM-6` from the Intentional Mapping vocabulary). Mixed case is permitted; the originating tool's documentation defines the value space. | `escape-scan`, `crap-score`, `MM-3`, `harness-hash`                                                                                           |
 
 A subject `name` **MUST** match `gate_id` in the predicate body. Bundle producers **MAY** include
 additional `subject` entries (e.g. file-level digests of evaluated inputs) but **MUST** include the
@@ -323,11 +323,11 @@ Conformance reports for reference implementations land under
 
 ## 11. Examples
 
-| File | What it is |
-|---|---|
-| [`examples/in-toto-statement.json`](./examples/in-toto-statement.json) | One well-formed in-toto Statement v1 row attesting a passing `audit-harness:client:escape-scan` gate. |
-| [`examples/evidence-bundle.json`](./examples/evidence-bundle.json) | A multi-row bundle (audit-harness static gates + j-rig behavioral gates + an MM-3 NOT_APPLICABLE row) in JSON-array form. |
-| [`examples/policy.yaml`](./examples/policy.yaml) | An informative `tests/TESTING.md` policy block illustrating coverage + pass-rate thresholds. **NOT normative.** |
+| File                                                                   | What it is                                                                                                                |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| [`examples/in-toto-statement.json`](./examples/in-toto-statement.json) | One well-formed in-toto Statement v1 row attesting a passing `audit-harness:client:escape-scan` gate.                     |
+| [`examples/evidence-bundle.json`](./examples/evidence-bundle.json)     | A multi-row bundle (audit-harness static gates + j-rig behavioral gates + an MM-3 NOT_APPLICABLE row) in JSON-array form. |
+| [`examples/policy.yaml`](./examples/policy.yaml)                       | An informative `tests/TESTING.md` policy block illustrating coverage + pass-rate thresholds. **NOT normative.**           |
 
 ## 12. Anchoring — primary sources this spec composes
 

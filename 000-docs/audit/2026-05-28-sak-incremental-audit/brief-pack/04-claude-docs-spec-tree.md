@@ -1,1 +1,1 @@
-../../../research/claude-docs-spec-tree-2026-05-27.md
+../../../../research/claude-docs-spec-tree-2026-05-27.md

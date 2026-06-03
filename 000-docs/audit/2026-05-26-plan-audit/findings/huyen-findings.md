@@ -1,6 +1,6 @@
 # Plan Audit Findings — Seat: Chip Huyen
 
-**Reviewer:** `chip-huyen-reviewer` (channeling *Designing Machine Learning Systems* + *AI Engineering* canon)
+**Reviewer:** `chip-huyen-reviewer` (channeling _Designing Machine Learning Systems_ + _AI Engineering_ canon)
 **Subject:** `intent-eval-lab/000-docs/027-PP-PLAN-skill-refiner-snoopy-fluttering-comet-v4-2026-05-26.md` (v4.1)
 **Date:** 2026-05-27
 **Primary axes:** GAPS, RISK
@@ -10,7 +10,7 @@
 
 ## Framing
 
-> *"Once a model is deployed, evaluation becomes the hardest problem in MLOps, not the easiest. The eval set is the product."* — *Designing Machine Learning Systems*, Ch. 9 paraphrase.
+> _"Once a model is deployed, evaluation becomes the hardest problem in MLOps, not the easiest. The eval set is the product."_ — _Designing Machine Learning Systems_, Ch. 9 paraphrase.
 
 This plan claims Huyen-alignment in three places — AC-3 (multi-dim scores), AC-4 (shadow→canary→promote), AC-5 (tiered routing) — and treats AC-6 (bootstrap) as "the unsexy 80%." It also defers the entire eval-set governance surface (versioning, refresh cadence, drift detection, adversarial append) to **Phase F (Q3 2026, out of scope)**. That sequencing inverts the discipline. **In production ML, you ship the eval-set governance with the first version of the system; you do not bolt it on at scale.** The plan does the opposite.
 
@@ -22,19 +22,20 @@ Below are the seven findings that would most embarrass me to leave unflagged.
 
 **Plan section (verbatim):**
 
-> *Phase F — MLOps scale-up (long-term, ~Q3 2026) — beyond MVP … **Eval-set governance** | Versioned + reviewed quarterly + rolling-production + adversarial-append | `bd_000-projects-l44w`* (§ 4 Phase F table)
+> _Phase F — MLOps scale-up (long-term, ~Q3 2026) — beyond MVP … **Eval-set governance** | Versioned + reviewed quarterly + rolling-production + adversarial-append | `bd_000-projects-l44w`_ (§ 4 Phase F table)
 
 And:
 
-> *Phase F is NOT in scope for this plan.* (§ 4 Phase F closing)
+> _Phase F is NOT in scope for this plan._ (§ 4 Phase F closing)
 
 **Invoked Huyen position (verbatim canon):**
 
-> *"Data is more important than algorithms … eval sets drift, get gamed, and lose relevance the moment a model gets deployed against them. Eval-set governance is not Phase 2 work; it is Phase 0 work — without it, every score the system emits is unfalsifiable six months later."* (*Designing Machine Learning Systems*, Ch. 8–9 + *AI Engineering* Ch. 4 synthesis)
+> _"Data is more important than algorithms … eval sets drift, get gamed, and lose relevance the moment a model gets deployed against them. Eval-set governance is not Phase 2 work; it is Phase 0 work — without it, every score the system emits is unfalsifiable six months later."_ (_Designing Machine Learning Systems_, Ch. 8–9 + _AI Engineering_ Ch. 4 synthesis)
 
 **Defect:** Phase A ships `bootstrap()` + an `EvalSet` value type with an `eval_set_hash`. That is content-addressing, not governance. The plan defines:
+
 - **No version bump policy** for eval sets (when does v1 → v2? on item add? on item edit? on stratification change?)
-- **No refresh cadence** (the only "quarterly" appearing in the plan refers to *spec snapshots*, not eval sets — `agentskills.io` spec freshness ≠ eval-set freshness)
+- **No refresh cadence** (the only "quarterly" appearing in the plan refers to _spec snapshots_, not eval sets — `agentskills.io` spec freshness ≠ eval-set freshness)
 - **No drift-detection mechanism** (no held-out comparator; no production-vs-eval distribution check; no mechanism for noticing that the eval set has become unrepresentative of the workload the skill actually faces)
 - **No adversarial-append discipline** (Phase F mentions it; Phase A has no hook for adding adversarial counterexamples discovered in production)
 - **No deprecation policy** (when an eval set is superseded, are historical ScoreRecords still valid? Cross-version-comparable? The plan says nothing.)
@@ -51,26 +52,26 @@ The SkillVersion entity schema in § 4 Phase C carries `eval_set_hash` but no `e
 
 **Plan section (verbatim):**
 
-> *"Multi-dimensional score records (Goodhart-resistant). Score is `(skill_hash, eval_set_hash, behavioral_score, readability_score, adversarial_pass_rate, ...)` — never collapsed to a scalar."* (§ 3, AC-3)
-
-> *"`accept(scoreV1: ScoreRecord, scoreV2: ScoreRecord): boolean`"* (§ 4 Phase A, with the build-order step 2 noting "strict-improvement gate")
-
-> *"strict improvement on all dims?"* (D4 diagram, § 6.5)
+> _"Multi-dimensional score records (Goodhart-resistant). Score is `(skill_hash, eval_set_hash, behavioral_score, readability_score, adversarial_pass_rate, ...)` — never collapsed to a scalar."_ (§ 3, AC-3)
+>
+> _"`accept(scoreV1: ScoreRecord, scoreV2: ScoreRecord): boolean`"_ (§ 4 Phase A, with the build-order step 2 noting "strict-improvement gate")
+>
+> _"strict improvement on all dims?"_ (D4 diagram, § 6.5)
 
 **Invoked Huyen position (verbatim canon):**
 
-> *"Multi-objective acceptance gates without Pareto-frontier semantics produce systems that reject 90% of real improvements because a noise-floor wobble on one dimension blocks a real lift on another. Goodhart-resistance is not the same as false-negative-resistance — and confusing the two ships a system that ships nothing."* (*AI Engineering*, Ch. 6 — eval-driven development)
+> _"Multi-objective acceptance gates without Pareto-frontier semantics produce systems that reject 90% of real improvements because a noise-floor wobble on one dimension blocks a real lift on another. Goodhart-resistance is not the same as false-negative-resistance — and confusing the two ships a system that ships nothing."_ (_AI Engineering_, Ch. 6 — eval-driven development)
 
 **Defect:** SkillsBench observed 16/84 tasks (~19%) **regressed** even under human-curated skills. That is the noise/heterogeneity floor of the population the Refiner is operating on. The plan's acceptance gate requires **strict improvement on all dimensions** (behavioral + readability + adversarial-pass-rate + … per AC-3). Under independence assumptions and ~19% per-dimension regression noise across N dimensions, the probability of strict-improvement-on-all approaches zero rapidly:
 
 | Dimensions | P(strict improvement on all) assuming 81% per-dim improvement rate |
-|---|---|
-| 2 | 0.66 |
-| 3 | 0.53 |
-| 4 | 0.43 |
-| 5 | 0.35 |
+| ---------- | ------------------------------------------------------------------ |
+| 2          | 0.66                                                               |
+| 3          | 0.53                                                               |
+| 4          | 0.43                                                               |
+| 5          | 0.35                                                               |
 
-The plan lists at least 4 named dimensions (behavioral, readability, adversarial_pass_rate, plus the AC-11 portability claim across Claude Code / Codex CLI / Gemini CLI parsers — at minimum 6). Under the strict-all gate, the expected acceptance rate is **< 30% on edits that are genuinely improvements**. The buffer of "rejected edits" in the AAR (§ 4 Phase E.1 § 5) will balloon. The system will *appear* to be working — lots of careful gate decisions — while producing almost no accepted SkillVersions.
+The plan lists at least 4 named dimensions (behavioral, readability, adversarial*pass_rate, plus the AC-11 portability claim across Claude Code / Codex CLI / Gemini CLI parsers — at minimum 6). Under the strict-all gate, the expected acceptance rate is **< 30% on edits that are genuinely improvements**. The buffer of "rejected edits" in the AAR (§ 4 Phase E.1 § 5) will balloon. The system will \_appear* to be working — lots of careful gate decisions — while producing almost no accepted SkillVersions.
 
 The plan has **no Pareto-frontier policy** (accept if Pareto-dominates predecessor + tied on the rest), **no noise-floor calibration** (per-dimension minimum-detectable-effect from the eval set's variance), **no significance-testing pre-commitment** (does +0.3pp count as improvement? +0.05pp?). The single line `accept(scoreV1, scoreV2): boolean` is the production gate, and its semantics are "strict on all."
 
@@ -84,13 +85,13 @@ This is the eval-design failure mode I have written about repeatedly. The plan c
 
 **Plan section (verbatim):**
 
-> *"Eval-set bootstrap is non-optional (Karpathy-aligned — every new skill needs a held-out set; `bootstrap` is a first-class command). Sources: (a) synthetic from SKILL.md, (b) j-rig rollout harvest, (c) human-nominated golden traces."* (§ 3, AC-6)
-
-> *"`declare function bootstrap(skillDoc: SkillDoc): EvalSet;`"* (§ 4 Phase A)
+> _"Eval-set bootstrap is non-optional (Karpathy-aligned — every new skill needs a held-out set; `bootstrap` is a first-class command). Sources: (a) synthetic from SKILL.md, (b) j-rig rollout harvest, (c) human-nominated golden traces."_ (§ 3, AC-6)
+>
+> _"`declare function bootstrap(skillDoc: SkillDoc): EvalSet;`"_ (§ 4 Phase A)
 
 **Invoked Huyen position (verbatim canon):**
 
-> *"For long-tail tasks with insufficient production volume, the synthetic-only eval set is a self-graded exam — the model that generates the eval set is implicitly the model that defines what 'correct' means, which is exactly the conflict-of-interest the eval was supposed to prevent."* (*AI Engineering*, Ch. 4 — eval set construction)
+> _"For long-tail tasks with insufficient production volume, the synthetic-only eval set is a self-graded exam — the model that generates the eval set is implicitly the model that defines what 'correct' means, which is exactly the conflict-of-interest the eval was supposed to prevent."_ (_AI Engineering_, Ch. 4 — eval set construction)
 
 **Defect:** The plan lists three sources but defines **no policy for which source(s) apply when**. Critically:
 
@@ -99,6 +100,7 @@ This is the eval-design failure mode I have written about repeatedly. The plan c
 - Source (a) synthetic-from-SKILL.md is the **only universally-available source** — and it is the source with the most severe validity problems (the SKILL.md text generates the eval that grades edits to the SKILL.md text; circular).
 
 The plan provides:
+
 - No **minimum volume threshold** for entry to the Refiner pipeline (does a skill with 2 lifetime invocations refine? 20? 200?)
 - No **source-blend policy** (when synthetic = 100% of items, is the resulting ScoreRecord considered `confidence_tier: alpha` automatically?)
 - No **human-curation budget gate** (Phase A ships `bootstrap()`; Phase B picks one skill for end-to-end demo; the plan does not say who is producing the golden traces for the 29 other skills the marketplace contains)
@@ -111,21 +113,21 @@ The plan provides:
 
 **Plan section (verbatim):**
 
-> *"Shadow → canary → promote ladder, human-gated promotion (Huyen-aligned). The Refiner NEVER auto-writes SKILL.md on main; produces candidate values that humans review + promote."* (§ 3, AC-4)
-
-> Phase B CLI surface: *"`/j-rig refine shadow <skill>` — run candidate in shadow mode; `/j-rig refine promote <skill>` — promote candidate → main (human-gated, AC-4)"* (§ 4 Phase B)
-
-> Phase F: *"**Canary rollouts** | Per-partner traffic routing of skill versions | `bd_000-projects-l5ut`"* (§ 4 Phase F table)
+> _"Shadow → canary → promote ladder, human-gated promotion (Huyen-aligned). The Refiner NEVER auto-writes SKILL.md on main; produces candidate values that humans review + promote."_ (§ 3, AC-4)
+>
+> Phase B CLI surface: _"`/j-rig refine shadow <skill>` — run candidate in shadow mode; `/j-rig refine promote <skill>` — promote candidate → main (human-gated, AC-4)"_ (§ 4 Phase B)
+>
+> Phase F: _"**Canary rollouts** | Per-partner traffic routing of skill versions | `bd_000-projects-l5ut`"_ (§ 4 Phase F table)
 
 **Invoked Huyen position (verbatim canon):**
 
-> *"Shadow-canary-promote is a deployment-control discipline. Without a traffic-routing mechanism that can run two versions of the same artifact against overlapping populations and emit comparable telemetry, the words 'shadow' and 'canary' are aspirational. Naming the ladder is not the same as building the rungs."* (*Designing Machine Learning Systems*, Ch. 10 — model deployment patterns)
+> _"Shadow-canary-promote is a deployment-control discipline. Without a traffic-routing mechanism that can run two versions of the same artifact against overlapping populations and emit comparable telemetry, the words 'shadow' and 'canary' are aspirational. Naming the ladder is not the same as building the rungs."_ (_Designing Machine Learning Systems_, Ch. 10 — model deployment patterns)
 
 **Defect:** The plan ships **two CLI commands** named `shadow` and `promote`. It does **not** ship the mechanism that makes shadow and canary semantically distinct from "I ran the candidate against my eval set offline":
 
 - **No traffic-routing layer.** Phase F row says per-partner traffic routing is Phase F work. So in Phase B (the MVP), `shadow` is "run the candidate against the held-out eval set" and `promote` is "copy the file." There is no second population the candidate is exposed to. Shadow and offline-eval are the same thing.
 - **No comparable-telemetry emission.** The Refiner emits a SkillVersion + a skill-refiner-pass/v1 row. There is no rollout-time A/B telemetry showing the candidate vs the current best in any partner's actual workload.
-- **No promotion-decision audit trail format.** Phase E.1 template § 6 logs "which hook fired" but not "promotion happened at T+N days after candidate landed, based on M shadow-runs producing K score-record-pairs." The plan's claim to be human-gated is true; the claim to be a *ladder* is not.
+- **No promotion-decision audit trail format.** Phase E.1 template § 6 logs "which hook fired" but not "promotion happened at T+N days after candidate landed, based on M shadow-runs producing K score-record-pairs." The plan's claim to be human-gated is true; the claim to be a _ladder_ is not.
 
 The ladder is fictional until Phase F. The plan should either (a) acknowledge AC-4 is aspirational pre-Phase-F and rename the Phase B commands to avoid implying production-routing semantics, or (b) move the minimum traffic-routing mechanism (even a stub: skill-version pin per `.claude/settings.json` consumer) into Phase B. **The current state — AC-4 named, ladder unbuilt, semantics unspecified — is a customer-trust failure mode**: a user reads "shadow → canary → promote" in the plan, runs `/j-rig refine shadow`, and reasonably expects production-routing behavior the plan does not provide.
 
@@ -135,13 +137,13 @@ The ladder is fictional until Phase F. The plan should either (a) acknowledge AC
 
 **Plan section (verbatim):**
 
-> *"Cost runaway — naive Opus-everywhere costs $11K/month for 30 skills (Huyen) | Tiered routing per AC-5: Haiku for rollout-scoring, Sonnet for refiner-proposer, Opus only for final-validation. Hard budget cap at workflow level + alert at 80%"* (§ 8 Risks)
-
-> *"Default Haiku/Sonnet for scoring + Opus only for final validation (Huyen economics: $9.30/pass naive, ~$370/epoch/skill — order-of-magnitude reduction by tiered routing)."* (§ 3, AC-5)
+> _"Cost runaway — naive Opus-everywhere costs $11K/month for 30 skills (Huyen) | Tiered routing per AC-5: Haiku for rollout-scoring, Sonnet for refiner-proposer, Opus only for final-validation. Hard budget cap at workflow level + alert at 80%"_ (§ 8 Risks)
+>
+> _"Default Haiku/Sonnet for scoring + Opus only for final validation (Huyen economics: $9.30/pass naive, ~$370/epoch/skill — order-of-magnitude reduction by tiered routing)."_ (§ 3, AC-5)
 
 **Invoked Huyen position (verbatim canon):**
 
-> *"A cost claim without a unit-economics derivation is a wish. State the assumptions: tokens per rollout, rollouts per pass, passes per epoch, epochs per skill per month, skills under management, price per million tokens per tier. Then show your work. Anything else is hand-waving."* (*AI Engineering*, Ch. 7 — cost modeling)
+> _"A cost claim without a unit-economics derivation is a wish. State the assumptions: tokens per rollout, rollouts per pass, passes per epoch, epochs per skill per month, skills under management, price per million tokens per tier. Then show your work. Anything else is hand-waving."_ (_AI Engineering_, Ch. 7 — cost modeling)
 
 **Defect:** AC-5 cites two numbers: "$9.30/pass naive" and "~$370/epoch/skill." Neither is derived in the plan. There is no table showing:
 
@@ -154,6 +156,7 @@ The ladder is fictional until Phase F. The plan should either (a) acknowledge AC
 Without the derivation, the "$11K/month naive → tiered-routing fixes it" mitigation is unfalsifiable. If the real number is $4K/month naive, AC-5's tiered routing is over-engineering. If the real number is $40K/month naive, AC-5's "alert at 80%" budget cap fires every week and the system is effectively offline most of the month. **Neither outcome is acceptable; both are possible because the plan does not show its work.**
 
 Additionally:
+
 - The Phase E.1 report template § (header table) demands a "Compute cost" row broken down by Haiku/Sonnet/Opus tier. The Phase A library has no cost meter implementation listed in the build-order — step 6 (`propose()`) is "Anthropic SDK adapter + tiered routing" but cost-meter is not a separate build step. The cost meter is also called out in D8 ("ADAPTERS … cost meter (tiered routing budget)") — it lives in `@j-rig/refiner`, not `refiner-core`, and is not in the Phase A exit criteria.
 - The "Hard budget cap at workflow level" is named in § 8 but has no implementation surface in § 4 Phase A or § 4 Phase B.
 
@@ -165,15 +168,16 @@ Additionally:
 
 **Plan section (verbatim):**
 
-> *"**Hook (L3)** | `PreToolUse:Bash` matcher `git commit|git push` | If staged diff modifies a SKILL.md: run agentic gate that reads the surrounding skills directory + checks for regression-against-rejected-buffer + (optional) shadow-validation against held-out set."* (§ 4 Phase B, L3 hook description)
+> _"**Hook (L3)** | `PreToolUse:Bash` matcher `git commit|git push` | If staged diff modifies a SKILL.md: run agentic gate that reads the surrounding skills directory + checks for regression-against-rejected-buffer + (optional) shadow-validation against held-out set."_ (§ 4 Phase B, L3 hook description)
 
 **Invoked Huyen position (verbatim canon):**
 
-> *"Eval sets get gamed the moment they are reachable from the optimizer's read-path. The held-out-ness of held-out data is a topology property, not a label."* (*Designing Machine Learning Systems*, Ch. 9 — held-out discipline)
+> _"Eval sets get gamed the moment they are reachable from the optimizer's read-path. The held-out-ness of held-out data is a topology property, not a label."_ (_Designing Machine Learning Systems_, Ch. 9 — held-out discipline)
 
-**Defect:** The L3 hook reads "the surrounding skills directory." If the eval set for skill X is checked into the same repo (which the Phase A content-addressed store at `.j-rig/refiner/store/<hash>` and Phase E.1 storage spec for markdown AARs under `<repo>/000-docs/` both imply), then the L3 agentic gate has read access to the eval items it is supposed to be validated against blind. The Opus-tier "agentic gate" can — and absent explicit isolation will — incorporate eval-set content into its rationale. The "held-out" set is held-out from the *proposer* (refiner-model in § 4 Phase A `propose()`), but **not** from the L3 commit-time validator.
+**Defect:** The L3 hook reads "the surrounding skills directory." If the eval set for skill X is checked into the same repo (which the Phase A content-addressed store at `.j-rig/refiner/store/<hash>` and Phase E.1 storage spec for markdown AARs under `<repo>/000-docs/` both imply), then the L3 agentic gate has read access to the eval items it is supposed to be validated against blind. The Opus-tier "agentic gate" can — and absent explicit isolation will — incorporate eval-set content into its rationale. The "held-out" set is held-out from the _proposer_ (refiner-model in § 4 Phase A `propose()`), but **not** from the L3 commit-time validator.
 
 The plan does not specify:
+
 - Eval-set filesystem location relative to the SKILL.md being refined
 - Read-path isolation between the proposer and the L3 validator
 - Whether the eval-set hash being in the ScoreRecord prevents the agentic gate from reading the underlying items
@@ -187,13 +191,13 @@ This is the eval-leakage failure mode. It does not require malice — the L3 hoo
 
 **Plan section (verbatim):**
 
-> AC-3: *"Score is `(skill_hash, eval_set_hash, behavioral_score, readability_score, adversarial_pass_rate, ...)`"*
-
-> Phase F: *"**Eval-set governance** | Versioned + reviewed quarterly + rolling-production + **adversarial-append** | `bd_000-projects-l44w`"*
+> AC-3: _"Score is `(skill_hash, eval_set_hash, behavioral_score, readability_score, adversarial_pass_rate, ...)`"_
+>
+> Phase F: _"**Eval-set governance** | Versioned + reviewed quarterly + rolling-production + **adversarial-append** | `bd_000-projects-l44w`"_
 
 **Invoked Huyen position (verbatim canon):**
 
-> *"If a dimension is in the score record, the system that produces values for that dimension must ship at the same time as the dimension. A column without a generator is debt that compounds."* (*Designing Machine Learning Systems*, Ch. 8)
+> _"If a dimension is in the score record, the system that produces values for that dimension must ship at the same time as the dimension. A column without a generator is debt that compounds."_ (_Designing Machine Learning Systems_, Ch. 8)
 
 **Defect:** `adversarial_pass_rate` is listed as a score dimension in AC-3 — and via F-CH-002 above, it participates in the strict-improvement-on-all-dimensions acceptance gate. But the plan does not describe **where adversarial items come from in Phase A**:
 
@@ -209,15 +213,15 @@ This compounds F-CH-002 (strict-all gate) and F-CH-006 (leakage). The gate is su
 
 ## Summary table
 
-| ID | Severity | Axis | One-line |
-|---|---|---|---|
-| F-CH-001 | P0 | GAPS | Eval-set lineage/versioning/refresh cadence absent from Phase A; deferred to Phase F |
-| F-CH-002 | P0 | RISK | Strict-improvement-on-ALL gate is false-negative-prone; SkillsBench 19% regression rate predicts < 30% acceptance |
-| F-CH-003 | P1 | GAPS | Low-volume-skill bootstrap fallback policy undefined |
-| F-CH-004 | P1 | RISK MITIGATION | Shadow→canary→promote ladder named but not operationalized pre-Phase-F |
-| F-CH-005 | P1 | GAPS | $9.30/pass and $11K/month claims have no unit-economics derivation |
-| F-CH-006 | P2 | RISK | L3 hook reads surrounding skills dir → eval-set leakage path |
-| F-CH-007 | P2 | SCOPE INTEGRITY | `adversarial_pass_rate` dimension in AC-3 has no Phase A generator |
+| ID       | Severity | Axis            | One-line                                                                                                          |
+| -------- | -------- | --------------- | ----------------------------------------------------------------------------------------------------------------- |
+| F-CH-001 | P0       | GAPS            | Eval-set lineage/versioning/refresh cadence absent from Phase A; deferred to Phase F                              |
+| F-CH-002 | P0       | RISK            | Strict-improvement-on-ALL gate is false-negative-prone; SkillsBench 19% regression rate predicts < 30% acceptance |
+| F-CH-003 | P1       | GAPS            | Low-volume-skill bootstrap fallback policy undefined                                                              |
+| F-CH-004 | P1       | RISK MITIGATION | Shadow→canary→promote ladder named but not operationalized pre-Phase-F                                            |
+| F-CH-005 | P1       | GAPS            | $9.30/pass and $11K/month claims have no unit-economics derivation                                                |
+| F-CH-006 | P2       | RISK            | L3 hook reads surrounding skills dir → eval-set leakage path                                                      |
+| F-CH-007 | P2       | SCOPE INTEGRITY | `adversarial_pass_rate` dimension in AC-3 has no Phase A generator                                                |
 
 ---
 

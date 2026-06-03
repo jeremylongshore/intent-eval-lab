@@ -1,5 +1,4 @@
 ---
-title: Intent Eval Platform — Phase B Gap Analysis and Research Framework
 subtitle: Iterative Snacking Walrus — Technical Landscape Audit + Per-Area Treatment of 21 AI Infrastructure Gaps
 filing_code: 000-DR-FIND
 version: 1.0
@@ -236,7 +235,7 @@ The 21 areas are ordered as in the advisory (1-20) plus area 21 (evaluator-disag
 
 **6. Field landscape — academic / labs.** Sparse. The only peer-reviewed paper on the specific surface as of May 2026 in our search is AgentOps (`3d6b189c…`, 21 cites, 2024). This is a vacuum — academic literature is several years behind the practitioner state of practice. Anthropic, OpenAI, DeepMind have not published on agent observability in any formal way; the work is happening on OTel SIG GitHub and CNCF working groups.
 
-**7. Field landscape — OSS + open ecosystem.** Active and diverse. **OpenInference** (Arize-ai, Apache 2.0, 30+ Python + 9 TS + 4 Java + 4 Go instrumentation packages, last release 2026-05-18) defines its own AI-specific semantic conventions complementary to OTel — the strongest extant convention. **OpenLLMetry** (Traceloop, Apache 2.0, 7.1k stars, v0.60.0 on 2026-04-19) explicitly upstreams its conventions to OTel — a model for how to convert practice into SIG-ratified spec. **Phoenix** (Arize-ai, **Elastic License 2.0**, patent-flagged) uses OpenInference + OTel — *not* an integration target because of license incompatibility, but a feature reference. **Langfuse** (MIT core, ee enterprise, v3.174.1 on 2026-05-13) ships its own custom trace format with OTel integration mentioned — useful as feature-matrix reference.
+**7. Field landscape — OSS + open ecosystem.** Active and diverse. **OpenInference** (Arize-ai, Apache 2.0, 30+ Python + 9 TS + 4 Java + 4 Go instrumentation packages, last release 2026-05-18) defines its own AI-specific semantic conventions complementary to OTel — the strongest extant convention. **OpenLLMetry** (Traceloop, Apache 2.0, 7.1k stars, v0.60.0 on 2026-04-19) explicitly upstreams its conventions to OTel — a model for how to convert practice into SIG-ratified spec. **Phoenix** (Arize-ai, **Elastic License 2.0**, patent-flagged) uses OpenInference + OTel — _not_ an integration target because of license incompatibility, but a feature reference. **Langfuse** (MIT core, ee enterprise, v3.174.1 on 2026-05-13) ships its own custom trace format with OTel integration mentioned — useful as feature-matrix reference.
 
 **8. Where this could go — open problems.** (a) Canonical `gen_ai.agent.trajectory` semantic conventions ratified by OTel SIG. (b) Multi-agent span correlation — how do parent/child relationships work across composed agent runs? (c) Cost-attribution attributes — `gen_ai.usage.*` covers model invocation but not tool execution. (d) Reliability instrumentation — how to capture "this agent failed in a way that should retry vs not retry" in the span format. (e) The relationship between an agent observability span and an attestation envelope (`gate-result/v1` carries the attestation envelope; can the span be derived from it deterministically?).
 
@@ -556,7 +555,7 @@ The 21 areas are ordered as in the advisory (1-20) plus area 21 (evaluator-disag
 
 **4. Where we fall short.** Not started. No publishable dataset surface, no licensing decision, no governance model, no curation process.
 
-**5. Where we can build or contribute.** Build entirely-in-our-repos: (a) `iel-E15` defines the dataset schema (per-case multi-judge results with provenance); (b) curation policy (synthetic + human-curated cases, balanced across domains); (c) hosting decision — HuggingFace Datasets is the natural home, Apache or CC-BY-SA license; (d) update cadence — quarterly. Upstream contribution: this *is* the contribution — there is no existing open dataset of this kind at the depth we can provide.
+**5. Where we can build or contribute.** Build entirely-in-our-repos: (a) `iel-E15` defines the dataset schema (per-case multi-judge results with provenance); (b) curation policy (synthetic + human-curated cases, balanced across domains); (c) hosting decision — HuggingFace Datasets is the natural home, Apache or CC-BY-SA license; (d) update cadence — quarterly. Upstream contribution: this _is_ the contribution — there is no existing open dataset of this kind at the depth we can provide.
 
 **6. Field landscape — academic / labs.** Many papers reference judge-disagreement empirically but no shared dataset exists. Replacing Judges with Juries (`1a9d2a80…`, 225 cites, 2024), Limits to Scalable Eval (`aa6f16e9…`, 33 cites, ICLR 2025), JuStRank (`c85e7a71…`, 21 cites, 2024), Aligning with Human Judgement (`aae01e93…`, 153 cites, 2024) — all would benefit from a reference dataset.
 
@@ -625,12 +624,12 @@ This sequence threads the cross-cutting findings: opens upstream early, hits the
 
 Three IEP areas are already in-flight as epics; one is mature. Recapping their current state and what this audit changes:
 
-| Area | Epic / status | What this audit changes |
-|---|---|---|
-| #1 Operational Trajectories | `iel-E12` (P0, in-flight) | No scope change. The audit reinforces this is core. Adds new explicit recommendation: propose `gen_ai.agent.trajectory.*` to OTel SIG once the event taxonomy stabilizes. |
-| #5 Trajectory Replay | `iel-E11` (P0, in-flight) | No scope change. Adds new explicit recommendation: classify SWE-bench, OSWorld, tau-bench replay capability against RF-0..RF-4 as a normative test set. |
-| #3 Agent Observability | overlaps `iel-E12` + `iel-E02d` + `iah-E07` + `iaj-E08` + `iar-E02` (P0/P1 mix) | The audit consolidates: this surface is dominated by upstream contribution to OTel GenAI SIG, not local construction. A `@intentsolutions/otel-shim` reference instrumentation lib is recommended new work. |
-| #2 Eval Systems (binary) | mature — kernel + j-rig + audit-harness | No scope change. Citation grounding becomes a one-time documentation pass; no new construction needed beyond closing 5 `iec-deferral-*` Class-2 specs. |
+| Area                        | Epic / status                                                                   | What this audit changes                                                                                                                                                                                     |
+| --------------------------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| #1 Operational Trajectories | `iel-E12` (P0, in-flight)                                                       | No scope change. The audit reinforces this is core. Adds new explicit recommendation: propose `gen_ai.agent.trajectory.*` to OTel SIG once the event taxonomy stabilizes.                                   |
+| #5 Trajectory Replay        | `iel-E11` (P0, in-flight)                                                       | No scope change. Adds new explicit recommendation: classify SWE-bench, OSWorld, tau-bench replay capability against RF-0..RF-4 as a normative test set.                                                     |
+| #3 Agent Observability      | overlaps `iel-E12` + `iel-E02d` + `iah-E07` + `iaj-E08` + `iar-E02` (P0/P1 mix) | The audit consolidates: this surface is dominated by upstream contribution to OTel GenAI SIG, not local construction. A `@intentsolutions/otel-shim` reference instrumentation lib is recommended new work. |
+| #2 Eval Systems (binary)    | mature — kernel + j-rig + audit-harness                                         | No scope change. Citation grounding becomes a one-time documentation pass; no new construction needed beyond closing 5 `iec-deferral-*` Class-2 specs.                                                      |
 
 The 13 new areas + 1 uniquely-ours area become the new Phase B epic-level investment. The 4 parked areas become the personal-skill pillar (Appendix F).
 
@@ -691,7 +690,7 @@ The companion file `000-RR-BIBL-shared-bibliography-2026-05-20.md` is the citati
 
 ### Synthesis — NOT a 5th meta-agent
 
-After 5 lit reviews complete, the operator consolidates manually into the Phase B Framing Memo (`0NN-PP-PLAN-phase-b-framing-memo-2026-05-DD.md`) and triggers `/exec-decision-council` (ISEDC Session 5) on the consolidated memo. An auto-synthesizer would smooth over the cross-team disagreements that are the *whole point* of running 4-5 independent teams. The council is the synthesis surface; the memo is its input.
+After 5 lit reviews complete, the operator consolidates manually into the Phase B Framing Memo (`0NN-PP-PLAN-phase-b-framing-memo-2026-05-DD.md`) and triggers `/exec-decision-council` (ISEDC Session 5) on the consolidated memo. An auto-synthesizer would smooth over the cross-team disagreements that are the _whole point_ of running 4-5 independent teams. The council is the synthesis surface; the memo is its input.
 
 ---
 
@@ -699,24 +698,24 @@ After 5 lit reviews complete, the operator consolidates manually into the Phase 
 
 Fourteen new epic beads + 55-70 child beads + one OPS thread bead. All Phase B epics carry the three-layer mirror discipline (bd ↔ GitHub Issue ↔ Plane LAB).
 
-| Area | Epic ID | Repo | Estimated children | Maps to area(s) |
-|---|---|---|---|---|
-| Evaluator-disagreement dataset | `iel-E15` | intent-eval-lab | 4-5 | #21 |
-| Synthetic cognition quality scoring | `iaj-E09` | j-rig | 4-5 | #4 |
-| Memory systems (broadened — poisoning + retrieval + aging) | `iec-E08` | intent-eval-core | 5-6 | #7 |
-| Production drift | `iar-E03` | intent-rollout-gate | 3-4 | #19 |
-| Evaluator gaming detection | `iaj-E10` | j-rig | 3-4 | #19 cross-link |
-| Probabilistic reliability scoring | `iec-E09` | intent-eval-core | 4-5 | linked to all classes |
-| Verifier systems (generator/checker split) | `iaj-E11` | j-rig | 4-5 | #6 |
-| Reasoning authenticity (CoT verification) | `iaj-E12` | j-rig | 3-4 | #11 |
-| Agent guardrails (loop budgets / rollback / permission) | `iar-E04` | intent-rollout-gate | 4-5 | #12 |
-| Tool-use training (sequencing / recovery / uncertainty) | `iaj-E13` | j-rig | 4-5 | #8 |
-| Inference-time compute attribution | `iel-E16` | intent-eval-lab | 3-4 | #9 |
-| Data provenance (synthetic lineage in Evidence Bundle) | `iec-E10` | intent-eval-core | 3-4 | #10 |
-| Multi-agent state coordination | `iel-E17` | intent-eval-lab | 4-5 | #17 |
-| Model routing | `iar-E05` | intent-rollout-gate | 3-4 | #18 |
-| Open trajectory dataset host (defer-or-promote decision) | (FUTURE.md memo) OR `iel-E18` | lab | 0 or 3-4 | (defer-or-promote) |
-| Personal-skill pillar | `ops-personal-pillar-2026-05` | OPS workspace | 0 (long-thread) | #13-16 parked |
+| Area                                                       | Epic ID                       | Repo                | Estimated children | Maps to area(s)       |
+| ---------------------------------------------------------- | ----------------------------- | ------------------- | ------------------ | --------------------- |
+| Evaluator-disagreement dataset                             | `iel-E15`                     | intent-eval-lab     | 4-5                | #21                   |
+| Synthetic cognition quality scoring                        | `iaj-E09`                     | j-rig               | 4-5                | #4                    |
+| Memory systems (broadened — poisoning + retrieval + aging) | `iec-E08`                     | intent-eval-core    | 5-6                | #7                    |
+| Production drift                                           | `iar-E03`                     | intent-rollout-gate | 3-4                | #19                   |
+| Evaluator gaming detection                                 | `iaj-E10`                     | j-rig               | 3-4                | #19 cross-link        |
+| Probabilistic reliability scoring                          | `iec-E09`                     | intent-eval-core    | 4-5                | linked to all classes |
+| Verifier systems (generator/checker split)                 | `iaj-E11`                     | j-rig               | 4-5                | #6                    |
+| Reasoning authenticity (CoT verification)                  | `iaj-E12`                     | j-rig               | 3-4                | #11                   |
+| Agent guardrails (loop budgets / rollback / permission)    | `iar-E04`                     | intent-rollout-gate | 4-5                | #12                   |
+| Tool-use training (sequencing / recovery / uncertainty)    | `iaj-E13`                     | j-rig               | 4-5                | #8                    |
+| Inference-time compute attribution                         | `iel-E16`                     | intent-eval-lab     | 3-4                | #9                    |
+| Data provenance (synthetic lineage in Evidence Bundle)     | `iec-E10`                     | intent-eval-core    | 3-4                | #10                   |
+| Multi-agent state coordination                             | `iel-E17`                     | intent-eval-lab     | 4-5                | #17                   |
+| Model routing                                              | `iar-E05`                     | intent-rollout-gate | 3-4                | #18                   |
+| Open trajectory dataset host (defer-or-promote decision)   | (FUTURE.md memo) OR `iel-E18` | lab                 | 0 or 3-4           | (defer-or-promote)    |
+| Personal-skill pillar                                      | `ops-personal-pillar-2026-05` | OPS workspace       | 0 (long-thread)    | #13-16 parked         |
 
 **Total**: 14 new epics + 55-70 child beads + 1 OPS thread.
 
@@ -787,15 +786,15 @@ If criterion 4 fails: skip the council, create beads, proceed with Phase B as pl
 
 ### Risks
 
-| Risk | Likelihood | Mitigation |
-|---|---|---|
-| Wall-clock overrun (5 teams × multiple work-blocks) | High | Sequential teams permitted; budget is in work-blocks not calendar days |
-| Citation inflation in lit reviews | Medium | Each cited paper must appear in lit-review body; sample-review 3 per team |
-| Team C scope explosion (adversarial-ML is bottomless) | Medium-High | Hard cap at 3 threat models in scope (poisoning, drift, gaming) |
-| ISEDC fired ritualistically | Medium | Criterion 4 (≥2 contradictions) is non-negotiable |
-| Personal-skill pillar bleeds into IEP scope | Low | Single OPS bead, quarterly re-eval, never sub-beaded under iec-/iel-/iah-/iaj-/iar- |
-| `Imbad0202` provenance question reopens | Low | Note in `~/.claude/CLAUDE.md` § Initiative — low-priority |
-| New advisory surfaces additional areas mid-program | Low | Add as row to § 4, decide team assignment, do NOT spawn a 6th team |
+| Risk                                                  | Likelihood  | Mitigation                                                                          |
+| ----------------------------------------------------- | ----------- | ----------------------------------------------------------------------------------- |
+| Wall-clock overrun (5 teams × multiple work-blocks)   | High        | Sequential teams permitted; budget is in work-blocks not calendar days              |
+| Citation inflation in lit reviews                     | Medium      | Each cited paper must appear in lit-review body; sample-review 3 per team           |
+| Team C scope explosion (adversarial-ML is bottomless) | Medium-High | Hard cap at 3 threat models in scope (poisoning, drift, gaming)                     |
+| ISEDC fired ritualistically                           | Medium      | Criterion 4 (≥2 contradictions) is non-negotiable                                   |
+| Personal-skill pillar bleeds into IEP scope           | Low         | Single OPS bead, quarterly re-eval, never sub-beaded under iec-/iel-/iah-/iaj-/iar- |
+| `Imbad0202` provenance question reopens               | Low         | Note in `~/.claude/CLAUDE.md` § Initiative — low-priority                           |
+| New advisory surfaces additional areas mid-program    | Low         | Add as row to § 4, decide team assignment, do NOT spawn a 6th team                  |
 
 ### Verification — how we'd know this worked
 
@@ -828,43 +827,43 @@ Classifying the 21 areas by leverage of effort × craft interest × open-contrib
 
 ### Class A — Build-in-our-repos because nobody's done it well in OSS (HIGH leverage)
 
-| Area | Why "build" wins |
-|---|---|
-| #11 Reasoning authenticity (CoT verification) | Academic literature dense; OSS implementations near-zero. Direct OSS contribution opportunity through j-rig. |
-| #21 Evaluator-disagreement dataset | No equivalent open dataset exists. Uniquely positioned to ship. |
-| #19 Operational reliability (drift / regression) | LLM-specific drift work sparse; substrate (gate-result/v1 history) is uniquely ours. |
-| #4 Synthetic data quality scoring | Academic methodology rich; OSS tooling sparse. Native fit to `EvalCase` provenance. |
+| Area                                             | Why "build" wins                                                                                             |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| #11 Reasoning authenticity (CoT verification)    | Academic literature dense; OSS implementations near-zero. Direct OSS contribution opportunity through j-rig. |
+| #21 Evaluator-disagreement dataset               | No equivalent open dataset exists. Uniquely positioned to ship.                                              |
+| #19 Operational reliability (drift / regression) | LLM-specific drift work sparse; substrate (gate-result/v1 history) is uniquely ours.                         |
+| #4 Synthetic data quality scoring                | Academic methodology rich; OSS tooling sparse. Native fit to `EvalCase` provenance.                          |
 
 ### Class B — Build-in-our-repos AND contribute upstream (HIGH-MEDIUM leverage)
 
-| Area | Build target | Upstream target |
-|---|---|---|
-| #1 Operational trajectories | iel-E12 + kernel | OTel GenAI SIG `gen_ai.agent.trajectory.*` |
-| #5 Trajectory replay | iel-E11 RF-X spec | REAL paper alignment + OSS adapters |
-| #3 Agent observability | `@intentsolutions/otel-shim` | OTel SIG + OpenInference convention alignment |
-| #6 Verifier systems | iaj-E11 + kernel `Verifier` entity | PRM-research community |
-| #7 Memory systems (broadened) | iec-E08 entities + threat-model doc | Mem0 / Zep adapter contributions |
-| #12 Agent guardrails | iar-E04 entities + gate-result extension | ShieldAgent / Foundational Guardrail |
-| #10 Data provenance | iec-E10 Evidence Bundle extension | SLSA framework, sigstore predicate types |
-| #20 Open standards | iel-E13 + `gate-result/v1` standards proposal | OTel SIG + MCP + SLSA |
-| #2 Eval systems interop | Inspect AI / Promptfoo adapters | Inspect AI repo + Promptfoo |
+| Area                          | Build target                                  | Upstream target                               |
+| ----------------------------- | --------------------------------------------- | --------------------------------------------- |
+| #1 Operational trajectories   | iel-E12 + kernel                              | OTel GenAI SIG `gen_ai.agent.trajectory.*`    |
+| #5 Trajectory replay          | iel-E11 RF-X spec                             | REAL paper alignment + OSS adapters           |
+| #3 Agent observability        | `@intentsolutions/otel-shim`                  | OTel SIG + OpenInference convention alignment |
+| #6 Verifier systems           | iaj-E11 + kernel `Verifier` entity            | PRM-research community                        |
+| #7 Memory systems (broadened) | iec-E08 entities + threat-model doc           | Mem0 / Zep adapter contributions              |
+| #12 Agent guardrails          | iar-E04 entities + gate-result extension      | ShieldAgent / Foundational Guardrail          |
+| #10 Data provenance           | iec-E10 Evidence Bundle extension             | SLSA framework, sigstore predicate types      |
+| #20 Open standards            | iel-E13 + `gate-result/v1` standards proposal | OTel SIG + MCP + SLSA                         |
+| #2 Eval systems interop       | Inspect AI / Promptfoo adapters               | Inspect AI repo + Promptfoo                   |
 
 ### Class C — Contribute upstream because someone else's repo is the right home (MEDIUM leverage)
 
-| Area | Why upstream wins |
-|---|---|
-| #8 Tool-use training | MCP ecosystem is rising standard; adapter to MCPToolBench++ is the contribution path |
-| #18 Model routing | LiteLLM / RouteLLM ecosystem is mature; routing-decision metadata addition |
-| #17 Multi-agent state | AutoGen / CrewAI / LangGraph each ship abstractions; cross-framework state-model spec is the path |
-| #9 Inference-time compute | OTel SIG attribute addition (`gen_ai.usage.thinking_tokens` etc.) |
+| Area                      | Why upstream wins                                                                                 |
+| ------------------------- | ------------------------------------------------------------------------------------------------- |
+| #8 Tool-use training      | MCP ecosystem is rising standard; adapter to MCPToolBench++ is the contribution path              |
+| #18 Model routing         | LiteLLM / RouteLLM ecosystem is mature; routing-decision metadata addition                        |
+| #17 Multi-agent state     | AutoGen / CrewAI / LangGraph each ship abstractions; cross-framework state-model spec is the path |
+| #9 Inference-time compute | OTel SIG attribute addition (`gen_ai.usage.thinking_tokens` etc.)                                 |
 
 ### Class D — Skip because well-covered AND not interesting to us at infrastructure layer (LOW leverage)
 
-| Area | Why skip |
-|---|---|
-| #13 Curriculum learning | Foundation-model layer, parked personal-skill |
+| Area                             | Why skip                                      |
+| -------------------------------- | --------------------------------------------- |
+| #13 Curriculum learning          | Foundation-model layer, parked personal-skill |
 | #14 Compression / representation | Foundation-model layer, parked personal-skill |
-| #15 Small model research | Foundation-model layer, parked personal-skill |
+| #15 Small model research         | Foundation-model layer, parked personal-skill |
 | #16 Mechanistic interpretability | Foundation-model layer, parked personal-skill |
 
 ### Recommended Phase B P0 ranking (for operator to confirm or revise at ISEDC Session 5)
@@ -890,16 +889,16 @@ Phase B P2 (lower priority but valuable): #8, #18, #17, #9.
 
 The skills that drive this research program are already installed. No new installs needed.
 
-| Skill | Path | Role in this program |
-|---|---|---|
-| `deep-research` | `~/.claude/skills/deep-research/` | Teams A, C, D, E lit reviews; 13 agents, 7 modes (full, quick-brief, paper-review, **lit-review**, fact-check, **Socratic**, systematic review) |
-| `academic-paper` | `~/.claude/skills/academic-paper/` | Paper-writing (not invoked in this immediate deliverable but available if Team B output extends to preprint) |
-| `academic-paper-reviewer` | `~/.claude/skills/academic-paper-reviewer/` | Multi-perspective review (5 reviewers + EIC + Devil's Advocate) — invoked in Team B `academic-pipeline` if used |
-| `academic-pipeline` | `~/.claude/skills/academic-pipeline/` | 10-stage end-to-end pipeline; Team B's mode (stop at stage 6 per operator's internal-only directive) |
-| `blog-research-article` | `~/.claude/skills/blog-research-article/` | Out of scope for this program but available if Team B's findings spawn a blog post |
-| `exec-decision-council` | `~/.claude/skills/exec-decision-council/` | ISEDC Session 5 invocation (Phase 4) |
-| `whiteglove-pdf` | `~/.claude/skills/whiteglove-pdf/` | Renders this very document to PDF |
-| `email` | `~/.claude/skills/email/` | Delivers the PDF to `jeremy@intentsolutions.io` |
+| Skill                     | Path                                        | Role in this program                                                                                                                            |
+| ------------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `deep-research`           | `~/.claude/skills/deep-research/`           | Teams A, C, D, E lit reviews; 13 agents, 7 modes (full, quick-brief, paper-review, **lit-review**, fact-check, **Socratic**, systematic review) |
+| `academic-paper`          | `~/.claude/skills/academic-paper/`          | Paper-writing (not invoked in this immediate deliverable but available if Team B output extends to preprint)                                    |
+| `academic-paper-reviewer` | `~/.claude/skills/academic-paper-reviewer/` | Multi-perspective review (5 reviewers + EIC + Devil's Advocate) — invoked in Team B `academic-pipeline` if used                                 |
+| `academic-pipeline`       | `~/.claude/skills/academic-pipeline/`       | 10-stage end-to-end pipeline; Team B's mode (stop at stage 6 per operator's internal-only directive)                                            |
+| `blog-research-article`   | `~/.claude/skills/blog-research-article/`   | Out of scope for this program but available if Team B's findings spawn a blog post                                                              |
+| `exec-decision-council`   | `~/.claude/skills/exec-decision-council/`   | ISEDC Session 5 invocation (Phase 4)                                                                                                            |
+| `whiteglove-pdf`          | `~/.claude/skills/whiteglove-pdf/`          | Renders this very document to PDF                                                                                                               |
+| `email`                   | `~/.claude/skills/email/`                   | Delivers the PDF to `jeremy@intentsolutions.io`                                                                                                 |
 
 ---
 
@@ -916,10 +915,10 @@ The MCP API is reliable but field-spec is strict — `authors.name` is not valid
 
 ## Appendix C — External repo verdicts
 
-| Repo | License | Verdict | Rationale |
-|---|---|---|---|
-| `Imbad0202/academic-research-skills` | CC-BY-NC 4.0 | **SKIP** | Non-commercial license incompatible with Apache 2.0 platform posture |
-| `multica-ai/andrej-karpathy-skills` | MIT | **OPTIONAL CHERRY-PICK** | Not actually skills — coding-discipline ruleset. Phase 0 task: pick 4 principles into `~/.claude/CLAUDE.md` § Core Principles |
+| Repo                                 | License      | Verdict                  | Rationale                                                                                                                     |
+| ------------------------------------ | ------------ | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| `Imbad0202/academic-research-skills` | CC-BY-NC 4.0 | **SKIP**                 | Non-commercial license incompatible with Apache 2.0 platform posture                                                          |
+| `multica-ai/andrej-karpathy-skills`  | MIT          | **OPTIONAL CHERRY-PICK** | Not actually skills — coding-discipline ruleset. Phase 0 task: pick 4 principles into `~/.claude/CLAUDE.md` § Core Principles |
 
 No other external skill suites under evaluation in this program.
 
@@ -959,81 +958,81 @@ Landscape matrices for areas where the surface is rich enough to warrant tabular
 
 ### E.1 Observability (Area #3)
 
-| Project | Capability shipped | License | Last release | Integration / contribution potential |
-|---|---|---|---|---|
-| OpenTelemetry GenAI SIG | Model + agent spans in Development status | Apache 2.0 (CNCF) | semconv updates ongoing as of May 2026 | High — submit `gen_ai.agent.trajectory.*` conventions |
-| OpenInference | 47+ instrumentation packages, AI-specific conventions | Apache 2.0 | 2026-05-18 (Go OpenAI) | High — native integration target |
-| OpenLLMetry | 257 releases, upstreaming to OTel | Apache 2.0 | v0.60.0 (2026-04-19) | Medium — reference pattern, not direct convergence |
-| Phoenix (Arize) | Observability + eval + traces | **Elastic License 2.0** | ongoing | Low — license-incompatible |
-| Langfuse | Observability + eval + prompt mgmt | MIT core / ee | v3.174.1 (2026-05-13) | Low — different surface |
-| AgentOps paper | Academic framing for agent obs | (paper) | 2024 | Reference citation |
+| Project                 | Capability shipped                                    | License                 | Last release                           | Integration / contribution potential                  |
+| ----------------------- | ----------------------------------------------------- | ----------------------- | -------------------------------------- | ----------------------------------------------------- |
+| OpenTelemetry GenAI SIG | Model + agent spans in Development status             | Apache 2.0 (CNCF)       | semconv updates ongoing as of May 2026 | High — submit `gen_ai.agent.trajectory.*` conventions |
+| OpenInference           | 47+ instrumentation packages, AI-specific conventions | Apache 2.0              | 2026-05-18 (Go OpenAI)                 | High — native integration target                      |
+| OpenLLMetry             | 257 releases, upstreaming to OTel                     | Apache 2.0              | v0.60.0 (2026-04-19)                   | Medium — reference pattern, not direct convergence    |
+| Phoenix (Arize)         | Observability + eval + traces                         | **Elastic License 2.0** | ongoing                                | Low — license-incompatible                            |
+| Langfuse                | Observability + eval + prompt mgmt                    | MIT core / ee           | v3.174.1 (2026-05-13)                  | Low — different surface                               |
+| AgentOps paper          | Academic framing for agent obs                        | (paper)                 | 2024                                   | Reference citation                                    |
 
 ### E.2 Eval frameworks (Area #2)
 
-| Project | Capability | License | Last release | Integration / contribution potential |
-|---|---|---|---|---|
-| Inspect AI (UK AISI) | 200+ pre-built evals, tool-use, multi-turn, model-graded | MIT | 5714 commits, active | Highest — standards-track precedent, government-backed |
-| Promptfoo | CLI + library, prompt testing, red-team, CI/CD | MIT (now OpenAI subsidiary) | v0.121.11 (2026-05-08), 408 releases | Medium — CI-pattern reference, adapter target |
-| DSPy (Stanford NLP) | Programming model, Assertions, optimizer | MIT | v3.2.1 (2026-05-05) | Low — orthogonal surface |
-| MT-Bench (Zheng et al.) | LLM-as-judge benchmark format | (paper + repo) | NeurIPS 2023 (8440 cites) | Citation-grounding only |
+| Project                 | Capability                                               | License                     | Last release                         | Integration / contribution potential                   |
+| ----------------------- | -------------------------------------------------------- | --------------------------- | ------------------------------------ | ------------------------------------------------------ |
+| Inspect AI (UK AISI)    | 200+ pre-built evals, tool-use, multi-turn, model-graded | MIT                         | 5714 commits, active                 | Highest — standards-track precedent, government-backed |
+| Promptfoo               | CLI + library, prompt testing, red-team, CI/CD           | MIT (now OpenAI subsidiary) | v0.121.11 (2026-05-08), 408 releases | Medium — CI-pattern reference, adapter target          |
+| DSPy (Stanford NLP)     | Programming model, Assertions, optimizer                 | MIT                         | v3.2.1 (2026-05-05)                  | Low — orthogonal surface                               |
+| MT-Bench (Zheng et al.) | LLM-as-judge benchmark format                            | (paper + repo)              | NeurIPS 2023 (8440 cites)            | Citation-grounding only                                |
 
 ### E.3 Benchmarks / datasets (Areas #1, #5)
 
-| Project | Capability | License | Last update | Integration / contribution potential |
-|---|---|---|---|---|
-| SWE-bench (Princeton NLP) | Real-world GitHub issues, Docker eval logs, leaderboard | MIT | 2025-01-13 (Multimodal + sb-cli) | High — replay-fidelity classification test set |
-| OSWorld | Computer-use agent benchmark with screenshots/actions/video | Apache 2.0 | 2025-07-28 (OSWorld-Verified + AWS parallelization) | High — `agent-loop-trace/v1` test case |
-| tau-bench (Sierra Research) | Conversational agent + tool benchmark | MIT | active, redirected to tau³ | Medium — trajectory format reference |
-| METR eval-analysis-public | Time-horizon methodology, raw `runs.jsonl` | (license unspecified) | 24 commits | Medium — reliability scoring sanity check |
-| REAL paper | Deterministic simulations of real websites | (paper) | 2025 (26 cites) | High — replay-fidelity literature alignment |
+| Project                     | Capability                                                  | License               | Last update                                         | Integration / contribution potential           |
+| --------------------------- | ----------------------------------------------------------- | --------------------- | --------------------------------------------------- | ---------------------------------------------- |
+| SWE-bench (Princeton NLP)   | Real-world GitHub issues, Docker eval logs, leaderboard     | MIT                   | 2025-01-13 (Multimodal + sb-cli)                    | High — replay-fidelity classification test set |
+| OSWorld                     | Computer-use agent benchmark with screenshots/actions/video | Apache 2.0            | 2025-07-28 (OSWorld-Verified + AWS parallelization) | High — `agent-loop-trace/v1` test case         |
+| tau-bench (Sierra Research) | Conversational agent + tool benchmark                       | MIT                   | active, redirected to tau³                          | Medium — trajectory format reference           |
+| METR eval-analysis-public   | Time-horizon methodology, raw `runs.jsonl`                  | (license unspecified) | 24 commits                                          | Medium — reliability scoring sanity check      |
+| REAL paper                  | Deterministic simulations of real websites                  | (paper)               | 2025 (26 cites)                                     | High — replay-fidelity literature alignment    |
 
 ### E.4 Memory frameworks (Area #7)
 
-| Project | Capability | License | Last release | Integration / contribution potential |
-|---|---|---|---|---|
-| Mem0 (paper + repo) | Production-ready scalable long-term memory | (check repo, paper Apache-feeling) | ECAI 2025, 319 cites | High — adapter pattern + memory integrity attestation |
-| Zep | Temporal knowledge graph architecture | (check repo) | 2025, 161 cites | High — temporal-KG semantics input to our memory spec |
-| LoCoMo paper | Very long-term conversational memory benchmark | (paper + dataset) | ACL 2024, 432 cites | Citation-grounding |
-| BABILong | Long-context reasoning benchmark | (check repo) | NeurIPS 2024, 203 cites | Citation-grounding |
+| Project             | Capability                                     | License                            | Last release            | Integration / contribution potential                  |
+| ------------------- | ---------------------------------------------- | ---------------------------------- | ----------------------- | ----------------------------------------------------- |
+| Mem0 (paper + repo) | Production-ready scalable long-term memory     | (check repo, paper Apache-feeling) | ECAI 2025, 319 cites    | High — adapter pattern + memory integrity attestation |
+| Zep                 | Temporal knowledge graph architecture          | (check repo)                       | 2025, 161 cites         | High — temporal-KG semantics input to our memory spec |
+| LoCoMo paper        | Very long-term conversational memory benchmark | (paper + dataset)                  | ACL 2024, 432 cites     | Citation-grounding                                    |
+| BABILong            | Long-context reasoning benchmark               | (check repo)                       | NeurIPS 2024, 203 cites | Citation-grounding                                    |
 
 ### E.5 Standards bodies (Area #20)
 
-| Body | Spec / surface | License / governance | Active? | Contribution potential |
-|---|---|---|---|---|
-| OpenTelemetry GenAI SIG | Semantic conventions (in Development) | Apache 2.0 (CNCF) | Highly | Highest — gate-result/v1 + trajectory conventions |
-| OpenInference (Arize) | Complementary AI-spec semantic conventions | Apache 2.0 | Highly | High — convention alignment |
-| MCP (Model Context Protocol) | Tool-call protocol | Anthropic-led, multi-vendor adopted | Highly | High — tool-call attestation |
-| SLSA framework | Supply-chain attestation predicates | OpenSSF | Active | Medium — synthetic-data provenance predicate type |
-| Sigstore | Artifact signing | CNCF | Highly | Medium — already integrated |
-| W3C | (no formal AI WG) | — | No | Skip |
+| Body                         | Spec / surface                             | License / governance                | Active? | Contribution potential                            |
+| ---------------------------- | ------------------------------------------ | ----------------------------------- | ------- | ------------------------------------------------- |
+| OpenTelemetry GenAI SIG      | Semantic conventions (in Development)      | Apache 2.0 (CNCF)                   | Highly  | Highest — gate-result/v1 + trajectory conventions |
+| OpenInference (Arize)        | Complementary AI-spec semantic conventions | Apache 2.0                          | Highly  | High — convention alignment                       |
+| MCP (Model Context Protocol) | Tool-call protocol                         | Anthropic-led, multi-vendor adopted | Highly  | High — tool-call attestation                      |
+| SLSA framework               | Supply-chain attestation predicates        | OpenSSF                             | Active  | Medium — synthetic-data provenance predicate type |
+| Sigstore                     | Artifact signing                           | CNCF                                | Highly  | Medium — already integrated                       |
+| W3C                          | (no formal AI WG)                          | —                                   | No      | Skip                                              |
 
 ### E.6 Multi-agent frameworks (Area #17)
 
-| Project | Capability | License | Last release | Integration / contribution potential |
-|---|---|---|---|---|
-| AutoGen (Microsoft) | Multi-agent framework | MIT | active | Medium — state-model convergence target |
-| CrewAI | Multi-agent roles + tasks | MIT | active | Medium — adapter pattern |
-| LangGraph (LangChain) | Graph-based multi-agent orchestration | MIT | active | Medium — composition-dag alignment |
-| MetaGPT | Multi-agent software development team | MIT | active | Reference |
-| MegaAgent paper | Without predefined SOPs | (paper) | ACL 2025, 43 cites | Citation-grounding |
-| SagaLLM paper | Context mgmt + validation + transactions | (paper + repo) | VLDB 2025, 34 cites | High — direct alignment opportunity |
+| Project               | Capability                               | License        | Last release        | Integration / contribution potential    |
+| --------------------- | ---------------------------------------- | -------------- | ------------------- | --------------------------------------- |
+| AutoGen (Microsoft)   | Multi-agent framework                    | MIT            | active              | Medium — state-model convergence target |
+| CrewAI                | Multi-agent roles + tasks                | MIT            | active              | Medium — adapter pattern                |
+| LangGraph (LangChain) | Graph-based multi-agent orchestration    | MIT            | active              | Medium — composition-dag alignment      |
+| MetaGPT               | Multi-agent software development team    | MIT            | active              | Reference                               |
+| MegaAgent paper       | Without predefined SOPs                  | (paper)        | ACL 2025, 43 cites  | Citation-grounding                      |
+| SagaLLM paper         | Context mgmt + validation + transactions | (paper + repo) | VLDB 2025, 34 cites | High — direct alignment opportunity     |
 
 ### E.7 Tool-use benchmarks (Area #8)
 
-| Project | Capability | License | Last release | Integration / contribution potential |
-|---|---|---|---|---|
-| MCP-Bench | MCP-server-based tool-use benchmark | (check) | 2025, 58 cites | High — adapter to gate-result/v1 |
-| MCPToolBench++ | Large-scale MCP tool benchmark | (check) | 2025, 24 cites | High — direct adapter |
-| TRAJECT-Bench | Trajectory-aware agentic tool-use | (check) | 2025, 11 cites | Medium |
-| xLAM | Large action model family | (check) | 2024, 103 cites | Citation-grounding |
+| Project        | Capability                          | License | Last release    | Integration / contribution potential |
+| -------------- | ----------------------------------- | ------- | --------------- | ------------------------------------ |
+| MCP-Bench      | MCP-server-based tool-use benchmark | (check) | 2025, 58 cites  | High — adapter to gate-result/v1     |
+| MCPToolBench++ | Large-scale MCP tool benchmark      | (check) | 2025, 24 cites  | High — direct adapter                |
+| TRAJECT-Bench  | Trajectory-aware agentic tool-use   | (check) | 2025, 11 cites  | Medium                               |
+| xLAM           | Large action model family           | (check) | 2024, 103 cites | Citation-grounding                   |
 
 ### E.8 Routing frameworks (Area #18)
 
-| Project | Capability | License | Last release | Integration / contribution potential |
-|---|---|---|---|---|
-| LiteLLM (BerriAI) | De-facto LLM proxy + router | MIT | active | High — routing-decision metadata addition |
-| RouteLLM (Anyscale-affiliated) | Open routing framework | (check) | active | Medium |
-| MasRouter paper | Routing for multi-agent systems | (paper) | ACL 2025, 52 cites | Citation-grounding |
+| Project                        | Capability                      | License | Last release       | Integration / contribution potential      |
+| ------------------------------ | ------------------------------- | ------- | ------------------ | ----------------------------------------- |
+| LiteLLM (BerriAI)              | De-facto LLM proxy + router     | MIT     | active             | High — routing-decision metadata addition |
+| RouteLLM (Anyscale-affiliated) | Open routing framework          | (check) | active             | Medium                                    |
+| MasRouter paper                | Routing for multi-agent systems | (paper) | ACL 2025, 52 cites | Citation-grounding                        |
 
 (Areas #4, #6, #9-12, #19, #21 covered in their per-area treatments; full landscape matrices in companion competitive-intel doc.)
 
@@ -1043,12 +1042,12 @@ Landscape matrices for areas where the surface is rich enough to warrant tabular
 
 Four areas from the May 2026 advisory rounds are foundation-model-level research and explicitly out of IEP scope. They are tracked as a single OPS bead — `ops-personal-pillar-2026-05` — as a long-running personal-development thread.
 
-| Area | Description | Pedagogical reference |
-|---|---|---|
-| #13 Curriculum learning | Training-data ordering for sample efficiency | nanoGPT + Karpathy's training-from-scratch series |
-| #14 Compression / representation | Quantization, pruning, distillation | llama.cpp + GGUF tooling |
-| #15 Small model research | 0.5B-10B-parameter pedagogical training | Karpathy's "Build a Transformer From Scratch" |
-| #16 Mechanistic interpretability | Reverse-engineering trained-model internals | TransformerLens (Neel Nanda), Anthropic SAE releases |
+| Area                             | Description                                  | Pedagogical reference                                |
+| -------------------------------- | -------------------------------------------- | ---------------------------------------------------- |
+| #13 Curriculum learning          | Training-data ordering for sample efficiency | nanoGPT + Karpathy's training-from-scratch series    |
+| #14 Compression / representation | Quantization, pruning, distillation          | llama.cpp + GGUF tooling                             |
+| #15 Small model research         | 0.5B-10B-parameter pedagogical training      | Karpathy's "Build a Transformer From Scratch"        |
+| #16 Mechanistic interpretability | Reverse-engineering trained-model internals  | TransformerLens (Neel Nanda), Anthropic SAE releases |
 
 **Cadence**: quarterly re-evaluation. Never spawns sub-beads under iec-/iel-/iah-/iaj-/iar- prefixes — that would contaminate IEP scope. If material from this pillar later becomes relevant to a kernel decision, it gets cited but not re-scoped.
 
@@ -1147,7 +1146,7 @@ Summing the six P0 work-block estimates: ~18-24 work-blocks of construction + ~4
 If operator bandwidth is constrained to a subset, the dropdown priority would be (in retention order):
 
 1. Retain `iel-E15` (uniquely-ours, low-coordination)
-2. Retain `iaj-E12` (uniquely-ours, mid-coordination)  
+2. Retain `iaj-E12` (uniquely-ours, mid-coordination)
 3. Retain `iec-E10` (low-risk, defensive value)
 4. Defer `iec-E08` (high-scope, coordination-heavy) → Phase C
 5. Defer `iaj-E11` (kernel-surface-addition coordination cost) → Phase C
@@ -1355,7 +1354,7 @@ The corpus is overwhelmingly post-2023, with the median publication date in 2024
 
 Terms defined for this audit's purposes. Where a term has a canonical definition in the platform glossary (`intent-eval-lab/000-docs/014-DR-GLOS-canonical-glossary.md`), this glossary defers — entries here cover only audit-specific usages or shorthand.
 
-**`agent-loop-trace/v1`** — proposed canonical event taxonomy for agent runs, under iel-E12. Distinct from `SessionTrace` (entity in kernel) by being the wire-format for events flowing into a SessionTrace. The relationship is approximately: a `SessionTrace` is the *aggregated* artifact composed from many `agent-loop-trace/v1` events.
+**`agent-loop-trace/v1`** — proposed canonical event taxonomy for agent runs, under iel-E12. Distinct from `SessionTrace` (entity in kernel) by being the wire-format for events flowing into a SessionTrace. The relationship is approximately: a `SessionTrace` is the _aggregated_ artifact composed from many `agent-loop-trace/v1` events.
 
 **Build vs contribute** — shorthand for the audit's classification of work effort. "Build" = construct in our repos (intent-eval-core / lab / audit-harness / j-rig / rollout-gate). "Contribute" = submit upstream to an existing OSS project, standards body, or community spec. The audit uses this binary to focus operator decisions; in practice, many epics involve both (build the in-repo capability and contribute the spec upstream).
 

@@ -8,12 +8,12 @@
 
 ## Status
 
-| Session | Date | Deliverable |
-|---|---|---|
-| 1 | 2026-05-28 | DESIGN.md + directory scaffold (this session) |
-| 2 | TBD | Corpus inventory + pre-registration sha |
-| 3 | TBD | Arm A execution |
-| 4 | TBD | Arm B execution + RESULTS.md + BLOG-DRAFT.md |
+| Session | Date       | Deliverable                                   |
+| ------- | ---------- | --------------------------------------------- |
+| 1       | 2026-05-28 | DESIGN.md + directory scaffold (this session) |
+| 2       | TBD        | Corpus inventory + pre-registration sha       |
+| 3       | TBD        | Arm A execution                               |
+| 4       | TBD        | Arm B execution + RESULTS.md + BLOG-DRAFT.md  |
 
 ## Entry points
 

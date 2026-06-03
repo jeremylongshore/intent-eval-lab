@@ -3,7 +3,7 @@ name: Research contribution
 about: Citation, paper note, competitive landscape addition, or methodology reference
 title: "[research] "
 labels: research
-assignees: ''
+assignees: ""
 ---
 
 ## What you'd like to add

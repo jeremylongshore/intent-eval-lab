@@ -14,20 +14,20 @@
 
 Phase A.0 null-hypothesis baseline executed 2026-05-30 → 2026-05-31. **OUTCOME: PROCEED.** The Refiner mechanism produces statistically-significant positive lift over the naive baseline (Wilcoxon p < 0.000001, Cohen's d = +1.49, large effect). Naive baseline does NOT achieve > 70% of projected Refiner lift (actually NEGATIVE; clamped at 0%), so the DR-028 P0-RATIFY-3 DESCOPE trigger does not fire. **Phase B continues** per plan with a tightening recommendation on acceptance-criterion calibration and a magnitude-shortfall flag (Refiner achieved 38.9% of projected 1.5pp lift).
 
-| Field | Value |
-|---|---|
-| Outcome | **PROCEED** |
-| Naive lift (best-K mean) | −6.1 pp |
-| Refiner lift (mean) | +0.58 pp |
-| Δ(B − A) per specimen, mean | +6.68 pp |
-| Primary test | Wilcoxon signed-rank one-sided (B > A) |
-| Primary p-value | < 0.000001 |
-| Cohen's d | +1.49 |
-| Naive fraction of projected (1.5 pp) | 0.0% |
-| Refiner fraction of projected | 38.9% |
-| DESCOPE trigger | NOT FIRED |
-| Total cost | $0.00 of $20 ceiling |
-| n_specimens_paired | 60 |
+| Field                                | Value                                  |
+| ------------------------------------ | -------------------------------------- |
+| Outcome                              | **PROCEED**                            |
+| Naive lift (best-K mean)             | −6.1 pp                                |
+| Refiner lift (mean)                  | +0.58 pp                               |
+| Δ(B − A) per specimen, mean          | +6.68 pp                               |
+| Primary test                         | Wilcoxon signed-rank one-sided (B > A) |
+| Primary p-value                      | < 0.000001                             |
+| Cohen's d                            | +1.49                                  |
+| Naive fraction of projected (1.5 pp) | 0.0%                                   |
+| Refiner fraction of projected        | 38.9%                                  |
+| DESCOPE trigger                      | NOT FIRED                              |
+| Total cost                           | $0.00 of $20 ceiling                   |
+| n_specimens_paired                   | 60                                     |
 
 ---
 
@@ -49,6 +49,7 @@ Caveats carried forward:
 All numbers from `intent-eval-lab/research/phase-a-0-baseline/results/aggregated/statistics.json`.
 
 ### Primary test
+
 - Test selection rule (pre-registered): Welch t-test if Shapiro-Wilk normality p > 0.05; Wilcoxon fallback otherwise
 - Shapiro-Wilk on (B − A) per specimen: p = 0.0000 → non-normal → **Wilcoxon signed-rank (one-sided) applied**
 - Wilcoxon statistic: 1755.5
@@ -56,25 +57,30 @@ All numbers from `intent-eval-lab/research/phase-a-0-baseline/results/aggregated
 - α = 0.05; **reject null; Refiner > Naive at p < 1e-6**
 
 ### Effect size
+
 - Cohen's d (Welch-pooled): **+1.486** — large effect per conventional bands
 
 ### Per-K Arm A descriptive (n=60 each)
-| K | mean delta | std |
-|---|---|---|
-| 0 | −12.33 pp | 17.04 |
-| 3 | −12.27 pp | 20.36 |
-| 8 | −14.90 pp | 25.14 |
-| 16 | −14.90 pp | 22.61 |
+
+| K   | mean delta | std   |
+| --- | ---------- | ----- |
+| 0   | −12.33 pp  | 17.04 |
+| 3   | −12.27 pp  | 20.36 |
+| 8   | −14.90 pp  | 25.14 |
+| 16  | −14.90 pp  | 22.61 |
 
 ### K-sweep contrasts
+
 - K=3 vs K=0: +0.06 pp (n.s.) — more exemplars does NOT help naive
 - K=8 vs K=3: −2.63 pp (n.s., opposite direction)
 - K=16 vs K=8: ≈0 pp — diminishing-returns curve flat at negative offset
 
 ### Per-stratum
+
 B > A consistent across A/B/C strata. Full table in `statistics.json`.
 
 ### Goodhart audit (v0.1)
+
 - Per-specimen accept rate: 15.0% (9 of 60 specimens accepted Refiner edit)
 - Acceptance gate enforces strict-improvement-on-marketplace + non-degradation-on-other-4-dims (this IS the Goodhart-resistance mechanism by construction)
 - Full per-iteration audit of accepted set: deferred to P2 follow-up bead
@@ -137,14 +143,14 @@ Seat-anticipated positions (steel-manned):
 
 ## 7. Open follow-ups (filed as future beads after this DR ships)
 
-| Item | Priority |
-|---|---|
-| Per-iteration full 5-dim Goodhart audit of 9 accepted specimens | P2 |
-| Runner fix: aggregate `_summary.json` from existing response.json files on retry, not just current invocation | P2 |
-| ADR amendment formalizing 405b→70b provider substitution | P3 |
-| Blog post authoring (PROCEED variant) | P2 |
-| Mid-Phase-B empirical re-check against extended corpus | P2 (deferred — fires at Phase B mid-buildout) |
-| DR-BAND-029 amendment re-anchoring against ~0.6 pp empirical Refiner lift | P2 |
+| Item                                                                                                          | Priority                                      |
+| ------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| Per-iteration full 5-dim Goodhart audit of 9 accepted specimens                                               | P2                                            |
+| Runner fix: aggregate `_summary.json` from existing response.json files on retry, not just current invocation | P2                                            |
+| ADR amendment formalizing 405b→70b provider substitution                                                      | P3                                            |
+| Blog post authoring (PROCEED variant)                                                                         | P2                                            |
+| Mid-Phase-B empirical re-check against extended corpus                                                        | P2 (deferred — fires at Phase B mid-buildout) |
+| DR-BAND-029 amendment re-anchoring against ~0.6 pp empirical Refiner lift                                     | P2                                            |
 
 ---
 

@@ -3,7 +3,7 @@ name: Bug report
 about: Something is wrong with code, methodology, or documentation in this repo
 title: "[bug] "
 labels: bug
-assignees: ''
+assignees: ""
 ---
 
 ## What's broken

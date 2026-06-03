@@ -22,7 +22,7 @@ constraints that keep it honest and on the right side of prior governance.
 The scorecard exists to do one thing competitors selling unverifiable numbers cannot:
 let any reader **cryptographically confirm a result was not altered after the fact**,
 and trace it — in plain English — back to what was done and how. Reproducibility via
-*signature*, on top of reproducibility via *transparency*.
+_signature_, on top of reproducibility via _transparency_.
 
 ---
 
@@ -44,20 +44,20 @@ These are not aspirational — the live implementation already satisfies all of 
    citation integrity. It **links to** peer boards (e.g. `gbrain-evals`) and does **not**
    restate or claim-to-beat their numbers. This is the anti-derivative guard from the
    2026-05-31 ground-truth review (HIGH-risk item): "signed" is the differentiator only
-   if the *measured dimension* is also distinct.
+   if the _measured dimension_ is also distinct.
 
 2. **No predicate URI declared at `labs.*`.** Published bundles are signed as **blobs**;
    `predicate_uri_set` is empty. The `skill-binary-eval/v1` predicate stays **reserved,
-   not declared** — production-Rekor *predicate declaration* remains gated (per DR-010 Q3
-   + DR-018) on a normative SPEC.md + DNSSEC + CAA clearing for
-   `evals.intentsolutions.io`, none of which have. (Verified 2026-06-01: `evals.*` has no
-   DNSSEC and serves no TLS.) Predicate URIs live ONLY at `evals.*`, never `labs.*`.
+   not declared** — production-Rekor _predicate declaration_ remains gated (per DR-010 Q3
+   - DR-018) on a normative SPEC.md + DNSSEC + CAA clearing for
+     `evals.intentsolutions.io`, none of which have. (Verified 2026-06-01: `evals.*` has no
+     DNSSEC and serves no TLS.) Predicate URIs live ONLY at `evals.*`, never `labs.*`.
 
 3. **No aggregate PASS%** across heterogeneous predicates (inherits DR-035 C3). Enforced
    in CI by `scripts/regenerate.py` refusal regex + `deploy.yml` gate.
 
 4. **Append-only signatures.** Evidence Bundles are signed once against the exact bytes at
-   sign time; corrections are a *new* bundle referencing the prior — never an in-place
+   sign time; corrections are a _new_ bundle referencing the prior — never an in-place
    re-sign (kernel `evidence-bundle.schema.json` discipline). When a signed result's
    source docs are later annotated (e.g. the Phase A.0 frontmatter-only scope caveat added
    2026-06-01), the v1 signature stands as honest history and the annotation is disclosed,
@@ -76,13 +76,13 @@ These are not aspirational — the live implementation already satisfies all of 
 
 ## 3. What is already live under this direction (as of 2026-06-01)
 
-| Artifact | State |
-|---|---|
-| Scorecard page `labs.intentsolutions.io/eval-sets/j-rig-bench/` | LIVE (HTTP 200) |
-| Plain-English walkthrough `/eval-sets/j-rig-bench/phase-a0/` | LIVE — question / method / 60-skill list / worked example / proof / honest scope |
-| Phase A.0 signed Evidence Bundle | Rekor log index `1689291334`, `cosign verify-blob ... Verified OK` |
-| Signing workflow | `intent-eval-lab/.github/workflows/sign-evidence-bundle.yml` (GitHub OIDC → Fulcio keyless → cosign sign-blob → production Rekor, self-verifying, deterministic + commit-independent bundle) |
-| Source-doc consistency | RESULTS.md + DR-036 annotated with the frontmatter-only scope caveat (PR #95) |
+| Artifact                                                        | State                                                                                                                                                                                        |
+| --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Scorecard page `labs.intentsolutions.io/eval-sets/j-rig-bench/` | LIVE (HTTP 200)                                                                                                                                                                              |
+| Plain-English walkthrough `/eval-sets/j-rig-bench/phase-a0/`    | LIVE — question / method / 60-skill list / worked example / proof / honest scope                                                                                                             |
+| Phase A.0 signed Evidence Bundle                                | Rekor log index `1689291334`, `cosign verify-blob ... Verified OK`                                                                                                                           |
+| Signing workflow                                                | `intent-eval-lab/.github/workflows/sign-evidence-bundle.yml` (GitHub OIDC → Fulcio keyless → cosign sign-blob → production Rekor, self-verifying, deterministic + commit-independent bundle) |
+| Source-doc consistency                                          | RESULTS.md + DR-036 annotated with the frontmatter-only scope caveat (PR #95)                                                                                                                |
 
 Bead trail: `tr08.1` (scorecard, CLOSED), `tr08.24` (signing, CLOSED), `tr08.3` (repo
 topics/homepage, CLOSED), this DR closes `tr08.2`.

@@ -73,7 +73,8 @@ Revisit and create bead + GH issue + Plane issue when EITHER:
   format + Gherkin scenarios) have shipped AND sole-prop bandwidth is available for Wave 3 scope.
 
 When the trigger fires, the first action is creating the three tracking artifacts (bead + GH issue
-+ Plane issue) before writing any code.
+
+- Plane issue) before writing any code.
 
 ---
 
@@ -145,7 +146,7 @@ peer-spec module skeleton.
 ### What the insight is
 
 The MM-1..MM-6 failure-mode vocabulary in `specs/mcp-plugin-observability/` is intentionally
-finite at v0.1.0-draft. MM-7+ admission is deferred — but the admission *path* is shipped in
+finite at v0.1.0-draft. MM-7+ admission is deferred — but the admission _path_ is shipped in
 Milestone 1 at `specs/mcp-plugin-observability/v0.1.0-draft/CONTRIBUTING-failure-shape.md`.
 
 A new MM-N can only enter the spec via the three admission criteria (C1: ≥2 independent
@@ -285,14 +286,16 @@ Initial scaffold form: `intent-eval-lab/specs/FUTURE-platforms/agent-runtime-san
 Per Q3 CISO per-predicate assessment, the following predicate URIs are deferred or rejected:
 
 ### Deferred to Phase B+ (sanitization spec gated)
+
 - **`harness-experiment/v1`** — experimental output is the LAST thing to anchor in Rekor permanently. Phase B+ when experimental-output stability demonstrated.
 - **`cache-decision/v1`** — leaks prompt-shape and access-pattern data. Phase B+ after sanitization spec lands at `intent-eval-lab/specs/sanitization/v0.1.0-draft/SPEC.md`.
 
 ### REJECTED for v1 (CISO veto preserved)
+
 - **`agent-loop-trace/v1`** — loop traces contain prompts, tool calls, credential-shaped strings, agent reasoning. Permanent Rekor record of potentially sensitive trace data is unacceptable. **Trigger to revisit:** trace-sanitization spec authored AND passes CISO PASS/FAIL sanitization-test fixture in CI. Until then, REJECTED for v1.
 
 ---
 
-*This file is maintained by the ISEDC process. Entries graduate to tracked backlog when their
+_This file is maintained by the ISEDC process. Entries graduate to tracked backlog when their
 trigger condition is met. Do not delete entries without ISEDC deliberation or acting-head-of-board
-direction.*
+direction._

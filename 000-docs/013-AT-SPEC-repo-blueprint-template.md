@@ -1,5 +1,4 @@
 ---
-title: Blueprint C — Repo Blueprint Template
 date: 2026-05-14
 authors:
   - Jeremy Longshore (Intent Solutions)
@@ -29,7 +28,7 @@ applies_to:
 
 > **This document is a TEMPLATE, not a normative platform doc.** Blueprint A (`011-AT-ARCH-ecosystem-master-blueprint.md`) is the constitution. Blueprint B (`012-AT-ARCH-platform-runtime-blueprint.md`) is the kernel specification. Blueprint C — **this document** — is the reusable scaffold that every repo in the ecosystem applies to produce its **own per-repo blueprint** (`NNN-AT-ARCH-repo-blueprint.md` in that repo's `000-docs/`).
 >
-> The per-repo blueprint that results from applying this template is the single source of truth for *that* repo's identity, architecture, boundaries, and DoD. It inherits Blueprint A's principles and anti-goals, declares which Blueprint B canonical entities it touches, and links — never redefines — terminology from the canonical glossary (`014-DR-GLOS-canonical-glossary.md`).
+> The per-repo blueprint that results from applying this template is the single source of truth for _that_ repo's identity, architecture, boundaries, and DoD. It inherits Blueprint A's principles and anti-goals, declares which Blueprint B canonical entities it touches, and links — never redefines — terminology from the canonical glossary (`014-DR-GLOS-canonical-glossary.md`).
 
 ## How this document is organized
 
@@ -42,7 +41,7 @@ Author's Guide callouts inside the template-itself are formatted as block quotes
 
 ---
 
-# PART ONE — The Template (copy this into your repo)
+## PART ONE — The Template (copy this into your repo)
 
 > Author's Guide: Replace `{REPO_NAME}` everywhere it appears with your repo's canonical GitHub name (the name `gh repo view <name>` resolves to). Replace every `<placeholder>` token with repo-specific content. The frontmatter below is the per-repo blueprint's frontmatter, NOT this template's frontmatter — copy it and customize.
 
@@ -68,22 +67,22 @@ filing_standard: Document Filing Standard v4.3
 
 ## § 1 — Repo identity
 
-| Field | Value |
-|---|---|
-| **Repo name** | `{REPO_NAME}` (matches `gh repo view` and local working-dir name) |
-| **Type** | one of: `kernel` / `runtime` / `methodology` / `action-shell` / `spec` |
-| **Owner** | per `CODEOWNERS` — `<github-handle-or-team>` |
-| **Maturity** | one of: `pre-release` / `v0.x experimental` / `v1.x production` / `archived` |
-| **Ecosystem role** | one sentence describing this repo's job in the ecosystem |
-| **Bead prefix** | `<prefix>` (e.g., `iec-`, `iah-`, `iaj-`, `iar-`, `iel-`) — must match Blueprint A § 2.1 taxonomy |
-| **Plane module** | full module path inside the LAB/JRIG/etc. Plane project |
+| Field              | Value                                                                                             |
+| ------------------ | ------------------------------------------------------------------------------------------------- |
+| **Repo name**      | `{REPO_NAME}` (matches `gh repo view` and local working-dir name)                                 |
+| **Type**           | one of: `kernel` / `runtime` / `methodology` / `action-shell` / `spec`                            |
+| **Owner**          | per `CODEOWNERS` — `<github-handle-or-team>`                                                      |
+| **Maturity**       | one of: `pre-release` / `v0.x experimental` / `v1.x production` / `archived`                      |
+| **Ecosystem role** | one sentence describing this repo's job in the ecosystem                                          |
+| **Bead prefix**    | `<prefix>` (e.g., `iec-`, `iah-`, `iaj-`, `iar-`, `iel-`) — must match Blueprint A § 2.1 taxonomy |
+| **Plane module**   | full module path inside the LAB/JRIG/etc. Plane project                                           |
 
 ### 1.1 Dependencies (peer repos consumed)
 
 > Author's Guide: List every other ecosystem repo this repo consumes at runtime, build time, or test time. Cite each by repo name AND its own per-repo blueprint sequence number. Strict SemVer per Blueprint A § 4.2 — pin to a known-good range.
 
-| Peer repo | Consumed at | Pinned range | Cited blueprint |
-|---|---|---|---|
+| Peer repo     | Consumed at            | Pinned range            | Cited blueprint                                      |
+| ------------- | ---------------------- | ----------------------- | ---------------------------------------------------- |
 | `<peer-repo>` | runtime / build / test | `>=X.Y.Z, <NEXT_MAJOR>` | `<peer-repo>/000-docs/NNN-AT-ARCH-repo-blueprint.md` |
 
 ### 1.2 Non-goals (inherited + repo-specific)
@@ -127,9 +126,9 @@ What this repo refuses to do, full stop:
 
 What this repo defers to a later milestone. Each deferred item MUST forward-reference a `FUTURE.md` entry (in `intent-eval-lab/000-docs/FUTURE.md` for ecosystem-wide deferrals; in this repo's own `FUTURE.md` for repo-local deferrals).
 
-| Deferred item | Earliest milestone | FUTURE.md reference |
-|---|---|---|
-| `<item>` | `<milestone-id>` | `<path-to-FUTURE.md>#<anchor>` |
+| Deferred item | Earliest milestone | FUTURE.md reference            |
+| ------------- | ------------------ | ------------------------------ |
+| `<item>`      | `<milestone-id>`   | `<path-to-FUTURE.md>#<anchor>` |
 
 ### 3.4 Anti-goals (binding-scope-control)
 
@@ -146,7 +145,7 @@ The anti-goals here are binding in the same sense as Blueprint A § 3 — scope-
 
 Top-level directory structure and package boundaries:
 
-```
+```text
 {REPO_NAME}/
 ├── <top-level-dir>/   — <what lives here>
 ├── <top-level-dir>/   — <what lives here>
@@ -162,28 +161,28 @@ Top-level directory structure and package boundaries:
 
 ### 4.3 Runtime boundaries
 
-| Concern | Specification |
-|---|---|
-| **Process model** | single-process CLI / long-running daemon / GitHub Action runtime / worker-pool / other |
-| **IPC** | stdin-stdout JSON / HTTP / gRPC / file-based / message queue / N/A |
-| **External services consumed** | `<list — PostgreSQL? Redis? object storage? Rekor? provider APIs?>` |
+| Concern                          | Specification                                                                                                                |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **Process model**                | single-process CLI / long-running daemon / GitHub Action runtime / worker-pool / other                                       |
+| **IPC**                          | stdin-stdout JSON / HTTP / gRPC / file-based / message queue / N/A                                                           |
+| **External services consumed**   | `<list — PostgreSQL? Redis? object storage? Rekor? provider APIs?>`                                                          |
 | **Process isolation guarantees** | `<what runs in the same memory space; what is sandboxed; what crosses the credential-broker boundary per Blueprint B § 4.1>` |
 
 ### 4.4 Storage needs
 
 > Author's Guide: Repos that consume a Blueprint B § 2 canonical entity at rest need to declare their storage commitments here. Methodology and spec repos typically have none. Kernel repos define the schemas but do not themselves persist data.
 
-| Storage class | Backing store | Retention | Reference |
-|---|---|---|---|
-| `<hot index>` | PostgreSQL / Redis / object storage / other | `<window>` | `Blueprint B § 4.2 cost governance` |
-| `<cold archive>` | `<backing store>` | `<window>` | `<reference>` |
+| Storage class    | Backing store                               | Retention  | Reference                           |
+| ---------------- | ------------------------------------------- | ---------- | ----------------------------------- |
+| `<hot index>`    | PostgreSQL / Redis / object storage / other | `<window>` | `Blueprint B § 4.2 cost governance` |
+| `<cold archive>` | `<backing store>`                           | `<window>` | `<reference>`                       |
 
 ### 4.5 External dependencies (cite by version)
 
 Strict SemVer per Blueprint A § 4.2. Pin to a known-good range; MAJOR bumps require a Class-2 pair Decision Record before they land.
 
-| Dependency | Range | Purpose | Notes |
-|---|---|---|---|
+| Dependency      | Range                   | Purpose          | Notes                                         |
+| --------------- | ----------------------- | ---------------- | --------------------------------------------- |
 | `<dep>@<range>` | `>=X.Y.Z, <NEXT_MAJOR>` | `<what it does>` | `<security / license / replaceability notes>` |
 
 ### 4.6 Failure boundaries
@@ -201,8 +200,8 @@ What fails together; what is isolated; what bounded retries cover. Reference Blu
 
 > Author's Guide: Blueprint B § 2 enumerates 13 canonical entities (EvalSpec, EvalRun, MatcherMap, EvidenceBundle, JudgeDecision, RuntimeReceipt, RegressionPack, RolloutGate, SkillSnapshot, SessionTrace, ToolInvocation, CostRecord, FailureTaxonomy). For every entity this repo touches, declare whether you **consume**, **produce**, or **both**; cite which Blueprint B § 2.N attributes you implement (e.g., "produces with required-fields and content-hash; defers retention to consumer"); link to the canonical glossary entry. **Do NOT redefine canonical entities locally** — link to `014-DR-GLOS-canonical-glossary.md` § 2.N and let the glossary be the source of truth.
 
-| Entity | Direction | Blueprint B Ref | Attributes implemented | Glossary ref |
-|---|---|---|---|---|
+| Entity         | Direction                  | Blueprint B Ref     | Attributes implemented                                                                                                                                         | Glossary ref                              |
+| -------------- | -------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
 | `<EntityName>` | consumes / produces / both | `Blueprint B § 2.N` | `<required fields + UUID + mutability + retention + replayability + provenance + lifecycle + storage + audit — list only the attributes this repo implements>` | `014-DR-GLOS-canonical-glossary.md` § 2.N |
 
 **Entities NOT touched by this repo:** `<list the canonical entities this repo does not interact with — for completeness so a reviewer can spot a gap>`.
@@ -217,44 +216,44 @@ What fails together; what is isolated; what bounded retries cover. Reference Blu
 
 Command surface, flag taxonomy, exit codes.
 
-```
+```text
 {REPO_NAME} <subcommand> [flags] [args]
 ```
 
-| Subcommand | Purpose | Exit codes |
-|---|---|---|
+| Subcommand     | Purpose     | Exit codes                                                                |
+| -------------- | ----------- | ------------------------------------------------------------------------- |
 | `<subcommand>` | `<purpose>` | `0` success / `1` user error / `2` blocking violation / `N` repo-specific |
 
 ### 6.2 HTTP / gRPC APIs
 
-| Endpoint | Method | Purpose | Authn |
-|---|---|---|---|
+| Endpoint | Method                         | Purpose     | Authn                                         |
+| -------- | ------------------------------ | ----------- | --------------------------------------------- |
 | `<path>` | `GET` / `POST` / `gRPC method` | `<purpose>` | `<authn scheme — or N/A for unauthenticated>` |
 
 Or link to an OpenAPI / `.proto` file: `<path-to-spec>`.
 
 ### 6.3 Config files
 
-| File | Schema | Canonical example |
-|---|---|---|
+| File               | Schema                                                    | Canonical example   |
+| ------------------ | --------------------------------------------------------- | ------------------- |
 | `<path/to/config>` | `<JSON Schema / TypeScript type / Pydantic model — link>` | `<path-to-example>` |
 
 ### 6.4 Output formats
 
 > Author's Guide: If this repo emits Evidence Bundle rows, cite Blueprint B § 7 for the canonical `gate-result/v1` shape (or the relevant predicate URI). Do NOT redefine the predicate body locally. Plain-text fallback formats live here too.
 
-| Output | Shape | Reference |
-|---|---|---|
+| Output              | Shape                                                                | Reference         |
+| ------------------- | -------------------------------------------------------------------- | ----------------- |
 | Evidence Bundle row | in-toto Statement v1 over DSSE; predicate body per Blueprint B § 7.4 | `Blueprint B § 7` |
-| JSON envelope | `<schema reference>` | `<path>` |
-| Plain-text fallback | `<one-paragraph format description>` | n/a |
+| JSON envelope       | `<schema reference>`                                                 | `<path>`          |
+| Plain-text fallback | `<one-paragraph format description>`                                 | n/a               |
 
 ### 6.5 Event schemas
 
 OpenTelemetry attribute schema emitted by this repo. Forward-reference `iel-E12` (OTel RFC) until that RFC's `agent.rollout.gate.*` and `agent.evidence_bundle.*` taxonomies are locked.
 
-| Event | Attributes | OTel taxonomy |
-|---|---|---|
+| Event          | Attributes         | OTel taxonomy                                            |
+| -------------- | ------------------ | -------------------------------------------------------- |
 | `<event.name>` | `<attribute list>` | `agent.rollout.gate.<subkey>` (per iel-E12, forward-ref) |
 
 ### 6.6 Public-API stability promise
@@ -287,12 +286,12 @@ This section applies the Intent Solutions Testing SOP. Layer applicability is pe
 
 ### 7.3 L3 — unit tests
 
-| Concern | Target |
-|---|---|
-| **Framework** | `<vitest / pytest / cargo test / bats / other>` |
-| **Coverage floor** | `<NN%>` |
+| Concern                | Target                                                     |
+| ---------------------- | ---------------------------------------------------------- |
+| **Framework**          | `<vitest / pytest / cargo test / bats / other>`            |
+| **Coverage floor**     | `<NN%>`                                                    |
 | **Mutation kill rate** | `<NN%>` (or N/A if mutation testing is layer-inapplicable) |
-| **CI gate** | `<command>` |
+| **CI gate**            | `<command>`                                                |
 
 ### 7.4 L4 — integration tests
 
@@ -310,13 +309,13 @@ What is exercised against **external services** (Rekor, sigstore staging, provid
 
 ### 7.6 L6 — acceptance tests
 
-| Concern | Specification |
-|---|---|
+| Concern           | Specification                                                |
+| ----------------- | ------------------------------------------------------------ |
 | **Gherkin scope** | `<which user-facing flows are codified as Gherkin features>` |
-| **Lint** | `pnpm exec audit-harness gherkin-lint` |
-| **RTM** | `<path-to-requirements-traceability-matrix>` |
-| **Personas** | `<path-to-personas.md>` |
-| **Journeys** | `<path-to-journeys.md>` |
+| **Lint**          | `pnpm exec audit-harness gherkin-lint`                       |
+| **RTM**           | `<path-to-requirements-traceability-matrix>`                 |
+| **Personas**      | `<path-to-personas.md>`                                      |
+| **Journeys**      | `<path-to-journeys.md>`                                      |
 
 ### 7.7 L7 — chaos / property / fuzz
 
@@ -330,7 +329,7 @@ What is exercised against **external services** (Rekor, sigstore staging, provid
 
 The exact commands a PR runs on merge:
 
-```
+```text
 <command #1>
 <command #2>
 ...
@@ -340,10 +339,10 @@ The exact commands a PR runs on merge:
 
 ### 7.9 Fixtures
 
-| Concern | Specification |
-|---|---|
-| **Location** | `<tests/fixtures/ — or repo-specific path>` |
-| **Naming convention** | `<NNN-<kind>-<slug>.<ext>>` |
+| Concern                       | Specification                                                                                                                        |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **Location**                  | `<tests/fixtures/ — or repo-specific path>`                                                                                          |
+| **Naming convention**         | `<NNN-<kind>-<slug>.<ext>>`                                                                                                          |
 | **Vendor-generic discipline** | All fixtures are scrubbed per DR-004 S1Q2 + DR-010 § 10 reaffirmation. Partner-name grep guard runs on the fixtures directory in CI. |
 
 ### 7.10 Golden files (if applicable)
@@ -358,8 +357,8 @@ The exact commands a PR runs on merge:
 
 Secrets are handled via the **broker pattern** per Blueprint B § 4.1: credentials never cross the subprocess boundary. The broker is the only component that sees plaintext; downstream code receives a redacted handle.
 
-| Secret class | Storage | Broker | Repo-specific |
-|---|---|---|---|
+| Secret class                       | Storage                                                       | Broker               | Repo-specific                  |
+| ---------------------------------- | ------------------------------------------------------------- | -------------------- | ------------------------------ |
 | `<class — e.g., provider-api-key>` | `<SOPS-encrypted file / OS keychain / GitHub Actions secret>` | `<broker mechanism>` | `<any repo-specific handling>` |
 
 **SOPS + age standard**: when this repo persists secrets at rest, it uses the SOPS + age pattern per the parent `~/.claude/CLAUDE.md` § "SOPS + age secrets standard". `.env.sops` committed; `.env` plaintext is git-ignored; CI receives the age key via `SOPS_AGE_KEY` GitHub Actions secret. NEVER decrypt to disk.
@@ -368,13 +367,13 @@ Secrets are handled via the **broker pattern** per Blueprint B § 4.1: credentia
 
 > Author's Guide: Repos that execute user-supplied artifacts (skills, prompts, MCP servers, evaluation targets) MUST declare their sandbox model. Repos that only emit signed evidence with no user-code execution may declare "no sandbox required — no user-code execution path."
 
-| Concern | Default per Blueprint B § 4.1 | This repo's override (if any) |
-|---|---|---|
-| **Filesystem** | per-Run scratch directory; no host-FS access outside scratch | `<override or "default">` |
-| **Network egress** | declared egress allowlist per EvalSpec | `<override or "default">` |
-| **Wall-clock ceiling** | 30 minutes default; 4 hours hard ceiling | `<override or "default">` |
-| **Memory ceiling** | 2 GiB default; 8 GiB hard ceiling | `<override or "default">` |
-| **Credential boundary** | broker-pattern; plaintext never crosses subprocess boundary | `<override or "default">` |
+| Concern                 | Default per Blueprint B § 4.1                                | This repo's override (if any) |
+| ----------------------- | ------------------------------------------------------------ | ----------------------------- |
+| **Filesystem**          | per-Run scratch directory; no host-FS access outside scratch | `<override or "default">`     |
+| **Network egress**      | declared egress allowlist per EvalSpec                       | `<override or "default">`     |
+| **Wall-clock ceiling**  | 30 minutes default; 4 hours hard ceiling                     | `<override or "default">`     |
+| **Memory ceiling**      | 2 GiB default; 8 GiB hard ceiling                            | `<override or "default">`     |
+| **Credential boundary** | broker-pattern; plaintext never crosses subprocess boundary  | `<override or "default">`     |
 
 ### 8.3 Provider PASS/FAIL gates (RESTATE if this repo touches LLM providers)
 
@@ -391,12 +390,12 @@ Provider adapter library choice (LiteLLM / Vercel AI SDK / custom) is decided pe
 
 ### 8.4 Audit logging
 
-| Concern | Specification |
-|---|---|
+| Concern            | Specification                                                                                                 |
+| ------------------ | ------------------------------------------------------------------------------------------------------------- |
 | **What is logged** | `<authn / authz events / verdict emissions / signing events / verification failures / configuration changes>` |
-| **Append-only** | yes — log records are never amended in place per Blueprint A § 1.2 principle 3 |
-| **Signing** | Evidence Bundle rows are signed per Blueprint B § 7.5; non-Evidence audit log signing per `<repo-specific>` |
-| **Retention** | `<window — alignment with Blueprint B § 4.2 hot/warm/cold/archive classes>` |
+| **Append-only**    | yes — log records are never amended in place per Blueprint A § 1.2 principle 3                                |
+| **Signing**        | Evidence Bundle rows are signed per Blueprint B § 7.5; non-Evidence audit log signing per `<repo-specific>`   |
+| **Retention**      | `<window — alignment with Blueprint B § 4.2 hot/warm/cold/archive classes>`                                   |
 
 ### 8.5 Threat model
 
@@ -412,18 +411,18 @@ Provider adapter library choice (LiteLLM / Vercel AI SDK / custom) is decided pe
 
 > Author's Guide: List the events this repo emits. Forward-reference `iel-E12` (the OTel RFC) until the `agent.rollout.gate.*` and `agent.evidence_bundle.*` taxonomies are locked. Events that emit from this repo BEFORE the RFC is filed use the same names but carry a `taxonomy_status: draft` attribute so they are distinguishable from post-lock emissions.
 
-| Event | Trigger | Attributes |
-|---|---|---|
-| `agent.rollout.gate.<event>` | `<when this event fires>` | `<attribute list>` |
+| Event                           | Trigger                   | Attributes         |
+| ------------------------------- | ------------------------- | ------------------ |
+| `agent.rollout.gate.<event>`    | `<when this event fires>` | `<attribute list>` |
 | `agent.evidence_bundle.<event>` | `<when this event fires>` | `<attribute list>` |
 
 ### 9.2 Trace propagation
 
-| Concern | Specification |
-|---|---|
+| Concern               | Specification                                                                   |
+| --------------------- | ------------------------------------------------------------------------------- |
 | **Incoming trace ID** | how an inbound trace-id is honored (HTTP `traceparent` header / CLI flag / N/A) |
-| **Span hierarchy** | how this repo's spans nest under inbound spans |
-| **Span attributes** | required attributes per span per the iel-E12 RFC |
+| **Span hierarchy**    | how this repo's spans nest under inbound spans                                  |
+| **Span attributes**   | required attributes per span per the iel-E12 RFC                                |
 
 ### 9.3 Lineage capture
 
@@ -437,13 +436,13 @@ How this repo's outputs map to Blueprint B § 2 canonical entities for lineage p
 
 Structured logs, log-level taxonomy:
 
-| Level | When |
-|---|---|
-| `ERROR` | unrecoverable failure — operator action required |
-| `WARN` | degraded state — operation continues but signal is reduced |
-| `INFO` | high-level lifecycle events — start, end, terminal state transitions |
-| `DEBUG` | per-step diagnostics — disabled by default in production |
-| `TRACE` | per-operation diagnostics — enabled only in test environments |
+| Level   | When                                                                 |
+| ------- | -------------------------------------------------------------------- |
+| `ERROR` | unrecoverable failure — operator action required                     |
+| `WARN`  | degraded state — operation continues but signal is reduced           |
+| `INFO`  | high-level lifecycle events — start, end, terminal state transitions |
+| `DEBUG` | per-step diagnostics — disabled by default in production             |
+| `TRACE` | per-operation diagnostics — enabled only in test environments        |
 
 ### 9.5 Failure taxonomy
 
@@ -462,11 +461,11 @@ Or "N/A — this repo does not emit `FailureTaxonomy` rows" if applicable.
 
 ### 10.1 Token ceilings
 
-| Concern | Default | Per-EvalSpec override |
-|---|---|---|
-| **Per-invocation token ceiling** | `<NN tokens>` | permitted via EvalSpec `runtime_limits.token_ceiling` |
-| **Per-run wall-clock ceiling** | `<NN minutes>` | permitted via EvalSpec `runtime_limits.wall_clock_ceiling` |
-| **Concurrency** | `<NN concurrent invocations>` | per-deployment |
+| Concern                          | Default                       | Per-EvalSpec override                                      |
+| -------------------------------- | ----------------------------- | ---------------------------------------------------------- |
+| **Per-invocation token ceiling** | `<NN tokens>`                 | permitted via EvalSpec `runtime_limits.token_ceiling`      |
+| **Per-run wall-clock ceiling**   | `<NN minutes>`                | permitted via EvalSpec `runtime_limits.wall_clock_ceiling` |
+| **Concurrency**                  | `<NN concurrent invocations>` | per-deployment                                             |
 
 ### 10.2 Cost attribution
 
@@ -477,27 +476,27 @@ Per Blueprint B § 2.12 `CostRecord`:
 
 ### 10.3 Retention lifecycle
 
-| Class | Window | Backing store |
-|---|---|---|
-| Hot | `<NN days>` | `<PostgreSQL primary>` |
-| Warm | `<NN days>` | `<compressed PostgreSQL partition>` |
-| Cold | `<NN days>` | `<object storage standard tier>` |
-| Archive | indefinite | `<object storage archive tier>` |
+| Class   | Window      | Backing store                       |
+| ------- | ----------- | ----------------------------------- |
+| Hot     | `<NN days>` | `<PostgreSQL primary>`              |
+| Warm    | `<NN days>` | `<compressed PostgreSQL partition>` |
+| Cold    | `<NN days>` | `<object storage standard tier>`    |
+| Archive | indefinite  | `<object storage archive tier>`     |
 
 Aligns with Blueprint B § 4.2 cost-governance retention discipline; deviations require Class-2 pair Decision Record.
 
 ### 10.4 Cache strategy
 
-| Cache class | Purpose | Hit/miss accounting |
-|---|---|---|
-| Prompt cache | `<reduce provider token cost>` | emitted to `CostRecord` as `cache_hits` / `cache_misses` |
-| Semantic cache | `<reduce judge invocations>` | emitted to `CostRecord` as `semantic_cache_hits` |
+| Cache class    | Purpose                        | Hit/miss accounting                                      |
+| -------------- | ------------------------------ | -------------------------------------------------------- |
+| Prompt cache   | `<reduce provider token cost>` | emitted to `CostRecord` as `cache_hits` / `cache_misses` |
+| Semantic cache | `<reduce judge invocations>`   | emitted to `CostRecord` as `semantic_cache_hits`         |
 
 ### 10.5 Budget ceilings
 
-| Scope | Daily | Monthly | Per-feature |
-|---|---|---|---|
-| `<provider api spend>` | `<$NN>` | `<$NN>` | `<$NN>` |
+| Scope                  | Daily   | Monthly | Per-feature |
+| ---------------------- | ------- | ------- | ----------- |
+| `<provider api spend>` | `<$NN>` | `<$NN>` | `<$NN>`     |
 
 Exceeding any ceiling pauses execution and surfaces an alert. Ceilings are enforced at the runtime sandbox boundary per Blueprint B § 4.1, NOT at the policy layer alone.
 
@@ -509,11 +508,11 @@ Exceeding any ceiling pauses execution and surfaces an alert. Ceilings are enfor
 
 **Strict SemVer** per Blueprint A § 4.2. MAJOR for any breaking change to the public-API stability promise (§ 6.6). No "convenience minor" for things that look like additions but break consumers.
 
-| Bump | When |
-|---|---|
+| Bump  | When                                                                                                                      |
+| ----- | ------------------------------------------------------------------------------------------------------------------------- |
 | MAJOR | breaking change to § 6.6 stability promise; canonical-contract change in `intent-eval-core`; predicate URI grammar change |
-| MINOR | additive feature; new optional field; new event emission; deprecation notice (without removal) |
-| PATCH | bug fix; documentation polish; internal refactor with no public-API change |
+| MINOR | additive feature; new optional field; new event emission; deprecation notice (without removal)                            |
+| PATCH | bug fix; documentation polish; internal refactor with no public-API change                                                |
 
 ### 11.2 Changelog
 
@@ -521,11 +520,11 @@ Exceeding any ceiling pauses execution and surfaces an alert. Ceilings are enfor
 
 ### 11.3 Migration notes
 
-| Concern | Location |
-|---|---|
+| Concern                      | Location                                       |
+| ---------------------------- | ---------------------------------------------- |
 | **Migration guide location** | `<MIGRATING.md / docs/migrations/vX-to-vY.md>` |
-| **Migration generator** | `<auto-generated / hand-authored>` |
-| **Required for** | every MAJOR bump |
+| **Migration generator**      | `<auto-generated / hand-authored>`             |
+| **Required for**             | every MAJOR bump                               |
 
 ### 11.4 Compatibility guarantees
 
@@ -547,9 +546,9 @@ Per Blueprint A § 4.2 + DR-010 § 7 Q5 CISO non-negotiable: production-Rekor si
 
 This repo's predicate-URI inventory and per-predicate cutover status:
 
-| Predicate URI | Status | SPEC.md ref | Signing mode |
-|---|---|---|---|
-| `evals.intentsolutions.io/<predicate>/v<N>` | conditional / approved / deferred | `<path>` | `sigstore_staging` / `rekor_production` |
+| Predicate URI                               | Status                            | SPEC.md ref | Signing mode                            |
+| ------------------------------------------- | --------------------------------- | ----------- | --------------------------------------- |
+| `evals.intentsolutions.io/<predicate>/v<N>` | conditional / approved / deferred | `<path>`    | `sigstore_staging` / `rekor_production` |
 
 ### 11.6 License audit
 
@@ -559,14 +558,14 @@ Every release runs `pip-licenses` (Python) / `npm-license-checker` (Node) / lang
 
 ## § 12 — Beads / work breakdown
 
-| Concern | Value |
-|---|---|
-| **Bead prefix** | `<prefix>` (per Blueprint A § 2.1) |
-| **bd workspace** | umbrella `~/000-projects/.beads/` (default) or per-repo `<path>` |
-| **Epic naming** | `<prefix>-E<NN>` (e.g., `iah-E01`) |
-| **Plane project** | `<LAB / JRIG / IEC / IAH / IAR>` |
-| **Plane module** | `<module path inside the project>` |
-| **GH ↔ Plane mirror** | via `bd-sync` per global CLAUDE.md three-layer discipline |
+| Concern               | Value                                                            |
+| --------------------- | ---------------------------------------------------------------- |
+| **Bead prefix**       | `<prefix>` (per Blueprint A § 2.1)                               |
+| **bd workspace**      | umbrella `~/000-projects/.beads/` (default) or per-repo `<path>` |
+| **Epic naming**       | `<prefix>-E<NN>` (e.g., `iah-E01`)                               |
+| **Plane project**     | `<LAB / JRIG / IEC / IAH / IAR>`                                 |
+| **Plane module**      | `<module path inside the project>`                               |
+| **GH ↔ Plane mirror** | via `bd-sync` per global CLAUDE.md three-layer discipline        |
 
 ### 12.1 Cross-repo bead dependencies
 
@@ -576,8 +575,8 @@ Other ecosystem repos' beads this repo's work depends on (ALL bd-sync-mirrored):
 
 ### 12.2 In-repo epic inventory
 
-| Epic | Status | Purpose |
-|---|---|---|
+| Epic           | Status                      | Purpose              |
+| -------------- | --------------------------- | -------------------- |
 | `<prefix>-E01` | open / in-progress / closed | `<one-line purpose>` |
 | `<prefix>-E02` | open / in-progress / closed | `<one-line purpose>` |
 
@@ -599,7 +598,7 @@ This repo is "complete enough to release" when **every** check below passes:
 
 ---
 
-# PART TWO — Author's Guide (do NOT copy this part into your per-repo blueprint)
+## PART TWO — Author's Guide (do NOT copy this part into your per-repo blueprint)
 
 ## How to apply this template
 
@@ -650,17 +649,18 @@ filing_standard: Document Filing Standard v4.3
 
 ## § 1 — Repo identity
 
-| Field | Value |
-|---|---|
-| Repo name | `intent-example-shim` |
-| Type | `spec` |
-| Owner | `@example-author` |
-| Maturity | `pre-release` |
+| Field          | Value                                                      |
+| -------------- | ---------------------------------------------------------- |
+| Repo name      | `intent-example-shim`                                      |
+| Type           | `spec`                                                     |
+| Owner          | `@example-author`                                          |
+| Maturity       | `pre-release`                                              |
 | Ecosystem role | Reference shim demonstrating the per-repo blueprint shape. |
-| Bead prefix | `iex-` |
-| Plane module | LAB → Reference Shims |
+| Bead prefix    | `iex-`                                                     |
+| Plane module   | LAB → Reference Shims                                      |
 
 ### 1.2 Non-goals
+
 Inherits Blueprint A § 3 anti-goals in full. Repo-specific: this shim does not
 ship runtime code, does not consume provider APIs, does not emit Evidence Bundle
 rows; it is documentation-only.
@@ -672,6 +672,7 @@ blueprint that fits on a single screen, so they can calibrate the level of
 specificity expected at each section. No other ecosystem repo carries this role.
 
 ## § 3 — Scope boundaries
+
 - In scope: this single per-repo blueprint and its sibling `README.md`.
 - Out of scope: any runtime, any CI, any tests beyond markdown-lint.
 - Deferred: nothing.
@@ -685,9 +686,9 @@ boundaries beyond "git clone, read markdown."
 
 ## § 5 — Canonical entities used
 
-| Entity | Direction | Blueprint B Ref | Attributes implemented | Glossary ref |
-|---|---|---|---|---|
-| (none) | N/A | N/A | N/A | `014-DR-GLOS-canonical-glossary.md` |
+| Entity | Direction | Blueprint B Ref | Attributes implemented | Glossary ref                        |
+| ------ | --------- | --------------- | ---------------------- | ----------------------------------- |
+| (none) | N/A       | N/A             | N/A                    | `014-DR-GLOS-canonical-glossary.md` |
 
 **Entities NOT touched by this repo:** All 13 canonical entities (EvalSpec, EvalRun, MatcherMap, EvidenceBundle, JudgeDecision, RuntimeReceipt, RegressionPack, RolloutGate, SkillSnapshot, SessionTrace, ToolInvocation, CostRecord, FailureTaxonomy) — methodology-only repo with no entity I/O.
 
@@ -709,6 +710,7 @@ hierarchy is stable across MINOR bumps.
 N/A — no secrets, no sandbox, no provider surface.
 
 ### 8.3 Provider PASS/FAIL gates
+
 N/A — this repo does not touch LLM providers. Section present per Class-1
 ISEDC requirement that the gate-restatement be visible even when not exercised.
 

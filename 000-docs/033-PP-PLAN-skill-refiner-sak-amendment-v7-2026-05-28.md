@@ -1,18 +1,20 @@
 ---
-title: Skill Refiner Plan v7 Amendment — Spec Authority Kernel (SAK) — closes the audit P0 cluster
 date: 2026-05-28
 status: PROPOSED-FOR-REAUDIT — pending incremental Plan Audit on v7 deltas + ISEDC Class-1 charter ratification (032 deferred until v7 RATIFIED-WITH-DELTAS or RATIFIED)
 supersedes_relationship: REVISES + EXTENDS plan 031 v6 (the v6 amendment to plan 027 v5). v7 does NOT supersede v6; it lands the audit remediations as deltas. § 14 sub-section numbers from v6 are preserved; v7 introduces new sections (§ 14.A, § 14.B, § 14.12-14.28) and REVISES existing ones (§ 14.2, § 14.4, § 14.10, § 14.11, § 14.20).
 author: Jeremy Longshore (executor: Claude as drafting acting-CTO under CTO-mode delegation 2026-05-28)
 parent_audit: intent-eval-lab/000-docs/audit/2026-05-28-sak-incremental-audit/synthesis.md
 audit_verdict_being_remediated: NEEDS-AMENDMENT (12 P0 + 17 P1 + 13 P2 = 42 findings; 3 convergent P0 themes C1/C2/C3; 2 convergent P1 themes C4/C5; 4 cross-seat tensions T1-T4)
-
-# Tri-link block (per § 3.5 PR-1)
-Beads: bd_000-projects-3kye, bd_000-projects-8vq0, plus ~25 new remediation beads (filed in companion action; IDs land at filing)
-GitHub: jeremylongshore/intent-eval-lab#<TBA>
 ---
 
 # Skill Refiner Plan v7 Amendment — Spec Authority Kernel (SAK) — audit-closure deltas
+
+## Tri-link block (per § 3.5 PR-1)
+
+```text
+Beads: bd_000-projects-3kye, bd_000-projects-8vq0, plus ~25 new remediation beads (filed in companion action; IDs land at filing)
+GitHub: jeremylongshore/intent-eval-lab#<TBA>
+```
 
 > **Read order:** Plan 027 v5 (ratified body) → plan 031 v6 amendment (SAK introduction) → THIS doc (v7 audit-closure) → 032 charter draft (deferred convening) → audit synthesis (the spec for what v7 remediates).
 
@@ -48,42 +50,42 @@ Specifically, v7 introduces:
 
 For each P0 / P1 / P2 finding from the synthesis, v7's response:
 
-| Finding | Closed by | Notes |
-|---|---|---|
-| **C1** Phase 4 deployment discipline (5 seats) | § 14.4 REVISED + § 14.4.shadow + § 14.4.rollback + § 14.4.cost | Decompose Phase 4 into 4 sub-phases with state machine + shadow + rollback + cost ceiling |
-| **C2** Schemas-as-policy without evals/predicate/test-corpus (3 seats) | § 14.A + § 14.B + § 14.21 | Formal predicate + cross-schema invariants + test corpus discipline |
-| **C3** Bicameral architecture complecting + identity (3 seats) | § 14.2 REVISED + § 14.10 REVISED + § 14.18 | Three named values + 4-fold `$defs` decomposition + decompose-first-then-test ordering |
-| **C4** Governance + cadence (2 seats) | § 14.12 + § 14.13 | Named seat-bound owners + AAR cadence + dashboard |
-| **C5** Doc sprawl (2 seats) | § 14.13 + § 14.28 | Dashboard consolidates; documentation singularity strategy |
-| **T1** Decompose-first vs test-first | § 14.18 | Resolved as Phase 1 test corpus → Phase 1.5 decompose-via-test-failure → Phase 2 |
-| **T2** Bitter-lesson stop vs invest-and-ship | § 14.11 EXPANDED + § 14.14 | Leading indicators added; port-not-delete discipline ensures investment transfers |
-| **T3** Formal predicate vs evolving-doc | § 14.A | Predicate lives IN schema `$comment` as structured block; co-located with schema |
-| **T4** Implicit vs explicit upstream-divergence | § 14.10.ext + § 14.11 | IS-extras catalog with per-extra upstream-convergence trigger |
-| F-AK-003 det/prob boundary | § 14.9 row 2 expansion (in § 14.A.boundary) | 4-quadrant accept/reject matrix |
-| F-MK-001 kernel-npm vs vendored consistency | § 14.15 | Eventual consistency, bounded staleness ≤ 7d |
-| F-MK-004 wave B durability | § 14.17 | Side-branch + atomic + 3-retry + parked-queue |
-| F-KB-003 D4 hand-codes before kernel | § 14.24 | Migration plan for D4 → kernel-canonical cutover in Phase 2 |
-| F-CH-004 Phase A.0 judge change | § 14.23 | Judge-version pinning at baseline; re-baseline triggers on judge bump |
-| F-CH-005 Phase 5 implicit-low-risk | § 14.20 REVISED | Risk acknowledgement + bandwidth gate |
-| F-LL-004 version-coupling CCP↔kernel | § 14.15 | Coupling invariant stated |
-| F-WC-003 IS-extras upstream-convergence trigger | § 14.10.ext | One row per extra |
-| F-MK-003 three version identities | § 14.15 | Ordering specified: kernel `$schemaVersion` → CCP `SCHEMA_VERSION` → vendored snapshot |
-| F-RH-004 wave A/B reconciliation | § 14.17 | Wave A residue + wave B failures share a reconciliation queue |
-| F-RH-005 "read-only" ambiguity | § 14.27 | Three distinct invariants named: read-only-immutable / read-only-no-consumer-cutover / read-only-internal-test |
-| F-RH-006 9 IS-extras flat-listed | § 14.10 REVISED + § 14.10.ext | Categories explicit; per-extra row |
-| F-KB-004 Phase 4c rollback | § 14.4.rollback | Full rollback protocol |
-| F-KB-005 prose-schema-coherence parsing | § 14.16 | Section-heading parser spec + flake mitigation |
-| F-KB-006 kernel-bump propagation to Refiner | § 14.22 | Refiner's `accept()` pins kernel version + re-runs on kernel bump |
-| F-AK-005 `_vendor/anthropic/` bump policy | § 14.26 | Bump cadence + drift threshold + auto-PR rules |
-| F-AK-006 YAML shell-substitution FP/FN | § 14.25 | Measurement protocol + baseline corpus |
-| F-MK-006 conditional-visibility referential integrity | § 14.19 | Referential-integrity rule named |
-| F-LL-005 prose↔schema reconciliation liveness | § 14.16 | Liveness bound ≤ 5 business days |
-| F-WC-004 nightly cron parsing prose flaky | § 14.16 | Parser stability discipline + flake budget |
-| F-WC-002 doc sprawl reader cost | § 14.28 | Documentation singularity (one canonical entry + projections) |
-| F-WC-001 CI gate re-eval cadence | § 14.13 | 90-day cadence specified |
-| F-WC-005 stopping criterion dashboard | § 14.13 | `SAK-DASHBOARD.md` machine-rendered |
-| F-WC-006 dual-maintained changelogs | § 14.28 | Kernel canonical; CCP cites |
-| F-RH-003 vendored schema = 3 values | § 14.15 | Version triple explicit |
+| Finding                                                                | Closed by                                                      | Notes                                                                                                          |
+| ---------------------------------------------------------------------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **C1** Phase 4 deployment discipline (5 seats)                         | § 14.4 REVISED + § 14.4.shadow + § 14.4.rollback + § 14.4.cost | Decompose Phase 4 into 4 sub-phases with state machine + shadow + rollback + cost ceiling                      |
+| **C2** Schemas-as-policy without evals/predicate/test-corpus (3 seats) | § 14.A + § 14.B + § 14.21                                      | Formal predicate + cross-schema invariants + test corpus discipline                                            |
+| **C3** Bicameral architecture complecting + identity (3 seats)         | § 14.2 REVISED + § 14.10 REVISED + § 14.18                     | Three named values + 4-fold `$defs` decomposition + decompose-first-then-test ordering                         |
+| **C4** Governance + cadence (2 seats)                                  | § 14.12 + § 14.13                                              | Named seat-bound owners + AAR cadence + dashboard                                                              |
+| **C5** Doc sprawl (2 seats)                                            | § 14.13 + § 14.28                                              | Dashboard consolidates; documentation singularity strategy                                                     |
+| **T1** Decompose-first vs test-first                                   | § 14.18                                                        | Resolved as Phase 1 test corpus → Phase 1.5 decompose-via-test-failure → Phase 2                               |
+| **T2** Bitter-lesson stop vs invest-and-ship                           | § 14.11 EXPANDED + § 14.14                                     | Leading indicators added; port-not-delete discipline ensures investment transfers                              |
+| **T3** Formal predicate vs evolving-doc                                | § 14.A                                                         | Predicate lives IN schema `$comment` as structured block; co-located with schema                               |
+| **T4** Implicit vs explicit upstream-divergence                        | § 14.10.ext + § 14.11                                          | IS-extras catalog with per-extra upstream-convergence trigger                                                  |
+| F-AK-003 det/prob boundary                                             | § 14.9 row 2 expansion (in § 14.A.boundary)                    | 4-quadrant accept/reject matrix                                                                                |
+| F-MK-001 kernel-npm vs vendored consistency                            | § 14.15                                                        | Eventual consistency, bounded staleness ≤ 7d                                                                   |
+| F-MK-004 wave B durability                                             | § 14.17                                                        | Side-branch + atomic + 3-retry + parked-queue                                                                  |
+| F-KB-003 D4 hand-codes before kernel                                   | § 14.24                                                        | Migration plan for D4 → kernel-canonical cutover in Phase 2                                                    |
+| F-CH-004 Phase A.0 judge change                                        | § 14.23                                                        | Judge-version pinning at baseline; re-baseline triggers on judge bump                                          |
+| F-CH-005 Phase 5 implicit-low-risk                                     | § 14.20 REVISED                                                | Risk acknowledgement + bandwidth gate                                                                          |
+| F-LL-004 version-coupling CCP↔kernel                                   | § 14.15                                                        | Coupling invariant stated                                                                                      |
+| F-WC-003 IS-extras upstream-convergence trigger                        | § 14.10.ext                                                    | One row per extra                                                                                              |
+| F-MK-003 three version identities                                      | § 14.15                                                        | Ordering specified: kernel `$schemaVersion` → CCP `SCHEMA_VERSION` → vendored snapshot                         |
+| F-RH-004 wave A/B reconciliation                                       | § 14.17                                                        | Wave A residue + wave B failures share a reconciliation queue                                                  |
+| F-RH-005 "read-only" ambiguity                                         | § 14.27                                                        | Three distinct invariants named: read-only-immutable / read-only-no-consumer-cutover / read-only-internal-test |
+| F-RH-006 9 IS-extras flat-listed                                       | § 14.10 REVISED + § 14.10.ext                                  | Categories explicit; per-extra row                                                                             |
+| F-KB-004 Phase 4c rollback                                             | § 14.4.rollback                                                | Full rollback protocol                                                                                         |
+| F-KB-005 prose-schema-coherence parsing                                | § 14.16                                                        | Section-heading parser spec + flake mitigation                                                                 |
+| F-KB-006 kernel-bump propagation to Refiner                            | § 14.22                                                        | Refiner's `accept()` pins kernel version + re-runs on kernel bump                                              |
+| F-AK-005 `_vendor/anthropic/` bump policy                              | § 14.26                                                        | Bump cadence + drift threshold + auto-PR rules                                                                 |
+| F-AK-006 YAML shell-substitution FP/FN                                 | § 14.25                                                        | Measurement protocol + baseline corpus                                                                         |
+| F-MK-006 conditional-visibility referential integrity                  | § 14.19                                                        | Referential-integrity rule named                                                                               |
+| F-LL-005 prose↔schema reconciliation liveness                          | § 14.16                                                        | Liveness bound ≤ 5 business days                                                                               |
+| F-WC-004 nightly cron parsing prose flaky                              | § 14.16                                                        | Parser stability discipline + flake budget                                                                     |
+| F-WC-002 doc sprawl reader cost                                        | § 14.28                                                        | Documentation singularity (one canonical entry + projections)                                                  |
+| F-WC-001 CI gate re-eval cadence                                       | § 14.13                                                        | 90-day cadence specified                                                                                       |
+| F-WC-005 stopping criterion dashboard                                  | § 14.13                                                        | `SAK-DASHBOARD.md` machine-rendered                                                                            |
+| F-WC-006 dual-maintained changelogs                                    | § 14.28                                                        | Kernel canonical; CCP cites                                                                                    |
+| F-RH-003 vendored schema = 3 values                                    | § 14.15                                                        | Version triple explicit                                                                                        |
 
 ---
 
@@ -97,7 +99,7 @@ For each authoring contract C ∈ {skill-frontmatter, plugin-manifest, agent-def
 
 The skill-frontmatter case (canonical):
 
-```
+```text
 valid_skill_frontmatter(skill_md, tier) :=
     well_formed_yaml(skill_md)
   ∧ frontmatter_parses(skill_md)
@@ -116,7 +118,7 @@ Each sub-predicate has a stated typed domain + range. The composition is monoton
 
 The predicate lives in the schema's `$comment` block as structured comment:
 
-```json
+````json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://intent-eval-core/schemas/authoring/v1/skill-frontmatter.schema.json",
@@ -124,7 +126,7 @@ The predicate lives in the schema's `$comment` block as structured comment:
   "type": "object",
   ...
 }
-```
+```text
 
 Consumers reading the schema see the predicate. There is no separate "predicate doc" to go stale. This resolves T3 — both Lamport's precision concern and Cunningham's "specs nobody reads" concern.
 
@@ -132,12 +134,12 @@ Consumers reading the schema see the predicate. There is no separate "predicate 
 
 For each predicate `valid_C`, the kernel defines the deterministic vs probabilistic edge:
 
-| Refiner edit outcome | valid_C result | Disposition |
-|---|---|---|
-| edit accepted by judge (probabilistic) | TRUE (deterministic) | ACCEPT — both gates agree |
-| edit rejected by judge | TRUE | REJECT — judge caught a regression schema didn't |
-| edit accepted by judge | FALSE | LOG to `schema-revision-candidates` queue (per § 14.B.invariant-violation route). DO NOT auto-accept; do not auto-reject — route to human review with the artifact, judge rationale, and predicate-violation reason as triple. Aggregated weekly into ISEDC Class-2 schema-bump-consideration. |
-| edit rejected by judge | FALSE | REJECT — both gates agree |
+| Refiner edit outcome                   | valid_C result       | Disposition                                                                                                                                                                                                                                                                                    |
+| -------------------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| edit accepted by judge (probabilistic) | TRUE (deterministic) | ACCEPT — both gates agree                                                                                                                                                                                                                                                                      |
+| edit rejected by judge                 | TRUE                 | REJECT — judge caught a regression schema didn't                                                                                                                                                                                                                                               |
+| edit accepted by judge                 | FALSE                | LOG to `schema-revision-candidates` queue (per § 14.B.invariant-violation route). DO NOT auto-accept; do not auto-reject — route to human review with the artifact, judge rationale, and predicate-violation reason as triple. Aggregated weekly into ISEDC Class-2 schema-bump-consideration. |
+| edit rejected by judge                 | FALSE                | REJECT — both gates agree                                                                                                                                                                                                                                                                      |
 
 The `schema-revision-candidates` queue is the feedback mechanism that closes the deterministic/probabilistic boundary problem F-AK-003. Schema staleness becomes observable.
 
@@ -160,29 +162,31 @@ Changing `valid_C` is a kernel breaking-change event (`$schemaVersion` major bum
 
 The 6 authoring contracts have non-trivial cross-references:
 
-```
+````
+
 marketplace-catalog ──cites──▶ plugin-manifest ──contains──▶ skill-frontmatter
-                                       │                            │
-                                       ├──contains──▶ agent-definition
-                                       │
-                                       └──contains──▶ mcp-config
-                                                    │
-                                                    └──refers-to──▶ hook-config (via plugin.json hooks block)
-```
+│ │
+├──contains──▶ agent-definition
+│
+└──contains──▶ mcp-config
+│
+└──refers-to──▶ hook-config (via plugin.json hooks block)
+
+````text
 
 Each edge is an invariant the kernel enforces. Example: a `marketplace-catalog` entry's `plugins[].source` resolves to a directory whose `plugin.json` validates against `plugin-manifest`. Every `plugin-manifest` `mcpServers[].command` resolves to an executable per `mcp-config` schema.
 
 ### 14.B.2 — Invariant catalog
 
-| Invariant ID | Statement | Where enforced |
-|---|---|---|
-| INV-CAT-PLUGIN | ∀ catalog entry e ∈ marketplace-catalog.plugins, plugin_manifest_resolves(e.source) ∧ valid_plugin_manifest(content_of(e.source), isMarketplace) | `validate-marketplace --deep` |
-| INV-PLUGIN-SKILL | ∀ p ∈ plugin-manifest, ∀ s ∈ p.skills, valid_skill_frontmatter(s, isMarketplace) | `validate-plugin` per-skill descent |
-| INV-PLUGIN-AGENT | ∀ p ∈ plugin-manifest, ∀ a ∈ p.agents, valid_agent_definition(a, isMarketplace) | `validate-plugin` per-agent descent |
-| INV-PLUGIN-MCP | ∀ p ∈ plugin-manifest, p.mcpServers[*] ⊨ valid_mcp_config | `validate-plugin` mcp descent |
-| INV-MCP-HOOK | ∀ m ∈ mcp-config with hook-bindings, valid_hook_config(m.hooks) | `validate-mcp --with-hooks` |
-| INV-SKILL-HOOK | ∀ s ∈ skill-frontmatter with hooks block, valid_hook_config(s.hooks) | `validate-skillmd` hooks descent |
-| INV-ALLOWED-DISALLOWED | ∀ s ∈ skill-frontmatter, s.allowed-tools ∩ s.disallowed-tools = ∅ | warning, not error (cross-field consistency) |
+| Invariant ID           | Statement                                                                                                                                        | Where enforced                               |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
+| INV-CAT-PLUGIN         | ∀ catalog entry e ∈ marketplace-catalog.plugins, plugin_manifest_resolves(e.source) ∧ valid_plugin_manifest(content_of(e.source), isMarketplace) | `validate-marketplace --deep`                |
+| INV-PLUGIN-SKILL       | ∀ p ∈ plugin-manifest, ∀ s ∈ p.skills, valid_skill_frontmatter(s, isMarketplace)                                                                 | `validate-plugin` per-skill descent          |
+| INV-PLUGIN-AGENT       | ∀ p ∈ plugin-manifest, ∀ a ∈ p.agents, valid_agent_definition(a, isMarketplace)                                                                  | `validate-plugin` per-agent descent          |
+| INV-PLUGIN-MCP         | ∀ p ∈ plugin-manifest, p.mcpServers[*] ⊨ valid_mcp_config                                                                                        | `validate-plugin` mcp descent                |
+| INV-MCP-HOOK           | ∀ m ∈ mcp-config with hook-bindings, valid_hook_config(m.hooks)                                                                                  | `validate-mcp --with-hooks`                  |
+| INV-SKILL-HOOK         | ∀ s ∈ skill-frontmatter with hooks block, valid_hook_config(s.hooks)                                                                             | `validate-skillmd` hooks descent             |
+| INV-ALLOWED-DISALLOWED | ∀ s ∈ skill-frontmatter, s.allowed-tools ∩ s.disallowed-tools = ∅                                                                                | warning, not error (cross-field consistency) |
 
 ### 14.B.3 — Invariant-violation routing
 
@@ -193,7 +197,7 @@ When `valid_C(artifact, tier) = FALSE` due to a cross-schema invariant violation
 
 ### 14.B.4 — Beads
 
-- `iec-E11-cross-schema-invariants` (P0) — author the INV-* catalog + ship enforcement in the corresponding validators.
+- `iec-E11-cross-schema-invariants` (P0) — author the INV-\* catalog + ship enforcement in the corresponding validators.
 
 ---
 
@@ -205,11 +209,11 @@ When `valid_C(artifact, tier) = FALSE` due to a cross-schema invariant violation
 
 The kernel does NOT have a single "schema-as-shadow-of-prose" identity. It has THREE distinct values:
 
-| Value | Lives at | Identity | Owner |
-|---|---|---|---|
-| **Prose authority** | `claude-code-plugins/000-docs/6767-h-SPEC-DR-STND-claude-code-extensions-master.md` | Human-readable spec; cited by external parties; what 6767-h IS | CCP-side editorial |
-| **IS-marketplace-policy authority** | `intent-eval-core/schemas/authoring/v1/*.schema.json` `$defs.isMarketplace` blocks | Machine-checkable IS enterprise policy; what the kernel encodes | Kernel maintainers |
-| **Coverage map** | `intent-eval-core/schemas/authoring/v1/6767h-coverage-map.json` (NEW artifact per F-RH-002 remediation) | Bidirectional table: each schema field cites either (a) a 6767-h section it implements, OR (b) the IS-only-extension category it belongs to with a stated rationale for why it's not in 6767-h | Joint — both editorial sides update on schema or prose change |
+| Value                               | Lives at                                                                                                | Identity                                                                                                                                                                                       | Owner                                                         |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| **Prose authority**                 | `claude-code-plugins/000-docs/6767-h-SPEC-DR-STND-claude-code-extensions-master.md`                     | Human-readable spec; cited by external parties; what 6767-h IS                                                                                                                                 | CCP-side editorial                                            |
+| **IS-marketplace-policy authority** | `intent-eval-core/schemas/authoring/v1/*.schema.json` `$defs.isMarketplace` blocks                      | Machine-checkable IS enterprise policy; what the kernel encodes                                                                                                                                | Kernel maintainers                                            |
+| **Coverage map**                    | `intent-eval-core/schemas/authoring/v1/6767h-coverage-map.json` (NEW artifact per F-RH-002 remediation) | Bidirectional table: each schema field cites either (a) a 6767-h section it implements, OR (b) the IS-only-extension category it belongs to with a stated rationale for why it's not in 6767-h | Joint — both editorial sides update on schema or prose change |
 
 ### 14.2.2 — Coverage map format
 
@@ -231,7 +235,7 @@ The kernel does NOT have a single "schema-as-shadow-of-prose" identity. It has T
     }
   }
 }
-```
+````
 
 ### 14.2.3 — Three CI gates (replaces v6's single `prose-schema-coherence.yml`)
 
@@ -285,6 +289,7 @@ The three gates are decoupled. A prose-side rename of `§3.2.1` to `§3.2.A` upd
 **Deliverable:** `validate-plugins.yml` config flag flips from `mode: advisory` to `mode: blocking` for SKILL.md. PR-blocking starts.
 
 **Exit gate (quorum-pin discipline preserved from v6 with refinements):**
+
 - (a) ≥ 99.5% of corpus passes kernel schema in advisory + shadow modes
 - (b) ≥ 7 calendar days of shadow mode complete with deviation rate < 0.5% (per § 14.4b.5)
 - (c) AND (NEW) no open P0 issues in the `schema-revision-candidates` queue per § 14.A.3
@@ -298,7 +303,7 @@ The three gates are decoupled. A prose-side rename of `§3.2.1` to `§3.2.A` upd
 
 The state machine for Phase 4 is:
 
-```
+```text
                  ┌─────────────────┐
                  │ ADVISORY (v6)   │
                  │ default state   │
@@ -364,6 +369,7 @@ Wave B Refiner runs against ~20% of corpus = ~700 files. At default Refiner cost
 **Cost ceiling:** $50 USD per file mean, $200 max single file (hard cap). Total wave B budget: $35K USD (= $50 × 700). Tracked in `audit/wave-b-cost-ledger.jsonl`.
 
 **Cost-meter discipline:**
+
 - Each Refiner attempt logs token usage + model tier
 - After each accept/reject, cost is rolled up into the per-file row
 - Hard cap firing on a single file = move that file to `quarantine-queue` for manual review (don't keep spending)
@@ -387,16 +393,16 @@ Wave B Refiner runs against ~20% of corpus = ~700 files. At default Refiner cost
 
 **v6 framing complected 4 orthogonal concerns into one `$defs` per F-RH-001.** Decomposed:
 
-| New `$defs` | Concern | Evolves under | Example fields |
-|---|---|---|---|
-| `$defs.isMarketplace.requiredFields` | The 8-field required-set | ISEDC Class-1 ratification (NON-NEGOTIABLES item 1) | `name, description, allowed-tools, version, author, license, compatibility, tags` |
-| `$defs.isMarketplace.deprecationRegistry` | Field-deprecation migrations | Validator patch (autonomous per NON-NEGOTIABLES item 6) | `compatible-with → compatibility`, `when_to_use → description`, etc. |
-| `$defs.isMarketplace.securityChecks` | Supply-chain hardening | CISO-driven | YAML shell-substitution checks, reserved-word constraints, no-XML-tag constraints |
-| `$defs.isMarketplace.disclosureMarkers` | Progressive disclosure / token-economy | Karpathy-axis | L0/L1/L2 markers, token-budget rules |
+| New `$defs`                               | Concern                                | Evolves under                                           | Example fields                                                                    |
+| ----------------------------------------- | -------------------------------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `$defs.isMarketplace.requiredFields`      | The 8-field required-set               | ISEDC Class-1 ratification (NON-NEGOTIABLES item 1)     | `name, description, allowed-tools, version, author, license, compatibility, tags` |
+| `$defs.isMarketplace.deprecationRegistry` | Field-deprecation migrations           | Validator patch (autonomous per NON-NEGOTIABLES item 6) | `compatible-with → compatibility`, `when_to_use → description`, etc.              |
+| `$defs.isMarketplace.securityChecks`      | Supply-chain hardening                 | CISO-driven                                             | YAML shell-substitution checks, reserved-word constraints, no-XML-tag constraints |
+| `$defs.isMarketplace.disclosureMarkers`   | Progressive disclosure / token-economy | Karpathy-axis                                           | L0/L1/L2 markers, token-budget rules                                              |
 
 The "marketplace tier" is now the COMPOSITION of these four:
 
-```json
+`````json
 {
   "$defs": {
     "isMarketplace": {
@@ -413,7 +419,7 @@ The "marketplace tier" is now the COMPOSITION of these four:
     "isMarketplace/disclosureMarkers": { ... }
   }
 }
-```
+```text
 
 **Independent changelogs.** Each composable `$defs` has its own `$comment` documenting its semver evolution. Bumping the deprecation registry (tactical) doesn't force consumers to re-evaluate required-fields (architectural). Each gets its own SCHEMA_CHANGELOG section.
 
@@ -423,20 +429,20 @@ The "marketplace tier" is now the COMPOSITION of these four:
 
 Each IS-only-extension is cataloged with:
 
-| Extension | Category (per § 14.10.4-fold decomp) | Upstream-convergence trigger | Leading indicator (when to start aligning) |
-|---|---|---|---|
-| `version` (required at IS marketplace) | requiredFields | Anthropic adds `version` as required in agentskills.io v2 | `agentskills.io/changelog` shows `version` proposal |
-| `author` (required, must contain `@`) | requiredFields | Anthropic adds contact-resolvability requirement | Anthropic publishes skill-author-onboarding doc citing email format |
-| `tags` (required, array) | requiredFields | Anthropic adds discovery-tag field | Anthropic ships a `tags`-aware search in `claude` CLI |
-| `requires_env` / `requires_tools` / etc. (4 visibility fields) | requiredFields (advisory) | Anthropic adds conditional visibility | `claude` CLI ships skill-prereq-prompting |
-| `required_environment_variables` | requiredFields (advisory) | Anthropic adds installer-prompt convention | `claude doctor` ships env-var prompting |
-| `metadata.intent-solutions.config` | requiredFields (advisory) | Anthropic adds skill-config convention | Anthropic publishes skill-config standard |
-| Semver-strict `version` regex | requiredFields | (Same as `version` above) | (Same) |
-| Deprecated-field migration registry | deprecationRegistry | Anthropic publishes field-migration tool | `claude-codemod` or equivalent ships |
-| `shell` enum (bash | powershell) | securityChecks | Anthropic adds cross-platform skill discipline | Anthropic ships skill-shell-validation |
-| `when_to_use` + description ≤ 1536 chars | disclosureMarkers | Anthropic ships token-budget validator | `validate-skillmd` upstream-equivalent ships |
-| YAML shell-substitution check | securityChecks | Anthropic adds supply-chain hardening | Anthropic ships skill-security-audit |
-| `metadata.*` namespacing | requiredFields (advisory) | Anthropic adopts vendor-namespacing | agentskills.io spec adds namespace section |
+| Extension                                                      | Category (per § 14.10.4-fold decomp) | Upstream-convergence trigger                              | Leading indicator (when to start aligning)                          |
+| -------------------------------------------------------------- | ------------------------------------ | --------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------------------- |
+| `version` (required at IS marketplace)                         | requiredFields                       | Anthropic adds `version` as required in agentskills.io v2 | `agentskills.io/changelog` shows `version` proposal                 |
+| `author` (required, must contain `@`)                          | requiredFields                       | Anthropic adds contact-resolvability requirement          | Anthropic publishes skill-author-onboarding doc citing email format |
+| `tags` (required, array)                                       | requiredFields                       | Anthropic adds discovery-tag field                        | Anthropic ships a `tags`-aware search in `claude` CLI               |
+| `requires_env` / `requires_tools` / etc. (4 visibility fields) | requiredFields (advisory)            | Anthropic adds conditional visibility                     | `claude` CLI ships skill-prereq-prompting                           |
+| `required_environment_variables`                               | requiredFields (advisory)            | Anthropic adds installer-prompt convention                | `claude doctor` ships env-var prompting                             |
+| `metadata.intent-solutions.config`                             | requiredFields (advisory)            | Anthropic adds skill-config convention                    | Anthropic publishes skill-config standard                           |
+| Semver-strict `version` regex                                  | requiredFields                       | (Same as `version` above)                                 | (Same)                                                              |
+| Deprecated-field migration registry                            | deprecationRegistry                  | Anthropic publishes field-migration tool                  | `claude-codemod` or equivalent ships                                |
+| `shell` enum (bash                                             | powershell)                          | securityChecks                                            | Anthropic adds cross-platform skill discipline                      | Anthropic ships skill-shell-validation |
+| `when_to_use` + description ≤ 1536 chars                       | disclosureMarkers                    | Anthropic ships token-budget validator                    | `validate-skillmd` upstream-equivalent ships                        |
+| YAML shell-substitution check                                  | securityChecks                       | Anthropic adds supply-chain hardening                     | Anthropic ships skill-security-audit                                |
+| `metadata.*` namespacing                                       | requiredFields (advisory)            | Anthropic adopts vendor-namespacing                       | agentskills.io spec adds namespace section                          |
 
 **Periodic review:** § 14.13 dashboard surfaces this catalog with current-state coloring (any triggers firing?). 90-day re-eval cadence per § 14.13.
 
@@ -454,30 +460,30 @@ v6 § 14.11 stopping criteria listed "Anthropic ships first-party SKILL.md spec 
 
 ### 14.11.1 — 12 leading indicators (monitored quarterly)
 
-| # | Indicator | Source | Severity |
-|---|---|---|---|
-| 1 | Anthropic publishes public roadmap including machine-readable spec | platform.claude.com/roadmap; Anthropic blog | High |
-| 2 | `claude` CLI begins ingesting `.claude/schema/` directory | `code.claude.com/docs/en/changelog` | High |
-| 3 | `claude doctor` adds plugin-format validation | (Same) | High |
-| 4 | agentskills.io v2 RFC published | `agentskills.io/specification` | High |
-| 5 | Anthropic publishes machine-readable agentskills.io v2 schemas | `github.com/agentskills/agentskills` | CRITICAL |
-| 6 | Anthropic ships skill-author-onboarding doc citing field validation | Anthropic docs | Medium |
-| 7 | `claude-codemod` or equivalent field-migration tool ships | Anthropic GitHub | Medium |
-| 8 | Anthropic ships skill-shell-validation | Anthropic docs | Medium |
-| 9 | Anthropic ships skill-security-audit | Anthropic docs | Medium |
-| 10 | agentskills.io spec adds vendor-namespacing section | agentskills.io | Low |
-| 11 | Vercel skills.sh adopts kernel-schema-compatible format | `skills.sh` (third-party) | Low |
-| 12 | Frontier model (Claude N+1 or competitor) demonstrates schema-validator equivalence from prose+examples | Public benchmarks | CRITICAL — bitter-lesson triggered |
+| #   | Indicator                                                                                               | Source                                      | Severity                           |
+| --- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------------------- |
+| 1   | Anthropic publishes public roadmap including machine-readable spec                                      | platform.claude.com/roadmap; Anthropic blog | High                               |
+| 2   | `claude` CLI begins ingesting `.claude/schema/` directory                                               | `code.claude.com/docs/en/changelog`         | High                               |
+| 3   | `claude doctor` adds plugin-format validation                                                           | (Same)                                      | High                               |
+| 4   | agentskills.io v2 RFC published                                                                         | `agentskills.io/specification`              | High                               |
+| 5   | Anthropic publishes machine-readable agentskills.io v2 schemas                                          | `github.com/agentskills/agentskills`        | CRITICAL                           |
+| 6   | Anthropic ships skill-author-onboarding doc citing field validation                                     | Anthropic docs                              | Medium                             |
+| 7   | `claude-codemod` or equivalent field-migration tool ships                                               | Anthropic GitHub                            | Medium                             |
+| 8   | Anthropic ships skill-shell-validation                                                                  | Anthropic docs                              | Medium                             |
+| 9   | Anthropic ships skill-security-audit                                                                    | Anthropic docs                              | Medium                             |
+| 10  | agentskills.io spec adds vendor-namespacing section                                                     | agentskills.io                              | Low                                |
+| 11  | Vercel skills.sh adopts kernel-schema-compatible format                                                 | `skills.sh` (third-party)                   | Low                                |
+| 12  | Frontier model (Claude N+1 or competitor) demonstrates schema-validator equivalence from prose+examples | Public benchmarks                           | CRITICAL — bitter-lesson triggered |
 
 ### 14.11.2 — Disposition matrix
 
-| Indicators firing | Disposition |
-|---|---|
-| 0-2 Low-severity | Continue per plan |
-| 1 Medium | Note in next AAR; no plan change |
-| 2-3 Medium OR 1 High | ISEDC Class-2 retrospective; consider pausing Phase ≥ 3 |
-| 1 CRITICAL | PAUSE all SAK phases; ISEDC Class-1 re-charter to evaluate upstream cutover |
-| 2 CRITICAL | STOP SAK; archive as historical contribution; cut over to upstream |
+| Indicators firing    | Disposition                                                                 |
+| -------------------- | --------------------------------------------------------------------------- |
+| 0-2 Low-severity     | Continue per plan                                                           |
+| 1 Medium             | Note in next AAR; no plan change                                            |
+| 2-3 Medium OR 1 High | ISEDC Class-2 retrospective; consider pausing Phase ≥ 3                     |
+| 1 CRITICAL           | PAUSE all SAK phases; ISEDC Class-1 re-charter to evaluate upstream cutover |
+| 2 CRITICAL           | STOP SAK; archive as historical contribution; cut over to upstream          |
 
 ### 14.11.3 — Polling mechanism
 
@@ -493,17 +499,18 @@ v6 § 14.11 stopping criteria listed "Anthropic ships first-party SKILL.md spec 
 
 ## § 14.12 (NEW, closes C4) — Governance owners
 
-| Concern | Owner seat | Responsibility |
-|---|---|---|
-| Kernel schema versioning + breaking-change discipline | CTO | Sign-off on `$schemaVersion` major bumps; co-sign Phase 4c flip |
-| IS-marketplace policy floor (anti-realignment) | CTO + CISO | Veto on `$defs.isMarketplace.requiredFields` changes per NON-NEGOTIABLES |
-| Supply-chain hardening (security checks) | CISO | Own `$defs.isMarketplace.securityChecks` evolution; co-sign Phase 4c flip |
-| External adopter relations + brand promise | VP DevRel | Co-sign Phase 4c flip; field cross-vendor distribution conversations per Phase F |
-| Cost-budget enforcement (Refiner / SAK aggregate) | CFO | Sign-off on Phase 4b cost ceiling exceedances; audit wave B cost ledger |
-| Legal IP review on 6767-h / kernel coupling | GC | Sign-off on 6767-h ↔ kernel-map ADR amendments (per § 14.16) |
-| Brand positioning + naming (Skill Refiner, SAK) | CMO | Veto on brand-canon changes; review external-facing dashboard copy |
+| Concern                                               | Owner seat | Responsibility                                                                   |
+| ----------------------------------------------------- | ---------- | -------------------------------------------------------------------------------- |
+| Kernel schema versioning + breaking-change discipline | CTO        | Sign-off on `$schemaVersion` major bumps; co-sign Phase 4c flip                  |
+| IS-marketplace policy floor (anti-realignment)        | CTO + CISO | Veto on `$defs.isMarketplace.requiredFields` changes per NON-NEGOTIABLES         |
+| Supply-chain hardening (security checks)              | CISO       | Own `$defs.isMarketplace.securityChecks` evolution; co-sign Phase 4c flip        |
+| External adopter relations + brand promise            | VP DevRel  | Co-sign Phase 4c flip; field cross-vendor distribution conversations per Phase F |
+| Cost-budget enforcement (Refiner / SAK aggregate)     | CFO        | Sign-off on Phase 4b cost ceiling exceedances; audit wave B cost ledger          |
+| Legal IP review on 6767-h / kernel coupling           | GC         | Sign-off on 6767-h ↔ kernel-map ADR amendments (per § 14.16)                     |
+| Brand positioning + naming (Skill Refiner, SAK)       | CMO        | Veto on brand-canon changes; review external-facing dashboard copy               |
 
 **Decision authority taxonomy:**
+
 - **CTO+CISO+VP DevRel triple** = required for Phase 4c advisory→blocking flip + any kernel `$schemaVersion` major bump (NON-NEGOTIABLES item 7)
 - **CTO alone** = minor/patch kernel bumps; validator patches at IS marketplace tier
 - **CFO** = cost-ceiling exceedance authorization (Phase 4b)
@@ -524,39 +531,45 @@ Lives at `intent-eval-lab/SAK-DASHBOARD.md` (root-level for visibility; generate
 
 Content (rendered from `SAK-STATE.json` + bead state + leading-indicator polls):
 
-```markdown
+````markdown
 # SAK Dashboard — auto-generated <timestamp>
 
 ## Phase status
+
 - Phase 0: COMPLETE (D4 wedge ca0ca57bf merged YYYY-MM-DD)
 - Phase 1: IN PROGRESS (4/6 schemas shipped)
 - Phase 2: BLOCKED (waits Phase 1.5 decompose-via-fail)
 - ...
 
 ## State machine (Phase 4)
+
 - Current state: ADVISORY-W-A
 - Time in state: 14 days
 - Next gate: wave B Refiner cost ledger ≥ 80% budget
 
 ## Leading indicators
+
 - 12 monitored | 1 firing (Indicator 6: Anthropic skill-author-onboarding doc cites field validation)
 - Disposition: MONITOR. ISEDC Class-2 retrospective scheduled YYYY-MM-DD.
 
 ## Cost ledger
+
 - Wave B Refiner: $8,234 / $35,000 (23.5% of ceiling)
 - Files completed: 312 / ~700 (45% of expected)
 - Mean cost per file: $26.4 ($50 ceiling)
 
 ## Bead state
-- iec-E11* open: 17 | in-progress: 3 | closed: 4
-- iaj-* (Refiner-side): open: 12 | in-progress: 2 | closed: 8
+
+- iec-E11\* open: 17 | in-progress: 3 | closed: 4
+- iaj-\* (Refiner-side): open: 12 | in-progress: 2 | closed: 8
 
 ## Coverage map state
+
 - Fields total: 87
 - Anthropic-spec-derived: 51 (59%)
 - IS-only-extension: 36 (41%)
 - 6767-h section references: 51 / 51 (100% valid)
-```
+`````
 
 ### 14.13.2 — AAR cadence
 
@@ -570,6 +583,7 @@ Content (rendered from `SAK-STATE.json` + bead state + leading-indicator polls):
 ### 14.13.3 — 90-day CI gate re-eval cadence (closes F-WC-001)
 
 The 4 SAK CI gates (`coverage-map-completeness`, `prose-anchor-validity`, `is-extension-rationale`, `leading-indicator-watch`) each get a quarterly review:
+
 - False-positive rate: target < 2%; > 5% = re-tune
 - False-negative rate: target unknown (no oracle); manual sample of 20 PRs per quarter
 - Maintenance burden: developer-hours spent fixing flakes; target < 4hr/quarter
@@ -592,18 +606,19 @@ Per audit T2 resolution: "structure SAK so that if a leading indicator fires, th
 
 When the leading-indicator disposition matrix (§ 14.11.2) triggers STOP, the following artifacts have PORT TARGETS in the upstream world:
 
-| SAK artifact | Port target | Port mechanism |
-|---|---|---|
-| `$defs.isMarketplace.requiredFields` 8-field policy | Upstream agentskills.io v2 enforcement | File issue at agentskills.io; submit PR codifying IS extras as agentskills.io OPTIONAL fields |
-| Coverage map artifact | Upstream agentskills.io spec sections | Submit each IS-only extension as a "vendor-namespaced metadata" pattern PR |
-| Predicate co-location in `$comment` | Upstream JSON Schema community pattern | Document as a public idiom; submit to JSON Schema Specification |
-| 4-fold `$defs` composition | Upstream JSON Schema community pattern | (Same) |
-| Shadow-mode + state machine + rollback protocol | Upstream `validate-plugins.yml` equivalent | Contribute as PR to whatever upstream validator becomes canonical |
-| Governance triple (CTO+CISO+VP DevRel) | (Internal-only — port not applicable) | Retain as IS internal discipline regardless |
+| SAK artifact                                        | Port target                                | Port mechanism                                                                                |
+| --------------------------------------------------- | ------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| `$defs.isMarketplace.requiredFields` 8-field policy | Upstream agentskills.io v2 enforcement     | File issue at agentskills.io; submit PR codifying IS extras as agentskills.io OPTIONAL fields |
+| Coverage map artifact                               | Upstream agentskills.io spec sections      | Submit each IS-only extension as a "vendor-namespaced metadata" pattern PR                    |
+| Predicate co-location in `$comment`                 | Upstream JSON Schema community pattern     | Document as a public idiom; submit to JSON Schema Specification                               |
+| 4-fold `$defs` composition                          | Upstream JSON Schema community pattern     | (Same)                                                                                        |
+| Shadow-mode + state machine + rollback protocol     | Upstream `validate-plugins.yml` equivalent | Contribute as PR to whatever upstream validator becomes canonical                             |
+| Governance triple (CTO+CISO+VP DevRel)              | (Internal-only — port not applicable)      | Retain as IS internal discipline regardless                                                   |
 
 ### 14.14.2 — Trigger-to-port playbook
 
 When § 14.11.2 fires STOP:
+
 1. ISEDC Class-1 re-charter (per § 14.11.2)
 2. Per artifact in § 14.14.1 with port target: open upstream PR per port mechanism
 3. Track upstream PR status in `SAK-DASHBOARD.md` "port progress" section
@@ -698,6 +713,7 @@ Each wave B Refiner attempt operates on a per-file branch:
 ### 14.17.2 — 3-retry + parked queue
 
 For each file:
+
 - Attempt 1: standard Refiner config (Sonnet + default eval set)
 - Attempt 2 (if 1 fails): retry with adjusted prompt (clarifies failure mode)
 - Attempt 3 (if 2 fails): retry with Opus
@@ -707,12 +723,12 @@ For each file:
 
 Wave A residue (files with WARN-level open issues) + Wave B parked queue (files Refiner couldn't migrate) share ONE reconciliation queue. Disposition options:
 
-| Disposition | Action |
-|---|---|
-| `keep-as-is` | File stays valid at lower tier (e.g., open-standard but not IS-marketplace); recorded in coverage map |
-| `manual-migrate` | Engineer manually edits; file lands in next batch |
-| `deprecate-skill` | Skill marked for removal in next CCP minor; consumers warned |
-| `schema-revision-candidate` | Routed to § 14.A.3 queue; schema may need revision |
+| Disposition                 | Action                                                                                                |
+| --------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `keep-as-is`                | File stays valid at lower tier (e.g., open-standard but not IS-marketplace); recorded in coverage map |
+| `manual-migrate`            | Engineer manually edits; file lands in next batch                                                     |
+| `deprecate-skill`           | Skill marked for removal in next CCP minor; consumers warned                                          |
+| `schema-revision-candidate` | Routed to § 14.A.3 queue; schema may need revision                                                    |
 
 Reconciliation queue dispositions are reviewed monthly at SAK cadence (§ 14.13.2 AAR cadence).
 
@@ -729,13 +745,13 @@ Per audit T1 resolution: "Adopt BOTH in sequence — write the test corpus as Ph
 
 ### 14.18.1 — Sequence
 
-| Order | Sub-phase | Deliverable | Exit gate |
-|---|---|---|---|
-| 1 | Phase 1.0 | 6 schemas shipped with v6 framing (single `$defs.isMarketplace`) | Schemas exist + lint |
-| 2 | Phase 1.1 | Test corpus authored (≥ 30 fixtures per schema = ~180 fixtures) | Fixtures committed |
-| 3 | Phase 1.2 | Schemas validated against fixtures; failures surface complecting issues | Failure report drafted |
-| 4 | Phase 1.5 | Schemas DECOMPOSED per § 14.10 REVISED in response to test failures | 4-fold `$defs` structure in place; fixtures pass |
-| 5 | Phase 2 | Validator cutover proceeds against the decomposed schemas | Per v6 § 14.4 Phase 2 |
+| Order | Sub-phase | Deliverable                                                             | Exit gate                                        |
+| ----- | --------- | ----------------------------------------------------------------------- | ------------------------------------------------ |
+| 1     | Phase 1.0 | 6 schemas shipped with v6 framing (single `$defs.isMarketplace`)        | Schemas exist + lint                             |
+| 2     | Phase 1.1 | Test corpus authored (≥ 30 fixtures per schema = ~180 fixtures)         | Fixtures committed                               |
+| 3     | Phase 1.2 | Schemas validated against fixtures; failures surface complecting issues | Failure report drafted                           |
+| 4     | Phase 1.5 | Schemas DECOMPOSED per § 14.10 REVISED in response to test failures     | 4-fold `$defs` structure in place; fixtures pass |
+| 5     | Phase 2   | Validator cutover proceeds against the decomposed schemas               | Per v6 § 14.4 Phase 2                            |
 
 **Beck's "test-first lights the way" and Hickey's "decompose before locking in" both honored in sequence.** Cost: ~2 weeks added to Phase 1 (per audit synthesis estimate). Acceptable.
 
@@ -782,22 +798,23 @@ Per audit synthesis: "Add a Phase 1 sub-deliverable: `intent-eval-core/tests/aut
 
 ### 14.21.1 — Fixture composition (per schema)
 
-| Class | Count | Purpose |
-|---|---|---|
-| Positive (canonical) | 10 | Clear-PASS examples; common author shapes |
-| Positive (edge) | 5 | Pass-but-uncommon shapes (e.g., minimum-required-only) |
-| Negative (each required field absent) | 8 | Per the 8-required-fields set; one fixture per omission |
-| Negative (type errors) | 5 | Wrong type for `version` (number instead of string), etc. |
-| Negative (constraint violation) | 5 | `name` with uppercase; `description` > 1024 chars; etc. |
-| Edge (Anthropic spec ambiguity) | 5 | Cases where 6767-h is silent; intentional under-spec to surface schema judgment |
-| Edge (frontier-model-generated) | 2 | Real Claude-generated SKILL.md examples; future-proof against frontier shapes |
-| **Total per schema** | **40** | (Audit said 30 minimum; rounded up to 40 for headroom) |
+| Class                                 | Count  | Purpose                                                                         |
+| ------------------------------------- | ------ | ------------------------------------------------------------------------------- |
+| Positive (canonical)                  | 10     | Clear-PASS examples; common author shapes                                       |
+| Positive (edge)                       | 5      | Pass-but-uncommon shapes (e.g., minimum-required-only)                          |
+| Negative (each required field absent) | 8      | Per the 8-required-fields set; one fixture per omission                         |
+| Negative (type errors)                | 5      | Wrong type for `version` (number instead of string), etc.                       |
+| Negative (constraint violation)       | 5      | `name` with uppercase; `description` > 1024 chars; etc.                         |
+| Edge (Anthropic spec ambiguity)       | 5      | Cases where 6767-h is silent; intentional under-spec to surface schema judgment |
+| Edge (frontier-model-generated)       | 2      | Real Claude-generated SKILL.md examples; future-proof against frontier shapes   |
+| **Total per schema**                  | **40** | (Audit said 30 minimum; rounded up to 40 for headroom)                          |
 
 Total corpus: 240 fixtures. Lives at `intent-eval-core/tests/authoring/v1/fixtures/<schema>/{positive,negative,edge}/`.
 
 ### 14.21.2 — Test harness
 
 Each fixture is a YAML or JSON file. Test harness:
+
 - For positive fixtures: `valid_C(fixture, isMarketplace)` MUST return TRUE
 - For negative fixtures: `valid_C(fixture, isMarketplace)` MUST return FALSE with the specific predicate sub-conjunct flagged
 - For edge fixtures: documented expected behavior; test asserts the documented behavior
@@ -828,6 +845,7 @@ When kernel `$schemaVersion` bumps (per § 14.15), the Refiner's accept() predic
 Phase A.0 (D28-PHASE-A0 baseline per DR-028) uses `/validate-skillmd` as judge. Per F-CH-004, if the judge changes (e.g., D4 patch lands during baseline; future kernel cutover changes validation semantics), the baseline is invalidated.
 
 **Isolation discipline:**
+
 - Phase A.0 pins judge version at baseline start (e.g., `validate-skills-schema.py@SCHEMA-3.7.0`)
 - Baseline runs against pinned judge regardless of subsequent judge bumps
 - When judge bumps, Phase A.0 results carry the pinned-judge annotation
@@ -844,6 +862,7 @@ Phase A.0 (D28-PHASE-A0 baseline per DR-028) uses `/validate-skillmd` as judge. 
 The D4 patch (CCP commit ca0ca57bf) adds `disallowed-tools` to `validate-skills-schema.py` BEFORE the kernel exists. Per F-KB-003, this creates a duplicate canonical position: the kernel's eventual `skill-frontmatter.schema.json` will ALSO encode this field.
 
 **Reconciliation in Phase 2 (validator cutover):**
+
 - When Phase 2 cuts CCP validator over to kernel-loaded schema, the CCP-side `SKILL_FIELDS` entry for `disallowed-tools` becomes shadow-only (loaded from kernel, no longer hand-authored)
 - D4's hand-authored entry is retained as comment for migration audit trail; actual validation comes from kernel
 - CCP `SCHEMA_VERSION` bumps to declare which kernel `$schemaVersion` it consumes (per § 14.15)
@@ -859,6 +878,7 @@ The D4 patch (CCP commit ca0ca57bf) adds `disallowed-tools` to `validate-skills-
 The validator's YAML shell-substitution security check (one of `$defs.isMarketplace.securityChecks`) currently has no false-positive / false-negative measurement.
 
 **Measurement protocol:**
+
 - Build a curated corpus of 100 SKILL.md fixtures: 50 with legitimate `${VAR}` usage from allow-list; 50 with malicious patterns
 - Run the check; measure FP rate (legitimate flagged) + FN rate (malicious missed)
 - Target: FP < 2%; FN < 5%; baseline lands at Phase 1.1 fixture authoring
@@ -875,6 +895,7 @@ The validator's YAML shell-substitution security check (one of `$defs.isMarketpl
 Vendored upstream snapshots at `intent-eval-core/schemas/authoring/v1/_vendor/anthropic/` carry `x-upstream-url` + `x-upstream-fetched-at` + `x-upstream-sha256`.
 
 **Bump policy:**
+
 - Daily cron polls each `x-upstream-url`
 - New sha256 detected → opens auto-PR with the new snapshot, diff vs prior, and recommended `$schemaVersion` impact (additive / breaking)
 - Auto-PR is human-merged; never auto-merged (per CTO-call discipline)
@@ -891,11 +912,11 @@ Vendored upstream snapshots at `intent-eval-core/schemas/authoring/v1/_vendor/an
 
 v6 § 14.4 Phase 1 says "kernel authoring/v1 ships read-only." Per F-RH-005, three distinct invariants are compressed:
 
-| Invariant | Statement |
-|---|---|
-| **Read-only-immutable** | Kernel `authoring/v1/` schemas are NEVER mutated after publication. Bumps create `authoring/v2/`, not edits to v1. |
+| Invariant                         | Statement                                                                                                                   |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| **Read-only-immutable**           | Kernel `authoring/v1/` schemas are NEVER mutated after publication. Bumps create `authoring/v2/`, not edits to v1.          |
 | **Read-only-no-consumer-cutover** | Phase 1 ships schemas but NO consumer cuts over to them. Validators continue using CCP-side `SCHEMA_VERSION` until Phase 2. |
-| **Read-only-internal-test** | Phase 1 schemas may be exercised by internal kernel test harness; not by external consumers. |
+| **Read-only-internal-test**       | Phase 1 schemas may be exercised by internal kernel test harness; not by external consumers.                                |
 
 § 14.4 Phase 1 text uses these three named invariants explicitly. v6's compressed "read-only" framing is replaced.
 
@@ -913,42 +934,49 @@ Per audit's C5 + Cunningham's repeated reader-cost concern.
 
 `intent-eval-lab/000-docs/SAK-INDEX.md` (NEW, ≤ 2 pages) — the canonical entry. Structure:
 
-```markdown
+````markdown
 # SAK Index
 
 ## What
+
 Spec Authority Kernel — kernel-canonical authoring schemas for 6 contracts.
 
 ## Why
+
 [2-3 sentences. Link to plan 031 § 14.1]
 
 ## Status
+
 [Current phase; current state; link to SAK-DASHBOARD.md]
 
 ## Where things live
-| Concern | Path |
-|---|---|
-| Plan amendment | 031 (v6 intro) + 033 (v7 audit-closure)
-| Charter | 032 (DRAFT — deferred)
-| Audit synthesis | audit/2026-05-28-sak-incremental-audit/synthesis.md
-| Governance | NNN-AT-STND-sak-governance-owners.md
-| Dashboard | SAK-DASHBOARD.md (auto-generated)
-| Kernel schemas | intent-eval-core/schemas/authoring/v1/
-| Coverage map | intent-eval-core/schemas/authoring/v1/6767h-coverage-map.json
-| 6767-h prose | claude-code-plugins/000-docs/6767-h-*.md
-| Beads (filter) | bd list --label sak --label refiner
+
+| Concern         | Path                                                          |
+| --------------- | ------------------------------------------------------------- |
+| Plan amendment  | 031 (v6 intro) + 033 (v7 audit-closure)                       |
+| Charter         | 032 (DRAFT — deferred)                                        |
+| Audit synthesis | audit/2026-05-28-sak-incremental-audit/synthesis.md           |
+| Governance      | NNN-AT-STND-sak-governance-owners.md                          |
+| Dashboard       | SAK-DASHBOARD.md (auto-generated)                             |
+| Kernel schemas  | intent-eval-core/schemas/authoring/v1/                        |
+| Coverage map    | intent-eval-core/schemas/authoring/v1/6767h-coverage-map.json |
+| 6767-h prose    | claude-code-plugins/000-docs/6767-h-\*.md                     |
+| Beads (filter)  | bd list --label sak --label refiner                           |
 
 ## Read order (for engineers)
+
 1. SAK-INDEX.md (this file)
 2. SAK-DASHBOARD.md (current state)
 3. Plan 031 § 14 (architecture)
 4. Plan 033 v7 amendment (this file's sibling-rationale)
 
 ## Read order (for ISEDC seats)
+
 1. SAK-INDEX.md
 2. 032 charter draft
 3. audit synthesis
-```
+
+```text
 
 ### 14.28.2 — Dual changelog consolidation (F-WC-006)
 
@@ -968,44 +996,44 @@ v6 § 14.10 said CCP `SCHEMA_CHANGELOG.md` is "DUAL-MAINTAINED" with kernel `sch
 
 Per audit remediation map. Filed in companion action with appropriate labels (`refiner`, `sak`, `audit-remediation`, `repo:<short>`):
 
-| # | Slug | Priority | Repo label | Closes |
-|---|---|---|---|---|
-| 1 | iec-E11-phase-4-decompose | P0 | iec | C1 / F-KB-001 |
-| 2 | iec-E11-phase-4b-5-shadow-mode | P0 | iec | C1 / F-CH-001 |
-| 3 | iec-E11-phase-4-state-machine | P0 | iec | C1 |
-| 4 | iec-E11-phase-4-snapshot-rules | P0 | iec | F-MK-005 |
-| 5 | iec-E11-phase-4c-rollback-protocol | P0 | iec | F-KB-004 |
-| 6 | iaj-refiner-cost-instrument | P0 | iaj | F-AK-004 |
-| 7 | iec-E11-fixtures-discipline | P0 | iec | C2 / F-KB-002 |
-| 8 | iel-schema-policy-eval | P0 | iel | C2 |
-| 9 | iec-E11-valid-predicate-spec | P0 | iec | T3 / § 14.A |
-| 10 | iec-E11-cross-schema-invariants | P0 | iec | § 14.B / F-LL-002 |
-| 11 | iec-E11-coverage-map | P0 | iec | C3 / F-RH-002 / § 14.2 |
-| 12 | iec-E11-decomp | P0 | iec | C3 / F-RH-001 / § 14.10 |
-| 13 | iec-E11-anthropic-leading-indicators | P0 | iec | T2 / F-AK-001 |
-| 14 | iec-E11-governance-owners | P1 | iel | C4 / § 14.12 |
-| 15 | iel-ci-gate-cadence | P1 | iel | F-WC-001 |
-| 16 | iel-sak-dashboard | P1 | iel | F-WC-005 / § 14.13 |
-| 17 | iel-sak-summary-doc | P1 | iel | C5 / § 14.28 |
-| 18 | iec-E11-changelog-singularity | P1 | iec | F-WC-006 |
-| 19 | iaj-refiner-schema-boundary | P1 | iaj | F-AK-003 |
-| 20 | iec-E11-kernel-vendor-consistency-model | P0 | iec | F-MK-001 / § 14.15 |
-| 21 | iaj-refiner-wave-b-durability | P1 | iaj | F-MK-004 / § 14.17 |
-| 22 | iec-E11-port-not-delete-playbook | P1 | iec | T2 / § 14.14 |
-| 23 | iec-E11-prose-anchor-parser | P0 | iec | F-KB-005 / § 14.16 |
-| 24 | iec-E11-prose-schema-liveness | P1 | iec | F-LL-005 |
-| 25 | iec-E11-reconciliation-queue | P1 | iec | F-RH-004 |
-| 26 | iaj-refiner-kernel-bump-propagation | P1 | iaj | F-KB-006 |
-| 27 | iaj-phase-a0-judge-pin | P1 | iaj | F-CH-004 |
-| 28 | ccp-d4-kernel-cutover | P1 | ccp | F-KB-003 |
-| 29 | iec-E11-shell-sub-measurement | P2 | iec | F-AK-006 |
-| 30 | iec-E11-vendor-bump-policy | P2 | iec | F-AK-005 |
-| 31 | iec-E11-read-only-invariants | P2 | iec | F-RH-005 |
-| 32 | iec-E11-conditional-visibility-integrity | P2 | iec | F-MK-006 |
-| 33 | iec-E11-is-extras-categorize | P2 | iec | F-RH-006 |
-| 34 | iec-E11-phase-5-decompose | P1 | iec | F-CH-005 / § 14.20 |
-| 35 | iec-E11-decomp-via-failure | P0 | iec | T1 / § 14.18 |
-| 36 | iec-E11-version-ordering-invariant | P1 | iec | F-MK-003 |
+| #   | Slug                                     | Priority | Repo label | Closes                  |
+| --- | ---------------------------------------- | -------- | ---------- | ----------------------- |
+| 1   | iec-E11-phase-4-decompose                | P0       | iec        | C1 / F-KB-001           |
+| 2   | iec-E11-phase-4b-5-shadow-mode           | P0       | iec        | C1 / F-CH-001           |
+| 3   | iec-E11-phase-4-state-machine            | P0       | iec        | C1                      |
+| 4   | iec-E11-phase-4-snapshot-rules           | P0       | iec        | F-MK-005                |
+| 5   | iec-E11-phase-4c-rollback-protocol       | P0       | iec        | F-KB-004                |
+| 6   | iaj-refiner-cost-instrument              | P0       | iaj        | F-AK-004                |
+| 7   | iec-E11-fixtures-discipline              | P0       | iec        | C2 / F-KB-002           |
+| 8   | iel-schema-policy-eval                   | P0       | iel        | C2                      |
+| 9   | iec-E11-valid-predicate-spec             | P0       | iec        | T3 / § 14.A             |
+| 10  | iec-E11-cross-schema-invariants          | P0       | iec        | § 14.B / F-LL-002       |
+| 11  | iec-E11-coverage-map                     | P0       | iec        | C3 / F-RH-002 / § 14.2  |
+| 12  | iec-E11-decomp                           | P0       | iec        | C3 / F-RH-001 / § 14.10 |
+| 13  | iec-E11-anthropic-leading-indicators     | P0       | iec        | T2 / F-AK-001           |
+| 14  | iec-E11-governance-owners                | P1       | iel        | C4 / § 14.12            |
+| 15  | iel-ci-gate-cadence                      | P1       | iel        | F-WC-001                |
+| 16  | iel-sak-dashboard                        | P1       | iel        | F-WC-005 / § 14.13      |
+| 17  | iel-sak-summary-doc                      | P1       | iel        | C5 / § 14.28            |
+| 18  | iec-E11-changelog-singularity            | P1       | iec        | F-WC-006                |
+| 19  | iaj-refiner-schema-boundary              | P1       | iaj        | F-AK-003                |
+| 20  | iec-E11-kernel-vendor-consistency-model  | P0       | iec        | F-MK-001 / § 14.15      |
+| 21  | iaj-refiner-wave-b-durability            | P1       | iaj        | F-MK-004 / § 14.17      |
+| 22  | iec-E11-port-not-delete-playbook         | P1       | iec        | T2 / § 14.14            |
+| 23  | iec-E11-prose-anchor-parser              | P0       | iec        | F-KB-005 / § 14.16      |
+| 24  | iec-E11-prose-schema-liveness            | P1       | iec        | F-LL-005                |
+| 25  | iec-E11-reconciliation-queue             | P1       | iec        | F-RH-004                |
+| 26  | iaj-refiner-kernel-bump-propagation      | P1       | iaj        | F-KB-006                |
+| 27  | iaj-phase-a0-judge-pin                   | P1       | iaj        | F-CH-004                |
+| 28  | ccp-d4-kernel-cutover                    | P1       | ccp        | F-KB-003                |
+| 29  | iec-E11-shell-sub-measurement            | P2       | iec        | F-AK-006                |
+| 30  | iec-E11-vendor-bump-policy               | P2       | iec        | F-AK-005                |
+| 31  | iec-E11-read-only-invariants             | P2       | iec        | F-RH-005                |
+| 32  | iec-E11-conditional-visibility-integrity | P2       | iec        | F-MK-006                |
+| 33  | iec-E11-is-extras-categorize             | P2       | iec        | F-RH-006                |
+| 34  | iec-E11-phase-5-decompose                | P1       | iec        | F-CH-005 / § 14.20      |
+| 35  | iec-E11-decomp-via-failure               | P0       | iec        | T1 / § 14.18            |
+| 36  | iec-E11-version-ordering-invariant       | P1       | iec        | F-MK-003                |
 
 36 total (revised from audit's ~25 estimate — granularity of the C1/C2/C3 remediations expanded). 13 P0, 14 P1, 9 P2. All gated on plan 033 v7 re-audit closing the P0 cluster.
 
@@ -1028,17 +1056,19 @@ v7 re-audit (incremental on v7 deltas only) fires when:
 ### 14.30.1 — Re-audit scope discipline
 
 The re-audit reviews ONLY:
+
 - v7 amendment doc (THIS doc, 033)
 - NEW sub-sections (§ 14.A, § 14.B, § 14.12-14.28)
 - REVISED sub-sections (§ 14.2, § 14.4, § 14.10, § 14.11, § 14.20)
 - NEW remediation bead inventory (§ 14.29)
 
 The re-audit does NOT re-evaluate:
+
 - §§ 1-13 (ratified per DR-028)
 - v6 sub-sections that v7 didn't touch
 - Findings already closed by v6→v7 deltas (verify closure only)
 
-### 14.30 — No new bead; tracked in `bd_000-projects-8vq0` (charter bead) lifecycle.
+### 14.30 — No new bead; tracked in `bd_000-projects-8vq0` (charter bead) lifecycle
 
 ---
 
@@ -1072,6 +1102,7 @@ Re-audit on v7 deltas → if 0 new P0s, STATUS flips RATIFIED-WITH-DELTAS → IS
 ## Status banding
 
 **PROPOSED-FOR-REAUDIT** — pending:
+
 - v7 re-audit per § 14.30
 - Outcome flips STATUS to RATIFIED-WITH-DELTAS (success) or NEEDS-AMENDMENT-V8 / STRUCTURAL-REJECT (failure)
 - 36 remediation beads filed (companion action; can proceed in parallel with re-audit)
@@ -1079,3 +1110,5 @@ Re-audit on v7 deltas → if 0 new P0s, STATUS flips RATIFIED-WITH-DELTAS → IS
 
 — Jeremy Longshore
 intentsolutions.io
+```
+````

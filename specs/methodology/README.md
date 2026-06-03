@@ -4,15 +4,15 @@
 
 ## Patterns observed in early modules (provisional, not yet normative)
 
-- **Toulmin-structured findings.** Every finding in a conformance report includes a *claim* (what the spec requirement is), a *warrant* (the canonical authority the requirement codifies), *grounds* (the empirical evidence the requirement isn't satisfied), and a *qualifier* (severity / scope of the failure). This structure is currently in use in the `mcp-plugin-observability` module's case-study reports.
+- **Toulmin-structured findings.** Every finding in a conformance report includes a _claim_ (what the spec requirement is), a _warrant_ (the canonical authority the requirement codifies), _grounds_ (the empirical evidence the requirement isn't satisfied), and a _qualifier_ (severity / scope of the failure). This structure is currently in use in the `mcp-plugin-observability` module's case-study reports.
 
-- **Diagnostic-first auditing.** Findings are stated as *observed failure modes* with reproduction steps, not as *prescribed fixes*. The fix shape is left to the implementer; the spec describes what conformance looks like, not how to achieve it. Implementers may converge on common fix patterns (and those patterns get codified later as informative annexes), but the spec itself stays diagnostic.
+- **Diagnostic-first auditing.** Findings are stated as _observed failure modes_ with reproduction steps, not as _prescribed fixes_. The fix shape is left to the implementer; the spec describes what conformance looks like, not how to achieve it. Implementers may converge on common fix patterns (and those patterns get codified later as informative annexes), but the spec itself stays diagnostic.
 
-- **Conformance vs eval distinction.** A spec module is *conformance-shaped* — pass/fail against normative requirements. A research output is *eval-shaped* — relative measurement, ranking, A/B comparison. Both are valid outputs; they belong in different artifacts. Don't conflate "this plugin is conformant against v0.1.0-draft" (a binary claim) with "this plugin scored 87/100 on the discovery-rate eval" (a quantitative measurement).
+- **Conformance vs eval distinction.** A spec module is _conformance-shaped_ — pass/fail against normative requirements. A research output is _eval-shaped_ — relative measurement, ranking, A/B comparison. Both are valid outputs; they belong in different artifacts. Don't conflate "this plugin is conformant against v0.1.0-draft" (a binary claim) with "this plugin scored 87/100 on the discovery-rate eval" (a quantitative measurement).
 
 - **Vendor-neutrality enforcement.** Every spec module's normative section should be readable as if the reader has never heard of the first case-study vendor. Vendor-specific instantiation goes in `case-studies/`. If a normative requirement reads as "X must do Y where X is the first vendor we worked with," it's drifted out of the module spec and into the case study.
 
-- **Anchoring discipline.** Every normative requirement cites the canonical upstream source it codifies — the vendor's own docs, an RFC, an ISO standard, a published academic methodology. Specs are *codifying what's already canonical*, not inventing. Inventions belong in research outputs (`000-docs/` or `research/` at repo root), not in `specs/`.
+- **Anchoring discipline.** Every normative requirement cites the canonical upstream source it codifies — the vendor's own docs, an RFC, an ISO standard, a published academic methodology. Specs are _codifying what's already canonical_, not inventing. Inventions belong in research outputs (`000-docs/` or `research/` at repo root), not in `specs/`.
 
 ## When this module will get a real authored doc
 

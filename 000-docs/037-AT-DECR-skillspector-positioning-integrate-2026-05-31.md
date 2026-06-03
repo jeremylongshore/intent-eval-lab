@@ -17,14 +17,14 @@ NVIDIA SkillSpector is a **security scanner** for AI agent skills (detect vulner
 
 The right move: integrate SkillSpector's security signal into j-rig's L1 (Package integrity) layer as an OPTIONAL upstream check. Continue j-rig + IEP Evidence Bundle architecture as-is. Reference SkillSpector as related-work + complementary tool in glossary + methodology docs.
 
-| Axis | SkillSpector | j-rig binary-eval | Overlap? |
-|---|---|---|---|
-| Problem | Vulnerability + malicious-pattern detection | Behavioral correctness + baseline lift + rollout safety | Mostly orthogonal |
-| Output shape | SARIF + JSON + Markdown + terminal | Evidence Bundle rows (DSSE-signed, Rekor-anchored) | Different — could compose |
-| Risk model | 64 vulnerability patterns across 16 categories | 7 evaluation layers, each binary | Adjacent |
-| Vetting question | "Is this skill safe to install?" | "Does this skill work and add value?" | Orthogonal |
-| License | Apache 2.0 | Apache 2.0 | ✓ compatible |
-| Stack | Python 3.12+, uv, LangGraph | TypeScript pnpm monorepo | Different runtimes — composition is by data exchange, not in-process |
+| Axis             | SkillSpector                                   | j-rig binary-eval                                       | Overlap?                                                             |
+| ---------------- | ---------------------------------------------- | ------------------------------------------------------- | -------------------------------------------------------------------- |
+| Problem          | Vulnerability + malicious-pattern detection    | Behavioral correctness + baseline lift + rollout safety | Mostly orthogonal                                                    |
+| Output shape     | SARIF + JSON + Markdown + terminal             | Evidence Bundle rows (DSSE-signed, Rekor-anchored)      | Different — could compose                                            |
+| Risk model       | 64 vulnerability patterns across 16 categories | 7 evaluation layers, each binary                        | Adjacent                                                             |
+| Vetting question | "Is this skill safe to install?"               | "Does this skill work and add value?"                   | Orthogonal                                                           |
+| License          | Apache 2.0                                     | Apache 2.0                                              | ✓ compatible                                                         |
+| Stack            | Python 3.12+, uv, LangGraph                    | TypeScript pnpm monorepo                                | Different runtimes — composition is by data exchange, not in-process |
 
 ---
 
@@ -45,7 +45,9 @@ INTEGRATE SkillSpector as a complementary security signal:
 ## 2. Why INTEGRATE (not ADOPT/FORK/BUILD-VS)
 
 ### Why not ADOPT
+
 SkillSpector doesn't cover what j-rig covers. j-rig's 7 layers include:
+
 - L4 Regression protection (pinned reference outputs vs current)
 - L5 Baseline value (does skill outperform naive prompt?)
 - L6 Model variance (multi-seed stability)
@@ -53,12 +55,15 @@ SkillSpector doesn't cover what j-rig covers. j-rig's 7 layers include:
 SkillSpector has NONE of these. It scans for security vulnerabilities — a different question entirely. Adopting SkillSpector would mean losing L4/L5/L6 measurements. Not viable.
 
 ### Why not FORK
+
 There's no path-divergence we'd want to make IS-canonical. SkillSpector's security-scanner thesis is correct for its domain (detecting malicious skills before install). We don't need to make a different security scanner — they've already built a good one.
 
 ### Why not BUILD-VS
+
 SkillSpector solves a real problem we don't currently solve (security scanning of third-party skills before installation). Building our own would be unjustified duplication. Integration is the cheaper + faster path.
 
 ### Why INTEGRATE
+
 - Two complementary surfaces ([security + behavioral]) compose naturally
 - SARIF is a standard exchange format SkillSpector emits; harness can ingest it via well-defined boundary
 - j-rig's binary-per-layer thesis means we can add a new sub-check at L7 without disturbing existing layers
@@ -71,18 +76,18 @@ SkillSpector solves a real problem we don't currently solve (security scanning o
 
 Material-overlap projects briefly surveyed:
 
-| Project | Thesis | Overlap with j-rig | Position |
-|---|---|---|---|
-| **NVIDIA SkillSpector** | Security scanner for AI agent skills | Different problem (security vs behavior) | INTEGRATE (this DR) |
-| **Anthropic Evaluations Hub** | Eval-set authoring + scoring API (Claude API) | Adjacent — different scoring model + paid | Reference as upstream eval tool |
-| **OpenAI Evals (github.com/openai/evals)** | Framework for grading LLM outputs vs reference | Adjacent — model output grading | Different abstraction level |
-| **HuggingFace Open LLM Leaderboard** | Aggregate LLM model performance ranking | Tangential — not skill-evaluation | Out of scope |
-| **lm-evaluation-harness** | Reusable benchmark runner for LLMs | Tangential — model benchmark, not skill | Out of scope |
-| **METR public reports** | AI capability + safety evals | Tangential — model capability, not skill | Out of scope |
-| **Apollo Research** | AI deception + alignment evals | Tangential — model alignment, not skill | Out of scope |
-| **Redwood Research** | AI safety methodology | Tangential — research methodology, not tool | Out of scope |
+| Project                                    | Thesis                                         | Overlap with j-rig                          | Position                        |
+| ------------------------------------------ | ---------------------------------------------- | ------------------------------------------- | ------------------------------- |
+| **NVIDIA SkillSpector**                    | Security scanner for AI agent skills           | Different problem (security vs behavior)    | INTEGRATE (this DR)             |
+| **Anthropic Evaluations Hub**              | Eval-set authoring + scoring API (Claude API)  | Adjacent — different scoring model + paid   | Reference as upstream eval tool |
+| **OpenAI Evals (github.com/openai/evals)** | Framework for grading LLM outputs vs reference | Adjacent — model output grading             | Different abstraction level     |
+| **HuggingFace Open LLM Leaderboard**       | Aggregate LLM model performance ranking        | Tangential — not skill-evaluation           | Out of scope                    |
+| **lm-evaluation-harness**                  | Reusable benchmark runner for LLMs             | Tangential — model benchmark, not skill     | Out of scope                    |
+| **METR public reports**                    | AI capability + safety evals                   | Tangential — model capability, not skill    | Out of scope                    |
+| **Apollo Research**                        | AI deception + alignment evals                 | Tangential — model alignment, not skill     | Out of scope                    |
+| **Redwood Research**                       | AI safety methodology                          | Tangential — research methodology, not tool | Out of scope                    |
 
-**Conclusion:** SkillSpector is the only material-overlap project in the *skill-evaluation* (not LLM-evaluation) space. Most "AI eval" tools target model-level or task-level evaluation. Skill-as-an-evaluation-target is rare territory; j-rig + SkillSpector together cover the orthogonal axes (behavioral + security).
+**Conclusion:** SkillSpector is the only material-overlap project in the _skill-evaluation_ (not LLM-evaluation) space. Most "AI eval" tools target model-level or task-level evaluation. Skill-as-an-evaluation-target is rare territory; j-rig + SkillSpector together cover the orthogonal axes (behavioral + security).
 
 ---
 

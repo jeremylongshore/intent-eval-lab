@@ -15,7 +15,7 @@ When AI agents interact with decentralized cryptographic infrastructure — dist
 
 These failure modes are not addressed by general-purpose agent evaluation. They require evaluation against adversarial input distributions specific to decentralized cryptographic systems: prompt-injection vectors targeting key material, simulated quorum-state desync, replay-window probes, and cross-chain consistency attacks.
 
-A spec under this module would codify what it means for an AI agent operating against decentralized cryptographic infrastructure to be *operationally ready* — including the audit trail and adversarial-test surface required before such an agent should hold privileged signing or decryption authority.
+A spec under this module would codify what it means for an AI agent operating against decentralized cryptographic infrastructure to be _operationally ready_ — including the audit trail and adversarial-test surface required before such an agent should hold privileged signing or decryption authority.
 
 ## When this module will graduate from placeholder
 

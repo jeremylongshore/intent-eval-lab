@@ -10,12 +10,12 @@
 
 The Intentional Mapping vocabulary defines six failure-mode categories at v0.1.0-draft:
 
-| ID | Shorthand |
-|---|---|
-| MM-1 | async race |
-| MM-2 | shape drift |
-| MM-3 | cooldown |
-| MM-4 | side-effect |
+| ID   | Shorthand                                          |
+| ---- | -------------------------------------------------- |
+| MM-1 | async race                                         |
+| MM-2 | shape drift                                        |
+| MM-3 | cooldown                                           |
+| MM-4 | side-effect                                        |
 | MM-5 | (reserved — see `intentional-mapping-template.md`) |
 | MM-6 | (reserved — see `intentional-mapping-template.md`) |
 

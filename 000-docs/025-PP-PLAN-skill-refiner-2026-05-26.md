@@ -1,29 +1,29 @@
 # Skill Refiner — eval-guided improvement loop for SKILL.md files
 
-| Field | Value |
-|---|---|
-| Status | DRAFTED 2026-05-26 |
-| Owner | Jeremy Longshore (executor: Claude as drafting CTO) |
-| Supersedes | Prior 2026-05-26 release-sweep plan (carry-over items folded into § 1). Filename evolved in-PR across 3 brand iterations: `025-PP-PLAN-skillopt-pattern-plugin-ecosystem-2026-05-26.md` (initial draft, borrowed verbiage) → `025-PP-PLAN-j-rig-keeper-pretrip-evidence-2026-05-26.md` (j-rig sub-product naming) → `025-PP-PLAN-skill-refiner-2026-05-26.md` (final, peer-product naming under IS agent-rig stack). |
-| Decision basis | User-confirmed via AskUserQuestion rounds 2026-05-26 |
-| Scope | ONE new product — **Skill Refiner** — the eval-guided improvement loop that proposes safe, minimal SKILL.md edits and accepts only on strict score improvement. Delivered as a Claude Code plugin with a 3-layer hook architecture (sinker/line/hook); emits signed evidence reports (markdown + HTML) per pass; integrates with the IEP kernel as the 14th canonical entity (SkillVersion) + a new predicate URI (skill-refiner-pass/v1). |
-| Status banding | ACTIVE — SUPERSEDED-BY 027-PP-PLAN-skill-refiner-snoopy-fluttering-comet-v4-2026-05-26.md (this plan is the companion / v3 framing; plan 027 is the v4 enhancement with ecosystem-fold + per-repo bead structure + plan-audit phase) |
-| Beads | bd_000-projects-0r8m (product epic — Tier-1 kernel + evidence), bd_000-projects-3zol (product epic — Refiner library), bd_000-projects-jsy3 (product epic — /j-rig plugin + hooks), bd_000-projects-rqwk (RC-IEL), bd_000-projects-brij (RC-IEC), bd_000-projects-214c (RC-IAJ), bd_000-projects-aon3 (RC-IAH), bd_000-projects-r8ir (RC-IAR), bd_000-projects-pu35 (TL-EPIC) |
-| GitHub | jeremylongshore/intent-eval-lab#78, jeremylongshore/intent-eval-lab#79, jeremylongshore/intent-eval-core#12, jeremylongshore/j-rig-skill-binary-eval#81, jeremylongshore/intent-audit-harness#42, jeremylongshore/intent-rollout-gate#15 |
+| Field          | Value                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Status         | DRAFTED 2026-05-26                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Owner          | Jeremy Longshore (executor: Claude as drafting CTO)                                                                                                                                                                                                                                                                                                                                                                                        |
+| Supersedes     | Prior 2026-05-26 release-sweep plan (carry-over items folded into § 1). Filename evolved in-PR across 3 brand iterations: `025-PP-PLAN-skillopt-pattern-plugin-ecosystem-2026-05-26.md` (initial draft, borrowed verbiage) → `025-PP-PLAN-j-rig-keeper-pretrip-evidence-2026-05-26.md` (j-rig sub-product naming) → `025-PP-PLAN-skill-refiner-2026-05-26.md` (final, peer-product naming under IS agent-rig stack).                       |
+| Decision basis | User-confirmed via AskUserQuestion rounds 2026-05-26                                                                                                                                                                                                                                                                                                                                                                                       |
+| Scope          | ONE new product — **Skill Refiner** — the eval-guided improvement loop that proposes safe, minimal SKILL.md edits and accepts only on strict score improvement. Delivered as a Claude Code plugin with a 3-layer hook architecture (sinker/line/hook); emits signed evidence reports (markdown + HTML) per pass; integrates with the IEP kernel as the 14th canonical entity (SkillVersion) + a new predicate URI (skill-refiner-pass/v1). |
+| Status banding | ACTIVE — SUPERSEDED-BY 027-PP-PLAN-skill-refiner-snoopy-fluttering-comet-v4-2026-05-26.md (this plan is the companion / v3 framing; plan 027 is the v4 enhancement with ecosystem-fold + per-repo bead structure + plan-audit phase)                                                                                                                                                                                                       |
+| Beads          | bd_000-projects-0r8m (product epic — Tier-1 kernel + evidence), bd_000-projects-3zol (product epic — Refiner library), bd_000-projects-jsy3 (product epic — /j-rig plugin + hooks), bd_000-projects-rqwk (RC-IEL), bd_000-projects-brij (RC-IEC), bd_000-projects-214c (RC-IAJ), bd_000-projects-aon3 (RC-IAH), bd_000-projects-r8ir (RC-IAR), bd_000-projects-pu35 (TL-EPIC)                                                              |
+| GitHub         | jeremylongshore/intent-eval-lab#78, jeremylongshore/intent-eval-lab#79, jeremylongshore/intent-eval-core#12, jeremylongshore/j-rig-skill-binary-eval#81, jeremylongshore/intent-audit-harness#42, jeremylongshore/intent-rollout-gate#15                                                                                                                                                                                                   |
 
 ## What this is
 
 **Skill Refiner** is the eval-guided improvement loop that proposes safe, minimal changes to a SKILL.md until it passes the rollout gate without regressing sacred tests. It is the **second product in the 3-product Intent Solutions agent-rig stack**:
 
-| Product | What it does |
-|---|---|
-| **J-Rig Skill Binary Eval** (shipped) | Test harness — evaluates skill behavior across the 7-layer taxonomy |
-| **Skill Refiner** (THIS PLAN) | Improvement loop — proposes + accepts bounded SKILL.md edits, gated by eval scores |
+| Product                                                 | What it does                                                                               |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| **J-Rig Skill Binary Eval** (shipped)                   | Test harness — evaluates skill behavior across the 7-layer taxonomy                        |
+| **Skill Refiner** (THIS PLAN)                           | Improvement loop — proposes + accepts bounded SKILL.md edits, gated by eval scores         |
 | **Rollout Gate** (intent-rollout-gate, in flight at M5) | Final pass/fail release control — consumes Evidence Bundle + policy → ship/no-ship verdict |
 
 Test → improve → ship. Three products, one narrative.
 
-Skill Refiner ships at `@j-rig/refiner` inside the existing j-rig monorepo (`intent-eval-platform/j-rig-binary-eval/`). Engineering structure is 3 epics; consumer-facing surface is ONE product. The 3-layer hook architecture (hook · line · sinker) is Refiner's *delivery mechanism* inside Claude Code; the signed evidence reports (markdown + HTML) are Refiner's *output artifact*. Neither ships as a separately-branded product.
+Skill Refiner ships at `@j-rig/refiner` inside the existing j-rig monorepo (`intent-eval-platform/j-rig-binary-eval/`). Engineering structure is 3 epics; consumer-facing surface is ONE product. The 3-layer hook architecture (hook · line · sinker) is Refiner's _delivery mechanism_ inside Claude Code; the signed evidence reports (markdown + HTML) are Refiner's _output artifact_. Neither ships as a separately-branded product.
 
 A creator sub-product (would generate NEW skills from scratch) is **DEFERRED**. Public benchmark evidence indicates self-generated skills underperform no-skill baseline; the Refiner does not get a generative sibling until external work demonstrates the bar can be cleared.
 
@@ -31,21 +31,21 @@ A creator sub-product (would generate NEW skills from scratch) is **DEFERRED**. 
 
 The release sweep is COMPLETE. Three items were deferred via the `iep-gist-coverage` follow-up bead; they fold into Phase A here:
 
-| Item | Carry into |
-|---|---|
-| `/gist-auditor --repo j-rig-binary-eval` on existing gist `d1c4570a8dd54cba6517c56a3dae17f5` | Phase A pre-flight |
-| Regenerate j-rig gist with v1.1.0 content (per old plan Step 4 Phase 7.5) | Phase A pre-flight |
-| Four missing gists (audit-harness, intent-eval-core, intent-eval-lab, intent-rollout-gate) | Stays under `iep-gist-coverage` bead per CTO call (quality over speed) |
+| Item                                                                                         | Carry into                                                             |
+| -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `/gist-auditor --repo j-rig-binary-eval` on existing gist `d1c4570a8dd54cba6517c56a3dae17f5` | Phase A pre-flight                                                     |
+| Regenerate j-rig gist with v1.1.0 content (per old plan Step 4 Phase 7.5)                    | Phase A pre-flight                                                     |
+| Four missing gists (audit-harness, intent-eval-core, intent-eval-lab, intent-rollout-gate)   | Stays under `iep-gist-coverage` bead per CTO call (quality over speed) |
 
 ## 2. Product structure
 
 One new product (Skill Refiner), three internal features. Engineering structure stays as 3 epics; consumer-facing surface is ONE brand.
 
-| Feature | Role | Lifecycle moment | Engineering epic |
-|---|---|---|---|
-| **Refiner core loop** | The bounded-edit propose+accept loop; pure value-oriented library | After N rollouts on a skill: propose + accept edits | Epic 1 (Refiner library) |
-| **3-layer hooks (hook · line · sinker)** | The delivery mechanism — runs the Refiner loop inside Claude Code at three lifecycle moments | Sinker on every Edit/Write; Line on every Stop; Hook on every git commit/push | Epic 2 (Plugin + hooks) |
-| **Signed evidence reports** | The output artifact — markdown AAR + HTML projection per Refiner pass; signed Evidence Bundle row | After each accepted (or rejected) edit | Epic 3 (Evidence reports + Tier-1 kernel integration) |
+| Feature                                  | Role                                                                                              | Lifecycle moment                                                              | Engineering epic                                      |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------- |
+| **Refiner core loop**                    | The bounded-edit propose+accept loop; pure value-oriented library                                 | After N rollouts on a skill: propose + accept edits                           | Epic 1 (Refiner library)                              |
+| **3-layer hooks (hook · line · sinker)** | The delivery mechanism — runs the Refiner loop inside Claude Code at three lifecycle moments      | Sinker on every Edit/Write; Line on every Stop; Hook on every git commit/push | Epic 2 (Plugin + hooks)                               |
+| **Signed evidence reports**              | The output artifact — markdown AAR + HTML projection per Refiner pass; signed Evidence Bundle row | After each accepted (or rejected) edit                                        | Epic 3 (Evidence reports + Tier-1 kernel integration) |
 
 **Plugin shape**: single `/j-rig` plugin in `claude-code-plugins` with subcommands (`/j-rig refine`, `/j-rig status`, `/j-rig promote`). One marketplace entry, one hook config. The plugin path stays at `/j-rig` because the Refiner is delivered through j-rig's existing engineering home; the user-facing brand is "Skill Refiner" even though the plugin command lives under `/j-rig`.
 
@@ -82,7 +82,7 @@ Five phases (A, B, C, E, F). Phase D deferred per § 2. Each phase ships indepen
 - New package: `@j-rig/refiner` (in `j-rig-binary-eval/packages/refiner/`)
 - API surface (illustrative — final shape lands in the package):
 
-```typescript
+````typescript
 type SkillDocHash = Sha256;
 type EvalSetHash = Sha256;
 type ScoreRecord = {
@@ -100,11 +100,19 @@ type EditProposal = {
 };
 
 declare function bootstrap(skillDoc: SkillDoc): EvalSet;
-declare function score(skillDoc: SkillDoc, evalSet: EvalSet, modelTier?: 'haiku' | 'sonnet' | 'opus'): ScoreRecord;
-declare function propose(skillDoc: SkillDoc, scoredRollouts: ScoredRollout[], refinerModel?: string): EditProposal;
+declare function score(
+  skillDoc: SkillDoc,
+  evalSet: EvalSet,
+  modelTier?: "haiku" | "sonnet" | "opus",
+): ScoreRecord;
+declare function propose(
+  skillDoc: SkillDoc,
+  scoredRollouts: ScoredRollout[],
+  refinerModel?: string,
+): EditProposal;
 declare function apply(skillDoc: SkillDoc, edit: EditProposal): SkillDocV2;
 declare function accept(scoreV1: ScoreRecord, scoreV2: ScoreRecord): boolean;
-```
+```text
 
 - Append-only event log at `.j-rig/refiner/log.jsonl`
 - Content-addressed store at `.j-rig/refiner/store/<hash>`
@@ -127,22 +135,24 @@ declare function accept(scoreV1: ScoreRecord, scoreV2: ScoreRecord): boolean;
 
 **3-layer hooks three-hook layout**:
 
-```
+````
+
 plugins/productivity/j-rig/
 ├── .claude-plugin/
-│   ├── plugin.json
-│   └── hooks/hooks.json
+│ ├── plugin.json
+│ └── hooks/hooks.json
 └── hooks/
-    ├── sinker.sh           # L1 — PostToolUse:Edit/Write on SKILL.md
-    ├── line.sh             # L2 — Stop hook (end-of-turn rollout capture)
-    └── hook.sh             # L3 — PostToolUse:Bash on git commit/push
-```
+├── sinker.sh # L1 — PostToolUse:Edit/Write on SKILL.md
+├── line.sh # L2 — Stop hook (end-of-turn rollout capture)
+└── hook.sh # L3 — PostToolUse:Bash on git commit/push
 
-| Hook | Event | Mechanism | Cost |
-|---|---|---|---|
-| **Sinker (L1)** | `PostToolUse:Edit/Write` on `SKILL.md` files | Run `validate-skillmd` Tier 2 deterministic check; append warning to context if fails | $0 |
-| **Line (L2)** | `Stop` hook | If a skill was invoked AND Binary Eval scored its rollouts: append to `.j-rig/refiner/log.jsonl`. After N rollouts on a skill: fire Refiner in background; surface candidate in next-turn context | $ (Sonnet refiner model; Haiku scoring) |
-| **Hook (L3)** | `PostToolUse:Bash` matcher `git commit`/`git push` | If staged diff modifies a SKILL.md: agentic gate that reads surrounding skills + checks regression-against-rejected-buffer + (optional) shadow-validation against held-out set | $$ (Opus; rate-limited) |
+````text
+
+| Hook            | Event                                              | Mechanism                                                                                                                                                                                         | Cost                                    |
+| --------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| **Sinker (L1)** | `PostToolUse:Edit/Write` on `SKILL.md` files       | Run `validate-skillmd` Tier 2 deterministic check; append warning to context if fails                                                                                                             | $0                                      |
+| **Line (L2)**   | `Stop` hook                                        | If a skill was invoked AND Binary Eval scored its rollouts: append to `.j-rig/refiner/log.jsonl`. After N rollouts on a skill: fire Refiner in background; surface candidate in next-turn context | $ (Sonnet refiner model; Haiku scoring) |
+| **Hook (L3)**   | `PostToolUse:Bash` matcher `git commit`/`git push` | If staged diff modifies a SKILL.md: agentic gate that reads surrounding skills + checks regression-against-rejected-buffer + (optional) shadow-validation against held-out set                    | $$ (Opus; rate-limited)                 |
 
 **Plugin CLI surface**:
 
@@ -180,9 +190,9 @@ New entity `SkillVersion` in `intent-eval-core/schemas/v1/skill-version.schema.j
   "accepted_by": "actor-identity",
   "accepted_at": "rfc3339",
   "signing_mode": "staging | production",
-  "rekor_log_index": "int64 | null"
+  "rekor_log_index": "int64 | null",
 }
-```
+````
 
 - New predicate URI: `https://evals.intentsolutions.io/skill-refiner-pass/v1`
 - Blueprint B § 7 extension documenting the new predicate body
@@ -230,33 +240,43 @@ Filename per Doc Filing Standard v4.3:
 
 Template (each section REQUIRED; missing sections fail the BLOCKING gate):
 
-```markdown
+````markdown
 # Skill Refiner evidence Report — Refiner run on `<skill-id>`
 
-| Field | Value |
-|---|---|
-| Date | YYYY-MM-DD |
-| Skill | <skill-id> |
-| Skill version (input) | sha256(...) (8-char prefix) |
-| Skill version (output) | sha256(...) (8-char prefix) |
-| Eval set | sha256(...) (8-char prefix) |
-| Score delta | behavioral +N.Mpp; readability +N.Mpp |
-| Refinement passes | N (M accepted, K rejected) |
-| Compute cost | $X.XX (Haiku $X.XX; Sonnet $X.XX; Opus $X.XX) |
-| Wall-clock | HH:MM:SS |
-| Confidence tier | `alpha` \| `beta` \| `stable` |
+| Field                  | Value                                         |
+| ---------------------- | --------------------------------------------- |
+| Date                   | YYYY-MM-DD                                    |
+| Skill                  | <skill-id>                                    |
+| Skill version (input)  | sha256(...) (8-char prefix)                   |
+| Skill version (output) | sha256(...) (8-char prefix)                   |
+| Eval set               | sha256(...) (8-char prefix)                   |
+| Score delta            | behavioral +N.Mpp; readability +N.Mpp         |
+| Refinement passes      | N (M accepted, K rejected)                    |
+| Compute cost           | $X.XX (Haiku $X.XX; Sonnet $X.XX; Opus $X.XX) |
+| Wall-clock             | HH:MM:SS                                      |
+| Confidence tier        | `alpha` \| `beta` \| `stable`                 |
 
 ## 1. Context
+
 ## 2. Eval set composition
+
 ## 3. Score trajectory
+
 ## 4. Accepted edits (replayable)
+
 ## 5. Rejected edits (audit trail)
+
 ## 6. 3-layer hooks gate evidence (per pass)
+
 ## 7. Signed Evidence Bundle (in-toto Statement v1)
+
 ## 8. Architectural bindings
+
 ## 9. Limitations + risks
+
 ## 10. Status banding
-```
+
+```text
 
 #### E.2 — HTML projection (derived from markdown AAR)
 
@@ -266,12 +286,12 @@ Sections rendered: hero (skill + delta + cost + wall-clock); score-trajectory ch
 
 #### E.3 — Storage spec
 
-| Artifact | Storage | Retention |
-|---|---|---|
-| Markdown AAR | `<repo>/000-docs/NNN-RL-REPT-*.md` (committed to git) | Forever |
+| Artifact               | Storage                                                                                      | Retention                                           |
+| ---------------------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| Markdown AAR           | `<repo>/000-docs/NNN-RL-REPT-*.md` (committed to git)                                        | Forever                                             |
 | Signed Evidence Bundle | `<repo>/.j-rig/evidence/<sha>.json` (gitignored if signed-prod, committed if signed-staging) | Indexed by sha; orphaned bundles GC'd after 90 days |
-| HTML render | `evals.intentsolutions.io/reports/<skill-id>/<sha-prefix>/` (Hugo build artifact) | Pinned per version; never overwritten |
-| Rekor log entry | Public sigstore Rekor | Permanent (by design) |
+| HTML render            | `evals.intentsolutions.io/reports/<skill-id>/<sha-prefix>/` (Hugo build artifact)            | Pinned per version; never overwritten               |
+| Rekor log entry        | Public sigstore Rekor                                                                        | Permanent (by design)                               |
 
 **Phase E exit criteria**:
 
@@ -282,15 +302,15 @@ Sections rendered: hero (skill + delta + cost + wall-clock); score-trajectory ch
 
 ### Phase F — MLOps scale-up (long-term, ~Q3 2026) — beyond MVP
 
-| Layer | Mechanism | Filed bead |
-|---|---|---|
-| Skill registry | SkillVersion + lineage graph | Phase C extends |
-| Eval-set governance | Versioned + reviewed quarterly + rolling-production + adversarial-append | bd_000-projects-6qyw.6 |
-| Canary rollouts | Per-partner traffic routing of skill versions | bd_000-projects-6qyw.7 |
-| Partner skill pins | Partner pins skill version; promotion is per-partner | bd_000-projects-6qyw.8 |
-| Drift policy | Weekly re-validation; event-triggered on upstream model bump; auto-refine on persistent drift | bd_000-projects-6qyw.9 |
-| Promotion graph | Shadow → canary-10% → canary-50% → 100% → archived | Phase C SkillVersion + DR per transition |
-| Cost dashboard | OTel-spans + per-skill cost trajectory + hard alerts at 80% budget | Subsumes `iel-E12-attributes-pinned` (already P0 in `9pi3`) |
+| Layer               | Mechanism                                                                                     | Filed bead                                                  |
+| ------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Skill registry      | SkillVersion + lineage graph                                                                  | Phase C extends                                             |
+| Eval-set governance | Versioned + reviewed quarterly + rolling-production + adversarial-append                      | bd_000-projects-6qyw.6                                      |
+| Canary rollouts     | Per-partner traffic routing of skill versions                                                 | bd_000-projects-6qyw.7                                      |
+| Partner skill pins  | Partner pins skill version; promotion is per-partner                                          | bd_000-projects-6qyw.8                                      |
+| Drift policy        | Weekly re-validation; event-triggered on upstream model bump; auto-refine on persistent drift | bd_000-projects-6qyw.9                                      |
+| Promotion graph     | Shadow → canary-10% → canary-50% → 100% → archived                                            | Phase C SkillVersion + DR per transition                    |
+| Cost dashboard      | OTel-spans + per-skill cost trajectory + hard alerts at 80% budget                            | Subsumes `iel-E12-attributes-pinned` (already P0 in `9pi3`) |
 
 **Phase F triggers**: when (a) ≥5 partners actively consume Kept skills OR (b) ≥100 active `SkillVersion` records OR (c) drift incident in production causes the first rollback. Until then, Phases A→C+E are sufficient.
 
@@ -359,23 +379,23 @@ Companion action executed in this PR: GH repo `jeremylongshore/audit-harness` re
 
 ## 6. Reused infrastructure
 
-| Component | Location | Reused for |
-|---|---|---|
-| `/skill-creator` skill | `~/.claude/skills/skill-creator/SKILL.md` | (was Phase D scaffold; Phase D deferred) |
-| `/validate-skillmd` skill | `~/.claude/skills/validate-skillmd/SKILL.md` | Phase B Sinker (L1) deterministic gate (Tier 2 checks) |
-| `/audit-tests` + `/implement-tests` | `~/.claude/skills/` | Phase A bootstrap (7-layer taxonomy approach) |
-| `/appaudit` skill | `~/.claude/skills/appaudit/SKILL.md` | Phase E HTML render (partner-grade PDF reports) |
-| `/release` skill | `~/.claude/skills/release/SKILL.md` | Phase B plugin release (8-phase ceremony) |
-| `/branch-protection` skill | `~/.claude/skills/branch-protection/SKILL.md` | Phase C kernel v0.3.0 protected-main push pattern |
-| `/gist-auditor` skill | `~/.claude/skills/gist-auditor/SKILL.md` | Phase A pre-flight: run against j-rig gist (carry-over from old plan) |
-| `j-rig` optimizer types (`ChangeProposal`, `Experiment`, `OptimizerProvider`) | `j-rig-binary-eval/packages/core/src/optimizer/` | Phase A Refiner library extends these |
-| `j-rig` Binary Eval CLIs (`eval`/`optimize`/`check`/`emit-evidence`) | `j-rig-binary-eval/packages/cli/src/commands/` | Phase A Refiner DELEGATES scoring |
-| `audit-harness emit-evidence` subcommand | `audit-harness/scripts/emit-evidence.sh` | Phase A Refiner uses for in-toto Statement v1 emission |
-| `SkillSnapshot` entity (existing) | `intent-eval-core/schemas/v1/skill-snapshot.schema.json` | Phase C SkillVersion extends/references this (NOT duplicate — SkillSnapshot pins source state; SkillVersion captures refinement lineage) |
-| `gate-result/v1` predicate | `intent-eval-core/schemas/v1/gate-result.schema.json` + Blueprint B § 7 | Phase A Refiner emits these from refinement passes via j-rig Binary Eval |
-| Partner-portal infrastructure (Hugo) | `~/000-projects/partner-portals/` | Phase E HTML render hosting (new section `evals.intentsolutions.io/reports/`) |
-| bd-sync three-layer mirror | `~/bin/bd-sync` | All new beads filed per the discipline |
-| Doc Filing Standard v4.x | `intent-eval-lab/000-docs/` + `/doc-filing` skill | Phase E markdown template numbering |
+| Component                                                                     | Location                                                                | Reused for                                                                                                                               |
+| ----------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `/skill-creator` skill                                                        | `~/.claude/skills/skill-creator/SKILL.md`                               | (was Phase D scaffold; Phase D deferred)                                                                                                 |
+| `/validate-skillmd` skill                                                     | `~/.claude/skills/validate-skillmd/SKILL.md`                            | Phase B Sinker (L1) deterministic gate (Tier 2 checks)                                                                                   |
+| `/audit-tests` + `/implement-tests`                                           | `~/.claude/skills/`                                                     | Phase A bootstrap (7-layer taxonomy approach)                                                                                            |
+| `/appaudit` skill                                                             | `~/.claude/skills/appaudit/SKILL.md`                                    | Phase E HTML render (partner-grade PDF reports)                                                                                          |
+| `/release` skill                                                              | `~/.claude/skills/release/SKILL.md`                                     | Phase B plugin release (8-phase ceremony)                                                                                                |
+| `/branch-protection` skill                                                    | `~/.claude/skills/branch-protection/SKILL.md`                           | Phase C kernel v0.3.0 protected-main push pattern                                                                                        |
+| `/gist-auditor` skill                                                         | `~/.claude/skills/gist-auditor/SKILL.md`                                | Phase A pre-flight: run against j-rig gist (carry-over from old plan)                                                                    |
+| `j-rig` optimizer types (`ChangeProposal`, `Experiment`, `OptimizerProvider`) | `j-rig-binary-eval/packages/core/src/optimizer/`                        | Phase A Refiner library extends these                                                                                                    |
+| `j-rig` Binary Eval CLIs (`eval`/`optimize`/`check`/`emit-evidence`)          | `j-rig-binary-eval/packages/cli/src/commands/`                          | Phase A Refiner DELEGATES scoring                                                                                                        |
+| `audit-harness emit-evidence` subcommand                                      | `audit-harness/scripts/emit-evidence.sh`                                | Phase A Refiner uses for in-toto Statement v1 emission                                                                                   |
+| `SkillSnapshot` entity (existing)                                             | `intent-eval-core/schemas/v1/skill-snapshot.schema.json`                | Phase C SkillVersion extends/references this (NOT duplicate — SkillSnapshot pins source state; SkillVersion captures refinement lineage) |
+| `gate-result/v1` predicate                                                    | `intent-eval-core/schemas/v1/gate-result.schema.json` + Blueprint B § 7 | Phase A Refiner emits these from refinement passes via j-rig Binary Eval                                                                 |
+| Partner-portal infrastructure (Hugo)                                          | `~/000-projects/partner-portals/`                                       | Phase E HTML render hosting (new section `evals.intentsolutions.io/reports/`)                                                            |
+| bd-sync three-layer mirror                                                    | `~/bin/bd-sync`                                                         | All new beads filed per the discipline                                                                                                   |
+| Doc Filing Standard v4.x                                                      | `intent-eval-lab/000-docs/` + `/doc-filing` skill                       | Phase E markdown template numbering                                                                                                      |
 
 ## 7. Open questions
 
@@ -392,18 +412,18 @@ Companion action executed in this PR: GH repo `jeremylongshore/audit-harness` re
 
 ## 8. Risks + mitigations
 
-| Risk | Mitigation |
-|---|---|
-| Frontier ships skill-refinement that subsumes Refiner's mechanism in 6–12mo | Phase A library exposes pure-function value API; the proposer mechanism is a pluggable strategy behind the gate, not the core contract. When frontier-native arrives: swap proposer, keep harness + 3-layer hooks + Evidence |
-| Single-score Goodhart corner gaming | Multi-dimensional score records (behavioral + readability + adversarial-pass-rate). Per-skill kind extension via index signature on ScoreRecord |
-| Cost runaway — naive Opus-everywhere ≈ $11K/mo for 30 skills | Tiered routing: Haiku scoring, Sonnet proposer, Opus only validation. Hard budget cap at workflow level + alert at 80% |
-| Phase C blocks on `uprg`+`9pi3` indefinitely | Phases A+B NOT blocked on Phase C — they use existing `gate-result/v1` and `SkillSnapshot` + emit via j-rig Binary Eval. Phase C is the polish/first-class layer. Plan can ship A+B without C |
-| Branch-protection failures on Phase C kernel release | Already mitigated — j-rig adopted tag-trigger pattern (PR #80, 2026-05-26). Phase C uses same pattern in intent-eval-core release.yml (already canonical) |
-| Eval-set bootstrap deferred → no usable Refiner | Phase A bootstrap is FIRST-CLASS, not deferred. Three sources: synthetic + Binary Eval rollout-harvest + human-nominated golden. All three implemented in Phase A |
-| 3-layer hooks hooks become disabled-by-default if they're noisy | Each hook has independent enable/disable. Sinker is cheap and on-by-default. Line is opt-in per skill (only fires after bootstrap). Hook is opt-in per repo (only fires on repos that have run bootstrap) |
-| `iah-npm-publish-gap` (audit-harness git v1.1.4 vs npm v0.1.0) blocks consumer reach | Phase C must close this — audit-harness needs release.yml + first npm publish from v1.1.4 OR Phase C explicitly notes the gap. Filed as bead `iah-npm-publish-gap`; tracked separately |
-| Reports become a brand-surface explosion if every run gets a public HTML page | Markdown is canonical (in git); HTML is OPT-IN per-report (defaults internal-only). Public reports gated by quality + human approval (mirrors `iep-gist-coverage` policy) |
-| Plugin marketed as "automated skill refinement" → consumer expects auto-magic → trust failure on first bad edit | Marketing position is "evals-gated edits, not automated refinement". Every Evidence report shows the rejected-edits buffer alongside accepted ones. Trust comes from showing the work, not hiding it |
+| Risk                                                                                                            | Mitigation                                                                                                                                                                                                                   |
+| --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Frontier ships skill-refinement that subsumes Refiner's mechanism in 6–12mo                                     | Phase A library exposes pure-function value API; the proposer mechanism is a pluggable strategy behind the gate, not the core contract. When frontier-native arrives: swap proposer, keep harness + 3-layer hooks + Evidence |
+| Single-score Goodhart corner gaming                                                                             | Multi-dimensional score records (behavioral + readability + adversarial-pass-rate). Per-skill kind extension via index signature on ScoreRecord                                                                              |
+| Cost runaway — naive Opus-everywhere ≈ $11K/mo for 30 skills                                                    | Tiered routing: Haiku scoring, Sonnet proposer, Opus only validation. Hard budget cap at workflow level + alert at 80%                                                                                                       |
+| Phase C blocks on `uprg`+`9pi3` indefinitely                                                                    | Phases A+B NOT blocked on Phase C — they use existing `gate-result/v1` and `SkillSnapshot` + emit via j-rig Binary Eval. Phase C is the polish/first-class layer. Plan can ship A+B without C                                |
+| Branch-protection failures on Phase C kernel release                                                            | Already mitigated — j-rig adopted tag-trigger pattern (PR #80, 2026-05-26). Phase C uses same pattern in intent-eval-core release.yml (already canonical)                                                                    |
+| Eval-set bootstrap deferred → no usable Refiner                                                                 | Phase A bootstrap is FIRST-CLASS, not deferred. Three sources: synthetic + Binary Eval rollout-harvest + human-nominated golden. All three implemented in Phase A                                                            |
+| 3-layer hooks hooks become disabled-by-default if they're noisy                                                 | Each hook has independent enable/disable. Sinker is cheap and on-by-default. Line is opt-in per skill (only fires after bootstrap). Hook is opt-in per repo (only fires on repos that have run bootstrap)                    |
+| `iah-npm-publish-gap` (audit-harness git v1.1.4 vs npm v0.1.0) blocks consumer reach                            | Phase C must close this — audit-harness needs release.yml + first npm publish from v1.1.4 OR Phase C explicitly notes the gap. Filed as bead `iah-npm-publish-gap`; tracked separately                                       |
+| Reports become a brand-surface explosion if every run gets a public HTML page                                   | Markdown is canonical (in git); HTML is OPT-IN per-report (defaults internal-only). Public reports gated by quality + human approval (mirrors `iep-gist-coverage` policy)                                                    |
+| Plugin marketed as "automated skill refinement" → consumer expects auto-magic → trust failure on first bad edit | Marketing position is "evals-gated edits, not automated refinement". Every Evidence report shows the rejected-edits buffer alongside accepted ones. Trust comes from showing the work, not hiding it                         |
 
 ## 9. Verification (end-to-end exit criteria)
 
@@ -440,4 +460,6 @@ Public work on text-space agent-skill refinement (arXiv 2605.23904), 3-layer in-
 ---
 
 - Jeremy Longshore
-intentsolutions.io
+  intentsolutions.io
+```
+````

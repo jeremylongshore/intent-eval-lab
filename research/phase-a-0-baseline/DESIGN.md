@@ -17,10 +17,10 @@
 
 ## 2. Null vs alternative hypotheses
 
-| Hypothesis | Statement |
-|---|---|
+| Hypothesis                   | Statement                                                                                                                                                                                                                                                  |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **H₀ (null, bitter-lesson)** | Naive Opus 4.7 prompted with the eval-set in-context produces SKILL.md edits whose post-edit validator scores match or exceed ≥70% of the projected Refiner-mechanism lift, with no propose/accept loop, no rejected-edit buffer, no multi-pass refinement |
-| **H₁ (alternative)** | The Refiner's bounded-edit-ops + strict-improvement-gate mechanism produces > 30% additional lift beyond naive Opus in-context — enough to justify Phase B mechanism build |
+| **H₁ (alternative)**         | The Refiner's bounded-edit-ops + strict-improvement-gate mechanism produces > 30% additional lift beyond naive Opus in-context — enough to justify Phase B mechanism build                                                                                 |
 
 Reject H₀ → ship Phase B as planned. Fail to reject H₀ → DESCOPE Phase B mechanism; document the bitter-lesson finding; pivot remaining FTE-weeks to the durable contribution (the acceptance gate per AC-7).
 
@@ -29,7 +29,8 @@ Reject H₀ → ship Phase B as planned. Fail to reject H₀ → DESCOPE Phase B
 ### Arm A — Naive {provider}-in-context (null hypothesis)
 
 **Prompt template:**
-```
+
+```text
 You are improving a SKILL.md frontmatter file for the Intent Solutions marketplace
 tier. The IS marketplace tier requires 8 fields: name, description, allowed-tools,
 version, author, license, compatibility, tags. Disallowed-tools is recognized.
@@ -60,10 +61,10 @@ score. Return only the updated frontmatter block.
 
 Two Arm A run variants are pre-registered under ADR 030:
 
-| Run | Provider | Model | Cost | Purpose |
-|---|---|---|---|---|
-| **canonical** | NVIDIA NIM | `meta/llama-3.1-405b-instruct` | $0.00 | Primary baseline H₀ measurement |
-| **spot-check** | Anthropic | `claude-haiku-4-5` | ~$1-2 | Cross-provider consistency validation |
+| Run            | Provider   | Model                          | Cost  | Purpose                               |
+| -------------- | ---------- | ------------------------------ | ----- | ------------------------------------- |
+| **canonical**  | NVIDIA NIM | `meta/llama-3.1-405b-instruct` | $0.00 | Primary baseline H₀ measurement       |
+| **spot-check** | Anthropic  | `claude-haiku-4-5`             | ~$1-2 | Cross-provider consistency validation |
 
 Arm B runs the same canonical/spot-check pattern. Arm B canonical = NVIDIA 405B.
 
@@ -78,6 +79,7 @@ Results from each provider are stored independently under
 ### Arm B — Proposed Refiner mechanism (alternative)
 
 The Refiner mechanism per Plan 027 § 4 Phase A + § 14 SAK § 14.4:
+
 1. `propose(input, K-exemplars) → EditProposal` (Opus generates bounded add/del/replace ops)
 2. `apply(input, EditProposal) → SkillDocV2`
 3. `score(SkillDocV2) → ScoreRecord` (multi-dim per AC-3)
@@ -87,7 +89,7 @@ The Refiner mechanism per Plan 027 § 4 Phase A + § 14 SAK § 14.4:
 
 **Projected lift basis:** Plan 027 § 9 + plan 033 § 14.4 do NOT yet give a numeric projection. **Phase A.0 must establish this number empirically** by running Arm B on a sample of the corpus (~10 specimens) before extrapolating to the full Arm A vs Arm B comparison.
 
-**Open question (resolve before any API calls):** is the projected Refiner lift a *plan-stipulated target* (pre-registered) or an *empirically-discovered* lift from running the mechanism? Per DR-028 P0-RATIFY-3 wording, it's the *projected* lift — implying pre-registration. Files `intent-eval-lab/000-docs/{027,033}-PP-PLAN-*.md` do not currently contain a number. **Acting CTO must fix this BEFORE running Arm A.** Recommendation: 1.5pp marketplace-tier score lift (the midpoint of "barely worth the engineering" and "obvious win") as the projected target. Document in DR-028 amendment if accepted.
+**Open question (resolve before any API calls):** is the projected Refiner lift a _plan-stipulated target_ (pre-registered) or an _empirically-discovered_ lift from running the mechanism? Per DR-028 P0-RATIFY-3 wording, it's the _projected_ lift — implying pre-registration. Files `intent-eval-lab/000-docs/{027,033}-PP-PLAN-*.md` do not currently contain a number. **Acting CTO must fix this BEFORE running Arm A.** Recommendation: 1.5pp marketplace-tier score lift (the midpoint of "barely worth the engineering" and "obvious win") as the projected target. Document in DR-028 amendment if accepted.
 
 ## 4. Judge (scoring function)
 
@@ -95,15 +97,15 @@ The Refiner mechanism per Plan 027 § 4 Phase A + § 14 SAK § 14.4:
 
 **Score record dimensions (per AC-3 multi-dimensional discipline):**
 
-| Dimension | How computed |
-|---|---|
-| `marketplace_pass` | boolean — does it satisfy the 8-field IS marketplace required set? |
-| `marketplace_score_pct` | int 0–100 — % of marketplace-tier rubric points awarded |
-| `field_completeness` | 0–8 — count of `ALWAYS_REQUIRED` fields present |
-| `deprecated_field_count` | 0–N — number of deprecated fields (e.g. `compatible-with`) |
-| `security_finding_count` | 0–N — count of shell-substitution / wildcard / scope security findings (highest-severity tier) |
-| `description_chars` | int — combined length of `description` + `when_to_use` |
-| `is_extras_present` | int 0–11 — count of IS-extras (visibility, env-config, progressive-disclosure, semver, etc. per plan 033 § 14.10) |
+| Dimension                | How computed                                                                                                      |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| `marketplace_pass`       | boolean — does it satisfy the 8-field IS marketplace required set?                                                |
+| `marketplace_score_pct`  | int 0–100 — % of marketplace-tier rubric points awarded                                                           |
+| `field_completeness`     | 0–8 — count of `ALWAYS_REQUIRED` fields present                                                                   |
+| `deprecated_field_count` | 0–N — number of deprecated fields (e.g. `compatible-with`)                                                        |
+| `security_finding_count` | 0–N — count of shell-substitution / wildcard / scope security findings (highest-severity tier)                    |
+| `description_chars`      | int — combined length of `description` + `when_to_use`                                                            |
+| `is_extras_present`      | int 0–11 — count of IS-extras (visibility, env-config, progressive-disclosure, semver, etc. per plan 033 § 14.10) |
 
 **Acceptance gate (Arm B `accept()`):** `marketplace_pass: false→true` is a strict improvement IF no other dim regresses. `marketplace_score_pct +ε` with no regression on other dims is a strict improvement. Any dim regression rejects the edit.
 
@@ -113,18 +115,19 @@ The Refiner mechanism per Plan 027 § 4 Phase A + § 14 SAK § 14.4:
 
 **Source pools** (in priority order):
 
-| Pool | Count | Status |
-|---|---|---|
-| `~/.claude/skills/*/SKILL.md` (global IS-authored) | 52 | curated, high-signal |
+| Pool                                                           | Count | Status                               |
+| -------------------------------------------------------------- | ----- | ------------------------------------ |
+| `~/.claude/skills/*/SKILL.md` (global IS-authored)             | 52    | curated, high-signal                 |
 | `claude-code-plugins/plugins/**/SKILL.md` (marketplace corpus) | 3,044 | varied quality, the migration target |
-| `~/000-projects/*/.claude/skills/**/SKILL.md` (per-project) | ~30 | unchecked baseline |
+| `~/000-projects/*/.claude/skills/**/SKILL.md` (per-project)    | ~30   | unchecked baseline                   |
 
 **Phase A.0 sample design:**
+
 - **N = 60 specimens** (statistically-meaningful for 70%-threshold test with α=0.05)
 - **Stratification:**
   - 20 global (~/.claude/skills) — represents IS-authored quality floor
   - 20 marketplace high-validator-score (random sample from passing-3.7.0 subset)
-  - 20 marketplace low-validator-score (random sample from failing-3.7.0 subset — these are the *highest-value* migration targets)
+  - 20 marketplace low-validator-score (random sample from failing-3.7.0 subset — these are the _highest-value_ migration targets)
 - **Held-out:** 20 additional specimens reserved for Arm B's rejected-buffer iteration validation; NEVER shown to either arm during evaluation
 
 ### 5.1 Fixture canonical home — REVISED 2026-05-28
@@ -137,7 +140,7 @@ The Refiner mechanism per Plan 027 § 4 Phase A + § 14 SAK § 14.4:
 
 **Fixture file layout (per specimen):**
 
-```
+```text
 tests/fixtures/skill-frontmatter/<sha8>/
 ├── input.md            # the SKILL.md file (frontmatter + body)
 ├── expected.json       # validator's expected verdict (schema below)
@@ -147,24 +150,34 @@ tests/fixtures/skill-frontmatter/<sha8>/
 
 **`expected.json` schema (the regression-test contract):**
 
-```jsonc
+````jsonc
 {
   "fixture_sha": "sha256(input.md)",
   "validator_version": "3.7.0",
   "validator_commit": "7b9eb8f",
   "tiers": {
-    "standard":    { "pass": true,  "score_pct": 100, "findings": [] },
-    "marketplace": { "pass": false, "score_pct": 62,  "findings": [{ "field": "version", "severity": "ERROR", "code": "MISSING_REQUIRED" }] },
-    "deep":        { "pass": false, "score_pct": 48,  "findings": [/* ... */] }
+    "standard": { "pass": true, "score_pct": 100, "findings": [] },
+    "marketplace": {
+      "pass": false,
+      "score_pct": 62,
+      "findings": [{ "field": "version", "severity": "ERROR", "code": "MISSING_REQUIRED" }],
+    },
+    "deep": {
+      "pass": false,
+      "score_pct": 48,
+      "findings": [
+        /* ... */
+      ],
+    },
   },
   "field_completeness": 5,
   "deprecated_field_count": 1,
   "security_finding_count": 0,
-  "is_extras_present": 2
+  "is_extras_present": 2,
 }
-```
+```text
 
-**`intent-eval-lab/research/phase-a-0-baseline/corpus/manifest.json`** retains the *sampling decisions*: which 60 of the 3,044 we picked, stratum assignment, RNG seed, held-out 20-set fixture SHAs. This is the experimental record — fixtures are the artifacts CI consumes.
+**`intent-eval-lab/research/phase-a-0-baseline/corpus/manifest.json`** retains the _sampling decisions_: which 60 of the 3,044 we picked, stratum assignment, RNG seed, held-out 20-set fixture SHAs. This is the experimental record — fixtures are the artifacts CI consumes.
 
 Manifest + first 60 fixtures: Session 2 deliverable.
 
@@ -181,13 +194,13 @@ Manifest + first 60 fixtures: Session 2 deliverable.
 **Anthropic spend ceiling: $20 hard stop** (amended from $200 per user constraint 2026-05-29;
 see `000-docs/030-AT-DECR-dr028-amendment-phase-a0-provider-choice-2026-05-29.md`).
 
-| Provider | Cost model | Ceiling behavior |
-|---|---|---|
-| NVIDIA NIM (`nvidia-llama-405b`) | Free within NVIDIA credits | Ceiling informational; `BudgetExceeded` never raised for $0 calls |
-| Groq (`groq-llama-70b`) | Free within 30 req/min | Same — informational only |
-| Anthropic Haiku 4.5 | ~$1-2 for Phase A.0 full run | $20 hard stop |
-| Anthropic Sonnet 4.6 | ~$8-12 for Phase A.0 full run | $20 hard stop |
-| Anthropic Opus 4.7 | ~$120 for Arm A + ~$40 Arm B | $20 hard stop — **budget too small for full run; use --limit** |
+| Provider                         | Cost model                    | Ceiling behavior                                                  |
+| -------------------------------- | ----------------------------- | ----------------------------------------------------------------- |
+| NVIDIA NIM (`nvidia-llama-405b`) | Free within NVIDIA credits    | Ceiling informational; `BudgetExceeded` never raised for $0 calls |
+| Groq (`groq-llama-70b`)          | Free within 30 req/min        | Same — informational only                                         |
+| Anthropic Haiku 4.5              | ~$1-2 for Phase A.0 full run  | $20 hard stop                                                     |
+| Anthropic Sonnet 4.6             | ~$8-12 for Phase A.0 full run | $20 hard stop                                                     |
+| Anthropic Opus 4.7               | ~$120 for Arm A + ~$40 Arm B  | $20 hard stop — **budget too small for full run; use --limit**    |
 
 **Phase A.0 canonical run cost:** $0.00 (NVIDIA NIM free tier).
 **Phase A.0 Anthropic spot-check cost:** ~$1-2 (Haiku 4.5, Arm A K=0 + K=3 subset).
@@ -196,8 +209,9 @@ see `000-docs/030-AT-DECR-dr028-amendment-phase-a0-provider-choice-2026-05-29.md
 it through from the shell environment).
 
 **Decision rule unchanged (DR-028 P0-RATIFY-3):** if naive-{provider}-in-context achieves
+
 > 70% of projected Refiner lift on the Phase B demo skill, DESCOPE Phase B mechanism.
-The 70% threshold is provider-agnostic and model-agnostic.
+> The 70% threshold is provider-agnostic and model-agnostic.
 
 ## 8. Output deliverables (Session N final)
 
@@ -209,13 +223,13 @@ The 70% threshold is provider-agnostic and model-agnostic.
 
 ## 9. Open items — resolution status (updated 2026-05-29)
 
-| # | Question | Resolution |
-|---|---|---|
-| Q1 | Numeric projected-Refiner-lift pre-registration value | **RESOLVED: 1.5pp** marketplace-tier score lift (pre-registered) |
-| Q2 | API budget approval | **RESOLVED: $20 Anthropic ceiling** per ADR 030; canonical run is free (NVIDIA NIM) |
-| Q3 | Anthropic API key location | **RESOLVED:** `ANTHROPIC_API_KEY` env var; `NVIDIA_API_KEY` / `GROQ_API_KEY` for free providers |
-| Q4 | Where to commit experiment artifacts | **RESOLVED:** `results/raw/` gitignored; `results/aggregated/` committed |
-| Q5 | Pre-register vs adaptive on K-sweep ({0,3,8,16}) | **RESOLVED:** pre-registered; no mid-experiment expansion |
+| #   | Question                                              | Resolution                                                                                      |
+| --- | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Q1  | Numeric projected-Refiner-lift pre-registration value | **RESOLVED: 1.5pp** marketplace-tier score lift (pre-registered)                                |
+| Q2  | API budget approval                                   | **RESOLVED: $20 Anthropic ceiling** per ADR 030; canonical run is free (NVIDIA NIM)             |
+| Q3  | Anthropic API key location                            | **RESOLVED:** `ANTHROPIC_API_KEY` env var; `NVIDIA_API_KEY` / `GROQ_API_KEY` for free providers |
+| Q4  | Where to commit experiment artifacts                  | **RESOLVED:** `results/raw/` gitignored; `results/aggregated/` committed                        |
+| Q5  | Pre-register vs adaptive on K-sweep ({0,3,8,16})      | **RESOLVED:** pre-registered; no mid-experiment expansion                                       |
 
 ## 10. What this session (Session 1) produces
 
@@ -225,3 +239,4 @@ This DESIGN.md (the document you are reading) + the harness directory tree at `p
 
 — Jeremy Longshore
 intentsolutions.io
+````

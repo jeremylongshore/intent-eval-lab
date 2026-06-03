@@ -12,30 +12,30 @@
 
 ## Timeline
 
-| Date | Event |
-|---|---|
-| 2026-05-26 | Plan 027 v4 written |
-| 2026-05-27 (morning) | Internal pre-flight 4-reviewer pass; 6 P0 BLOCKERs folded into v4.1 |
-| 2026-05-27 (morning) | Steps 0-3 of § 13 executed |
-| 2026-05-27 (afternoon) | v4.1 committed + pushed (PR #77, commit 22fc55e) |
-| 2026-05-27 (afternoon) | Brief pack assembled (10 docs); SkillsBench paper fetched + digested |
-| 2026-05-27 (afternoon) | 7-seat Plan Audit panel — 46 findings; 17 P0s; 4 tensions |
-| 2026-05-27 (evening) | 6-thinker tension arbitration (Fowler, Gregg, Torvalds, Pike, Thompson, Armstrong) |
-| 2026-05-27 (evening) | ISEDC Session 7 — 7-seat council ratifies 10 decisions (DR-028) |
-| 2026-05-27 (evening) | STATUS → RATIFIED-WITH-DELTAS |
+| Date                      | Event                                                                                                                                                  |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2026-05-26                | Plan 027 v4 written                                                                                                                                    |
+| 2026-05-27 (morning)      | Internal pre-flight 4-reviewer pass; 6 P0 BLOCKERs folded into v4.1                                                                                    |
+| 2026-05-27 (morning)      | Steps 0-3 of § 13 executed                                                                                                                             |
+| 2026-05-27 (afternoon)    | v4.1 committed + pushed (PR #77, commit 22fc55e)                                                                                                       |
+| 2026-05-27 (afternoon)    | Brief pack assembled (10 docs); SkillsBench paper fetched + digested                                                                                   |
+| 2026-05-27 (afternoon)    | 7-seat Plan Audit panel — 46 findings; 17 P0s; 4 tensions                                                                                              |
+| 2026-05-27 (evening)      | 6-thinker tension arbitration (Fowler, Gregg, Torvalds, Pike, Thompson, Armstrong)                                                                     |
+| 2026-05-27 (evening)      | ISEDC Session 7 — 7-seat council ratifies 10 decisions (DR-028)                                                                                        |
+| 2026-05-27 (evening)      | STATUS → RATIFIED-WITH-DELTAS                                                                                                                          |
 | 2026-05-27 (late evening) | Plan 027 v5 amendments folded; bandwidth model authored (029-DR-BAND); bd-claim-precheck.sh authored + tested; 9 new beads filed per DR-028 directives |
-| 2026-05-27 (late evening) | **STATUS → RATIFIED (THIS)** — hard gate machine-enforced; first `bd claim` permitted (Phase A.0 baseline recommended first) |
+| 2026-05-27 (late evening) | **STATUS → RATIFIED (THIS)** — hard gate machine-enforced; first `bd claim` permitted (Phase A.0 baseline recommended first)                           |
 
 ## Signal status (per acting-CTO assessment)
 
-| Dimension | Pre-DR-028 | Post-DR-028 / v5 |
-|---|---|---|
-| WHAT to do | 🟢 | 🟢 |
-| ORDER of work | 🟢 | 🟢 |
-| DEPENDENCIES | 🟡 | 🟡 (uprg/9pi3 still open; documented + bandwidth-model-noted; sole-prop owns them) |
-| BANDWIDTH | 🔴 | 🟢 (029-DR-BAND ships FTE-week model) |
-| ENFORCEMENT | 🟡 | 🟢 (bd-claim-precheck.sh ships + tested) |
-| RECEPTION | 🟢 | 🟢 |
+| Dimension     | Pre-DR-028 | Post-DR-028 / v5                                                                   |
+| ------------- | ---------- | ---------------------------------------------------------------------------------- |
+| WHAT to do    | 🟢         | 🟢                                                                                 |
+| ORDER of work | 🟢         | 🟢                                                                                 |
+| DEPENDENCIES  | 🟡         | 🟡 (uprg/9pi3 still open; documented + bandwidth-model-noted; sole-prop owns them) |
+| BANDWIDTH     | 🔴         | 🟢 (029-DR-BAND ships FTE-week model)                                              |
+| ENFORCEMENT   | 🟡         | 🟢 (bd-claim-precheck.sh ships + tested)                                           |
+| RECEPTION     | 🟢         | 🟢                                                                                 |
 
 ## What's next
 

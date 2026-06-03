@@ -17,7 +17,7 @@ I don't care what Lamport's state machine says on paper. The kernel ships a Reko
 
 **Arbitration:** merge them. One entity, with a `kind: snapshot | refined | revert | restore` discriminator. Kleppmann's `version_kind` is right; he just doesn't go far enough — collapse the FK too. The architect's "fully orthogonal no-FK" is the second-best answer. Both beat the current plan.
 
-If you can't write three concrete consumer queries that need the two entities distinct at the schema layer — not at the API layer, the *schema* — then you don't have two entities. You have one entity and a discriminator.
+If you can't write three concrete consumer queries that need the two entities distinct at the schema layer — not at the API layer, the _schema_ — then you don't have two entities. You have one entity and a discriminator.
 
 Talk is cheap. Show me the migration SQL.
 
@@ -49,7 +49,7 @@ Seven disciplines = no discipline. One enforced sync = a discipline.
 
 Not my tension to arbitrate. That's a brand and product-strategy call.
 
-But the engineering observation stands: AC-7 says the mechanism is swappable. If it's swappable, then the mechanism isn't the product — the *interface* is the product, and you need to (a) define `RefinerStrategy` as a real interface, (b) ship a second implementation that proves the swap works, and (c) stop laundering Karpathy's name on AC-7 until you've actually done the swap.
+But the engineering observation stands: AC-7 says the mechanism is swappable. If it's swappable, then the mechanism isn't the product — the _interface_ is the product, and you need to (a) define `RefinerStrategy` as a real interface, (b) ship a second implementation that proves the swap works, and (c) stop laundering Karpathy's name on AC-7 until you've actually done the swap.
 
 Pick one: it's the mechanism, or it's the interface. Don't pretend both.
 
@@ -59,12 +59,12 @@ Pick one: it's the mechanism, or it's the interface. Don't pretend both.
 
 ## VERDICT
 
-| Tension | Arbitration |
-|---|---|
+| Tension                         | Arbitration                                                                                                             |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | T1 — SkillVersion/SkillSnapshot | **MERGE.** One entity, `kind` discriminator. Lamport's state machine is decoration; the data structure is the decision. |
-| T2 — Phase D | **KILL.** Anti-goal it. Un-anti-goal later if reality changes. Ambiguity is expensive. |
-| T3 — Process discipline | **COLLAPSE.** bd is source of truth; GH and Plane are read-only projections. One-way sync. |
-| T4 — Mechanism/product | **Engineering: define `RefinerStrategy` + ship second impl** before AC-7 can cite Karpathy. Brand question not mine. |
+| T2 — Phase D                    | **KILL.** Anti-goal it. Un-anti-goal later if reality changes. Ambiguity is expensive.                                  |
+| T3 — Process discipline         | **COLLAPSE.** bd is source of truth; GH and Plane are read-only projections. One-way sync.                              |
+| T4 — Mechanism/product          | **Engineering: define `RefinerStrategy` + ship second impl** before AC-7 can cite Karpathy. Brand question not mine.    |
 
 — Linus Torvalds (channeled)
 2026-05-27

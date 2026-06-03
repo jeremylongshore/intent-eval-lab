@@ -1,5 +1,4 @@
 ---
-title: DR-028 Amendment — Phase A.0 Provider Choice (NVIDIA NIM + Groq + Anthropic)
 date: 2026-05-29
 type: AT-DECR
 status: PROPOSED
@@ -53,6 +52,7 @@ cross-provider consistency. The spot-check runs Arm A at K=0 and K=3 on a 20-spe
 subset — enough to detect systematic behavioral divergence without exhausting budget.
 
 Full provider matrix available via `--provider` CLI flag on both runners:
+
 - `nvidia-llama-405b` (default, free)
 - `nvidia-llama-70b` (free)
 - `nvidia-nemotron` (free)
@@ -130,10 +130,10 @@ Publish both as Part II of the blog post (VP DevRel binding per DR-028 P0-RATIFY
 - `029-DR-BAND-skill-refiner-bandwidth-model-2026-05-27.md` § 2 Phase A.0: bandwidth model
 - `research/phase-a-0-baseline/DESIGN.md` § 7: cost ceiling (updated by this amendment)
 - `research/phase-a-0-baseline/scripts/_arm_common.py`: `get_provider()` factory
-- NVIDIA NIM API: https://integrate.api.nvidia.com/v1
-- Groq API: https://api.groq.com/openai/v1
+- NVIDIA NIM API: <https://integrate.api.nvidia.com/v1>
+- Groq API: <https://api.groq.com/openai/v1>
 
 ---
 
 - Jeremy Longshore
-intentsolutions.io
+  intentsolutions.io
