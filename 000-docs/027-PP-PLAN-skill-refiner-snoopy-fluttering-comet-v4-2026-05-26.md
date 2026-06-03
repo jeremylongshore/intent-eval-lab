@@ -191,7 +191,7 @@ The Refiner edits SKILL.md, plugin.json, hooks.json, marketplace.json, agents/\*
 ### Refiner spec-binding (NEW AC-11 detail)
 
 - The Refiner's Sinker hook (L1, Phase B) invokes `/validate-skillmd` which already grounds in the URLs above; no re-derivation needed
-- The Refiner's Hook hook (L3, Phase B) invokes `/validate-plugin` for cross-harness portability claims (per § 2.5 fold-in #3)
+- The Refiner's Hook-layer hook (L3, Phase B) invokes `/validate-plugin` for cross-harness portability claims (per § 2.5 fold-in #3)
 - Spec snapshots in `claude-code-plugins/000-docs/*-snapshot.md` ARE the authoritative ground truth for validator verdicts; live URLs are reference-checked quarterly (snapshot drift triggers a new bead under `TL-EPIC` cluster)
 - § 13 Step 0 includes a quarterly-spec-snapshot refresh as part of pre-execution research
 - Every SkillVersion record's `skill_md_spec_version` field cites the snapshot path + the live URL of record

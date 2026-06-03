@@ -61,7 +61,7 @@ Brief-pack doc 09 § "Action items for Plan Audit panel" — assigned-to-this-se
 
 "Deferred indefinitely" is the correct status; "deferred indefinitely with no scheduled re-measurement" is not. The framing implicitly bets that nothing changes upstream — exactly the bet the bitter lesson tells you not to take.
 
-**Why this is P0 and not P1:** it is the cheapest possible fix (a calendar entry + a tiny re-measurement run) and the highest-leverage hedge in the plan. If you ratify the plan as written, you will not look at Phase D again until a partner asks for it, which is a _demand signal_ selecting for whether someone wants this — not a _capability signal_ telling you whether the bitter-lesson surface has shifted.
+**Why this is P0 and not P1:** it is the cheapest possible fix (a calendar entry + a tiny re-measurement run) and the highest-impact hedge in the plan. If you ratify the plan as written, you will not look at Phase D again until a partner asks for it, which is a _demand signal_ selecting for whether someone wants this — not a _capability signal_ telling you whether the bitter-lesson surface has shifted.
 
 **Remediation:**
 

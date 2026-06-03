@@ -211,7 +211,7 @@ Adversarial-integrity discipline per DR-022 § "verify-before-claim": each seat'
 | Dev-flow flame graph (Gregg #4)                                                | Tooling — not architectural                                        | P2 bead                                |
 | DR status-banding (Cunningham #1)                                              | Convention; can apply incrementally                                | P2 bead                                |
 | DR post-decision learnings appendix (Cunningham #2)                            | Template update + retroactive backfill                             | P2 bead                                |
-| `bd memories` backfill (Cunningham #5)                                         | Mechanical effort; high leverage                                   | **P1 bead** — high priority for filing |
+| `bd memories` backfill (Cunningham #5)                                         | Mechanical effort; high impact                                     | **P1 bead** — high priority for filing |
 | FUTURE.md first-class promotion (Cunningham #6)                                | Filing-system change                                               | P3 bead                                |
 
 ---
@@ -236,7 +236,7 @@ To file as session-close action (synthesized from panel, P1-P3, queue):
 - P1 — Decompose EvalRun (spec/lease/transitions)
 - P1 — Golden-master test for harness stdout (prev_blank regression prevention)
 - P1 — audit-harness verify --emit-otel
-- P1 — Backfill bd memories from 22 DRs + 4 AACRs (high-leverage mechanical effort)
+- P1 — Backfill bd memories from 22 DRs + 4 AACRs (high-impact mechanical effort)
 - P1 — Add Parallel Change discipline to Blueprint B § 7 (optional → deprecated → required dwell)
 - P2 — Convert bd ↔ GH ↔ Plane from three-way sync to canonical-bd + projections
 - P2 — Single-source the version across 5 polyglot manifests

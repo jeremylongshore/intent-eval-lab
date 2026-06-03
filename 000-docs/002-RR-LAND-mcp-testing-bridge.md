@@ -151,11 +151,11 @@ _arXiv 2603.23806; 2 citations; <https://arxiv.org/abs/2603.23806>_
 **Citation block 5 — [Goldstein et al. 2024] _Property-Based Testing in Practice_**
 _ICSE 2024; 27 citations; <https://doi.org/10.1145/3597503.3639581>_
 
-**Summary:** Empirical study of 30 in-depth interviews with experienced PBT users at Jane Street. Finds that PBT's main strengths are testing complex code and increasing confidence beyond what is available through conventional testing methodologies. Most uses fall into a relatively small number of high-leverage idioms; main weaknesses are the relative complexity of writing properties and the difficulty of evaluating their effectiveness.
+**Summary:** Empirical study of 30 in-depth interviews with experienced PBT users at Jane Street. Finds that PBT's main strengths are testing complex code and increasing confidence beyond what is available through conventional testing methodologies. Most uses fall into a relatively small number of high-impact idioms; main weaknesses are the relative complexity of writing properties and the difficulty of evaluating their effectiveness.
 
 **Methodology:** Qualitative, interview-driven; in-vivo industrial PBT usage study.
 
-**Reviewed strengths:** Empirical grounding that PBT in industrial use generalizes to a small number of high-leverage patterns. This is structurally identical to the Intentional Mapping insight that finding-shape categories collapse to a small set (MM-1..MM-6).
+**Reviewed strengths:** Empirical grounding that PBT in industrial use generalizes to a small number of high-impact patterns. This is structurally identical to the Intentional Mapping insight that finding-shape categories collapse to a small set (MM-1..MM-6).
 
 **Reviewed weaknesses (relevant to this landscape):** Findings are restricted to Jane Street's domain (financial systems). The "difficulty of evaluating effectiveness" of property-based tests is a known open problem — and one that the Intentional Mapping's tight coupling to OTel signals helps address (a Intentional Mapping row is _evaluable_ by asserting on the named signal, vs an abstract property whose effectiveness is opaque).
 

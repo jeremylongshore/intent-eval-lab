@@ -41,7 +41,7 @@
 **Plan section cited:** § 14.4 Phase 4 + § 14.7 Risk B + § 14.4 Phase 5 (hook/MCP/agent/marketplace gating)
 **Defect:** Phase 4 ships the SKILL.md migration; Phase 5 ships the other 5 contract gates. Same advisory→blocking flip mechanic, same risks. But Phase 5 ships in weeks 17-18 (2 weeks total) for FIVE contracts. There's no per-contract corpus classification, no per-contract quorum-pin, no per-contract shadow mode. Phase 5 is implicitly assumed to be lower-risk than Phase 4 with no justification.
 **Why this matters (production-ML pipeline view):** Phase 5 covers plugin.json (449 files), agent definitions (variable count, growing), MCP configs (variable, growing), hooks.json (variable, security-critical), and marketplace.json (one file but high-signal). Each is its own distribution; each could surface its own ambiguity tail. Lumping them into 2 weeks reads like budget-driven optimism.
-**Proposed remediation:** Either (a) decompose Phase 5 into 5 phases (one per contract, each with its own quorum-pin + shadow-mode), or (b) reduce Phase 5 scope to plugin.json + marketplace.json only (the two high-leverage low-cardinality contracts), defer agent/MCP/hooks to Phase 6+. File `iec-E11-phase-5-decompose` (P1, repo:iec).
+**Proposed remediation:** Either (a) decompose Phase 5 into 5 phases (one per contract, each with its own quorum-pin + shadow-mode), or (b) reduce Phase 5 scope to plugin.json + marketplace.json only (the two high-impact low-cardinality contracts), defer agent/MCP/hooks to Phase 6+. File `iec-E11-phase-5-decompose` (P1, repo:iec).
 
 ### F-CH-006 [P2] [RISK]
 
