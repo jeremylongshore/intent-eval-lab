@@ -1,4 +1,3 @@
-0719a6fe3dc3c9f78c0318a9aff0dfc29253023f3d7d3d3dfa1e032ee0fae08c  .audit-harness/bin/audit-harness.js
 f5bb89ef74bffa018a92df6abbfeb66b3d2264daf6b365bc8cafdbad00065f9d  .audit-harness/scripts/arch-check.sh
 93173d353a7820a6484519329a16ea8795b9658d79e682af0557158b18a6ebdf  .audit-harness/scripts/bias-count.sh
 83da2309e20151aeb14afe5625c14a67ebf8a6a5e78330861fcf3e1444bebc40  .audit-harness/scripts/crap-score.py
@@ -15,5 +14,5 @@ db162cbe380e2d61bbcc820cdd5a89807ca1a7cf221b8f5e28ef3c0ce9ed1767  .github/workfl
 6a17759ce2e0def32e582753d198be5e173f8eca5611155bc8755dc2bc96fb5d  .github/workflows/sign-evidence-bundle.yml
 ca847e83357a249141efd20cf47acdbd90f4482604d0aedb9d798bd5b6912f03  .github/workflows/spec-drift-watch.yml
 971146c8b7f876bbbf04336d03a84b81b8a94ecefb679ccad5114afac88ee264  .harness-hash-extra-patterns
-cef90f71850c7419f01123d511792d9598bd37a3a67e80b61a94fc40a9c22cb4  scripts/audit-harness
+6342f5b91dca3736912c7a388527e388ed964676efd9ecb9dd8090845aa48970  scripts/audit-harness
 aa5d1d7411c125883162967c722616d6102d9af8a3181fd566326a89bafaf24a  specs/evidence-bundle/v0.1.0-draft/schema/gate-result.schema.json
