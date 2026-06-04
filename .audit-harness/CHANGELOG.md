@@ -2,6 +2,47 @@
 
 All notable changes are recorded here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.5] - 2026-06-03
+
+### Added — npm release pipeline (closes the publish-pipeline gap)
+
+This is the first release published to npm via CI with Sigstore provenance. Until now the repo had **no release workflow** — npm was stuck at `0.1.0` while the code (and every other manifest) had advanced through `1.0.0` → `1.1.4`, four minors of CHANGELOG-documented work that never reached consumers. `npm install @intentsolutions/audit-harness` resolved to the stale `0.1.0` tarball.
+
+- **`.github/workflows/release.yml`** (NEW): mirrors the provenance approach of `intent-eval-core`'s release workflow, adapted for this zero-dependency polyglot CLI (no pnpm, no lockfile, no TS build, no coverage). Triggers on `push` of a `v*.*.*` tag and on `workflow_dispatch`. Sets `id-token: write` for npm/Sigstore OIDC. Verifies the pushed tag matches `package.json#version` (skipped on manual dispatch since there's no tag), runs the `node bin/audit-harness.js --version` self-check + the repo's `escape-scan.sh --staged` test script (non-blocking on no-staged-diff), then `npm publish --provenance --access public`. The `NPM_TOKEN` repo secret is already configured.
+
+### Fixed — package metadata + install.sh URLs for the `intent-audit-harness` repo rename
+
+The GitHub repo was renamed `audit-harness` → `intent-audit-harness`, but the metadata still pointed at the old path.
+
+- **`package.json`**: `homepage`, `repository.url`, and `bugs.url` repointed from `jeremylongshore/audit-harness` → `jeremylongshore/intent-audit-harness` (these render on npmjs.com).
+- **`python/pyproject.toml` + `rust/Cargo.toml`**: project-URL fields (Homepage / Repository / Issues / Changelog / documentation) repointed to the renamed repo — these render on PyPI and crates.io.
+- **`python/src/intent_audit_harness/__init__.py`**: docstring source-link repointed.
+- **`README.md`**: the `curl … install.sh` line + the two "Related" skill links repointed to the renamed repo.
+- **`install.sh`**: the `REPO=` variable, the usage-comment URLs at the top, and the re-run hint repointed; the default `VERSION` bumped from the stale `v0.1.0` → `v1.1.5`.
+
+### Fixed — install.sh tarball-path glob broke after the rename
+
+The GitHub archive tarball unpacks as `<repo>-<version>/`, which became `intent-audit-harness-1.1.5/` after the rename. The unpack-dir detection used `find … -name 'audit-harness-*'`, and `-name` matches the basename with no implicit leading wildcard, so it matched **nothing** under the new prefix — every vendored install would have failed at "could not find unpacked dir". Changed the glob to `-name '*audit-harness-*'` (leading wildcard), which matches both the current `intent-audit-harness-*` name and legacy `audit-harness-*` tags. Verified against both directory names.
+
+### Added — README badge row
+
+npm-version, License Apache-2.0, and Sigstore-provenance shields under the H1 (mirrors the `intent-eval-core` badge row). The "Part of the Intent Eval Platform" cross-link line is preserved.
+
+### Changed — Version bumped to v1.1.5 across all manifests
+
+Per the `version-canonical-check` CI gate (v1.0.2 PR #35). `package.json` (canonical), `version.txt`, `python/pyproject.toml`, `python/src/intent_audit_harness/__init__.py`, and `rust/Cargo.toml` all report `1.1.5`. (`rust/Cargo.lock` is gitignored; its working-tree entry is aligned for local cargo builds.)
+
+### Why patch, not minor
+
+No new CLI commands, no new flags, no API change, no script behavior change. This is release-engineering + metadata: the publish pipeline that ships the existing `1.1.x` code, plus URL corrections for the repo rename, plus the install.sh glob fix. The pinned policy scripts (`.harness-hash`) are untouched.
+
+### Verification
+
+- `npm pack --dry-run` → tarball contains `bin/`, `scripts/`, `README.md`, `LICENSE`, `NOTICE`, `CHANGELOG.md` per `package.json#files`
+- `node bin/audit-harness.js --version` → `1.1.5`
+- `bash -n install.sh` → exit 0; unpack-dir glob matches `intent-audit-harness-1.1.5` (and legacy `audit-harness-*`)
+- `bash scripts/harness-hash.sh --verify` → OK (no pinned files changed)
+
 ## [v1.1.4] - 2026-05-25
 
 ### Fixed — gherkin-lint.sh prev_blank print-every-line noise (IEP P3, Gemini #71 review chain)
@@ -92,7 +133,7 @@ Pure lint-gate addition + dead-code removal. No new CLI commands, no new flags, 
 - `python3 -m py_compile python/src/intent_audit_harness/cli.py` → exit 0
 - `shellcheck scripts/*.sh` → exit 0 (no regression on Phase A1)
 - `bash scripts/harness-hash.sh --verify` → OK after `--init`
-- CI ruff job will block any future PR that introduces a Python lint finding (F401, F841, E\*, etc.)
+- CI ruff job will block any future PR that introduces a Python lint finding (F401, F841, E*, etc.)
 
 ### Follow-up bead filed
 
@@ -124,7 +165,7 @@ Closes `iah-shellcheck-hard-fail` (`bd_000-projects-4asc`, P1). The shellcheck j
 
 While processing the SC2317 cleanup above, Gemini's PR #38 review surfaced a deeper bug: the gherkin-lint.sh awk-fallback path printed `WARN`/`ERROR` lines via `awk printf` but those subprocesses never incremented the parent shell's `WARN_COUNT`/`ERROR_COUNT` counters. The summary line said "0 warnings, 0 errors" while errors were actively being printed; the exit code stayed 0 regardless. Exactly the silent-failure class the linter exists to surface in OTHER projects.
 
-- **New `process_awk_output()` helper**: wraps each awk subprocess, captures its output, counts `WARN ` / `ERROR ` lines via inline awk (`'/^WARN /{c++} END{print c+0}'` — set-euo-pipefail safe, no `|| true` needed), increments the bash counters, then re-prints. 4 awk blocks now feed through it.
+- **New `process_awk_output()` helper**: wraps each awk subprocess, captures its output, counts `WARN` / `ERROR` lines via inline awk (`'/^WARN /{c++} END{print c+0}'` — set-euo-pipefail safe, no `|| true` needed), increments the bash counters, then re-prints. 4 awk blocks now feed through it.
 - **Verification**: deliberate-failure test against a feature with `Scenario: ... \n And ...` produces exit code 1 + summary `0 warning(s), 1 error(s)` (was: exit 0 + `0 warning(s), 0 error(s)` while still printing the ERROR line). Clean feature still exits 0.
 - **Separate-scope finding**: the third awk script contains a stray top-level `prev_blank = 1` that awk treats as an always-true pattern, triggering its default print-every-line action. That's a pre-existing cosmetic issue (extra noise in script output) but not a counter bug — filed as deferred scope.
 
@@ -209,7 +250,7 @@ Priority 6 Phase A1 (`iah-shellcheck-hard-fail`) flips `.github/workflows/ci.yml
 
 ### Added — Per-repo `.harness-hash-extra-patterns` mechanism + audit-harness self-pin (IEP Convergence Debt Plan Priority 3)
 
-Closes `iah-self-pin` (`bd_000-projects-itpl`, P1). The harness's own policy enforcement surface (scripts/_.sh + scripts/_.py + bin/audit-harness.js) is now hash-pinned at the audit-harness repo root. CI's `audit-harness list` + `harness-hash --verify` self-check steps are flipped from `|| true` exit-3 tolerance to hard-fail: any byte change to a pinned policy file without a fresh `--init` + commit of the regenerated `.harness-hash` exits 2 (HARNESS_TAMPERED) and blocks the PR.
+Closes `iah-self-pin` (`bd_000-projects-itpl`, P1). The harness's own policy enforcement surface (scripts/*.sh + scripts/*.py + bin/audit-harness.js) is now hash-pinned at the audit-harness repo root. CI's `audit-harness list` + `harness-hash --verify` self-check steps are flipped from `|| true` exit-3 tolerance to hard-fail: any byte change to a pinned policy file without a fresh `--init` + commit of the regenerated `.harness-hash` exits 2 (HARNESS_TAMPERED) and blocks the PR.
 
 - **`scripts/harness-hash.sh`**: NEW — reads an optional `.harness-hash-extra-patterns` file at the repo root and appends its lines to the default PATTERNS array. Comments (`#`) + blank lines ignored. Backward-compatible: repos without the file get exactly the previous behavior — consumer repos are not affected.
 - **`.harness-hash-extra-patterns`** (NEW, audit-harness repo root): pins `scripts/*.sh`, `scripts/*.py`, `bin/audit-harness.js`, and the extras file itself (preventing silent edits to the self-pinning scope).
