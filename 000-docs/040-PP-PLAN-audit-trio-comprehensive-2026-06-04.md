@@ -11,28 +11,28 @@
 
 ## 0. Executive summary
 
-`/audit-tests` is thin. It only looks for *testing*, and even there it is only deep on one
+`/audit-tests` is thin. It only looks for _testing_, and even there it is only deep on one
 layer (L3 unit). It misses whole dimensions — schema/protocol conformance, upstream currency,
 security/supply-chain, repo hygiene, skill/agent/plugin quality. And the intelligence that
-decides *what a repo needs* lives inside the Claude skills, so `audit-harness` cannot determine
+decides _what a repo needs_ lives inside the Claude skills, so `audit-harness` cannot determine
 a repo's audit profile or run the full check set in bare CI.
 
 This plan makes the audit trio **comprehensive** and makes the harness **work on any repo**
 without Claude in the loop. The resolved relationship is **inspector + provisioner + toolbox**,
 not competitors:
 
-- **`/audit-tests`** = inspector — walks a repo, decides *what to look for*, runs checks, writes
+- **`/audit-tests`** = inspector — walks a repo, decides _what to look for_, runs checks, writes
   the report. (The "what to look for" checklist lives here, and it is the thin part this plan fattens.)
 - **`/implement-tests`** = provisioner — installs the testing setup (frameworks, configs, CI,
   **scaffolded** starter files, `tests/TESTING.md`), staged for review, never committed.
 - **`@intentsolutions/audit-harness`** = toolbox — deterministic check-scripts that also install
   into the repo so checks **enforce in the repo's own CI**.
 
-**Terminology lock (the user flagged "scaffold"):** the harness **determines the *audit profile***
+**Terminology lock (the user flagged "scaffold"):** the harness **determines the _audit profile_**
 (which gates/dimensions apply to a repo) and **runs the gates** — it never writes repo files.
-`/implement-tests` **provisions** the setup. "Scaffold" is reserved only for *generated starter
-test files*. So: *harness decides the profile + reports; implement-tests provisions;
-scaffolding = generated starters.*
+`/implement-tests` **provisions** the setup. "Scaffold" is reserved only for _generated starter
+test files_. So: _harness decides the profile + reports; implement-tests provisions;
+scaffolding = generated starters._
 
 ---
 
@@ -40,7 +40,7 @@ scaffolding = generated starters.*
 
 Three independently-usable pieces that **layer** — not competitors:
 
-- **`audit-harness`** = the **no-Claude CLI engine.** The *only* piece that runs unattended
+- **`audit-harness`** = the **no-Claude CLI engine.** The _only_ piece that runs unattended
   (CI, pre-commit, terminal). Install in any repo (npm/pip/cargo/vendored); run
   `audit-harness <gate>`. This is "works on any repo."
 - **`/audit-tests`** = Claude **inspector** (standalone-invocable; reports + optionally hands off).
@@ -69,7 +69,7 @@ validator-tooling source + the largest internal test corpus).
   - **the scheduled `ecosystem-sync` orchestrator workflow** (weekly cron + on-release
     `repository_dispatch`) that iterates the manifest, runs the deterministic drift/currency scan,
     and opens **canary-first** bump PRs across all of them.
-- **The drift/conform/currency *logic* lives in `audit-harness`** (the portable CLI the
+- **The drift/conform/currency _logic_ lives in `audit-harness`** (the portable CLI the
   orchestrator calls and that any repo also runs standalone). The umbrella orchestrates; the
   harness computes.
 - **Shared validators are packaged INTO audit-harness releases.** `validate-skills-schema.py`,
@@ -89,7 +89,7 @@ validator-tooling source + the largest internal test corpus).
 > (validator-packaging, manifest membership, Renovate, on-release dispatch) MUST first study the existing
 > pipelines and coordinate with the in-flight branch — never bolt generic automation (Renovate auto-merge,
 > a sync orchestrator, a `validate-*` extraction) onto it without understanding what its own CI already does.**
-> The validators stay *authored* there; extraction-into-harness is additive and must not regress that repo's
+> The validators stay _authored_ there; extraction-into-harness is additive and must not regress that repo's
 > own gates. Treat claude-code-plugins as the most delicate manifest member, sequenced last in any fan-out.
 
 Mechanics:
@@ -105,7 +105,7 @@ Mechanics:
 - **Skills** are global (one copy in `~/.claude/skills/`) — nothing to propagate.
 - The **Claude `/sync-testing-harness` skill stays** as the manual/interactive path for messy cases
   (the cron handles routine bumps).
-- **Currency stays advisory** in this routine — it *reports + opens PRs*, it never reddens a build.
+- **Currency stays advisory** in this routine — it _reports + opens PRs_, it never reddens a build.
 
 ---
 
@@ -134,37 +134,37 @@ The reviewers converged. The biggest correction: **reuse, don't reinvent, and ke
 read-only + deterministic.**
 
 1. **`/validate-*` already exists — reuse it.** 7 validation skills (`/validate-{skillmd,agent,hook,
-   mcp,marketplace,plugin,consistency}`) plus deterministic CI-runnable validators
+mcp,marketplace,plugin,consistency}`) plus deterministic CI-runnable validators
    (`claude-code-plugins/scripts/validate-skills-schema.py`, `validate-catalog-invariants.py`,
    `audit-typescript-coverage.py`). `/validate-plugin` already orchestrates the rest.
    **Conformance is mostly wiring these in**, not building schema engines.
 2. **Harness stays read-only — no `scaffold --apply`.** A filesystem-mutating gate-runner collides
    with the escape-scan engineer-owned-policy boundary (`escape-scan.sh` REFUSEs AI policy edits).
-   *Apply* stays in `/implement-tests` (already stages-for-review). The deterministic floor =
+   _Apply_ stays in `/implement-tests` (already stages-for-review). The deterministic floor =
    `classify` (read-only stdout JSON) + the existing gates.
 3. **Don't reinvent scanners — shell out.** secrets→gitleaks, CVE→osv-scanner/pip-audit,
    SBOM→syft+cosign, docs→markdownlint/Vale, links→lychee, JSON-Schema→ajv/check-jsonschema,
-   OpenAPI→spectral. The harness *runs the right external tool with the repo's policy and wraps the
-   exit code in a `gate-result/v1` row*. Missing tool → `unmeasured`, like today.
+   OpenAPI→spectral. The harness _runs the right external tool with the repo's policy and wraps the
+   exit code in a `gate-result/v1` row_. Missing tool → `unmeasured`, like today.
 4. **Data-first, then verbs.** Specify `audit-profile/v1` as a **closed, versioned, hash-bearing
    value** (exactly like the existing `gate-result/v1` — `additionalProperties:false`, version in
-   `$id`) *before* writing `classify`. Make the **dimension→gate registry the single canonical
+   `$id`) _before_ writing `classify`. Make the **dimension→gate registry the single canonical
    datum**; today the fact "which gates apply to repo-type X" is smeared across
    `layer-applicability.md`, each repo's `TESTING.md`, and `harness-hash.sh` — collapse to one datum
-   that the others are *projections* of.
+   that the others are _projections_ of.
 5. **Test-first the brain.** `classify` + profile-resolution are pure functions → write a **golden
    fixture corpus first** (`tests/fixtures/classify/{mcp-server,skill-only,plugin,openapi-service,
-   polyglot-monorepo,external-partner-monorepo}/` → expected `audit-profile.json`). No classifier
-   code before fixtures. The external partner monorepo is *one fixture among many*, not "the" test.
+polyglot-monorepo,external-partner-monorepo}/` → expected `audit-profile.json`). No classifier
+   code before fixtures. The external partner monorepo is _one fixture among many_, not "the" test.
 6. **Currency is an advisory REPORT, never a blocking gate.** It depends on upstream state
    (non-deterministic, network-bound). It lives in `/sync-testing-harness`, has **no exit-code
    authority, no auto-fix, no live-fetch**. Model it as a **per-upstream-identity pin relation**
    (each of MCP-spec / SKILL.md-schema / gate-result-predicate / Anthropic-SDK has its own version +
-   `checked_at`), not one opaque `.schema-version.txt` scalar — so the *pin's own staleness* is detectable.
+   `checked_at`), not one opaque `.schema-version.txt` scalar — so the _pin's own staleness_ is detectable.
 7. **`conform` stays deterministic + pure-local.** Schemas are **bundled in the pinned harness
    version** (immutable, content-addressed, version-in-`$id`), validated against the bundled copy at
    gate-time — **never live-fetched**. `conform` records the schema-version+hash in the `gate-result`
-   `policy_hash`. `currency` *proposes* new schema versions alongside old ones; **never overwrites**
+   `policy_hash`. `currency` _proposes_ new schema versions alongside old ones; **never overwrites**
    (prior signed attestations must stay reproducible).
 8. **New gates ship advisory; promotion is earned.** A gate ships `advisory` (exit 0, finding
    logged) until it shows a measured false-positive rate below a stated bar on the IEP corpus; an
@@ -175,11 +175,11 @@ read-only + deterministic.**
    with a per-gate timeout: a gate hang/crash is isolated; siblings run. Pure-local policy gates fail
    **closed**; network-touching checks fail **open/advisory** → `INDETERMINATE`.
 10. **Kill-switch + canary.** Engineer-owned `.audit-harness.yml` (hash-pinnable) pins classification
-    + per-gate advisory/disable toggles (the "inside latch" + standing per-gate rollback).
-    `AUDIT_HARNESS_ADVISORY=…` / `AUDIT_HARNESS_DISABLE=1` break-glass env.
-    `/sync-testing-harness --canary <repo>` bumps one, waits green, then fleet. Sign `install.sh`
-    downloads (SHA256SUMS/cosign — cosign already in-house; it already broke once on a rename).
-11. **Profiles are a UNION, not a winner.** A repo that is a TS monorepo *and* ships SKILL.md + MCP
+    - per-gate advisory/disable toggles (the "inside latch" + standing per-gate rollback).
+      `AUDIT_HARNESS_ADVISORY=…` / `AUDIT_HARNESS_DISABLE=1` break-glass env.
+      `/sync-testing-harness --canary <repo>` bumps one, waits green, then fleet. Sign `install.sh`
+      downloads (SHA256SUMS/cosign — cosign already in-house; it already broke once on a rename).
+11. **Profiles are a UNION, not a winner.** A repo that is a TS monorepo _and_ ships SKILL.md + MCP
     (j-rig, the external partner monorepo) must get the union of applicable profiles — picking one silently drops the
     other's gates (a false-negative, worse than a false-positive).
 
@@ -190,7 +190,7 @@ read-only + deterministic.**
 - **Harness = read-only classifier + deterministic gate-runner + orchestrator of external tools.**
   Verbs: `classify` (→ `audit-profile/v1` JSON, stdout, no writes), `audit --fast|--deep` (run the
   profile's gates, supervised, emit `gate-result/v1` rows), `conform` (validate artifacts against
-  *bundled* schemas + shell out to the `/validate-*` deterministic validators). No `apply`, no
+  _bundled_ schemas + shell out to the `/validate-*` deterministic validators). No `apply`, no
   live-fetch, no repo mutation.
 - **`/audit-tests` (Claude) = refinement on the residue.** Calls `classify` first; operates only on
   what the classifier marks `unresolved` (ambiguous/novel repos), proposes profile patches a human
@@ -219,7 +219,7 @@ read-only + deterministic.**
    changelog discipline.
 6. **Skill/agent/plugin quality:** consume **j-rig**'s behavioral verdicts (trigger precision,
    tool-allowlist tightness, prompt-injection safety, description quality) as `gate-result` rows —
-   **do not** reimplement judgment as deterministic regex; the harness *consumes* j-rig's Evidence
+   **do not** reimplement judgment as deterministic regex; the harness _consumes_ j-rig's Evidence
    Bundle row.
 
 ---
@@ -333,7 +333,7 @@ Labels: `audit-harness`, `audit-tests`, `implement-tests`, `conformance`, `curre
 
 ## 12. Verification
 
-- **Test-first:** the classify/profile fixture corpus exists and golden-matches *before* classifier
+- **Test-first:** the classify/profile fixture corpus exists and golden-matches _before_ classifier
   code; `conform` pass/fail fixtures (malformed vs valid SKILL.md/MCP) green.
 - **Per gate:** unit test + synthetic pass/fail; new gates ship advisory; FP-rate measured on the IEP
   corpus before any blocking promotion.
@@ -353,6 +353,6 @@ Labels: `audit-harness`, `audit-tests`, `implement-tests`, `conformance`, `curre
 
 ---
 
-*Filed per Document Filing Standard v4.3. This plan is the canonical reference; bd is canonical for
+_Filed per Document Filing Standard v4.3. This plan is the canonical reference; bd is canonical for
 task state; DR-010 wins for governance; Blueprint A wins for ecosystem principles; Blueprint B wins
-for runtime + the 13-entity domain model + `gate-result/v1` predicate spec.*
+for runtime + the 13-entity domain model + `gate-result/v1` predicate spec._

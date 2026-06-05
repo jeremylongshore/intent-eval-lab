@@ -4,7 +4,7 @@
 **Type:** RR-LAND (landing record — known-good-state manifest)
 **Status:** ACTIVE baseline
 **Authority:** PP-PLAN-040 § 8 ("IEP rollback baseline = safety net established first") + § 9 Epic 1
-**Purpose:** capture a known-good point across all 6 Tier-1 IEP repos *before* any harness surgery,
+**Purpose:** capture a known-good point across all 6 Tier-1 IEP repos _before_ any harness surgery,
 so every comprehensive-audit change has a deterministic rollback target. This is the first claimable
 deliverable of the PP-PLAN-040 epic tree.
 
@@ -18,14 +18,14 @@ deliverable of the PP-PLAN-040 epic tree.
 Captured 2026-06-04 from `origin/main` of each repo (the integration trunk), with the latest tag
 reachable on main and the live published artifact version.
 
-| Repo | `origin/main` commit | Latest tag | Published artifact | Notes |
-|---|---|---|---|---|
-| `audit-harness` (intent-audit-harness) | `4f73146` | `v1.1.5` | `@intentsolutions/audit-harness@1.1.5` (npm) + PyPI `intent-audit-harness` + crates `intent-audit-harness` | **root dependency** — everyone vendors/deps it |
-| `intent-eval-core` | `13f2388` | `v0.2.0` | `@intentsolutions/core@0.2.0` (npm, sigstore provenance) | canonical contracts kernel |
-| `intent-eval-lab` | `d894883` | `v0.2.0` | (not an npm artifact — spec/methodology repo) | Phase A foundation + all DRs/blueprints |
-| `j-rig-binary-eval` (GH: `j-rig-skill-binary-eval`) | `d3d641d` | `v1.1.0` | `@j-rig/*` **unpublished** (workspace-internal monorepo) | local FS dir is `j-rig-binary-eval` |
-| `intent-rollout-gate` | `12cfa04` | `v0.0.1` | (GH Action; no npm artifact yet) | consumes `@j-rig/rollout-gate` once published |
-| `intent-eval-dashboard` | `cba7b34` | (no tag) | (deployed app; no npm artifact) | renders Evidence Bundles |
+| Repo                                                | `origin/main` commit | Latest tag | Published artifact                                                                                         | Notes                                          |
+| --------------------------------------------------- | -------------------- | ---------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| `audit-harness` (intent-audit-harness)              | `4f73146`            | `v1.1.5`   | `@intentsolutions/audit-harness@1.1.5` (npm) + PyPI `intent-audit-harness` + crates `intent-audit-harness` | **root dependency** — everyone vendors/deps it |
+| `intent-eval-core`                                  | `13f2388`            | `v0.2.0`   | `@intentsolutions/core@0.2.0` (npm, sigstore provenance)                                                   | canonical contracts kernel                     |
+| `intent-eval-lab`                                   | `d894883`            | `v0.2.0`   | (not an npm artifact — spec/methodology repo)                                                              | Phase A foundation + all DRs/blueprints        |
+| `j-rig-binary-eval` (GH: `j-rig-skill-binary-eval`) | `d3d641d`            | `v1.1.0`   | `@j-rig/*` **unpublished** (workspace-internal monorepo)                                                   | local FS dir is `j-rig-binary-eval`            |
+| `intent-rollout-gate`                               | `12cfa04`            | `v0.0.1`   | (GH Action; no npm artifact yet)                                                                           | consumes `@j-rig/rollout-gate` once published  |
+| `intent-eval-dashboard`                             | `cba7b34`            | (no tag)   | (deployed app; no npm artifact)                                                                            | renders Evidence Bundles                       |
 
 **npm verification (2026-06-04):** `@intentsolutions/audit-harness` → `1.1.5`;
 `@intentsolutions/core` → `0.2.0`; `@j-rig/{rollout-gate,core,cli}` → unpublished (expected —
@@ -76,11 +76,11 @@ git checkout <tag>
 ```
 
 Never `reset --hard` a shared branch. Always cut a `rollback/*` branch from the baseline commit, fix
-forward there, and PR. The baseline commit/tag is the *reference*, not a destination to force.
+forward there, and PR. The baseline commit/tag is the _reference_, not a destination to force.
 
 ### 3b. Published-artifact rollback (npm)
 
-A published version is immutable. To roll a *consumer* back to a known-good dependency:
+A published version is immutable. To roll a _consumer_ back to a known-good dependency:
 
 ```bash
 # pin a consumer back to the baseline harness/core
@@ -89,7 +89,7 @@ pnpm add -D @intentsolutions/audit-harness@1.1.5     # or @intentsolutions/core@
 git commit -am "chore: pin @intentsolutions/* to baseline (RR-LAND-041)"
 ```
 
-If a *bad* harness/core gets published, do **not** unpublish — cut a patch release that reverts the
+If a _bad_ harness/core gets published, do **not** unpublish — cut a patch release that reverts the
 offending change and let Renovate/`ecosystem-sync` fan the fix out (PP-PLAN-040 § 2). Until the fix
 publishes, consumers pin to the baseline version above.
 
@@ -158,5 +158,5 @@ done
 
 ---
 
-*Filed per Document Filing Standard v4.3. This is the known-good reference for PP-PLAN-040; refresh by
-cutting a successor doc, never by overwriting.*
+_Filed per Document Filing Standard v4.3. This is the known-good reference for PP-PLAN-040; refresh by
+cutting a successor doc, never by overwriting._
