@@ -81,6 +81,17 @@ validator-tooling source + the largest internal test corpus).
 - **`claude-code-plugins-plus-skills` is a first-class manifest member** — synced like every other
   repo, and harvested as the reference implementation (its `scripts/` + CI are the richest existing model).
 
+> **GUARD — `claude-code-plugins` has bespoke, in-flight CI/CD; do not disrupt it (user directive 2026-06-04).**
+> That repo runs a large purpose-built plugin-testing pipeline — `validate-plugins.yml`, `pr-prescreen.yml`,
+> `e2e-tests.yml`, `cli-test.yml`, `publish-changed-packages.yml` / `publish-all-packages.yml`,
+> `secret-scan.yml`, `security-audit.yml`, `deploy-marketplace.yml`, `sync-external.yml`, `plane-sync.yml`,
+> and more — and there is active feature work in flight on it. **Any ecosystem-sync work that touches it
+> (validator-packaging, manifest membership, Renovate, on-release dispatch) MUST first study the existing
+> pipelines and coordinate with the in-flight branch — never bolt generic automation (Renovate auto-merge,
+> a sync orchestrator, a `validate-*` extraction) onto it without understanding what its own CI already does.**
+> The validators stay *authored* there; extraction-into-harness is additive and must not regress that repo's
+> own gates. Treat claude-code-plugins as the most delicate manifest member, sequenced last in any fan-out.
+
 Mechanics:
 
 - **Package-version bumps** (`@intentsolutions/audit-harness`, `@intentsolutions/core`) →
