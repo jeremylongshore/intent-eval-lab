@@ -37,7 +37,7 @@ they ship as a workspace monorepo, not yet released to npm).
 
 Edges measured from `package.json` deps + vendored-harness markers (`.audit-harness/`, `.harness-hash`).
 
-```
+```text
 audit-harness  (root — published @intentsolutions/audit-harness@1.1.5)
    ▲   ▲   ▲   ▲
    │   │   │   └── intent-eval-dashboard   (dep ^1.1.5  + dep @intentsolutions/core ^0.2.0)
