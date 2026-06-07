@@ -479,3 +479,14 @@ Yimin
 Zapier
 Zheng
 (?i)zod
+(?i)basicauth
+bcrypt
+(?i)cosign
+fail2ban
+(?i)noindex
+paywalled
+(?i)rekor
+rsync
+(?i)sigstore
+(?i)tailnet
+unindexed

@@ -25,7 +25,7 @@ This DR records the **acting-head decision to override that refusal for one spec
 1. **The internal testing dashboard is a NEW named gated surface**, served behind Caddy basic auth at `internal.intentsolutions.io`, distinct from the "operator full internal view" that DR-035 § 8 routes tailnet-only.
 2. **The pre-existing tailnet-only operator-RESULTS view** (`intent-eval-dashboard` puxu.9, `site-internal/internal/results/`, Tailscale identity) is **UNCHANGED.** This DR does not move it to basicauth.
 3. **CISO's five lift-overs (§ 3) are mandatory** before exposure. They are committed in-repo as deploy artifacts (`deploy/internal-testing.caddy` + `deploy/fail2ban/`).
-4. **The CISO predicate-URI binding stands undisturbed:** no in-toto predicate URI, OTel attribute namespace, or attestation predicate identifier may be declared at `labs.*` OR `internal.*`. Predicate URIs live ONLY at `evals.intentsolutions.io`. The testing dashboard only ever *renders* predicate URIs (pointed at `evals.*`); it declares none.
+4. **The CISO predicate-URI binding stands undisturbed:** no in-toto predicate URI, OTel attribute namespace, or attestation predicate identifier may be declared at `labs.*` OR `internal.*`. Predicate URIs live ONLY at `evals.intentsolutions.io`. The testing dashboard only ever _renders_ predicate URIs (pointed at `evals.*`); it declares none.
 
 ## 2. Why the override is sound (and narrow)
 
@@ -36,7 +36,7 @@ This surface does not carry that signal:
 - It is a **separate hostname** (`internal.intentsolutions.io`), not a locked route on the community face. `labs.intentsolutions.io` stays fully open, unchanged.
 - It is **`noindex, nofollow`** and is never linked from any public page — outsiders do not encounter it and infer a paywall.
 - Its purpose is **operator/learning**, not marketing: it is the windshield for "are our own tests healthy and what do I fix," for the operator and (later) internal team members.
-- The product requirement — *open it in a browser from any device behind a password* — is not met by the tailnet-only gate (which requires a tailnet-joined device). Basicauth is the mechanism that satisfies it.
+- The product requirement — _open it in a browser from any device behind a password_ — is not met by the tailnet-only gate (which requires a tailnet-joined device); basicauth on a public origin is the mechanism that satisfies it.
 
 The override is therefore **scoped to this one named surface** and does not relax the refusal for the public origin or for the operator-results view.
 
