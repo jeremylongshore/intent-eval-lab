@@ -1,4 +1,8 @@
-# Q4: raw API outputs are gitignored; aggregated/ is committed
-raw/
-!aggregated/
+# Q4: raw API outputs are gitignored; only aggregated/ is committed.
+#
+# The runners write raw per-run outputs to raw/, arm-a/, arm-b/, dryrun/, smoke/
+# (and may add future arms/modes). Ignore every per-run directory so eval runs
+# never dirty the working tree; keep only the curated aggregated/ results + this file.
+/*
 !.gitignore
+!aggregated/
