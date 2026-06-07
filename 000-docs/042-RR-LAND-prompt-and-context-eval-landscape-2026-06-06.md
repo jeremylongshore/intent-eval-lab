@@ -262,49 +262,49 @@ turns these into a concrete (gated) recommendation: `EvalTarget = skill | prompt
 
 ### 8.1 Primary thesis sources
 
-- **[S1]** Anthropic, _Effective context engineering for AI agents_ (2025-09-29) — https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents — **verified** (title + date + anchor quote confirmed)
-- **[S2]** A. Karpathy, X post on context engineering (2025) — https://x.com/karpathy/status/1937902205765607626 — **verified**
-- **[S3]** Gartner, "context engineering is in, prompt engineering is out" (~2025-07) — https://www.gartner.com/en/articles/context-engineering — **partial** (primary paywalled; corroborated by secondary outlets)
-- **[S4]** LangChain, _Context Engineering for Agents_ (2025-07-02) — https://www.langchain.com/blog/context-engineering-for-agents — **verified** (Write/Select/Compress/Isolate confirmed)
+- **[S1]** Anthropic, _Effective context engineering for AI agents_ (2025-09-29) — <https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents> — **verified** (title + date + anchor quote confirmed)
+- **[S2]** A. Karpathy, X post on context engineering (2025) — <https://x.com/karpathy/status/1937902205765607626> — **verified**
+- **[S3]** Gartner, "context engineering is in, prompt engineering is out" (~2025-07) — <https://www.gartner.com/en/articles/context-engineering> — **partial** (primary paywalled; corroborated by secondary outlets)
+- **[S4]** LangChain, _Context Engineering for Agents_ (2025-07-02) — <https://www.langchain.com/blog/context-engineering-for-agents> — **verified** (Write/Select/Compress/Isolate confirmed)
 
 ### 8.2 Methods, metrics, tools, frameworks
 
-- **[S5]** G-Eval, Liu et al., EMNLP 2023 — https://arxiv.org/abs/2303.16634 — verified
-- **[S6]** Chatbot Arena, Chiang et al. — https://arxiv.org/abs/2403.04132 — verified
-- **[S7]** OWASP Top 10 for LLM Applications (prompt injection #1) — https://genai.owasp.org/llm-top-10/ — verified
-- **[S8]** promptfoo — https://www.promptfoo.dev/ ; acquisition: https://openai.com/index/openai-to-acquire-promptfoo/ — verified
-- **[S8b]** OpenAI–promptfoo acquisition coverage — https://techcrunch.com/2026/03/09/openai-acquires-promptfoo-to-secure-its-ai-agents/ ; https://www.bloomberg.com/news/articles/2026-03-09/openai-buying-ai-security-startup-promptfoo-to-safeguard-ai-agents — verified
-- **[S9]** DeepEval — https://github.com/confident-ai/deepeval ; https://deepeval.com/ — verified
-- **[S10]** Inspect (UK AISI) — https://inspect.aisi.org.uk/ ; https://github.com/UKGovernmentBEIS/inspect_ai — verified
-- **[S11]** Braintrust — https://www.braintrust.dev/ — verified
-- **[S12]** Langfuse — https://github.com/langfuse/langfuse ; prompt mgmt: https://langfuse.com/docs/prompt-management/overview — verified
-- **[S13]** lm-evaluation-harness — https://github.com/EleutherAI/lm-evaluation-harness — verified
-- **[S14]** Arize Phoenix — https://github.com/Arize-ai/phoenix — verified
-- **[S15]** HELM — https://github.com/stanford-crfm/helm ; https://arxiv.org/abs/2211.09110 — verified
-- **[S16]** Anthropic cookbook (building evals) — https://github.com/anthropics/anthropic-cookbook/blob/main/misc/building_evals.ipynb — verified
-- **[S17]** RAGAS — https://github.com/vibrantlabsai/ragas ; https://docs.ragas.io/ — verified (repo moved from `explodinggradients/ragas`; old URL redirects)
-- **[S18]** TruLens RAG triad — https://www.trulens.org/getting_started/core_concepts/rag_triad/ — verified
-- **[S19]** Needle-in-a-haystack (G. Kamradt) — https://github.com/gkamradt/LLMTest_NeedleInAHaystack — verified
-- **[S20]** RULER (NVIDIA) — https://arxiv.org/abs/2404.06654 ; https://github.com/NVIDIA/RULER — verified
-- **[S21]** LongBench (THUDM) — https://arxiv.org/abs/2308.14508 ; https://github.com/THUDM/LongBench — verified
-- **[S22]** Lost in the Middle (Liu et al.) — https://arxiv.org/abs/2307.03172 — verified
-- **[S23]** Context rot (Chroma) — https://research.trychroma.com/context-rot — verified
-- **[S24]** LlamaIndex evaluation — https://docs.llamaindex.ai/ — verified
-- **[S25]** RAG eval maturity (2026 guide) — https://datavlab.ai/post/rag-evaluation-methods-metrics-2026-guide — partial (secondary)
-- **[S26]** "From RAG to context" review (2025) — https://ragflow.io/blog/rag-review-2025-from-rag-to-context — partial (secondary)
-- **[S27]** DSPy paper — https://arxiv.org/abs/2310.03714 — verified; **[S27b]** site — https://dspy.ai/ ; repo https://github.com/stanfordnlp/dspy — verified
-- **[S28]** "Is It Time To Treat Prompts As Code?" — https://arxiv.org/abs/2507.03620 — verified
-- **[S29]** TextGrad — https://arxiv.org/abs/2406.07496 ; https://github.com/zou-group/textgrad — verified
-- **[S30]** AdalFlow — https://github.com/SylphAI-Inc/AdalFlow — verified
-- **[S31]** PromptWizard (Microsoft) — https://github.com/microsoft/PromptWizard — verified
-- **[S32]** Promptomatix (Salesforce) — https://arxiv.org/abs/2507.14241 ; https://github.com/SalesforceAIResearch/promptomatix — verified
-- **[S33]** CoolPrompt (ITMO) — https://github.com/CTLab-ITMO/CoolPrompt — verified
-- **[S34]** LangChain PromptTemplate — https://python.langchain.com/api_reference/core/prompts/langchain_core.prompts.prompt.PromptTemplate.html — verified
-- **[S35]** Jinja2 — https://jinja.palletsprojects.com/ — verified
-- **[S36]** Instructor — https://github.com/567-labs/instructor ; https://python.useinstructor.com/ — verified
-- **[S37]** Outlines — https://github.com/dottxt-ai/outlines — verified
-- **[S38]** Guidance (Microsoft) — https://github.com/guidance-ai/guidance — verified
-- **[S39]** BAML (BoundaryML) — https://github.com/BoundaryML/baml ; https://docs.boundaryml.com/ — verified
+- **[S5]** G-Eval, Liu et al., EMNLP 2023 — <https://arxiv.org/abs/2303.16634> — verified
+- **[S6]** Chatbot Arena, Chiang et al. — <https://arxiv.org/abs/2403.04132> — verified
+- **[S7]** OWASP Top 10 for LLM Applications (prompt injection #1) — <https://genai.owasp.org/llm-top-10/> — verified
+- **[S8]** promptfoo — <https://www.promptfoo.dev/> ; acquisition: <https://openai.com/index/openai-to-acquire-promptfoo/> — verified
+- **[S8b]** OpenAI–promptfoo acquisition coverage — <https://techcrunch.com/2026/03/09/openai-acquires-promptfoo-to-secure-its-ai-agents/> ; <https://www.bloomberg.com/news/articles/2026-03-09/openai-buying-ai-security-startup-promptfoo-to-safeguard-ai-agents> — verified
+- **[S9]** DeepEval — <https://github.com/confident-ai/deepeval> ; <https://deepeval.com/> — verified
+- **[S10]** Inspect (UK AISI) — <https://inspect.aisi.org.uk/> ; <https://github.com/UKGovernmentBEIS/inspect_ai> — verified
+- **[S11]** Braintrust — <https://www.braintrust.dev/> — verified
+- **[S12]** Langfuse — <https://github.com/langfuse/langfuse> ; prompt mgmt: <https://langfuse.com/docs/prompt-management/overview> — verified
+- **[S13]** lm-evaluation-harness — <https://github.com/EleutherAI/lm-evaluation-harness> — verified
+- **[S14]** Arize Phoenix — <https://github.com/Arize-ai/phoenix> — verified
+- **[S15]** HELM — <https://github.com/stanford-crfm/helm> ; <https://arxiv.org/abs/2211.09110> — verified
+- **[S16]** Anthropic cookbook (building evals) — <https://github.com/anthropics/anthropic-cookbook/blob/main/misc/building_evals.ipynb> — verified
+- **[S17]** RAGAS — <https://github.com/vibrantlabsai/ragas> ; <https://docs.ragas.io/> — verified (repo moved from `explodinggradients/ragas`; old URL redirects)
+- **[S18]** TruLens RAG triad — <https://www.trulens.org/getting_started/core_concepts/rag_triad/> — verified
+- **[S19]** Needle-in-a-haystack (G. Kamradt) — <https://github.com/gkamradt/LLMTest_NeedleInAHaystack> — verified
+- **[S20]** RULER (NVIDIA) — <https://arxiv.org/abs/2404.06654> ; <https://github.com/NVIDIA/RULER> — verified
+- **[S21]** LongBench (THUDM) — <https://arxiv.org/abs/2308.14508> ; <https://github.com/THUDM/LongBench> — verified
+- **[S22]** Lost in the Middle (Liu et al.) — <https://arxiv.org/abs/2307.03172> — verified
+- **[S23]** Context rot (Chroma) — <https://research.trychroma.com/context-rot> — verified
+- **[S24]** LlamaIndex evaluation — <https://docs.llamaindex.ai/> — verified
+- **[S25]** RAG eval maturity (2026 guide) — <https://datavlab.ai/post/rag-evaluation-methods-metrics-2026-guide> — partial (secondary)
+- **[S26]** "From RAG to context" review (2025) — <https://ragflow.io/blog/rag-review-2025-from-rag-to-context> — partial (secondary)
+- **[S27]** DSPy paper — <https://arxiv.org/abs/2310.03714> — verified; **[S27b]** site — <https://dspy.ai/> ; repo <https://github.com/stanfordnlp/dspy> — verified
+- **[S28]** "Is It Time To Treat Prompts As Code?" — <https://arxiv.org/abs/2507.03620> — verified
+- **[S29]** TextGrad — <https://arxiv.org/abs/2406.07496> ; <https://github.com/zou-group/textgrad> — verified
+- **[S30]** AdalFlow — <https://github.com/SylphAI-Inc/AdalFlow> — verified
+- **[S31]** PromptWizard (Microsoft) — <https://github.com/microsoft/PromptWizard> — verified
+- **[S32]** Promptomatix (Salesforce) — <https://arxiv.org/abs/2507.14241> ; <https://github.com/SalesforceAIResearch/promptomatix> — verified
+- **[S33]** CoolPrompt (ITMO) — <https://github.com/CTLab-ITMO/CoolPrompt> — verified
+- **[S34]** LangChain PromptTemplate — <https://python.langchain.com/api_reference/core/prompts/langchain_core.prompts.prompt.PromptTemplate.html> — verified
+- **[S35]** Jinja2 — <https://jinja.palletsprojects.com/> — verified
+- **[S36]** Instructor — <https://github.com/567-labs/instructor> ; <https://python.useinstructor.com/> — verified
+- **[S37]** Outlines — <https://github.com/dottxt-ai/outlines> — verified
+- **[S38]** Guidance (Microsoft) — <https://github.com/guidance-ai/guidance> — verified
+- **[S39]** BAML (BoundaryML) — <https://github.com/BoundaryML/baml> ; <https://docs.boundaryml.com/> — verified
 
 ### 8.3 Flagged / could-not-fully-verify
 
