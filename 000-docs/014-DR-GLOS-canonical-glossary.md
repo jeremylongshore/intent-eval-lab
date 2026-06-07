@@ -38,6 +38,7 @@ This is itself a **NORMATIVE** document binding on the ecosystem under DR-010 §
 - **§ 7 — Sequence + lifecycle terms.** Phase A/B/C, RF-N (forward-ref to iel-E11), sigstore staging vs production Rekor, EXPERIMENTAL mode, `bd-sync`.
 - **§ 8 — Anti-patterns + reserved terms.** Reservations and disciplines that cannot be silently violated: `labs.intentsolutions.io` reserved-don't-touch, vendor-generic discipline, external-pattern non-borrow, approximate reproducibility, no-new-platform-initiation.
 - **§ 9 — Alphabetical cross-reference index.** Alphabetical pointer from each term to its primary section here and to the 2-4 most relevant documents that use it.
+- **§ 10 — Proposed (research-stage, non-normative) terms.** An explicitly-fenced appendix for terms a research/RFC doc has _proposed_ but that are **not yet canonical**. Entries here carry no normative force and promotion to the normative body is a Class-1 ISEDC act. Kept out of the canonical index in § 9 by design.
 
 When in doubt about which section a term belongs in, prefer the section that captures the term's **canonical use site**. A term that appears across multiple sections (e.g., "Evidence Bundle" — an entity in § 2, but also the lingua franca cited by signing terms in § 6) lives in its primary section with cross-references from the others.
 
@@ -249,6 +250,8 @@ MM-7 admission is gated. Per DR-004 S1Q3 binding (reaffirmed at DR-010 § 10 reo
 
 **Deferred predicate types (Phase B+).** `harness-experiment/v1` and `cache-decision/v1` are deferred for future Phase B+ admission. Their use cases are recognized but not yet ready for namespace reservation. Citation: DR-010 § 7 Q3.
 
+**Research-stage proposed predicate types (NOT reserved, NOT declared).** `prompt-eval/v1` and `context-eval/v1` are **proposed** by the prompt+context-eval landscape RFC (`043-DR-RFC-intent-eval-target-generalization-2026-06-06.md`) as the eventual signed-evidence surface for the proposed `prompt` / `context-template` eval targets (see § 10). They are in the same "recognized but not yet reserved" status as the Deferred entries above — but a step earlier: their use case is _proposed_, not yet accepted. **Reservation itself is a Class-1 ISEDC act** ("new predicate URI subtype reservation," DR-010 § 7 Q6), so naming them here does **not** reserve them, declare a normative SPEC, or emit any `predicateType`. Host, if ever admitted, is `evals.intentsolutions.io` only — never `labs.` (CISO binding, § 8). Citation: 043-DR-RFC § 6; DR-010 § 7 Q3 + Q6.
+
 **Rejected predicate types.** `agent-loop-trace/v1` is **REJECTED for v1** per DR-010 Q3 CISO veto, pending a sanitization specification. The rejection rationale: agent-loop traces carry credential-shaped substrings and tool-output payloads whose redaction discipline is not yet specified — admitting the predicate URI before the sanitization spec lands risks a credential leak into Rekor. Citation: DR-010 § 7 Q3 CISO veto.
 
 **DNSSEC + CAA.** DNS-layer cryptographic hardening required **before any production-Rekor anchor** per DR-004 Q1 + DR-010 § 7 Q5 CISO non-negotiable. DNSSEC signs the DNS zone responses for `evals.intentsolutions.io` and any subdomain hosting predicate URIs; CAA (Certification Authority Authorization) records pin which CAs may issue certificates for those names. Both are pre-requisites because predicate URIs that resolve through an un-hardened DNS path are vulnerable to namespace-hijacking attacks that produce signed-but-attacker-controlled attestations. Citation: DR-004 Q1; DR-010 § 7 Q5.
@@ -368,7 +371,46 @@ This index points each term to its primary section in this glossary and to the 2
 
 ---
 
+## 10. Proposed (research-stage, non-normative) terms
+
+> **These terms are NOT canonical.** They are _proposed_ by the prompt+context-eval landscape
+> recon (`042-RR-LAND-prompt-and-context-eval-landscape-2026-06-06.md`) and its companion RFC
+> (`043-DR-RFC-intent-eval-target-generalization-2026-06-06.md`). They carry **no normative
+> force**. Promotion of any term here into the normative body (§§ 2–8) — and any of the
+> entity/predicate changes they imply — is a **Class-1 ISEDC** act per DR-010 § 7 Q6
+> (canonical-domain schema surface + predicate URI reservation), additionally bandwidth-gated
+> per DR-010 § 13.5. They are listed here so the vocabulary is discoverable while remaining
+> clearly out of the canonical surface (intentionally absent from the § 9 index).
+
+**Intent-bearing artifact (proposed).** A frozen, content-addressed thing that encodes an
+intent and can be evaluated for whether it realizes that intent. The proposed generalization of
+the platform's unit-under-test: today the only intent-bearing artifact the platform names is a
+`SkillSnapshot` (§ 2.9); the RFC proposes that a prompt and a context template are also
+intent-bearing artifacts. Citation: 043-DR-RFC § 1, § 4.
+
+**EvalTarget (proposed).** The proposed discriminated union over intent-bearing artifacts:
+`EvalTarget = skill | prompt | context-template | agent`, with `skill` as intent-type #1 (the
+only one that exists today). The RFC proposes migrating `EvalRun.skill_snapshot_id`
+(Blueprint B § 2.2; kernel `EvalRun.ts:88-89`) to a tagged `EvalRun.eval_target` reference,
+leaving `MatcherMap` / `JudgeDecision` / `EvidenceBundle` unchanged (they are already
+target-agnostic). **Not a 14th entity decision** — the 14th canonical entity is `SkillVersion`
+per DR-028 T1; `EvalTarget` is a separate, gated proposal. Citation: 043-DR-RFC § 3, § 4.
+
+**prompt-eval (proposed).** Evaluation of a `prompt` eval target — the prompt-engineering unit.
+Proposed matcher namespace `MM-P*` (instruction-adherence, output-schema conformance,
+injection-resistance, reference-free quality). Proposed predicate `prompt-eval/v1` (NOT
+reserved/declared — § 6). Citation: 042 § 3; 043-DR-RFC § 4.3.
+
+**context-eval (proposed).** Evaluation of a `context-template` eval target — the
+context-engineering unit (Write/Select/Compress/Isolate, § 042 § 2). Proposed matcher namespace
+`MM-C*` (faithfulness-to-context, context-precision/recall, needle-retrieval,
+context-rot-resistance — mapping RAGAS/RULER/Chroma metrics, 042 § 4.2). Proposed predicate
+`context-eval/v1` (NOT reserved/declared — § 6). Citation: 042 § 4; 043-DR-RFC § 4.3.
+
+---
+
 _Acting head of board: Jeremy Longshore (Intent Solutions). Decision date: 2026-05-14. Authority: DR-010 (ISEDC Session 4, 2026-05-13) + Blueprint A (`011-AT-ARCH`) + Blueprint B (`012-AT-ARCH`) + v2.1 epic plan § iel-E03 acceptance criteria._
+_§ 10 (proposed research-stage terms) appended 2026-06-06 as an additive, non-normative appendix per the prompt+context-eval landscape work; promotion to normative is Class-1 ISEDC._
 
 - Jeremy Longshore
   intentsolutions.io

@@ -2,6 +2,17 @@
 
 > **Status: placeholder.** This module is reserved for cross-module methodology patterns that apply to multiple specs under [`specs/`](../). Patterns get promoted here once they're observed working in at least two modules.
 
+## Methodology-spec index
+
+Most modules under [`specs/`](../) are **contract / conformance** specs (a system class → its normative requirements). A few are **methodology** specs — they codify _how to evaluate_ a kind of artifact, reusing the platform's shared substrate (MatcherMap / JudgeDecision / EvidenceBundle) rather than defining a new system class. This section indexes them:
+
+| Methodology spec                                                                         | Codifies                                                                                                             | Status                                                                                                                                                                                                                                                                                                         |
+| ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`../prompt-evaluation/v0.1.0-draft/SPEC.md`](../prompt-evaluation/v0.1.0-draft/SPEC.md) | Evaluating prompts + context templates as eval targets (the prompt→context-engineering generalization beyond skills) | v0.1.0-draft skeleton; gated — see [`000-docs/043-DR-RFC-intent-eval-target-generalization-2026-06-06.md`](../../000-docs/043-DR-RFC-intent-eval-target-generalization-2026-06-06.md) and landscape [`000-docs/042-RR-LAND-...md`](../../000-docs/042-RR-LAND-prompt-and-context-eval-landscape-2026-06-06.md) |
+
+New methodology specs are added here as research warrants. The patterns below are the
+cross-cutting disciplines every methodology spec inherits.
+
 ## Patterns observed in early modules (provisional, not yet normative)
 
 - **Toulmin-structured findings.** Every finding in a conformance report includes a _claim_ (what the spec requirement is), a _warrant_ (the canonical authority the requirement codifies), _grounds_ (the empirical evidence the requirement isn't satisfied), and a _qualifier_ (severity / scope of the failure). This structure is currently in use in the `mcp-plugin-observability` module's case-study reports.
