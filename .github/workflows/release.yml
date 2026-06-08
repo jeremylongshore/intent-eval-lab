@@ -1,0 +1,103 @@
+name: Release
+
+# Tag a spec release of intent-eval-lab and emit its signed spec-integrity
+# evidence for the intent-eval-dashboard reports hub (bead nr75.13).
+#
+# The lab has NO package.json / no npm publish — a "release" here is: cut a
+# GitHub Release for the tag, then emit + cosign-sign a kernel gate-result/v1
+# report-manifest and attach it to that Release. The dashboard fetches:
+#   https://github.com/jeremylongshore/intent-eval-lab/releases/latest/download/report-manifest.json
+# and re-verifies OIDC subject + workflow_ref + Rekor inclusion + DSSE + kernel
+# schema at ingest. The signing identity is this workflow's reusable-workflow ref
+# (release.yml@refs/tags/vX.Y.Z) — which the dashboard pins for `iel`.
+#
+# @intentsolutions/core is installed CI-only via `npm i --no-save`; the lab keeps
+# no node manifest. The emit scripts run under Node 22 `--experimental-strip-types`
+# (no build step).
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write  # create the Release + upload the manifest asset
+  id-token: write  # cosign keyless (Fulcio OIDC)
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release-and-emit:
+    name: Release + emit signed spec-integrity evidence
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout with full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          # Node >= 22.6 — the emit scripts run under --experimental-strip-types.
+          node-version: 22
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF#refs/tags/}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "release $tag already exists"
+          else
+            gh release create "$tag" --title "intent-eval-lab $tag" --generate-notes --latest
+          fi
+
+      # CI-only kernel install — the lab keeps no node manifest (zero footprint).
+      - name: Install kernel validators (CI-only, --no-save)
+        run: npm i --no-save @intentsolutions/core@0.2.0
+
+      - name: Emit-evidence self-check (kernel-valid + canonical-stable)
+        run: node --experimental-strip-types ci/emit-evidence.ts --self-check
+
+      - name: Emit gate-result/v1 EvidenceBundle(s)
+        run: node --experimental-strip-types ci/emit-evidence.ts --out build/evidence --ref "${GITHUB_REF}"
+
+      - name: Sign each EvidenceBundle (cosign keyless → Rekor)
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          signed=0
+          for bundle in build/evidence/bundle-*.json; do
+            case "$bundle" in *.sigstore.json) continue;; esac
+            sig="${bundle%.json}.sigstore.json"
+            echo "::group::cosign sign-blob $bundle"
+            cosign sign-blob --yes --new-bundle-format --bundle "$sig" "$bundle"
+            echo "::endgroup::"
+            signed=$((signed + 1))
+          done
+          if [ "$signed" -eq 0 ]; then
+            echo "::error::no EvidenceBundles were produced to sign"
+            exit 1
+          fi
+          echo "✓ signed $signed bundle(s)"
+
+      - name: Assemble report-manifest.json (fail-closed on shape mismatch)
+        run: node --experimental-strip-types ci/assemble-manifest.ts --dir build/evidence --out build/evidence/report-manifest.json
+
+      - name: Publish report-manifest.json onto the Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF#refs/tags/}"
+          gh release upload "$tag" build/evidence/report-manifest.json --clobber
+          echo "✓ report-manifest.json published to release $tag"
