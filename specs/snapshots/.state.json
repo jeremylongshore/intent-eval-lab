@@ -1,0 +1,7 @@
+{
+  "state_version": "watcher-liveness/v1",
+  "last_run_utc": null,
+  "max_gap_hours": 26,
+  "streak_threshold": 3,
+  "surfaces": {}
+}

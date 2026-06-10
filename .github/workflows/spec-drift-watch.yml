@@ -1,24 +1,32 @@
 name: Spec drift watch
 
-# Polls 6 upstream spec sources (Claude Code changelog, npm version, Anthropic
+# Polls upstream spec sources (Claude Code changelog, npm version, Anthropic
 # platform docs, engineering blog, anthropics/skills repo, agentskills.io) and
 # reports drift. The eval-set bootstrap (per DR-029) requires an anchored
 # snapshot timestamp; without it, every Refiner score delta is indistinguishable
 # from upstream spec drift. This workflow IS the anchor.
 #
 # Authority: 000-docs/030-AT-DECR-eval-set-bootstrap-decisions-2026-05-28.md § 6
+#            000-docs/045-RR-LAND-single-source-of-truth-and-continuous-spec-compliance-2026-06-09.md
 # Sources + extraction logic: scripts/spec-drift-check.sh (DRY — workflow only
 # handles CI side effects, not the polling logic itself).
 #
-# Side effects on drift:
+# Three layers (the deterministic detection backbone — never replaced by an LLM):
+#   1. byte-hash drift   (spec-drift-check.sh) — "did the page change?"
+#   2. field-level diff   (spec-projection-diff.py) — "did the normative SHAPE change?"
+#   3. liveness guards    (watcher-liveness.py) — so it cannot fail silent-green:
+#        - fetch_error_streak >= 3  → a surface is effectively unmonitored → fail loud
+#        - dead-man heartbeat       → external ping (true dead-man) + retrospective gap check on resume
+#
+# Side effects on drift / liveness trip:
 #   1. Workflow fails (visible red X)
-#   2. ntfy push to prod-alerts (subscribed on Jeremy's phone)
+#   2. ntfy push (subscribed on Jeremy's phone)
 #   3. GH issue opened with diff summary (auto-deduped by title)
 #
 # Trigger:
 #   - Daily cron at 09:00 UTC
 #   - Manual workflow_dispatch
-#   - PR + push that touches the script or snapshot baselines (self-test)
+#   - PR + push that touches the scripts, snapshots, or vendored projection (self-test)
 
 on:
   schedule:
@@ -28,13 +36,19 @@ on:
     paths:
       - '.github/workflows/spec-drift-watch.yml'
       - 'scripts/spec-drift-check.sh'
+      - 'scripts/spec-projection-diff.py'
+      - 'scripts/watcher-liveness.py'
       - 'specs/snapshots/.sha/**'
+      - '_vendor/upstream/**'
   push:
     branches: [main]
     paths:
       - '.github/workflows/spec-drift-watch.yml'
       - 'scripts/spec-drift-check.sh'
+      - 'scripts/spec-projection-diff.py'
+      - 'scripts/watcher-liveness.py'
       - 'specs/snapshots/.sha/**'
+      - '_vendor/upstream/**'
 
 permissions:
   contents: read
@@ -42,7 +56,7 @@ permissions:
 
 jobs:
   spec-drift-check:
-    name: Poll 6 spec sources + report drift
+    name: Poll spec sources + field-diff + liveness
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -51,21 +65,112 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # Field-level extract-then-diff (Fitness Function #2). Offline: operates on
+      # the vendored firewall snapshot + committed projection. --self-test proves
+      # the differ is sound (detects every drift class, no false positive);
+      # --check proves the snapshot and the committed projection still agree.
+      - name: Field-level projection diff (skill-frontmatter)
+        id: projection
+        shell: bash
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          # --self-test (differ soundness) and --check (snapshot↔projection
+          # consistency) are both OFFLINE + deterministic — they gate every event.
+          if python3 scripts/spec-projection-diff.py --self-test; then
+            echo "selftest=pass" >> "${GITHUB_OUTPUT}"
+          else
+            echo "selftest=fail" >> "${GITHUB_OUTPUT}"
+          fi
+          if python3 scripts/spec-projection-diff.py --check > /tmp/projection-report.txt 2>&1; then
+            echo "drift=false" >> "${GITHUB_OUTPUT}"
+          else
+            echo "drift=true" >> "${GITHUB_OUTPUT}"
+          fi
+          cat /tmp/projection-report.txt
+
+      # Persist liveness state (per-surface fetch-error streaks + last_run) across
+      # scheduled runs. Cache (not commit-back) avoids branch-protection friction;
+      # the committed specs/snapshots/.state.json is the bootstrap seed. Eviction
+      # only resets streaks to the seed (the byte/field drift detection is
+      # unaffected) — committed belt-and-suspenders state is a tracked follow-on.
+      - name: Restore liveness state
+        uses: actions/cache/restore@v4
+        with:
+          path: specs/snapshots/.state.json
+          key: spec-drift-state-${{ github.run_id }}
+          restore-keys: |
+            spec-drift-state-
+
       - name: Run drift check
         id: check
         shell: bash
         continue-on-error: true
         run: |
           set -uo pipefail
-          # Capture both stdout and exit code
           if scripts/spec-drift-check.sh > /tmp/drift-report.txt 2>&1; then
             echo "drift=false" >> "${GITHUB_OUTPUT}"
           else
             echo "drift=true" >> "${GITHUB_OUTPUT}"
           fi
           cat /tmp/drift-report.txt
-          # Also build JSON for issue body
           scripts/spec-drift-check.sh --json > /tmp/drift-report.json 2>/dev/null || true
+
+      # Dead-man heartbeat (true, external): ping an uptime monitor so absence of
+      # a daily ping alerts even when the cron itself stops firing. Optional
+      # secret — if unset, skip (the retrospective gap check + record-run remain).
+      - name: Heartbeat ping (external dead-man)
+        if: github.event_name == 'schedule'
+        shell: bash
+        env:
+          HEARTBEAT_URL: ${{ secrets.SPEC_DRIFT_HEARTBEAT_URL }}
+        run: |
+          if [[ -z "${HEARTBEAT_URL:-}" ]]; then
+            echo "SPEC_DRIFT_HEARTBEAT_URL not set; external dead-man ping skipped."
+            exit 0
+          fi
+          curl -fsSL -m 10 "${HEARTBEAT_URL}" >/dev/null && echo "heartbeat ping sent." || echo "heartbeat ping failed (non-fatal)."
+
+      # Retrospective gap check: on resume after an outage, the first run detects
+      # that monitoring lapsed (last recorded run > 26h ago).
+      - name: Dead-man heartbeat (retrospective gap check)
+        id: heartbeat
+        shell: bash
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          if python3 scripts/watcher-liveness.py --heartbeat-check; then
+            echo "stale=false" >> "${GITHUB_OUTPUT}"
+          else
+            echo "stale=true" >> "${GITHUB_OUTPUT}"
+          fi
+
+      # Update per-surface fetch-error streaks + last_run timestamp; fails loud if
+      # any surface has errored >= 3 consecutive runs (effectively unmonitored).
+      - name: Record run + check fetch-error streaks
+        id: streak
+        shell: bash
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          if python3 scripts/watcher-liveness.py --record-run /tmp/drift-report.json > /tmp/streak-report.txt 2>&1; then
+            echo "exceeded=false" >> "${GITHUB_OUTPUT}"
+          else
+            echo "exceeded=true" >> "${GITHUB_OUTPUT}"
+          fi
+          cat /tmp/streak-report.txt
+
+      - name: Save liveness state
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: specs/snapshots/.state.json
+          key: spec-drift-state-${{ github.run_id }}
 
       - name: Summarize
         if: always()
@@ -74,74 +179,100 @@ jobs:
           {
             echo "## Spec drift watch"
             echo ""
-            if [[ "${{ steps.check.outputs.drift }}" == "true" ]]; then
-              echo "**DRIFT DETECTED** — at least one upstream spec source changed."
-            else
-              echo "All 6 upstream spec sources match committed snapshots. No drift."
-            fi
+            echo "| Layer | Status |"
+            echo "|---|---|"
+            echo "| byte-hash drift | ${{ steps.check.outputs.drift }} |"
+            echo "| field-level projection drift | ${{ steps.projection.outputs.drift }} |"
+            echo "| dead-man heartbeat stale | ${{ steps.heartbeat.outputs.stale }} |"
+            echo "| fetch-error streak exceeded | ${{ steps.streak.outputs.exceeded }} |"
             echo ""
-            echo "### Report"
+            echo "### Byte-hash report"
             echo '```'
             cat /tmp/drift-report.txt
             echo '```'
+            echo "### Field-level projection report"
+            echo '```'
+            cat /tmp/projection-report.txt 2>/dev/null || true
+            echo '```'
           } >> "${GITHUB_STEP_SUMMARY}"
 
-      - name: Fire ntfy notification on drift
-        if: steps.check.outputs.drift == 'true' && github.event_name == 'schedule'
+      - name: Fire ntfy notification on drift or liveness trip
+        if: >-
+          github.event_name == 'schedule' &&
+          (steps.check.outputs.drift == 'true' ||
+           steps.projection.outputs.drift == 'true' ||
+           steps.heartbeat.outputs.stale == 'true' ||
+           steps.streak.outputs.exceeded == 'true')
         shell: bash
         run: |
-          # NTFY_URL secret optional — if absent, skip silently (workflow still
-          # opens an issue + fails, so the signal isn't lost).
           if [[ -z "${NTFY_URL:-}" ]]; then
             echo "NTFY_URL secret not set; skipping ntfy push."
             exit 0
           fi
+          {
+            echo "byte-drift=${{ steps.check.outputs.drift }} field-drift=${{ steps.projection.outputs.drift }} heartbeat-stale=${{ steps.heartbeat.outputs.stale }} streak-exceeded=${{ steps.streak.outputs.exceeded }}"
+            head -10 /tmp/drift-report.txt
+          } > /tmp/ntfy-body.txt
           curl -fsSL \
-            -H "Title: Spec drift detected (intent-eval-lab)" \
+            -H "Title: Spec drift / liveness (intent-eval-lab)" \
             -H "Priority: high" \
             -H "Tags: warning,page_facing_up" \
-            -d "$(head -20 /tmp/drift-report.txt)" \
+            -d "$(cat /tmp/ntfy-body.txt)" \
             "${NTFY_URL}/prod-alerts" || echo "ntfy push failed (non-fatal)"
         env:
           NTFY_URL: ${{ secrets.NTFY_URL }}
 
       - name: Open or update drift issue
-        if: steps.check.outputs.drift == 'true' && github.event_name == 'schedule'
+        if: >-
+          github.event_name == 'schedule' &&
+          (steps.check.outputs.drift == 'true' ||
+           steps.projection.outputs.drift == 'true' ||
+           steps.heartbeat.outputs.stale == 'true' ||
+           steps.streak.outputs.exceeded == 'true')
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           TITLE="Spec drift detected — $(date -u +%Y-%m-%d)"
-          # Dedup: if any open issue with same date-prefix title exists, skip.
           existing=$(gh issue list --state open --search "in:title \"Spec drift detected\"" --json number,title --jq '.[] | select(.title | startswith("Spec drift detected — '"$(date -u +%Y-%m-%d)"'")) | .number' | head -1)
           if [[ -n "${existing}" ]]; then
             echo "Already opened issue #${existing} today; skipping duplicate."
             exit 0
           fi
           body=$(cat <<EOF
-          Daily spec-drift-watch detected drift in at least one of the 6 upstream sources monitored per DR-029 § 6.
+          Daily spec-drift-watch detected drift or a liveness trip.
+
+          - byte-hash drift: ${{ steps.check.outputs.drift }}
+          - field-level projection drift: ${{ steps.projection.outputs.drift }}
+          - dead-man heartbeat stale: ${{ steps.heartbeat.outputs.stale }}
+          - fetch-error streak exceeded: ${{ steps.streak.outputs.exceeded }}
 
           See workflow run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
 
-          ## Drift report
+          ## Byte-hash report
 
           \`\`\`
           $(cat /tmp/drift-report.txt)
           \`\`\`
 
+          ## Field-level projection report
+
+          \`\`\`
+          $(cat /tmp/projection-report.txt 2>/dev/null || echo "(none)")
+          \`\`\`
+
           ## Next steps
 
-          1. Inspect the drifted source(s) above to determine whether the change is material to the Skill Refiner spec surface.
-          2. If material: update the relevant local snapshot at \`claude-code-plugins/000-docs/*-snapshot.md\` AND the eval-set spec-version pin in \`specs/eval-sets/validate-skillmd/v*/manifest.json\`, then refresh the baseline via \`scripts/spec-drift-check.sh --refresh\`.
-          3. If immaterial (cookie banner / build-ID noise / extractor flake): tighten the extractor in \`scripts/spec-drift-check.sh\`, then refresh the baseline.
-          4. Commit the refreshed \`.sha\` file in the same PR as any downstream snapshot/manifest updates.
+          1. Inspect the drifted source(s). For a field-level drift, the normative SHAPE changed (a field added/removed, a required/experimental flag flipped) — that is the load-bearing signal.
+          2. If material: re-vendor the snapshot under \`_vendor/upstream/<contract>/\`, refresh its \`projection.v1.json\`, then promote the change into the kernel (@intentsolutions/core authoring/v1). The differ never authors a kernel edit and never closes this signal — a human reconciles.
+          3. If immaterial (extractor flake / noise): tighten the extractor, then refresh the baseline.
+          4. A fetch-error streak means a surface URL moved or the extractor broke — fix the URL/extractor.
 
           ## Authority
 
-          - DR-029 § 6 (this watcher): \`000-docs/030-AT-DECR-eval-set-bootstrap-decisions-2026-05-28.md\`
-          - Plan 027 § 13 Step 9 (long-term spec snapshot refresh)
-          - DR-028 P0-RATIFY-1 (predicate integrity requires stable spec anchor)
+          - DR-029 § 6 + DR-044: \`000-docs/030-...md\`, \`000-docs/044-...md\`
+          - SSoT + Continuous Spec-Compliance: \`000-docs/045-RR-LAND-...md\`
 
           - Jeremy Longshore
           intentsolutions.io
@@ -153,8 +284,24 @@ jobs:
             --label "spec-drift" \
             --label "refiner"
 
-      - name: Fail the run on drift
-        if: steps.check.outputs.drift == 'true'
+      # Offline-deterministic gates fail on EVERY event (they are real CI checks of
+      # the differ + snapshot↔projection consistency): self-test soundness + --check.
+      - name: Fail on projection self-test / consistency failure (all events)
+        if: >-
+          steps.projection.outputs.selftest == 'fail' ||
+          steps.projection.outputs.drift == 'true'
         run: |
-          echo "::error::Spec drift detected — see report above + auto-opened issue."
+          echo "::error::Projection fitness function failed (self-test unsound or snapshot↔projection drift)."
+          exit 1
+
+      # Live / stateful monitoring gates fail only on the scheduled run (a PR
+      # self-test must not red on genuine upstream byte-drift it didn't cause).
+      - name: Fail on live drift or liveness trip (scheduled run)
+        if: >-
+          github.event_name == 'schedule' &&
+          (steps.check.outputs.drift == 'true' ||
+           steps.heartbeat.outputs.stale == 'true' ||
+           steps.streak.outputs.exceeded == 'true')
+        run: |
+          echo "::error::Spec drift or liveness trip detected — see report above + auto-opened issue."
           exit 1
