@@ -1,0 +1,102 @@
+{
+  "registry_version": "upstream-surfaces/v1",
+  "authored": "2026-06-09",
+  "authority": "000-docs/045-RR-LAND-single-source-of-truth-and-continuous-spec-compliance-2026-06-09.md",
+  "note": "First-class, versioned registry the spec-drift watcher consumes — per-contract authoritative upstream surfaces, verified live (all 200/307) 2026-06-09. NOT a guess. Authority precedence when surfaces conflict: official spec > Anthropic's doc-about-it (the MCP spec beats Claude's mcp page; agentskills.io beats platform docs for skills); reference pages beat CHANGELOG (the CHANGELOG detects change, the page is the spec).",
+  "authority_precedence": [
+    "official open standard / protocol spec",
+    "vendor (Anthropic) reference page about the surface",
+    "vendor CHANGELOG / release feed (change detection only, not the spec)"
+  ],
+  "monitoring_waves": {
+    "wave_0_existing": "6 surfaces already polled by spec-drift-check.sh (byte-hash)",
+    "wave_1_before_consumer_cutover": ["mcp-spec-docs", "mcp-schema-ts", "hooks", "settings", "slash-commands"],
+    "wave_2_before_phase_b": ["claude-plugins-official", "plugins-reference", "sub-agents", "mcp-releases", "claude-code-gh-releases"]
+  },
+  "contracts": {
+    "skill-frontmatter": {
+      "primary_surfaces": [
+        "https://agentskills.io/specification",
+        "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview",
+        "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices",
+        "https://code.claude.com/docs/en/skills"
+      ],
+      "machine_readable": "prose + YAML examples",
+      "monitored": "partial (agentskills.io + platform overview byte-hashed; FF#2 field-diff on agentskills.io)",
+      "vendored": "_vendor/upstream/skill-frontmatter/"
+    },
+    "plugin-manifest": {
+      "primary_surfaces": [
+        "https://code.claude.com/docs/en/plugins-reference",
+        "https://github.com/anthropics/claude-code (plugin.json)",
+        "https://github.com/anthropics/claude-plugins-official"
+      ],
+      "machine_readable": "JSON manifest (sampleable)",
+      "monitored": "no",
+      "vendored": null
+    },
+    "agent-definition": {
+      "primary_surfaces": [
+        "https://code.claude.com/docs/en/sub-agents",
+        "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices"
+      ],
+      "machine_readable": "prose",
+      "monitored": "no",
+      "vendored": null
+    },
+    "mcp-config": {
+      "primary_surfaces": [
+        "https://modelcontextprotocol.io/specification",
+        "https://github.com/modelcontextprotocol/modelcontextprotocol (docs/ + schema/draft/schema.ts + schema.json)",
+        "https://github.com/modelcontextprotocol/modelcontextprotocol/releases"
+      ],
+      "machine_readable": "schema.ts / schema.json — the ONE truly machine-readable upstream (exact field-level diffing)",
+      "monitored": "no — CRITICAL GAP (the official MCP spec is entirely unmonitored)",
+      "vendored": null,
+      "priority": "wave 1 — schema.ts is the proving ground for field-level diffing"
+    },
+    "hook-config": {
+      "primary_surfaces": [
+        "https://code.claude.com/docs/en/hooks",
+        "https://code.claude.com/docs/en/settings"
+      ],
+      "machine_readable": "prose + JSON examples",
+      "monitored": "no",
+      "vendored": null
+    },
+    "slash-commands": {
+      "primary_surfaces": ["https://code.claude.com/docs/en/slash-commands"],
+      "machine_readable": "prose",
+      "monitored": "no",
+      "vendored": null
+    },
+    "settings": {
+      "primary_surfaces": [
+        "https://code.claude.com/docs/en/settings",
+        "https://code.claude.com/docs/en/server-managed-settings"
+      ],
+      "machine_readable": "prose + JSON examples",
+      "monitored": "no",
+      "vendored": null
+    },
+    "marketplace-catalog": {
+      "primary_surfaces": [
+        "https://code.claude.com/docs/en/plugin-marketplaces",
+        "https://github.com/anthropics/claude-plugins-official"
+      ],
+      "machine_readable": "JSON manifests",
+      "monitored": "no",
+      "vendored": null
+    },
+    "version-signals": {
+      "primary_surfaces": [
+        "npm @anthropic-ai/claude-code",
+        "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
+        "https://github.com/anthropics/claude-code/releases.atom"
+      ],
+      "machine_readable": "JSON / feed",
+      "monitored": "partial (npm version + CHANGELOG byte-hashed)",
+      "vendored": null
+    }
+  }
+}

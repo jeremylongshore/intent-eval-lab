@@ -1,0 +1,17 @@
+{
+  "projection_version": "spec-projection/v1",
+  "contract": "skill-frontmatter",
+  "surface": "agentskills.io/specification",
+  "captured_from": "agentskills-spec-v1.0.md",
+  "captured_at": "2026-05-28",
+  "note": "Normative projection (Kleppmann): the differ compares THIS field-set + required/experimental flags + deprecations against a freshly-extracted projection, field by field. The byte-hash in specs/snapshots/.sha/agentskills-spec.sha is the cheap 're-extract?' tripwire only. The field set here IS the left-hand side of the coverage map: every field a downstream kernel schema relies on must appear here, or the dependency is unverified.",
+  "fields": {
+    "name": { "required": true, "experimental": false },
+    "description": { "required": true, "experimental": false },
+    "license": { "required": false, "experimental": false },
+    "compatibility": { "required": false, "experimental": false },
+    "metadata": { "required": false, "experimental": false },
+    "allowed-tools": { "required": false, "experimental": true }
+  },
+  "deprecations": []
+}
