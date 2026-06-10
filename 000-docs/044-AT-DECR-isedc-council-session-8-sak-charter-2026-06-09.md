@@ -1,5 +1,4 @@
 ---
-title: "ISEDC Session 8 — Class-1 Charter for the Spec Authority Kernel (SAK)"
 date: 2026-06-09
 acting_head_of_board: "Claude (acting, designated by Jeremy Longshore via CTO-mode delegation 2026-06-09)"
 council_size: 7
