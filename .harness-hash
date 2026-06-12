@@ -5,7 +5,7 @@ add245f35fb0dbd63d5ab475020bb367b53be4c611eb509d614c8a1f5ca8ea32  .audit-harness
 0ffea346a8c310677f2176e9f367370c8b308f82633bf62ccd00a95985e09469  .audit-harness/scripts/escape-scan.sh
 d29a2e9b94f7fd94f4f8953314323f96ca424cbaa6a985f6783b48ee2feae0f8  .audit-harness/scripts/gherkin-lint.sh
 9c588a980e89dbc9ea2bcf0992daff51ec72b926ecb1644e21838b9fc5c2883d  .audit-harness/scripts/harness-hash.sh
-fcc182a5881e5063912725ba88bd44d9ddb29aa6b10776c79f60fee4a36e067a  .github/workflows/ci.yml
+0f78e655acdaec30242ff7bc4de087bfb1d4a0f6f82ab8c3b377e755869c59fd  .github/workflows/ci.yml
 046de10ca565cca5cb42f707ed4539f0902ec6f05ad1f74a7a0cec82a8646c95  .github/workflows/doc-quality.yml
 43194d2f4ce1c37f70b4db099262149a4cd28f541eaa363f73adf05801b89935  .github/workflows/harness-hash-verify.yml
 64d1e82fe68d531d30f5f4815af7cf852c564c5c406d3db47329cacbed8e421b  .github/workflows/partner-name-guard.yml

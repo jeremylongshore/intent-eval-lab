@@ -69,6 +69,13 @@ jobs:
             echo "No JSON example files — pass."
           fi
 
+      - name: Drift-classification eval set (frozen-manifest integrity + scorer self-test)
+        shell: bash
+        run: |
+          set -e
+          python3 scripts/drift-eval-runner.py --verify-manifest
+          python3 scripts/drift-eval-runner.py --self-test
+
       - name: Partner-name leak check (specs only)
         shell: bash
         run: |
