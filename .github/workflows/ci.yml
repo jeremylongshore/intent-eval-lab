@@ -139,3 +139,18 @@ jobs:
         run: |
           python3 scripts/extract-mcp-projection.py --check
           python3 scripts/extract-mcp-projection.py --self-test
+
+      # Offline + deterministic (057-AT-SPEC): the detector-health composite
+      # dashboard leads with DETECTOR HEALTH — never a vanity green drift count
+      # that masks a dead watcher (Gregg correction, 9k5h.13). --self-test
+      # proves the verdict logic on fixtures (healthy, dead-watcher > 26h,
+      # fetch-error streak >= 3, coverage gap, failing-conditions-named-first);
+      # --check fails when the committed specs/detector-health.json or
+      # docs/detector-health.md is stale vs its sources (re-derived at the
+      # committed evaluated_at — the lineage project-coverage --check pattern).
+      # If this fails after editing the registry / baselines / liveness state,
+      # regenerate: python3 scripts/detector-health.py
+      - name: Detector-health composite self-test + freshness
+        run: |
+          python3 scripts/detector-health.py --self-test
+          python3 scripts/detector-health.py --check
