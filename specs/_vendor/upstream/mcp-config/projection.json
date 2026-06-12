@@ -1,0 +1,51 @@
+{
+  "captured_from": {
+    "claude_code_doc": "claude-code-mcp.md",
+    "machine_schema": "mcp-schema-2025-11-25.json"
+  },
+  "contract": "mcp-config",
+  "machine_schema": {
+    "defines_server_config": false,
+    "defs_count": 145,
+    "implementation": {
+      "properties": {
+        "description": "string",
+        "icons": "array",
+        "name": "string",
+        "title": "string",
+        "version": "string",
+        "websiteUrl": "string"
+      },
+      "required": [
+        "name",
+        "version"
+      ]
+    },
+    "server_config_defs": [],
+    "transport_defs": []
+  },
+  "projection_version": "spec-projection/v1",
+  "server_config": {
+    "name_is_map_key": true,
+    "standardized_format_fields": {
+      "args": "array",
+      "command": "string",
+      "env": "object"
+    },
+    "transport_aliases": {
+      "streamable-http": "http"
+    },
+    "transport_field": "type",
+    "transport_field_in_standardized_format": false,
+    "transport_types": [
+      "http",
+      "sse",
+      "stdio",
+      "ws"
+    ],
+    "transports_deprecated": [
+      "sse"
+    ]
+  },
+  "spec_version": "2025-11-25"
+}
