@@ -41,6 +41,20 @@ esac
 # Extractor failure (404, network) is reported but NOT counted as drift —
 # drift = "fetched OK and hash changed", not "couldn't fetch".
 
+# Guard for grep-based extractors: hash stdin only if non-empty. A grep that
+# matches nothing (page restructure broke the pattern) must surface as a
+# FETCH_ERROR, never as a hashable value — sha256("") would look like drift
+# (or worse, a stable "all clear" if it ever got baselined). Byte-exact for
+# non-empty input (sentinel preserves trailing newlines), so existing
+# committed baselines are unaffected.
+hash_nonempty() {
+  local content
+  content="$(cat; printf x)"
+  content="${content%x}"
+  [[ -n "${content}" ]] || return 1
+  printf '%s' "${content}" | sha256sum | awk '{print $1}'
+}
+
 fetch_cc_changelog() {
   # Raw GitHub CHANGELOG.md — the upstream source of truth. The published
   # Mintlify page at code.claude.com/docs/en/changelog is generated FROM
@@ -69,7 +83,7 @@ fetch_anthropic_engineering() {
   curl -fsSL "https://www.anthropic.com/engineering" \
     | grep -oE 'href="/engineering/[a-z0-9-]+"' \
     | head -1 \
-    | sha256sum | awk '{print $1}'
+    | hash_nonempty
 }
 
 fetch_skills_releases_atom() {
@@ -79,7 +93,7 @@ fetch_skills_releases_atom() {
       | grep -oE '<id>tag:github.com,[^<]+</id>' | head -1
     curl -fsSL "https://github.com/anthropics/skills/commits/main.atom" \
       | grep -oE '<id>tag:github.com,[^<]+</id>' | head -1
-  } | sha256sum | awk '{print $1}'
+  } | hash_nonempty
 }
 
 fetch_agentskills_spec() {
@@ -155,14 +169,14 @@ fetch_mcp_releases_atom() {
   # protocol revision shipped. Extract the latest release <id> (stable).
   curl -fsSL "https://github.com/modelcontextprotocol/modelcontextprotocol/releases.atom" \
     | grep -oE '<id>tag:github.com,[^<]+</id>' | head -1 \
-    | sha256sum | awk '{print $1}'
+    | hash_nonempty
 }
 
 fetch_cc_releases_atom() {
   # Claude Code GH releases feed — version signal complementary to npm + CHANGELOG.
   curl -fsSL "https://github.com/anthropics/claude-code/releases.atom" \
     | grep -oE '<id>tag:github.com,[^<]+</id>' | head -1 \
-    | sha256sum | awk '{print $1}'
+    | hash_nonempty
 }
 
 # Source registry: name | description | extractor
