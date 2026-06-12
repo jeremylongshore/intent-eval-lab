@@ -1,0 +1,79 @@
+{
+  "contract": "plugin-manifest",
+  "spec_version": "unversioned-2026-06-12",
+  "fetched_at": "2026-06-12T20:45:20Z",
+  "note": "Contract-keyed deep capture (058-AT-SPEC). One-time build-time fetch; CI never refetches (offline determinism) — ongoing freshness is the watcher's job via the surface registry. Tier-2 conventions per 052-AT-SPEC: replace-in-place, lineage recorded (snapshot-updated in specs/lineage/log.jsonl), the extractor reads and never writes here. DEVIATION from the mcp-config capture: plugin-manifest has NO machine-readable upstream schema and NO upstream spec versioning — the code.claude.com plugins-reference page is the spec (prose + JSON examples + field tables) and the sample manifests from anthropics/claude-plugins-official are real-world corroboration (authority precedence per 050-AT-SPEC: the reference page is the spec; samples corroborate). spec_version is therefore the capture date, not an upstream-declared revision.",
+  "files": [
+    {
+      "file": "claude-code-plugins-reference.md",
+      "role": "reference-doc",
+      "surface": "plugins-reference",
+      "authority_tier": "reference",
+      "source_url": "https://code.claude.com/docs/en/plugins-reference.md",
+      "sha256": "bbb4618ec8b1f1a29d20fae1792e5aab1e0f1f04efc528d86cfde458e9e727e7",
+      "bytes": 78644,
+      "version_basis": "The page carries no version identifier and upstream publishes no machine-readable schema for plugin.json; this .md form is the same URL/form the registry's fetch_plugins_reference extractor monitors (capture.urls + ext .md in specs/upstream-surface-registry.v1.json)."
+    },
+    {
+      "file": "sample-cwc-makers.plugin.json",
+      "role": "sample-manifest",
+      "surface": null,
+      "authority_tier": "sample-corroboration",
+      "source_url": "https://raw.githubusercontent.com/anthropics/claude-plugins-official/eb1510e138223ac656d9032f6caa625f8b52d207/plugins/cwc-makers/.claude-plugin/plugin.json",
+      "upstream_commit": "eb1510e138223ac656d9032f6caa625f8b52d207",
+      "source_path": "plugins/cwc-makers/.claude-plugin/plugin.json",
+      "sha256": "daea51ab5138181571bf207637ff431b4abc439110a0466ac016381f112a33b7",
+      "bytes": 649,
+      "selection_basis": "Fullest metadata manifest in the official repo: name + version + description + author{name,email} + homepage + repository + license + keywords."
+    },
+    {
+      "file": "sample-telegram.plugin.json",
+      "role": "sample-manifest",
+      "surface": null,
+      "authority_tier": "sample-corroboration",
+      "source_url": "https://raw.githubusercontent.com/anthropics/claude-plugins-official/eb1510e138223ac656d9032f6caa625f8b52d207/external_plugins/telegram/.claude-plugin/plugin.json",
+      "upstream_commit": "eb1510e138223ac656d9032f6caa625f8b52d207",
+      "source_path": "external_plugins/telegram/.claude-plugin/plugin.json",
+      "sha256": "034ac185f5790fab4127ba5b8c3ece4b9df1bf3b3f0dd1c98062dc3c18bd3b2a",
+      "bytes": 294,
+      "selection_basis": "No author at all (proves author is optional in real catalog entries); version + keywords present."
+    },
+    {
+      "file": "sample-playwright.plugin.json",
+      "role": "sample-manifest",
+      "surface": null,
+      "authority_tier": "sample-corroboration",
+      "source_url": "https://raw.githubusercontent.com/anthropics/claude-plugins-official/eb1510e138223ac656d9032f6caa625f8b52d207/external_plugins/playwright/.claude-plugin/plugin.json",
+      "upstream_commit": "eb1510e138223ac656d9032f6caa625f8b52d207",
+      "source_path": "external_plugins/playwright/.claude-plugin/plugin.json",
+      "sha256": "f2d7c0f611b93287ebb07454255d0cccf3a343d7095b7f8f763ff21d1995c096",
+      "bytes": 295,
+      "selection_basis": "author object with name only (no email/url); no version — exercises the minimal author shape."
+    },
+    {
+      "file": "sample-security-guidance.plugin.json",
+      "role": "sample-manifest",
+      "surface": null,
+      "authority_tier": "sample-corroboration",
+      "source_url": "https://raw.githubusercontent.com/anthropics/claude-plugins-official/eb1510e138223ac656d9032f6caa625f8b52d207/plugins/security-guidance/.claude-plugin/plugin.json",
+      "upstream_commit": "eb1510e138223ac656d9032f6caa625f8b52d207",
+      "source_path": "plugins/security-guidance/.claude-plugin/plugin.json",
+      "sha256": "db666cced89437885ef824ca2bd804837d5477dce3c497d567cc6d0bcef89bc2",
+      "bytes": 499,
+      "selection_basis": "homepage without repository; author{name,email} with a personal (non-org) author."
+    },
+    {
+      "file": "sample-greptile.plugin.json",
+      "role": "sample-manifest",
+      "surface": null,
+      "authority_tier": "sample-corroboration",
+      "source_url": "https://raw.githubusercontent.com/anthropics/claude-plugins-official/eb1510e138223ac656d9032f6caa625f8b52d207/external_plugins/greptile/.claude-plugin/plugin.json",
+      "upstream_commit": "eb1510e138223ac656d9032f6caa625f8b52d207",
+      "source_path": "external_plugins/greptile/.claude-plugin/plugin.json",
+      "sha256": "f4badb91b1570e8acca0f52c1a8ef75845c08eaefca300fbc68641269e09d117",
+      "bytes": 357,
+      "selection_basis": "author{name,url} (covers the url sub-field) + homepage + keywords, no version — completes author sub-field coverage across the sample set."
+    }
+  ],
+  "samples_note": "github.com/anthropics/claude-plugins-official is listed under unmonitored_candidates in specs/upstream-surface-registry.v1.json (not a registered surface); these vendor-meta entries are the samples' provenance records until a sampleable surface is registered per 050-AT-SPEC change discipline. All 5 samples were commit-pinned to the repo HEAD at fetch time. Ground-truth negative observed across the full catalog at that commit: NO official manifest uses any component-path field (skills/commands/agents/hooks/mcpServers/...) — components are auto-discovered from default locations."
+}
