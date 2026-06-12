@@ -1,0 +1,30 @@
+{
+  "contract": "mcp-config",
+  "spec_version": "2025-11-25",
+  "fetched_at": "2026-06-12T19:55:31Z",
+  "note": "Contract-keyed deep capture (056-AT-SPEC). One-time build-time fetch; CI never refetches (offline determinism) — ongoing freshness is the watcher's job via the surface registry. Tier-2 conventions per 052-AT-SPEC: replace-in-place, lineage recorded (snapshot-updated in specs/lineage/log.jsonl), the differ/extractor reads and never writes here.",
+  "files": [
+    {
+      "file": "mcp-schema-2025-11-25.json",
+      "role": "machine-schema",
+      "surface": "mcp-schema-ts",
+      "authority_tier": "official-spec-machine-readable",
+      "source_url": "https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/1304c8fe5f079358a0ff22b6afdb675dc96d75d1/schema/2025-11-25/schema.json",
+      "source_url_canonical": "https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/schema/2025-11-25/schema.json",
+      "upstream_commit": "1304c8fe5f079358a0ff22b6afdb675dc96d75d1",
+      "sha256": "7b2d96fd95efd2216aa953606b83f5a740ddeaa5ebd3a5d27b45a8296545a118",
+      "bytes": 174326,
+      "version_basis": "modelcontextprotocol.io/specification/versioning declares 2025-11-25 the CURRENT protocol revision (checked at fetch time); schema/ in the modelcontextprotocol repo lists 2024-11-05, 2025-03-26, 2025-06-18, 2025-11-25, draft"
+    },
+    {
+      "file": "claude-code-mcp.md",
+      "role": "claude-code-doc",
+      "surface": null,
+      "authority_tier": "anthropic-doc",
+      "source_url": "https://code.claude.com/docs/en/mcp.md",
+      "sha256": "9006b0bb74722d71c096aa2d196dbee0f3759d517d0f079d69d90159dcc13355",
+      "bytes": 51251,
+      "surface_note": "Not yet a registered surface in specs/upstream-surface-registry.v1.json (the registry's mcp-config surfaces are mcp-schema-ts / mcp-spec-docs / mcp-releases). Registering this page (registry row + spec-drift-check.sh SOURCES + extractor, per 050-AT-SPEC change discipline) is a tracked follow-up; until then this vendor-meta entry is its provenance record."
+    }
+  ]
+}
