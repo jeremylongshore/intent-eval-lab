@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
-# Polls 11 spec sources, compares each against a committed snapshot hash, and
+# Polls 16 spec sources, compares each against a committed snapshot hash, and
 # reports drift. Used by .github/workflows/spec-drift-watch.yml (daily cron)
 # and locally for ad-hoc checks or seeding new baselines via --init.
 #
 # Surface coverage (9k5h): the 6 original surfaces (Claude Code changelog + npm,
-# the platform SKILL.md page, the engineering blog, anthropics/skills, agentskills.io)
-# plus the Wave-1 expansion (9k5h.7): the MCP protocol spec + machine-readable
-# schema.ts, and the Claude Code hooks / settings / slash-commands references.
-# Wave 2 (9k5h.8) adds plugins-reference, sub-agents, marketplace, MCP releases.
+# the platform SKILL.md page, the engineering blog, anthropics/skills, agentskills.io),
+# the Wave-1 expansion (9k5h.7): the MCP protocol spec + machine-readable schema.ts +
+# the Claude Code hooks / settings / slash-commands references, and the Wave-2
+# expansion (9k5h.8): the plugins-reference / sub-agents / plugin-marketplaces doc
+# surfaces + the MCP and Claude Code GH release feeds (16 surfaces total).
 #
 # Sources defined here in one place (DRY); the workflow only handles CI side
 # effects (open issue, fire ntfy).
@@ -125,6 +126,45 @@ fetch_claude_slash_commands() {
     | sha256sum | awk '{print $1}'
 }
 
+# ── Wave 2 expansion (9k5h.8): the plugin/agent/marketplace doc surfaces + the
+# two upstream release feeds (a NEW release is the earliest material-change signal,
+# ahead of any doc-page edit). Doc pages use the .md shim; release feeds use the
+# first-<id> atom-extraction pattern (same as fetch_skills_releases_atom). All
+# verified deterministic across consecutive fetches.
+
+fetch_plugins_reference() {
+  # Claude Code plugin.json manifest reference — .md shim.
+  curl -fsSL "https://code.claude.com/docs/en/plugins-reference.md" \
+    | sha256sum | awk '{print $1}'
+}
+
+fetch_sub_agents() {
+  # Claude Code sub-agents (agent-definition) reference — .md shim.
+  curl -fsSL "https://code.claude.com/docs/en/sub-agents.md" \
+    | sha256sum | awk '{print $1}'
+}
+
+fetch_plugin_marketplaces() {
+  # Claude Code plugin-marketplaces (marketplace-catalog) reference — .md shim.
+  curl -fsSL "https://code.claude.com/docs/en/plugin-marketplaces.md" \
+    | sha256sum | awk '{print $1}'
+}
+
+fetch_mcp_releases_atom() {
+  # MCP spec repo releases feed — a tagged release is the earliest signal a new
+  # protocol revision shipped. Extract the latest release <id> (stable).
+  curl -fsSL "https://github.com/modelcontextprotocol/modelcontextprotocol/releases.atom" \
+    | grep -oE '<id>tag:github.com,[^<]+</id>' | head -1 \
+    | sha256sum | awk '{print $1}'
+}
+
+fetch_cc_releases_atom() {
+  # Claude Code GH releases feed — version signal complementary to npm + CHANGELOG.
+  curl -fsSL "https://github.com/anthropics/claude-code/releases.atom" \
+    | grep -oE '<id>tag:github.com,[^<]+</id>' | head -1 \
+    | sha256sum | awk '{print $1}'
+}
+
 # Source registry: name | description | extractor
 SOURCES=(
   "claude-code-changelog|Claude Code published changelog (code.claude.com/docs/en/changelog.md)|fetch_cc_changelog"
@@ -139,6 +179,12 @@ SOURCES=(
   "claude-hooks|Claude Code hooks reference|fetch_claude_hooks"
   "claude-settings|Claude Code settings reference (hook if-syntax)|fetch_claude_settings"
   "claude-slash-commands|Claude Code slash-commands reference|fetch_claude_slash_commands"
+  # Wave 2 (9k5h.8) — plugin/agent/marketplace doc surfaces + release feeds.
+  "plugins-reference|Claude Code plugin.json manifest reference|fetch_plugins_reference"
+  "sub-agents|Claude Code sub-agents (agent-definition) reference|fetch_sub_agents"
+  "plugin-marketplaces|Claude Code plugin-marketplaces (marketplace-catalog) reference|fetch_plugin_marketplaces"
+  "mcp-releases|MCP spec repo releases feed|fetch_mcp_releases_atom"
+  "claude-code-releases|Claude Code GH releases feed|fetch_cc_releases_atom"
 )
 
 declare -a DRIFT_LIST=()
