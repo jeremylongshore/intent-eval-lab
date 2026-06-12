@@ -1,0 +1,13 @@
+{
+  "id": "syn-0012",
+  "surface_id": "claude-code-changelog",
+  "source": "synthetic",
+  "label": "immaterial",
+  "expected_contract_owner": "none",
+  "rationale": "version-signal only: a new patch release recorded with no authoring-contract surface change; triggers review, not a kernel edit",
+  "provenance": {
+    "base_path": "research/claude-docs-spec-tree-2026-05-27.md",
+    "perturbation": "recorded a new patch release (version string only)"
+  },
+  "synthetic": true
+}

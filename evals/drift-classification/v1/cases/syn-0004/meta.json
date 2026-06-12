@@ -1,0 +1,13 @@
+{
+  "id": "syn-0004",
+  "surface_id": "agentskills-spec",
+  "source": "synthetic",
+  "label": "material",
+  "expected_contract_owner": "skill-frontmatter",
+  "rationale": "constraint value changed: `name` length limit 1-64 -> 1-128 chars; kernel base schema maxLength changes — consumer-visible",
+  "provenance": {
+    "base_path": "_vendor/upstream/skill-frontmatter/agentskills-spec-v1.0.md",
+    "perturbation": "changed `name` length constraint 1-64 -> 1-128 chars"
+  },
+  "synthetic": true
+}

@@ -1,0 +1,13 @@
+{
+  "id": "syn-0001",
+  "surface_id": "agentskills-spec",
+  "source": "synthetic",
+  "label": "material",
+  "expected_contract_owner": "skill-frontmatter",
+  "rationale": "a new optional field `icon` appears in the open-standard frontmatter table (6 -> 7 fields); kernel base schema must add the field",
+  "provenance": {
+    "base_path": "_vendor/upstream/skill-frontmatter/agentskills-spec-v1.0.md",
+    "perturbation": "added optional field `icon` to the frontmatter table"
+  },
+  "synthetic": true
+}

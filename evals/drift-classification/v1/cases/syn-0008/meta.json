@@ -1,0 +1,13 @@
+{
+  "id": "syn-0008",
+  "surface_id": "agentskills-spec",
+  "source": "synthetic",
+  "label": "immaterial",
+  "expected_contract_owner": "none",
+  "rationale": "anchor renumbering only: section cross-references shift (2.5 -> 2.6, 14.10 -> 14.11, 13 -> 14); no field/flag/constraint change",
+  "provenance": {
+    "base_path": "_vendor/upstream/skill-frontmatter/agentskills-spec-v1.0.md",
+    "perturbation": "renumbered section anchors in cross-references"
+  },
+  "synthetic": true
+}

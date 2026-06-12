@@ -1,0 +1,13 @@
+{
+  "id": "syn-0007",
+  "surface_id": "agentskills-spec",
+  "source": "synthetic",
+  "label": "immaterial",
+  "expected_contract_owner": "none",
+  "rationale": "whitespace/formatting-only: frontmatter table re-flowed from padded to compact pipes (cell padding + separator dash count); rendered content identical — no normative change",
+  "provenance": {
+    "base_path": "_vendor/upstream/skill-frontmatter/agentskills-spec-v1.0.md",
+    "perturbation": "re-flowed the frontmatter table padding (no token change)"
+  },
+  "synthetic": true
+}

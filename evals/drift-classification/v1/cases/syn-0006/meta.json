@@ -1,0 +1,13 @@
+{
+  "id": "syn-0006",
+  "surface_id": "agentskills-spec",
+  "source": "synthetic",
+  "label": "immaterial",
+  "expected_contract_owner": "none",
+  "rationale": "doc-prose-only edit: one explanatory sentence reworded, identical normative meaning; no field/flag/constraint change",
+  "provenance": {
+    "base_path": "_vendor/upstream/skill-frontmatter/agentskills-spec-v1.0.md",
+    "perturbation": "reworded one explanatory sentence (same meaning)"
+  },
+  "synthetic": true
+}
