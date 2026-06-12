@@ -10,7 +10,7 @@ Failing condition(s) first:
 - ok `no-fetch-error-streaks` — all 0 tracked surfaces under the streak threshold (3)
 - ok `coverage-at-target` — 16/16 registered surfaces monitored (100.0% of target 100%)
 
-Lineage: 11 surfaces adopted, 7 divergences outstanding, 0 convergence triggers fired. Evaluated at 2026-06-12T21:24:23Z.
+Lineage: 11 surfaces adopted, 7 divergences outstanding, 0 convergence triggers fired. Evaluated at 2026-06-12T21:48:41Z.
 
 ## Drift table (per registered surface)
 
