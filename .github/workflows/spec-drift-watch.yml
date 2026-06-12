@@ -404,3 +404,33 @@ jobs:
         run: |
           echo "::error::Spec drift or liveness trip detected — see report above + auto-opened issue."
           exit 1
+
+      # Detector-health composite dashboard (057-AT-SPEC, Gregg correction):
+      # re-derive specs/detector-health.json + docs/detector-health.md from the
+      # state this run just updated (record-run above) and commit them back
+      # append-only TOGETHER WITH the liveness state they summarize — ci.yml's
+      # freshness gate compares committed output against committed sources, so
+      # the two must advance in the same commit (committing .state.json is also
+      # the belt-and-suspenders persistence flagged at the cache-restore step).
+      # if: always() so the dashboard flips to DEGRADED-and-committed on
+      # exactly the runs where a gate above failed — health must lead,
+      # especially on red days.
+      - name: Regenerate + commit detector-health dashboard (append-only)
+        if: >-
+          always() &&
+          (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/detector-health.py
+          if [[ -z "$(git status --porcelain specs/detector-health.json docs/detector-health.md specs/snapshots/.state.json 2>/dev/null)" ]]; then
+            echo "Detector-health dashboard unchanged."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add specs/detector-health.json docs/detector-health.md specs/snapshots/.state.json
+          git commit -m "chore(detector-health): refresh composite dashboard $(date -u +%Y-%m-%dT%H:%MZ) [skip ci]"
+          if ! git push origin "HEAD:${GITHUB_REF_NAME}"; then
+            echo "::warning::detector-health commit-back push failed (branch protection?) — dashboard preserved in the run workspace only."
+          fi
