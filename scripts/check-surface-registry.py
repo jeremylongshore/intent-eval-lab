@@ -8,6 +8,10 @@ silently diverge — exactly the "stale registry" failure the SSoT plan guards a
 This gate asserts they are identical (by surface name) and that every registered
 surface names an extractor function that actually exists in the script.
 
+It also validates each surface's `capture` config — the per-surface fetch kind,
+expected extractor pattern (shape hint) and min-bytes floor that drive the
+raw-fetch capture stage (scripts/fetch-capture.py; 000-docs/052-AT-SPEC-...md).
+
 Stdlib only, offline. Exit 0 = consistent; exit 1 = drift; exit 2 = usage/parse.
 
 Usage: check-surface-registry.py
@@ -25,6 +29,45 @@ REGISTRY = os.path.join(REPO_ROOT, "specs", "upstream-surface-registry.v1.json")
 SCRIPT = os.path.join(REPO_ROOT, "scripts", "spec-drift-check.sh")
 
 _SOURCE_ROW = re.compile(r'^\s*"([a-z0-9-]+)\|[^|]*\|([a-z_]+)"\s*$')
+
+_CAPTURE_KINDS = {"http", "command"}
+
+
+def _check_capture(name: str, surface: dict, problems: list[str]) -> None:
+    """Validate one surface's capture config (fetch-capture.py contract)."""
+    cap = surface.get("capture")
+    if not isinstance(cap, dict):
+        problems.append(f"{name}: missing capture config (kind/urls-or-argv/expect_regex/min_bytes/ext)")
+        return
+    kind = cap.get("kind")
+    if kind not in _CAPTURE_KINDS:
+        problems.append(f"{name}: capture.kind '{kind}' not one of {sorted(_CAPTURE_KINDS)}")
+    if kind == "http":
+        urls = cap.get("urls")
+        if (
+            not isinstance(urls, list)
+            or not urls
+            or not all(isinstance(u, str) and u.startswith("https://") for u in urls)
+        ):
+            problems.append(f"{name}: capture.urls must be a non-empty list of https:// URLs")
+    if kind == "command":
+        argv = cap.get("argv")
+        if not isinstance(argv, list) or not argv or not all(isinstance(a, str) for a in argv):
+            problems.append(f"{name}: capture.argv must be a non-empty list of strings")
+    min_bytes = cap.get("min_bytes")
+    if not isinstance(min_bytes, int) or isinstance(min_bytes, bool) or min_bytes < 1:
+        problems.append(f"{name}: capture.min_bytes must be a positive integer (got {min_bytes!r})")
+    expect_regex = cap.get("expect_regex")
+    if not isinstance(expect_regex, str) or not expect_regex:
+        problems.append(f"{name}: capture.expect_regex must be a non-empty string")
+    else:
+        try:
+            re.compile(expect_regex)
+        except re.error as exc:
+            problems.append(f"{name}: capture.expect_regex does not compile: {exc}")
+    ext = cap.get("ext")
+    if not isinstance(ext, str) or not ext.startswith("."):
+        problems.append(f"{name}: capture.ext must be a string starting with '.' (got {ext!r})")
 
 
 def main() -> int:
@@ -64,6 +107,11 @@ def main() -> int:
         if src_fn not in defined_fns:
             problems.append(f"{name}: extractor function '{src_fn}' not defined in the script")
 
+    # Every monitored surface must carry a valid capture config (fetch-capture.py).
+    for name in sorted(reg_surfaces):
+        if reg_surfaces[name].get("monitored"):
+            _check_capture(name, reg_surfaces[name], problems)
+
     if problems:
         print(f"surface-registry consistency: {len(problems)} PROBLEM(S):")
         for p in problems:
@@ -71,7 +119,10 @@ def main() -> int:
         print("\nFix: edit BOTH spec-drift-check.sh SOURCES and the registry in the same change.")
         return 1
 
-    print(f"surface-registry consistency: OK — {len(reg_surfaces)} surfaces, registry == watcher SOURCES, all extractors defined.")
+    print(
+        f"surface-registry consistency: OK — {len(reg_surfaces)} surfaces, registry == watcher "
+        "SOURCES, all extractors defined, all capture configs valid."
+    )
     return 0
 
 
