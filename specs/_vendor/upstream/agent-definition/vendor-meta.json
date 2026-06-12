@@ -1,0 +1,89 @@
+{
+  "contract": "agent-definition",
+  "spec_version": "unversioned-2026-06-12",
+  "fetched_at": "2026-06-12T21:12:55Z",
+  "note": "Contract-keyed deep capture (059-AT-SPEC). One-time build-time fetch; CI never refetches (offline determinism) — ongoing freshness is the watcher's job via the surface registry. Tier-2 conventions per 052-AT-SPEC: replace-in-place, lineage recorded (snapshot-updated in specs/lineage/log.jsonl), the extractor reads and never writes here. Like plugin-manifest (058-AT-SPEC) and unlike mcp-config: agent-definition has NO machine-readable upstream schema and NO upstream spec versioning — the code.claude.com sub-agents reference page is the spec (prose + the Supported-frontmatter-fields table + YAML examples) and sample agents/*.md files from anthropics/claude-plugins-official are real-world corroboration (authority precedence per 050-AT-SPEC: the reference page is the spec; samples corroborate). ADDITIONAL DEVIATION from plugin-manifest: the frontmatter field table carries Field|Required|Description columns only — no Type column and no Example column — so per-field types are NOT documented tabularly; value-shape facts come from the page's YAML examples instead. spec_version is therefore the capture date, not an upstream-declared revision.",
+  "files": [
+    {
+      "file": "claude-code-sub-agents.md",
+      "role": "reference-doc",
+      "surface": "sub-agents",
+      "authority_tier": "reference",
+      "source_url": "https://code.claude.com/docs/en/sub-agents.md",
+      "sha256": "824162201ae408cdb5b6746d6fd433eeae9165a3425e0cd58ee19d840a01b846",
+      "bytes": 66098,
+      "version_basis": "The page carries no version identifier and upstream publishes no machine-readable schema for agents/*.md frontmatter; this .md form is the same URL/form the registry's fetch_sub_agents extractor monitors (capture.urls + ext .md in specs/upstream-surface-registry.v1.json)."
+    },
+    {
+      "file": "platform-skill-authoring-best-practices.md",
+      "role": "supporting-doc",
+      "surface": null,
+      "authority_tier": "anthropic-doc",
+      "source_url": "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices.md",
+      "sha256": "d4afcb251d1a0323d0a7a7eb88184f33914f221e58042c365175950d7356b50a",
+      "bytes": 41393,
+      "version_basis": "Supporting authority only (the kernel upstream-base/agent-definition.v1.json $comment cites it alongside the sub-agents page). It is authoring guidance — it defines NO agent-frontmatter fields, so the extractor does not consume it; vendored for provenance completeness of the contract's cited authority set."
+    },
+    {
+      "file": "sample-agent-sdk-verifier-py.agent.md",
+      "role": "sample-agent",
+      "surface": null,
+      "authority_tier": "sample-corroboration",
+      "source_url": "https://raw.githubusercontent.com/anthropics/claude-plugins-official/eb1510e138223ac656d9032f6caa625f8b52d207/plugins/agent-sdk-dev/agents/agent-sdk-verifier-py.md",
+      "upstream_commit": "eb1510e138223ac656d9032f6caa625f8b52d207",
+      "source_path": "plugins/agent-sdk-dev/agents/agent-sdk-verifier-py.md",
+      "sha256": "a72c50412f4f9940932cac0f3ca61d6ced7354b8ac8892e3f1507bcd2957006e",
+      "bytes": 5206,
+      "selection_basis": "Minimal shape: name + description + model only — no tools (exercises the inherits-all-if-omitted default) and no color."
+    },
+    {
+      "file": "sample-architecture-critic.agent.md",
+      "role": "sample-agent",
+      "surface": null,
+      "authority_tier": "sample-corroboration",
+      "source_url": "https://raw.githubusercontent.com/anthropics/claude-plugins-official/eb1510e138223ac656d9032f6caa625f8b52d207/plugins/code-modernization/agents/architecture-critic.md",
+      "upstream_commit": "eb1510e138223ac656d9032f6caa625f8b52d207",
+      "source_path": "plugins/code-modernization/agents/architecture-critic.md",
+      "sha256": "c329dd7d1f5101302c649d7295858ee20b2a2c3c83482735a768cc1b1bdc68bf",
+      "bytes": 1904,
+      "selection_basis": "tools as the documented comma-separated plain-scalar string form (Read, Glob, Grep, Bash); no model (exercises the inherit default) and no color."
+    },
+    {
+      "file": "sample-code-architect.agent.md",
+      "role": "sample-agent",
+      "surface": null,
+      "authority_tier": "sample-corroboration",
+      "source_url": "https://raw.githubusercontent.com/anthropics/claude-plugins-official/eb1510e138223ac656d9032f6caa625f8b52d207/plugins/feature-dev/agents/code-architect.md",
+      "upstream_commit": "eb1510e138223ac656d9032f6caa625f8b52d207",
+      "source_path": "plugins/feature-dev/agents/code-architect.md",
+      "sha256": "c50fb08d59a4bbd19660860626a049e44cf1a2b0c1cf782e6c7a99ba7e71b0c3",
+      "bytes": 2259,
+      "selection_basis": "Fullest common shape: name + description + 10-tool comma-separated string + model: sonnet + color: green (an in-enum color)."
+    },
+    {
+      "file": "sample-conversation-analyzer.agent.md",
+      "role": "sample-agent",
+      "surface": null,
+      "authority_tier": "sample-corroboration",
+      "source_url": "https://raw.githubusercontent.com/anthropics/claude-plugins-official/eb1510e138223ac656d9032f6caa625f8b52d207/plugins/hookify/agents/conversation-analyzer.md",
+      "upstream_commit": "eb1510e138223ac656d9032f6caa625f8b52d207",
+      "source_path": "plugins/hookify/agents/conversation-analyzer.md",
+      "sha256": "96267342d2d0788763b392b26a322ca44d1b62ee4d65be31c0aaa8031ad85db7",
+      "bytes": 5625,
+      "selection_basis": "tools as a YAML flow array ([\"Read\", \"Grep\"]) — the second wire form observed in official samples alongside the documented comma-separated string — plus model: inherit."
+    },
+    {
+      "file": "sample-agent-creator.agent.md",
+      "role": "sample-agent",
+      "surface": null,
+      "authority_tier": "sample-corroboration",
+      "source_url": "https://raw.githubusercontent.com/anthropics/claude-plugins-official/eb1510e138223ac656d9032f6caa625f8b52d207/plugins/plugin-dev/agents/agent-creator.md",
+      "upstream_commit": "eb1510e138223ac656d9032f6caa625f8b52d207",
+      "source_path": "plugins/plugin-dev/agents/agent-creator.md",
+      "sha256": "99ca808b7577e5c4b816cd7e621a1dea4b0ba9104ba24629cd713170cfe9dbd3",
+      "bytes": 7488,
+      "selection_basis": "Block-scalar (|) multi-line description + tools as a YAML flow array + color: magenta — a color value OUTSIDE the page's documented 8-value enum, the capture's key real-world tolerance finding."
+    }
+  ],
+  "samples_note": "github.com/anthropics/claude-plugins-official is listed under unmonitored_candidates in specs/upstream-surface-registry.v1.json (not a registered surface); these vendor-meta entries are the samples' provenance records until a sampleable surface is registered per 050-AT-SPEC change discipline — the same arrangement the plugin-manifest capture (058-AT-SPEC) uses for its sample manifests. All 5 samples were commit-pinned to the repo HEAD at fetch time (the same commit the plugin-manifest samples pin). Ground-truth observations across the 5: only documented fields are used (name, description, tools, model, color); tools appears in BOTH wire forms (the documented comma-separated string AND a YAML flow array); one official sample (agent-creator) uses color: magenta, outside the documented enum."
+}
