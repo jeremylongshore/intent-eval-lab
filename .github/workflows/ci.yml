@@ -197,3 +197,30 @@ jobs:
         run: |
           python3 scripts/extract-agent-definition-projection.py --check
           python3 scripts/extract-agent-definition-projection.py --self-test
+
+      # Offline + deterministic (060-AT-SPEC): the hook-config deep capture.
+      # Like plugin-manifest and agent-definition there is NO machine-readable
+      # upstream — the hooks reference page is the spec (the 30-event
+      # lifecycle table, the three-levels-of-nesting config statement, the
+      # matcher-pattern tables, the five handler-field tables) and 4
+      # commit-pinned hooks/hooks.json files from the official plugins repo
+      # corroborate it (the settings page is vendored as supporting authority
+      # because the hooks page references it for hooks-block placement).
+      # --check re-extracts the normative projection from the vendored
+      # snapshots (specs/_vendor/upstream/hook-config/) and fails if the
+      # committed projection.json is stale (it is DERIVED, never hand-edited);
+      # the self-test proves every extraction anchor on fixtures (fence-aware
+      # section slicing, the lowercase yes/no Required column, the
+      # (default)-tolerant shell enum clause, multi-event no-matcher-support
+      # rows, per-type timeout defaults, the
+      # documented-vs-observed-in-samples provenance — rewakeMessage +
+      # rewakeSummary are sample-only) and cross-checks the projection
+      # against the kernel's upstream-base hook-config expectations —
+      # agreements AND divergences are printed, and divergences are findings
+      # to report, never kernel edits (tier-3 promotion is human,
+      # 052-AT-SPEC). CI never refetches: the capture is a one-time
+      # build-time fetch; ongoing freshness is the watcher's job.
+      - name: Hook-config deep-capture projection freshness + self-test
+        run: |
+          python3 scripts/extract-hook-config-projection.py --check
+          python3 scripts/extract-hook-config-projection.py --self-test
