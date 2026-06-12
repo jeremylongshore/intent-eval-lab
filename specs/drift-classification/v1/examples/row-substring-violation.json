@@ -1,0 +1,11 @@
+{
+  "row_version": "drift-classification/v1",
+  "surface_id": "agentskills-spec",
+  "diff_ref": "spec-projection-diff:ADDED_FIELD:fabricated-field",
+  "label": "material",
+  "contract_owner": "skill-frontmatter",
+  "claimed_changed_fields": ["allowed-tools", "fabricated-field-not-in-snapshot"],
+  "confidence": 0.97,
+  "model_pin": "example-model-pin-2026-06-01",
+  "classified_at": "2026-06-12T00:00:00Z"
+}

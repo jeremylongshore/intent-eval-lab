@@ -1,0 +1,10 @@
+{
+  "row_version": "drift-classification/v1",
+  "surface_id": "agentskills-spec",
+  "diff_ref": "spec-projection-diff:REQUIRED_CHANGED:allowed-tools",
+  "label": "maybe-material",
+  "contract_owner": "skill-frontmatter",
+  "claimed_changed_fields": ["allowed-tools"],
+  "confidence": 1.5,
+  "classified_at": "2026-06-12T00:00:00Z"
+}

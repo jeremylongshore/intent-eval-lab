@@ -1,0 +1,42 @@
+{
+  "policy_version": "drift-classification-autonomy/v1",
+  "description": "Machine-readable autonomy gradient for the (future) LLM drift classifier. The classifier earns exactly ONE hop — classifying an already-detected diff's materiality + contract owner — and every action it could drive is gated here. Enforced by scripts/classifier-walls.py (the only reader); current earned tier lives in earned-tier.json (default advisory_comment, promoted ONLY by humans). This file is hash-pinned via .harness-hash-extra-patterns so a silent edit (e.g. flipping a `never` action) fails CI. Normative spec: 000-docs/055-AT-SPEC-llm-classifier-deterministic-walls-2026-06-12.md.",
+  "tier_order": ["advisory_comment", "low_blast_pr"],
+  "actions": {
+    "advisory_comment": {
+      "permitted": "always",
+      "description": "Post an advisory comment carrying the schema-validated classification row on the existing drift/reconciliation issue. Always allowed — lowest blast radius: a wrong comment costs a human read, nothing else."
+    },
+    "low_blast_pr": {
+      "permitted": "earned",
+      "tier": "low_blast_pr",
+      "scope": [
+        "vendored-snapshot refresh (specs/_vendor tier-2, FETCH_OK-gated)",
+        "baseline .sha refresh (specs/snapshots/.sha)",
+        "coverage-map refresh"
+      ],
+      "description": "Open a low-blast-radius mechanical-refresh PR — snapshot/sha/coverage refreshes ONLY, never schema or policy content. Requires the earned tier in earned-tier.json, which itself requires the eval-set recall floor cleared.",
+      "earn_requires": {
+        "eval_set": "evals/drift-classification/v1",
+        "runner_interface": "python3 scripts/drift-eval-runner.py --score <predictions.jsonl>",
+        "recall_floor_on_material": 1.0,
+        "note": "drift-eval-runner.py ships separately (manifest-integrity + recall-floor scorer; exits nonzero below recall floor 1.0 on material cases). Every invocation by the walls script is guarded by a file-existence check, so this policy is enforceable both before and after that runner lands."
+      }
+    },
+    "kernel_schema_edit": {
+      "permitted": "never",
+      "fallback": "issue-with-proposed-diff",
+      "description": "Editing kernel schemas (@intentsolutions/core schemas/authoring/v1) is NEVER autonomous, at any tier. The classifier may at most open an issue carrying a proposed diff; a HUMAN lands the change through intent-eval-core's own review + release gates (tier-3 promotion is human per 052-AT-SPEC)."
+    },
+    "close_drift_signal": {
+      "permitted": "never",
+      "description": "Closing a drift signal (reconciliation issue, drift alert) is NEVER autonomous, at any tier. Only a human declares a drift reconciled — otherwise the classifier could silence the very signal that audits it."
+    }
+  },
+  "promotion": {
+    "by": "human-only",
+    "state_file": "specs/drift-classification/v1/earned-tier.json",
+    "default_tier": "advisory_comment",
+    "protocol": "A human runs the eval set (drift-eval-runner --verify-manifest, then --score over the candidate classifier's predictions), confirms the recall floor on material cases is cleared, then commits the updated earned-tier.json (tier + promoted_by + promoted_at + evidence) in a reviewed PR, re-running `scripts/audit-harness init` in the same commit because the tier state is hash-pinned. No script may write earned-tier.json; demotion is the same protocol in reverse and needs no evidence."
+  }
+}
