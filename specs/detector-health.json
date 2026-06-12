@@ -201,13 +201,13 @@
       "surface": "sub-agents"
     }
   ],
-  "evaluated_at": "2026-06-12T21:48:41Z",
+  "evaluated_at": "2026-06-12T22:12:08Z",
   "failing_conditions": [
     "watcher-run-recent"
   ],
   "health_version": "detector-health/v1",
   "inputs": {
-    "specs/lineage/coverage-map.json": "b33e0eaa23b081991a1ed7b161077d56000bc540de439edab7e6e78a84056ba1",
+    "specs/lineage/coverage-map.json": "b0f87ac0ec360c1a1e4c7e05ea997aba611c75c1c0e7c8c38d90964ffb7965f7",
     "specs/snapshots/.sha/agentskills-spec.sha": "abd9c47b9f663c9325ff00463f3bbb3aab7b1027e05bccd188d4bd94b883cca5",
     "specs/snapshots/.sha/anthropic-engineering.sha": "f7b2166fb88215842ced23bb35ac38bbc13c313fb4a0fd862032c5684ebd33db",
     "specs/snapshots/.sha/claude-code-changelog.sha": "3680d5061d691d527445f5c2559586551d48e3f02446805eb1460eb1d635ad5d",

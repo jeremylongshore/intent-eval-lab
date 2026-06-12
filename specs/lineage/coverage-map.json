@@ -1,8 +1,8 @@
 {
   "_generated": "GENERATED-DO-NOT-EDIT \u2014 derived projection of the append-only lineage log (specs/lineage/log.jsonl). Regenerate: python3 scripts/lineage-log.py project-coverage. Normative spec: 000-docs/054-AT-SPEC-lineage-log-and-derived-coverage-map-2026-06-12.md",
   "derived_from": {
-    "last_event_id": 23,
-    "line_count": 23,
+    "last_event_id": 24,
+    "line_count": 24,
     "log": "specs/lineage/log.jsonl"
   },
   "projection_version": "lineage-coverage/v1",
@@ -156,7 +156,11 @@
       "convergence_triggers_outstanding": 0,
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
-      "last_snapshot_updated": null
+      "last_snapshot_updated": {
+        "at": "2026-06-12T22:12:02Z",
+        "event_id": 24,
+        "upstream_version": "1f37e87ff3442fb7bcf35dd07bcff6509a49c4e0140119849b472ee8794317cd"
+      }
     },
     "plugins-reference": {
       "adopted": {
