@@ -1,0 +1,13 @@
+{
+  "id": "real-0001",
+  "surface_id": "agentskills-spec",
+  "source": "real",
+  "label": "immaterial",
+  "expected_contract_owner": "none",
+  "rationale": "markdownlint/prettier formatting pass (table re-padding, URL angle brackets, fence language tags); normalized token streams identical — no normative shape change",
+  "provenance": {
+    "path": "research/agentskills-spec-v1.0-snapshot.md",
+    "before_commit": "0f56bfc",
+    "after_commit": "8ade071"
+  }
+}

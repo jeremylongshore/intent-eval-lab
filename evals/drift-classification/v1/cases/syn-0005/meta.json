@@ -1,0 +1,13 @@
+{
+  "id": "syn-0005",
+  "surface_id": "agentskills-spec",
+  "source": "synthetic",
+  "label": "material",
+  "expected_contract_owner": "skill-frontmatter",
+  "rationale": "stability marker changed: `allowed-tools` loses its EXPERIMENTAL mark (promoted stable); kernel experimental-flag projection changes",
+  "provenance": {
+    "base_path": "_vendor/upstream/skill-frontmatter/agentskills-spec-v1.0.md",
+    "perturbation": "dropped the EXPERIMENTAL marker on `allowed-tools`"
+  },
+  "synthetic": true
+}

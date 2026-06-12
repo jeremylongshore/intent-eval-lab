@@ -1,0 +1,13 @@
+{
+  "id": "syn-0003",
+  "surface_id": "agentskills-spec",
+  "source": "synthetic",
+  "label": "material",
+  "expected_contract_owner": "skill-frontmatter",
+  "rationale": "required flag flipped: `license` becomes REQUIRED; kernel base schema required-set changes — consumer-visible validation behavior change",
+  "provenance": {
+    "base_path": "_vendor/upstream/skill-frontmatter/agentskills-spec-v1.0.md",
+    "perturbation": "flipped `license` required flag No -> Yes"
+  },
+  "synthetic": true
+}

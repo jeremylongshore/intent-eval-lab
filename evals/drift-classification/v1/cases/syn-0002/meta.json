@@ -1,0 +1,13 @@
+{
+  "id": "syn-0002",
+  "surface_id": "agentskills-spec",
+  "source": "synthetic",
+  "label": "material",
+  "expected_contract_owner": "skill-frontmatter",
+  "rationale": "field `compatibility` removed from the open standard (6 -> 5 fields); kernel base schema must drop or deprecate the field",
+  "provenance": {
+    "base_path": "_vendor/upstream/skill-frontmatter/agentskills-spec-v1.0.md",
+    "perturbation": "removed field `compatibility` from the frontmatter table"
+  },
+  "synthetic": true
+}

@@ -1,0 +1,13 @@
+{
+  "id": "syn-0011",
+  "surface_id": "agentskills-spec",
+  "source": "synthetic",
+  "label": "material",
+  "expected_contract_owner": "skill-frontmatter",
+  "rationale": "field moved between layers: `disallowed-tools` promoted from Claude Code extension into the open standard; base/overlay split must change",
+  "provenance": {
+    "base_path": "_vendor/upstream/skill-frontmatter/agentskills-spec-v1.0.md",
+    "perturbation": "moved `disallowed-tools` from the extension list into the open-standard table"
+  },
+  "synthetic": true
+}

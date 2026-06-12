@@ -1,0 +1,13 @@
+{
+  "id": "syn-0009",
+  "surface_id": "claude-hooks",
+  "source": "synthetic",
+  "label": "material",
+  "expected_contract_owner": "hook-config",
+  "rationale": "hook event removed from the upstream allowlist (`Stop` retired in favor of `SubagentStop`); kernel hook-config event enum must change",
+  "provenance": {
+    "base_path": "research/claude-docs-spec-tree-2026-05-27.md",
+    "perturbation": "removed `Stop` from the hook-event allowlist"
+  },
+  "synthetic": true
+}

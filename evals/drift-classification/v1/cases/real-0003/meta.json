@@ -1,0 +1,13 @@
+{
+  "id": "real-0003",
+  "surface_id": "multi",
+  "source": "real",
+  "label": "immaterial",
+  "expected_contract_owner": "none",
+  "rationale": "markdownlint/prettier formatting pass (table re-padding, URL angle brackets, fence language tags); normalized token streams identical — no normative shape change",
+  "provenance": {
+    "path": "research/claude-docs-spec-tree-2026-05-27.md",
+    "before_commit": "0f56bfc",
+    "after_commit": "8ade071"
+  }
+}

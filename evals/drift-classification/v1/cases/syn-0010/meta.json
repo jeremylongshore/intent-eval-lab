@@ -1,0 +1,13 @@
+{
+  "id": "syn-0010",
+  "surface_id": "mcp-spec-docs",
+  "source": "synthetic",
+  "label": "material",
+  "expected_contract_owner": "mcp-config",
+  "rationale": "MCP authoritative schema revision changed (2025-11-25 -> 2026-03-26); kernel mcp-config base must re-pin and re-derive its projection",
+  "provenance": {
+    "base_path": "research/claude-docs-spec-tree-2026-05-27.md",
+    "perturbation": "bumped the pinned MCP schema revision"
+  },
+  "synthetic": true
+}
