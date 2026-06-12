@@ -1,0 +1,259 @@
+{
+  "captured_from": {
+    "reference_doc": "claude-code-hooks.md",
+    "samples": [
+      "sample-explanatory-output-style.hooks.json",
+      "sample-hookify.hooks.json",
+      "sample-ralph-loop.hooks.json",
+      "sample-security-guidance.hooks.json"
+    ],
+    "supporting_docs": [
+      "claude-code-settings.md"
+    ]
+  },
+  "config": {
+    "locations": [
+      "~/.claude/settings.json",
+      ".claude/settings.json",
+      ".claude/settings.local.json",
+      "Managed policy settings",
+      "Plugin hooks/hooks.json",
+      "Skill or agent frontmatter"
+    ],
+    "three_level_nesting": true
+  },
+  "contract": "hook-config",
+  "events": {
+    "count": 30,
+    "enum": [
+      "SessionStart",
+      "Setup",
+      "UserPromptSubmit",
+      "UserPromptExpansion",
+      "PreToolUse",
+      "PermissionRequest",
+      "PermissionDenied",
+      "PostToolUse",
+      "PostToolUseFailure",
+      "PostToolBatch",
+      "Notification",
+      "MessageDisplay",
+      "SubagentStart",
+      "SubagentStop",
+      "TaskCreated",
+      "TaskCompleted",
+      "Stop",
+      "StopFailure",
+      "TeammateIdle",
+      "InstructionsLoaded",
+      "ConfigChange",
+      "CwdChanged",
+      "FileChanged",
+      "WorktreeCreate",
+      "WorktreeRemove",
+      "PreCompact",
+      "PostCompact",
+      "Elicitation",
+      "ElicitationResult",
+      "SessionEnd"
+    ]
+  },
+  "handler_fields": {
+    "allowedEnvVars": {
+      "observed_in_samples": false,
+      "required": false,
+      "scope": "http",
+      "source": "documented"
+    },
+    "args": {
+      "observed_in_samples": false,
+      "required": false,
+      "scope": "command",
+      "source": "documented"
+    },
+    "async": {
+      "observed_in_samples": false,
+      "required": false,
+      "scope": "command",
+      "source": "documented"
+    },
+    "asyncRewake": {
+      "observed_in_samples": true,
+      "required": false,
+      "scope": "command",
+      "source": "documented"
+    },
+    "command": {
+      "observed_in_samples": true,
+      "required": true,
+      "scope": "command",
+      "source": "documented"
+    },
+    "headers": {
+      "observed_in_samples": false,
+      "required": false,
+      "scope": "http",
+      "source": "documented"
+    },
+    "if": {
+      "observed_in_samples": true,
+      "required": false,
+      "scope": "common",
+      "source": "documented"
+    },
+    "input": {
+      "observed_in_samples": false,
+      "required": false,
+      "scope": "mcp_tool",
+      "source": "documented"
+    },
+    "model": {
+      "observed_in_samples": false,
+      "required": false,
+      "scope": "prompt-agent",
+      "source": "documented"
+    },
+    "once": {
+      "observed_in_samples": false,
+      "required": false,
+      "scope": "common",
+      "source": "documented"
+    },
+    "prompt": {
+      "observed_in_samples": false,
+      "required": true,
+      "scope": "prompt-agent",
+      "source": "documented"
+    },
+    "server": {
+      "observed_in_samples": false,
+      "required": true,
+      "scope": "mcp_tool",
+      "source": "documented"
+    },
+    "shell": {
+      "enum": [
+        "bash",
+        "powershell"
+      ],
+      "observed_in_samples": false,
+      "required": false,
+      "scope": "command",
+      "source": "documented"
+    },
+    "statusMessage": {
+      "observed_in_samples": false,
+      "required": false,
+      "scope": "common",
+      "source": "documented"
+    },
+    "timeout": {
+      "observed_in_samples": true,
+      "required": false,
+      "scope": "common",
+      "source": "documented"
+    },
+    "tool": {
+      "observed_in_samples": false,
+      "required": true,
+      "scope": "mcp_tool",
+      "source": "documented"
+    },
+    "type": {
+      "enum": [
+        "command",
+        "http",
+        "mcp_tool",
+        "prompt",
+        "agent"
+      ],
+      "observed_in_samples": true,
+      "required": true,
+      "scope": "common",
+      "source": "documented"
+    },
+    "url": {
+      "observed_in_samples": false,
+      "required": true,
+      "scope": "http",
+      "source": "documented"
+    }
+  },
+  "handler_types": [
+    "command",
+    "http",
+    "mcp_tool",
+    "prompt",
+    "agent"
+  ],
+  "matcher": {
+    "match_all_forms": {
+      "empty": true,
+      "omitted": true,
+      "star": true
+    },
+    "no_matcher_support_events": [
+      "CwdChanged",
+      "MessageDisplay",
+      "PostToolBatch",
+      "Stop",
+      "TaskCompleted",
+      "TaskCreated",
+      "TeammateIdle",
+      "UserPromptSubmit",
+      "WorktreeCreate",
+      "WorktreeRemove"
+    ],
+    "regex_fallback_documented": true
+  },
+  "projection_version": "spec-projection/v1",
+  "samples": {
+    "count": 4,
+    "events_observed": [
+      "PostToolUse",
+      "PreToolUse",
+      "SessionStart",
+      "Stop",
+      "UserPromptSubmit"
+    ],
+    "events_outside_documented_enum": [],
+    "fields_observed_not_documented": [
+      "rewakeMessage",
+      "rewakeSummary"
+    ],
+    "handler_fields_observed": [
+      "asyncRewake",
+      "command",
+      "if",
+      "rewakeMessage",
+      "rewakeSummary",
+      "timeout",
+      "type"
+    ],
+    "handler_types_observed": [
+      "command"
+    ],
+    "matcher_omitted_observed": true,
+    "matcher_values_observed": [
+      "Bash",
+      "Edit|Write|MultiEdit|NotebookEdit"
+    ],
+    "timeout_values_observed": [
+      10,
+      180
+    ],
+    "top_level_keys_observed": [
+      "description",
+      "hooks"
+    ],
+    "types_outside_documented_enum": []
+  },
+  "spec_version": "unversioned-2026-06-12",
+  "timeout_defaults": {
+    "agent": 60,
+    "command": 600,
+    "http": 600,
+    "mcp_tool": 600,
+    "prompt": 30
+  }
+}
