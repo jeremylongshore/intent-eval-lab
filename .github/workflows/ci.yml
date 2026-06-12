@@ -154,3 +154,23 @@ jobs:
         run: |
           python3 scripts/detector-health.py --self-test
           python3 scripts/detector-health.py --check
+
+      # Offline + deterministic (058-AT-SPEC): the plugin-manifest deep
+      # capture. Unlike mcp-config there is NO machine-readable upstream —
+      # the plugins-reference page is the spec and 5 commit-pinned sample
+      # manifests from the official plugins repo corroborate it. --check
+      # re-extracts the normative projection from the vendored snapshots
+      # (specs/_vendor/upstream/plugin-manifest/) and fails if the committed
+      # projection.json is stale (it is DERIVED, never hand-edited); the
+      # self-test proves every extraction anchor on fixtures (tables,
+      # escaped-pipe types, dotted fields, enum clauses, tolerance sentences,
+      # documented-vs-observed-in-samples provenance) and cross-checks the
+      # projection against the kernel's upstream-base plugin-manifest
+      # expectations — agreements AND divergences are printed, and
+      # divergences are findings to report, never kernel edits (tier-3
+      # promotion is human, 052-AT-SPEC). CI never refetches: the capture is
+      # a one-time build-time fetch; ongoing freshness is the watcher's job.
+      - name: Plugin-manifest deep-capture projection freshness + self-test
+        run: |
+          python3 scripts/extract-plugin-manifest-projection.py --check
+          python3 scripts/extract-plugin-manifest-projection.py --self-test

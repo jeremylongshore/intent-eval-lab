@@ -1,0 +1,235 @@
+{
+  "captured_from": {
+    "reference_doc": "claude-code-plugins-reference.md",
+    "samples": [
+      "sample-cwc-makers.plugin.json",
+      "sample-greptile.plugin.json",
+      "sample-playwright.plugin.json",
+      "sample-security-guidance.plugin.json",
+      "sample-telegram.plugin.json"
+    ]
+  },
+  "contract": "plugin-manifest",
+  "manifest": {
+    "complete_schema_example_fields": [
+      "agents",
+      "author",
+      "commands",
+      "dependencies",
+      "description",
+      "displayName",
+      "experimental.monitors",
+      "experimental.themes",
+      "homepage",
+      "hooks",
+      "keywords",
+      "license",
+      "lspServers",
+      "mcpServers",
+      "name",
+      "outputStyles",
+      "repository",
+      "skills",
+      "version"
+    ],
+    "fields": {
+      "$schema": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented",
+        "table": "metadata",
+        "type": "string"
+      },
+      "agents": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented",
+        "table": "component-path",
+        "type": "string|array"
+      },
+      "author": {
+        "observed_in_samples": true,
+        "required": false,
+        "source": "documented",
+        "table": "metadata",
+        "type": "object"
+      },
+      "channels": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented",
+        "table": "component-path",
+        "type": "array"
+      },
+      "commands": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented",
+        "table": "component-path",
+        "type": "string|array"
+      },
+      "defaultEnabled": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented",
+        "table": "metadata",
+        "type": "boolean"
+      },
+      "dependencies": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented",
+        "table": "component-path",
+        "type": "array"
+      },
+      "description": {
+        "observed_in_samples": true,
+        "required": false,
+        "source": "documented",
+        "table": "metadata",
+        "type": "string"
+      },
+      "displayName": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented",
+        "table": "metadata",
+        "type": "string"
+      },
+      "experimental.monitors": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented",
+        "table": "component-path",
+        "type": "string|array"
+      },
+      "experimental.themes": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented",
+        "table": "component-path",
+        "type": "string|array"
+      },
+      "homepage": {
+        "observed_in_samples": true,
+        "required": false,
+        "source": "documented",
+        "table": "metadata",
+        "type": "string"
+      },
+      "hooks": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented",
+        "table": "component-path",
+        "type": "string|array|object"
+      },
+      "keywords": {
+        "observed_in_samples": true,
+        "required": false,
+        "source": "documented",
+        "table": "metadata",
+        "type": "array"
+      },
+      "license": {
+        "observed_in_samples": true,
+        "required": false,
+        "source": "documented",
+        "table": "metadata",
+        "type": "string"
+      },
+      "lspServers": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented",
+        "table": "component-path",
+        "type": "string|array|object"
+      },
+      "mcpServers": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented",
+        "table": "component-path",
+        "type": "string|array|object"
+      },
+      "name": {
+        "observed_in_samples": true,
+        "required": true,
+        "source": "documented",
+        "table": "required",
+        "type": "string"
+      },
+      "outputStyles": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented",
+        "table": "component-path",
+        "type": "string|array"
+      },
+      "repository": {
+        "observed_in_samples": true,
+        "required": false,
+        "source": "documented",
+        "table": "metadata",
+        "type": "string"
+      },
+      "skills": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented",
+        "table": "component-path",
+        "type": "string|array"
+      },
+      "userConfig": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented",
+        "table": "component-path",
+        "type": "object"
+      },
+      "version": {
+        "observed_in_samples": true,
+        "required": false,
+        "source": "documented",
+        "table": "metadata",
+        "type": "string"
+      }
+    },
+    "manifest_optional": true,
+    "name_kebab_case_prose": true,
+    "name_only_required": true,
+    "unrecognized_top_level_ignored": true,
+    "wrong_type_fails": true
+  },
+  "projection_version": "spec-projection/v1",
+  "samples": {
+    "author_subfields_observed": [
+      "email",
+      "name",
+      "url"
+    ],
+    "count": 5,
+    "field_types_observed": {
+      "author": "object",
+      "description": "string",
+      "homepage": "string",
+      "keywords": "array",
+      "license": "string",
+      "name": "string",
+      "repository": "string",
+      "version": "string"
+    },
+    "fields_observed_not_documented": [],
+    "top_level_fields_observed": [
+      "author",
+      "description",
+      "homepage",
+      "keywords",
+      "license",
+      "name",
+      "repository",
+      "version"
+    ]
+  },
+  "spec_version": "unversioned-2026-06-12"
+}
