@@ -1,6 +1,6 @@
 {
   "registry_version": "upstream-surface-registry/v1",
-  "description": "The canonical registry of upstream spec surfaces the spec-drift watcher monitors for the kernel authoring family (@intentsolutions/core schemas/authoring/v1). One row per surface. Authored 2026-06-11. Companion doc: 000-docs/050-AT-SPEC-upstream-surface-registry-2026-06-11.md. The byte-hash extractors that consume this list live in scripts/spec-drift-check.sh (today the SOURCES array is the executable copy; wiring the script to read this JSON directly is a tracked follow-up).",
+  "description": "The canonical registry of upstream spec surfaces the spec-drift watcher monitors for the kernel authoring family (@intentsolutions/core schemas/authoring/v1). One row per surface. Authored 2026-06-11. Companion docs: 000-docs/050-AT-SPEC-upstream-surface-registry-2026-06-11.md (the registry) + 000-docs/052-AT-SPEC-fetch-failure-taxonomy-and-three-tier-archive-2026-06-12.md (the per-surface `capture` config: fetch kind, expected extractor pattern, min-bytes floor). The byte-hash extractors that consume this list live in scripts/spec-drift-check.sh (today the SOURCES array is the executable copy; wiring the script to read this JSON directly is a tracked follow-up). The raw-fetch capture stage (scripts/fetch-capture.py) reads this JSON directly.",
   "authority_precedence": [
     "official-spec-machine-readable  (e.g. MCP schema.ts) — exact field-level diff possible",
     "official-spec                   (e.g. agentskills.io for skills, modelcontextprotocol.io for MCP) — the normative source",
@@ -10,22 +10,281 @@
     "changelog                       (a CHANGELOG / npm version) — detects that change happened; the reference page is the spec"
   ],
   "surfaces": [
-    { "name": "agentskills-spec",        "contract": "skill-frontmatter",   "url": "https://agentskills.io/specification.md",                                                            "machine_readable": false, "wave": 0, "authority_tier": "official-spec",                 "monitored": true, "extractor": "fetch_agentskills_spec" },
-    { "name": "platform-skills-overview", "contract": "skill-frontmatter",   "url": "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview.md",                      "machine_readable": false, "wave": 0, "authority_tier": "anthropic-doc",                 "monitored": true, "extractor": "fetch_platform_skills_overview" },
-    { "name": "skills-releases",          "contract": "skill-frontmatter",   "url": "https://github.com/anthropics/skills/releases.atom + commits/main.atom",                             "machine_readable": false, "wave": 0, "authority_tier": "release-feed",                  "monitored": true, "extractor": "fetch_skills_releases_atom" },
-    { "name": "mcp-schema-ts",            "contract": "mcp-config",          "url": "https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/schema/draft/schema.ts", "machine_readable": true,  "wave": 1, "authority_tier": "official-spec-machine-readable", "monitored": true, "extractor": "fetch_mcp_schema_ts" },
-    { "name": "mcp-spec-docs",            "contract": "mcp-config",          "url": "https://modelcontextprotocol.io/specification/draft",                                                "machine_readable": false, "wave": 1, "authority_tier": "official-spec",                 "monitored": true, "extractor": "fetch_mcp_spec_docs" },
-    { "name": "mcp-releases",             "contract": "mcp-config",          "url": "https://github.com/modelcontextprotocol/modelcontextprotocol/releases.atom",                         "machine_readable": false, "wave": 2, "authority_tier": "release-feed",                  "monitored": true, "extractor": "fetch_mcp_releases_atom" },
-    { "name": "claude-hooks",             "contract": "hook-config",         "url": "https://code.claude.com/docs/en/hooks.md",                                                           "machine_readable": false, "wave": 1, "authority_tier": "reference",                     "monitored": true, "extractor": "fetch_claude_hooks" },
-    { "name": "claude-settings",          "contract": "hook-config",         "url": "https://code.claude.com/docs/en/settings.md",                                                        "machine_readable": false, "wave": 1, "authority_tier": "reference",                     "monitored": true, "extractor": "fetch_claude_settings" },
-    { "name": "claude-slash-commands",    "contract": "slash-commands",      "url": "https://code.claude.com/docs/en/slash-commands.md",                                                  "machine_readable": false, "wave": 1, "authority_tier": "reference",                     "monitored": true, "extractor": "fetch_claude_slash_commands" },
-    { "name": "plugins-reference",        "contract": "plugin-manifest",     "url": "https://code.claude.com/docs/en/plugins-reference.md",                                               "machine_readable": false, "wave": 2, "authority_tier": "reference",                     "monitored": true, "extractor": "fetch_plugins_reference" },
-    { "name": "sub-agents",               "contract": "agent-definition",    "url": "https://code.claude.com/docs/en/sub-agents.md",                                                      "machine_readable": false, "wave": 2, "authority_tier": "reference",                     "monitored": true, "extractor": "fetch_sub_agents" },
-    { "name": "plugin-marketplaces",      "contract": "marketplace-catalog", "url": "https://code.claude.com/docs/en/plugin-marketplaces.md",                                             "machine_readable": false, "wave": 2, "authority_tier": "reference",                     "monitored": true, "extractor": "fetch_plugin_marketplaces" },
-    { "name": "claude-code-changelog",    "contract": "version-signal",      "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",                          "machine_readable": false, "wave": 0, "authority_tier": "changelog",                     "monitored": true, "extractor": "fetch_cc_changelog" },
-    { "name": "claude-code-npm",          "contract": "version-signal",      "url": "npm view @anthropic-ai/claude-code version",                                                         "machine_readable": true,  "wave": 0, "authority_tier": "changelog",                     "monitored": true, "extractor": "fetch_cc_npm_version" },
-    { "name": "claude-code-releases",     "contract": "version-signal",      "url": "https://github.com/anthropics/claude-code/releases.atom",                                            "machine_readable": false, "wave": 2, "authority_tier": "release-feed",                  "monitored": true, "extractor": "fetch_cc_releases_atom" },
-    { "name": "anthropic-engineering",    "contract": "cross-cutting-signal","url": "https://www.anthropic.com/engineering",                                                              "machine_readable": false, "wave": 0, "authority_tier": "release-feed",                  "monitored": true, "extractor": "fetch_anthropic_engineering" }
+    {
+      "name": "agentskills-spec",
+      "contract": "skill-frontmatter",
+      "url": "https://agentskills.io/specification.md",
+      "machine_readable": false,
+      "wave": 0,
+      "authority_tier": "official-spec",
+      "monitored": true,
+      "extractor": "fetch_agentskills_spec",
+      "capture": {
+        "kind": "http",
+        "urls": ["https://agentskills.io/specification.md"],
+        "expect_regex": "(?m)^#{1,3} ",
+        "min_bytes": 2048,
+        "ext": ".md"
+      }
+    },
+    {
+      "name": "platform-skills-overview",
+      "contract": "skill-frontmatter",
+      "url": "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview.md",
+      "machine_readable": false,
+      "wave": 0,
+      "authority_tier": "anthropic-doc",
+      "monitored": true,
+      "extractor": "fetch_platform_skills_overview",
+      "capture": {
+        "kind": "http",
+        "urls": ["https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview.md"],
+        "expect_regex": "(?m)^#{1,3} ",
+        "min_bytes": 4096,
+        "ext": ".md"
+      }
+    },
+    {
+      "name": "skills-releases",
+      "contract": "skill-frontmatter",
+      "url": "https://github.com/anthropics/skills/releases.atom + commits/main.atom",
+      "machine_readable": false,
+      "wave": 0,
+      "authority_tier": "release-feed",
+      "monitored": true,
+      "extractor": "fetch_skills_releases_atom",
+      "capture": {
+        "kind": "http",
+        "urls": [
+          "https://github.com/anthropics/skills/releases.atom",
+          "https://github.com/anthropics/skills/commits/main.atom"
+        ],
+        "expect_regex": "<id>tag:github\\.com,",
+        "min_bytes": 256,
+        "ext": ".atom"
+      }
+    },
+    {
+      "name": "mcp-schema-ts",
+      "contract": "mcp-config",
+      "url": "https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/schema/draft/schema.ts",
+      "machine_readable": true,
+      "wave": 1,
+      "authority_tier": "official-spec-machine-readable",
+      "monitored": true,
+      "extractor": "fetch_mcp_schema_ts",
+      "capture": {
+        "kind": "http",
+        "urls": ["https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/schema/draft/schema.ts"],
+        "expect_regex": "export (interface|type) ",
+        "min_bytes": 16384,
+        "ext": ".ts"
+      }
+    },
+    {
+      "name": "mcp-spec-docs",
+      "contract": "mcp-config",
+      "url": "https://modelcontextprotocol.io/specification/draft",
+      "machine_readable": false,
+      "wave": 1,
+      "authority_tier": "official-spec",
+      "monitored": true,
+      "extractor": "fetch_mcp_spec_docs",
+      "capture": {
+        "kind": "http",
+        "urls": ["https://modelcontextprotocol.io/specification/draft"],
+        "expect_regex": "(?i)model context protocol",
+        "min_bytes": 16384,
+        "ext": ".html"
+      }
+    },
+    {
+      "name": "mcp-releases",
+      "contract": "mcp-config",
+      "url": "https://github.com/modelcontextprotocol/modelcontextprotocol/releases.atom",
+      "machine_readable": false,
+      "wave": 2,
+      "authority_tier": "release-feed",
+      "monitored": true,
+      "extractor": "fetch_mcp_releases_atom",
+      "capture": {
+        "kind": "http",
+        "urls": ["https://github.com/modelcontextprotocol/modelcontextprotocol/releases.atom"],
+        "expect_regex": "<id>tag:github\\.com,",
+        "min_bytes": 256,
+        "ext": ".atom"
+      }
+    },
+    {
+      "name": "claude-hooks",
+      "contract": "hook-config",
+      "url": "https://code.claude.com/docs/en/hooks.md",
+      "machine_readable": false,
+      "wave": 1,
+      "authority_tier": "reference",
+      "monitored": true,
+      "extractor": "fetch_claude_hooks",
+      "capture": {
+        "kind": "http",
+        "urls": ["https://code.claude.com/docs/en/hooks.md"],
+        "expect_regex": "(?m)^#{1,3} ",
+        "min_bytes": 8192,
+        "ext": ".md"
+      }
+    },
+    {
+      "name": "claude-settings",
+      "contract": "hook-config",
+      "url": "https://code.claude.com/docs/en/settings.md",
+      "machine_readable": false,
+      "wave": 1,
+      "authority_tier": "reference",
+      "monitored": true,
+      "extractor": "fetch_claude_settings",
+      "capture": {
+        "kind": "http",
+        "urls": ["https://code.claude.com/docs/en/settings.md"],
+        "expect_regex": "(?m)^#{1,3} ",
+        "min_bytes": 8192,
+        "ext": ".md"
+      }
+    },
+    {
+      "name": "claude-slash-commands",
+      "contract": "slash-commands",
+      "url": "https://code.claude.com/docs/en/slash-commands.md",
+      "machine_readable": false,
+      "wave": 1,
+      "authority_tier": "reference",
+      "monitored": true,
+      "extractor": "fetch_claude_slash_commands",
+      "capture": {
+        "kind": "http",
+        "urls": ["https://code.claude.com/docs/en/slash-commands.md"],
+        "expect_regex": "(?m)^#{1,3} ",
+        "min_bytes": 4096,
+        "ext": ".md"
+      }
+    },
+    {
+      "name": "plugins-reference",
+      "contract": "plugin-manifest",
+      "url": "https://code.claude.com/docs/en/plugins-reference.md",
+      "machine_readable": false,
+      "wave": 2,
+      "authority_tier": "reference",
+      "monitored": true,
+      "extractor": "fetch_plugins_reference",
+      "capture": {
+        "kind": "http",
+        "urls": ["https://code.claude.com/docs/en/plugins-reference.md"],
+        "expect_regex": "(?m)^#{1,3} ",
+        "min_bytes": 4096,
+        "ext": ".md"
+      }
+    },
+    {
+      "name": "sub-agents",
+      "contract": "agent-definition",
+      "url": "https://code.claude.com/docs/en/sub-agents.md",
+      "machine_readable": false,
+      "wave": 2,
+      "authority_tier": "reference",
+      "monitored": true,
+      "extractor": "fetch_sub_agents",
+      "capture": {
+        "kind": "http",
+        "urls": ["https://code.claude.com/docs/en/sub-agents.md"],
+        "expect_regex": "(?m)^#{1,3} ",
+        "min_bytes": 4096,
+        "ext": ".md"
+      }
+    },
+    {
+      "name": "plugin-marketplaces",
+      "contract": "marketplace-catalog",
+      "url": "https://code.claude.com/docs/en/plugin-marketplaces.md",
+      "machine_readable": false,
+      "wave": 2,
+      "authority_tier": "reference",
+      "monitored": true,
+      "extractor": "fetch_plugin_marketplaces",
+      "capture": {
+        "kind": "http",
+        "urls": ["https://code.claude.com/docs/en/plugin-marketplaces.md"],
+        "expect_regex": "(?m)^#{1,3} ",
+        "min_bytes": 4096,
+        "ext": ".md"
+      }
+    },
+    {
+      "name": "claude-code-changelog",
+      "contract": "version-signal",
+      "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",
+      "machine_readable": false,
+      "wave": 0,
+      "authority_tier": "changelog",
+      "monitored": true,
+      "extractor": "fetch_cc_changelog",
+      "capture": {
+        "kind": "http",
+        "urls": ["https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md"],
+        "expect_regex": "(?m)^#{1,2} ",
+        "min_bytes": 32768,
+        "ext": ".md"
+      }
+    },
+    {
+      "name": "claude-code-npm",
+      "contract": "version-signal",
+      "url": "npm view @anthropic-ai/claude-code version",
+      "machine_readable": true,
+      "wave": 0,
+      "authority_tier": "changelog",
+      "monitored": true,
+      "extractor": "fetch_cc_npm_version",
+      "capture": {
+        "kind": "command",
+        "argv": ["npm", "view", "@anthropic-ai/claude-code", "version"],
+        "expect_regex": "^\\d+\\.\\d+\\.\\d+",
+        "min_bytes": 5,
+        "ext": ".txt"
+      }
+    },
+    {
+      "name": "claude-code-releases",
+      "contract": "version-signal",
+      "url": "https://github.com/anthropics/claude-code/releases.atom",
+      "machine_readable": false,
+      "wave": 2,
+      "authority_tier": "release-feed",
+      "monitored": true,
+      "extractor": "fetch_cc_releases_atom",
+      "capture": {
+        "kind": "http",
+        "urls": ["https://github.com/anthropics/claude-code/releases.atom"],
+        "expect_regex": "<id>tag:github\\.com,",
+        "min_bytes": 256,
+        "ext": ".atom"
+      }
+    },
+    {
+      "name": "anthropic-engineering",
+      "contract": "cross-cutting-signal",
+      "url": "https://www.anthropic.com/engineering",
+      "machine_readable": false,
+      "wave": 0,
+      "authority_tier": "release-feed",
+      "monitored": true,
+      "extractor": "fetch_anthropic_engineering",
+      "capture": {
+        "kind": "http",
+        "urls": ["https://www.anthropic.com/engineering"],
+        "expect_regex": "href=\"/engineering/[a-z0-9-]+\"",
+        "min_bytes": 16384,
+        "ext": ".html"
+      }
+    }
   ],
   "unmonitored_candidates": [
     { "name": "claude-plugins-official",  "contract": "marketplace-catalog", "url": "https://github.com/anthropics/claude-plugins-official", "reason": "marketplace.json manifests; the plugin-marketplaces.md reference page is the spec and IS monitored. Add the repo's marketplace manifest if a sampleable raw file is identified (Wave 3)." }
