@@ -1,0 +1,31 @@
+{
+  "contract": "marketplace-catalog",
+  "spec_version": "unversioned-2026-06-12",
+  "fetched_at": "2026-06-12T22:06:07Z",
+  "note": "Contract-keyed deep capture (061-AT-SPEC) — the SIXTH and FINAL contract of the deep-capture program. One-time build-time fetch; CI never refetches (offline determinism) — ongoing freshness is the watcher's job via the registered plugin-marketplaces surface. Tier-2 conventions per 052-AT-SPEC: replace-in-place, lineage recorded (snapshot-updated in specs/lineage/log.jsonl), the extractor reads and never writes here. Like plugin-manifest (058-AT-SPEC), agent-definition (059-AT-SPEC), and hook-config (060-AT-SPEC): marketplace-catalog has NO machine-readable upstream schema and NO upstream spec versioning — the code.claude.com plugin-marketplaces reference page is the spec (the Marketplace-schema Required/Owner/Optional field tables, the Plugin-entries Required + two Optional tables, the Plugin-sources summary table + four per-type Field tables, and the Strict-mode table) and the marketplace.json catalog of anthropics/claude-plugins-official is real-world corroboration (authority precedence per 050-AT-SPEC: the reference page is the spec; samples corroborate). DEVIATION from 060: there is exactly ONE sample, but it is unusually strong — the official catalog IS the ground-truth marketplace (223 plugin entries at the pinned commit), so one sample carries more corroborating breadth than 058/059/060's 4-5 small files combined. At 126,953 bytes it sits under the 200KB truncation threshold, so the FULL file is vendored — no truncated projection-relevant slice was needed. NEGATIVE FACT: the reference page documents exactly one catalog file form (.claude-plugin/marketplace.json at the marketplace repo root); a direct URL serving marketplace.json is a distribution channel for the same form, not a second catalog form, so nothing further is vendored. spec_version is the capture date, not an upstream-declared revision.",
+  "files": [
+    {
+      "file": "claude-code-plugin-marketplaces.md",
+      "role": "reference-doc",
+      "surface": "plugin-marketplaces",
+      "authority_tier": "reference",
+      "source_url": "https://code.claude.com/docs/en/plugin-marketplaces.md",
+      "sha256": "1f37e87ff3442fb7bcf35dd07bcff6509a49c4e0140119849b472ee8794317cd",
+      "bytes": 60567,
+      "version_basis": "The page carries no version identifier and upstream publishes no machine-readable schema for the marketplace.json catalog (the $schema URL the official catalog cites, anthropic.com/claude-code/marketplace.schema.json, is an editor-autocomplete pointer the page says Claude Code ignores at load time — it is not a registry-registered surface); this .md form is the same URL/form the registry's fetch_plugin_marketplaces extractor monitors (capture.urls + ext .md in specs/upstream-surface-registry.v1.json)."
+    },
+    {
+      "file": "sample-claude-plugins-official.marketplace.json",
+      "role": "sample-catalog",
+      "surface": null,
+      "authority_tier": "sample-corroboration",
+      "source_url": "https://raw.githubusercontent.com/anthropics/claude-plugins-official/eb1510e138223ac656d9032f6caa625f8b52d207/.claude-plugin/marketplace.json",
+      "upstream_commit": "eb1510e138223ac656d9032f6caa625f8b52d207",
+      "source_path": ".claude-plugin/marketplace.json",
+      "sha256": "6a0fb706fabcaa749a6f7dfe7e842616701a4c18f8fcff8be49c34cf6c62f980",
+      "bytes": 126953,
+      "selection_basis": "THE official ground-truth catalog: Anthropic's own marketplace.json (owner = Anthropic), 223 plugin entries at the pinned commit — the same eb1510e1 pin the 058/059/060 samples use. Vendored WHOLE (126,953 bytes < the 200KB truncation threshold; no truncated slice needed). Structural breadth: 50 relative-path string sources (every one './'-prefixed), 173 object sources across github/url/git-subdir (npm documented but unobserved), 13 of the 20 documented plugin-entry fields exercised, strict:false in use, plus THREE upstream tolerances the page does not document — a commit key on 2 github sources, a path key on 5 url sources, and the plugin name wordpress.com (a dot, outside the documented kebab-case) — the capture's key observed-in-samples provenance findings."
+    }
+  ],
+  "samples_note": "github.com/anthropics/claude-plugins-official is listed under unmonitored_candidates in specs/upstream-surface-registry.v1.json (not a registered surface; its registry row anticipates exactly this: 'Add the repo's marketplace manifest if a sampleable raw file is identified'); this vendor-meta entry is the sample's provenance record until a sampleable surface is registered per 050-AT-SPEC change discipline — the same arrangement the plugin-manifest (058), agent-definition (059), and hook-config (060) captures use. Ground-truth observations: all 5 top-level keys used ($schema, description, name, owner, plugins) are documented; owner carries the documented name + email; every plugin-entry field used is on a documented table; every object source carries the documented 'source' discriminator key and stays within the documented 4-type enum; all string sources honor the documented './' prefix rule. The three tolerances outside the documented surface (commit on github sources, path on url sources, the wordpress.com plugin name) are recorded observed-in-samples, never documented."
+}

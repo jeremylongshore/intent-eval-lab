@@ -1,0 +1,373 @@
+{
+  "captured_from": {
+    "reference_doc": "claude-code-plugin-marketplaces.md",
+    "samples": [
+      "sample-claude-plugins-official.marketplace.json"
+    ]
+  },
+  "catalog": {
+    "metadata_backcompat_fields": [
+      "description",
+      "version"
+    ],
+    "reserved_names": [
+      "claude-code-marketplace",
+      "claude-code-plugins",
+      "claude-plugins-official",
+      "claude-plugins-community",
+      "claude-community",
+      "anthropic-marketplace",
+      "anthropic-plugins",
+      "agent-skills",
+      "anthropic-agent-skills",
+      "knowledge-work-plugins",
+      "life-sciences",
+      "claude-for-legal",
+      "claude-for-financial-services",
+      "financial-services-plugins"
+    ],
+    "top_level_fields": {
+      "$schema": {
+        "observed_in_samples": true,
+        "required": false,
+        "source": "documented",
+        "type": "string"
+      },
+      "allowCrossMarketplaceDependenciesOn": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented",
+        "type": "array"
+      },
+      "description": {
+        "observed_in_samples": true,
+        "required": false,
+        "source": "documented",
+        "type": "string"
+      },
+      "metadata.pluginRoot": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented",
+        "type": "string"
+      },
+      "name": {
+        "observed_in_samples": true,
+        "required": true,
+        "source": "documented",
+        "type": "string"
+      },
+      "owner": {
+        "observed_in_samples": true,
+        "required": true,
+        "source": "documented",
+        "type": "object"
+      },
+      "plugins": {
+        "observed_in_samples": true,
+        "required": true,
+        "source": "documented",
+        "type": "array"
+      },
+      "version": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented",
+        "type": "string"
+      }
+    }
+  },
+  "contract": "marketplace-catalog",
+  "owner_fields": {
+    "email": {
+      "observed_in_samples": true,
+      "required": false,
+      "source": "documented",
+      "type": "string"
+    },
+    "name": {
+      "observed_in_samples": true,
+      "required": true,
+      "source": "documented",
+      "type": "string"
+    }
+  },
+  "plugin_entry": {
+    "fields": {
+      "agents": {
+        "observed_in_samples": false,
+        "required": false,
+        "scope": "component-config",
+        "source": "documented",
+        "type": "string|array"
+      },
+      "author": {
+        "observed_in_samples": true,
+        "required": false,
+        "scope": "standard-metadata",
+        "source": "documented",
+        "type": "object"
+      },
+      "category": {
+        "observed_in_samples": true,
+        "required": false,
+        "scope": "standard-metadata",
+        "source": "documented",
+        "type": "string"
+      },
+      "commands": {
+        "observed_in_samples": false,
+        "required": false,
+        "scope": "component-config",
+        "source": "documented",
+        "type": "string|array"
+      },
+      "defaultEnabled": {
+        "observed_in_samples": false,
+        "required": false,
+        "scope": "standard-metadata",
+        "source": "documented",
+        "type": "boolean"
+      },
+      "description": {
+        "observed_in_samples": true,
+        "required": false,
+        "scope": "standard-metadata",
+        "source": "documented",
+        "type": "string"
+      },
+      "displayName": {
+        "observed_in_samples": true,
+        "required": false,
+        "scope": "standard-metadata",
+        "source": "documented",
+        "type": "string"
+      },
+      "homepage": {
+        "observed_in_samples": true,
+        "required": false,
+        "scope": "standard-metadata",
+        "source": "documented",
+        "type": "string"
+      },
+      "hooks": {
+        "observed_in_samples": false,
+        "required": false,
+        "scope": "component-config",
+        "source": "documented",
+        "type": "string|object"
+      },
+      "keywords": {
+        "observed_in_samples": true,
+        "required": false,
+        "scope": "standard-metadata",
+        "source": "documented",
+        "type": "array"
+      },
+      "license": {
+        "observed_in_samples": false,
+        "required": false,
+        "scope": "standard-metadata",
+        "source": "documented",
+        "type": "string"
+      },
+      "lspServers": {
+        "observed_in_samples": true,
+        "required": false,
+        "scope": "component-config",
+        "source": "documented",
+        "type": "string|object"
+      },
+      "mcpServers": {
+        "observed_in_samples": false,
+        "required": false,
+        "scope": "component-config",
+        "source": "documented",
+        "type": "string|object"
+      },
+      "name": {
+        "observed_in_samples": true,
+        "required": true,
+        "scope": "entry-required",
+        "source": "documented",
+        "type": "string"
+      },
+      "repository": {
+        "observed_in_samples": false,
+        "required": false,
+        "scope": "standard-metadata",
+        "source": "documented",
+        "type": "string"
+      },
+      "skills": {
+        "observed_in_samples": true,
+        "required": false,
+        "scope": "component-config",
+        "source": "documented",
+        "type": "string|array"
+      },
+      "source": {
+        "observed_in_samples": true,
+        "required": true,
+        "scope": "entry-required",
+        "source": "documented",
+        "type": "string|object"
+      },
+      "strict": {
+        "observed_in_samples": true,
+        "required": false,
+        "scope": "standard-metadata",
+        "source": "documented",
+        "type": "boolean"
+      },
+      "tags": {
+        "observed_in_samples": true,
+        "required": false,
+        "scope": "standard-metadata",
+        "source": "documented",
+        "type": "array"
+      },
+      "version": {
+        "observed_in_samples": true,
+        "required": false,
+        "scope": "standard-metadata",
+        "source": "documented",
+        "type": "string"
+      }
+    },
+    "manifest_passthrough_documented": true,
+    "marketplace_specific_fields": [
+      "source",
+      "category",
+      "tags",
+      "strict"
+    ],
+    "strict_default": "true",
+    "strict_values": [
+      "true",
+      "false"
+    ]
+  },
+  "projection_version": "spec-projection/v1",
+  "samples": {
+    "count": 1,
+    "entry_fields_not_documented": [],
+    "entry_fields_observed": [
+      "author",
+      "category",
+      "description",
+      "displayName",
+      "homepage",
+      "keywords",
+      "lspServers",
+      "name",
+      "skills",
+      "source",
+      "strict",
+      "tags",
+      "version"
+    ],
+    "metadata_keys_observed": [],
+    "object_source_fields_observed": {
+      "git-subdir": [
+        "path",
+        "ref",
+        "sha",
+        "url"
+      ],
+      "github": [
+        "commit",
+        "repo",
+        "sha"
+      ],
+      "url": [
+        "path",
+        "sha",
+        "url"
+      ]
+    },
+    "object_source_fields_outside_documented": [
+      "github:commit",
+      "url:path"
+    ],
+    "object_source_types_observed": [
+      "git-subdir",
+      "github",
+      "url"
+    ],
+    "object_source_types_outside_documented": [],
+    "owner_keys_observed": [
+      "email",
+      "name"
+    ],
+    "plugin_entries": 223,
+    "plugin_names_outside_kebab_case": [
+      "wordpress.com"
+    ],
+    "strict_values_observed": [
+      "false"
+    ],
+    "string_sources": {
+      "all_start_with_dot_slash": true,
+      "count": 50
+    },
+    "top_level_keys_not_documented": [],
+    "top_level_keys_observed": [
+      "$schema",
+      "description",
+      "name",
+      "owner",
+      "plugins"
+    ]
+  },
+  "sources": {
+    "discriminator_key": "source",
+    "forms_count": 5,
+    "git_subdir_url_accepts_github_shorthand_and_ssh": true,
+    "object_types": {
+      "git-subdir": {
+        "optional": [
+          "ref",
+          "sha"
+        ],
+        "required": [
+          "path",
+          "url"
+        ]
+      },
+      "github": {
+        "optional": [
+          "ref",
+          "sha"
+        ],
+        "required": [
+          "repo"
+        ]
+      },
+      "npm": {
+        "optional": [
+          "registry",
+          "version"
+        ],
+        "required": [
+          "package"
+        ]
+      },
+      "url": {
+        "optional": [
+          "ref",
+          "sha"
+        ],
+        "required": [
+          "url"
+        ]
+      }
+    },
+    "relative_path": {
+      "must_start_with": "./",
+      "type": "string"
+    },
+    "sha_wins_over_ref": true
+  },
+  "spec_version": "unversioned-2026-06-12"
+}
