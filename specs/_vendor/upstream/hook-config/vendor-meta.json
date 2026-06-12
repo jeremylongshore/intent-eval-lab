@@ -1,0 +1,77 @@
+{
+  "contract": "hook-config",
+  "spec_version": "unversioned-2026-06-12",
+  "fetched_at": "2026-06-12T21:41:34Z",
+  "note": "Contract-keyed deep capture (060-AT-SPEC). One-time build-time fetch; CI never refetches (offline determinism) — ongoing freshness is the watcher's job via the surface registry. Tier-2 conventions per 052-AT-SPEC: replace-in-place, lineage recorded (snapshot-updated in specs/lineage/log.jsonl), the extractor reads and never writes here. Like plugin-manifest (058-AT-SPEC) and agent-definition (059-AT-SPEC): hook-config has NO machine-readable upstream schema and NO upstream spec versioning — the code.claude.com hooks reference page is the spec (the Hook-lifecycle event table, the three-levels-of-nesting Configuration section, the Matcher-patterns tables, and the five Field|Required|Description handler-field tables) and hooks/hooks.json files from anthropics/claude-plugins-official are real-world corroboration (authority precedence per 050-AT-SPEC: the reference page is the spec; samples corroborate). DEVIATION from 059: the registry registers TWO surfaces for this contract (claude-hooks + claude-settings, both monitored); the hooks page is primary — it defines every handler field — and it references the settings page only for hooks-block placement and the allowManagedHooksOnly policy gate (Hook-locations section -> /en/settings#hook-configuration), so the settings page is vendored as supporting-doc (the 059 best-practices arrangement) even though it is itself a registered surface. Handler-field tables here carry lowercase yes/no in the Required column (059's table used Yes/No). spec_version is the capture date, not an upstream-declared revision.",
+  "files": [
+    {
+      "file": "claude-code-hooks.md",
+      "role": "reference-doc",
+      "surface": "claude-hooks",
+      "authority_tier": "reference",
+      "source_url": "https://code.claude.com/docs/en/hooks.md",
+      "sha256": "bd7d4bae3bd7139d4e5f12980b0c2339a7567094057c41e1d840f0e2d92fe461",
+      "bytes": 212053,
+      "version_basis": "The page carries no version identifier and upstream publishes no machine-readable schema for the hooks block; this .md form is the same URL/form the registry's fetch_claude_hooks extractor monitors (capture.urls + ext .md in specs/upstream-surface-registry.v1.json)."
+    },
+    {
+      "file": "claude-code-settings.md",
+      "role": "supporting-doc",
+      "surface": "claude-settings",
+      "authority_tier": "reference",
+      "source_url": "https://code.claude.com/docs/en/settings.md",
+      "sha256": "dfd389be54d2ed1afc7f477e0a978b9ba508b2110fa957c8a9511c80cbbe6f8b",
+      "bytes": 168205,
+      "version_basis": "Supporting authority: the hooks page's Hook-locations section points at /en/settings#hook-configuration for hooks-block placement inside settings files and the allowManagedHooksOnly enterprise gate. It defines NO hook-handler fields, so the extractor does not consume it; vendored because the hooks page references it for the config-shape placement (the registered fetch_claude_settings surface, same URL/form)."
+    },
+    {
+      "file": "sample-explanatory-output-style.hooks.json",
+      "role": "sample-hooks",
+      "surface": null,
+      "authority_tier": "sample-corroboration",
+      "source_url": "https://raw.githubusercontent.com/anthropics/claude-plugins-official/eb1510e138223ac656d9032f6caa625f8b52d207/plugins/explanatory-output-style/hooks/hooks.json",
+      "upstream_commit": "eb1510e138223ac656d9032f6caa625f8b52d207",
+      "source_path": "plugins/explanatory-output-style/hooks/hooks.json",
+      "sha256": "f941cedcbac07688675fb8d0fad741e9ba13900d73416409861001efe3fedba9",
+      "bytes": 323,
+      "selection_basis": "Minimal shape: one SessionStart matcher group with NO matcher field (exercises the documented omitted-matcher match-all form) and one command handler carrying only type + command."
+    },
+    {
+      "file": "sample-hookify.hooks.json",
+      "role": "sample-hooks",
+      "surface": null,
+      "authority_tier": "sample-corroboration",
+      "source_url": "https://raw.githubusercontent.com/anthropics/claude-plugins-official/eb1510e138223ac656d9032f6caa625f8b52d207/plugins/hookify/hooks/hooks.json",
+      "upstream_commit": "eb1510e138223ac656d9032f6caa625f8b52d207",
+      "source_path": "plugins/hookify/hooks/hooks.json",
+      "sha256": "d60651c94a42751d75db2f930faf083302acb45db9a7d8f4a5f6878f71537298",
+      "bytes": 1036,
+      "selection_basis": "Multi-event breadth: four events (PreToolUse, PostToolUse, Stop, UserPromptSubmit) each with a matcher-less group and a command handler carrying an explicit numeric timeout (10)."
+    },
+    {
+      "file": "sample-ralph-loop.hooks.json",
+      "role": "sample-hooks",
+      "surface": null,
+      "authority_tier": "sample-corroboration",
+      "source_url": "https://raw.githubusercontent.com/anthropics/claude-plugins-official/eb1510e138223ac656d9032f6caa625f8b52d207/plugins/ralph-loop/hooks/hooks.json",
+      "upstream_commit": "eb1510e138223ac656d9032f6caa625f8b52d207",
+      "source_path": "plugins/ralph-loop/hooks/hooks.json",
+      "sha256": "cd60eabe587794c00c873c6f36d340f970c4b57ab9c5664d80c5a22915e74302",
+      "bytes": 291,
+      "selection_basis": "Single no-matcher-support event (Stop) with the minimal type + command handler — the smallest real wiring shape observed."
+    },
+    {
+      "file": "sample-security-guidance.hooks.json",
+      "role": "sample-hooks",
+      "surface": null,
+      "authority_tier": "sample-corroboration",
+      "source_url": "https://raw.githubusercontent.com/anthropics/claude-plugins-official/eb1510e138223ac656d9032f6caa625f8b52d207/plugins/security-guidance/hooks/hooks.json",
+      "upstream_commit": "eb1510e138223ac656d9032f6caa625f8b52d207",
+      "source_path": "plugins/security-guidance/hooks/hooks.json",
+      "sha256": "a1cf22c2d2e38c709f252d654ff0666f06d0e1ab3ac92ab3a0ecf8f01ebf698d",
+      "bytes": 4393,
+      "selection_basis": "Fullest real shape: explicit matchers (Edit|Write|MultiEdit|NotebookEdit pipe-list, Bash exact), the if permission-rule field, asyncRewake, an explicit 180 timeout — AND two fields the hooks page does not document (rewakeMessage, rewakeSummary), the capture's key observed-in-samples provenance finding."
+    }
+  ],
+  "samples_note": "github.com/anthropics/claude-plugins-official is listed under unmonitored_candidates in specs/upstream-surface-registry.v1.json (not a registered surface); these vendor-meta entries are the samples' provenance records until a sampleable surface is registered per 050-AT-SPEC change discipline — the same arrangement the plugin-manifest (058) and agent-definition (059) captures use. All 4 samples were commit-pinned to the same commit those captures pin (eb1510e1). A 5th candidate at that commit (plugins/learning-output-style/hooks/hooks.json) was excluded as structurally identical to the explanatory-output-style sample (same single-SessionStart, single-command-handler shape). NEGATIVE FACT: anthropics/claude-code was also checked at HEAD (ee81682a) — its plugins/*/hooks/hooks.json files mirror the same claude-plugins-official content, and its examples/settings/*.json files (settings-strict, settings-lax, settings-bash-sandbox, mdm/managed-settings) carry NO hooks block, so no public pinnable settings-file-form hook sample exists in either repo; all 4 samples are the plugin hooks/hooks.json form (top-level description + hooks keys). Ground-truth observations across the 4: every event used is in the documented 30-event enum; every handler is type command; matcher-less groups, '|' pipe-list matchers, if, timeout, async-rewake wiring all appear; rewakeMessage + rewakeSummary appear in one official sample but on no documented field table — recorded observed-in-samples, never documented."
+}
