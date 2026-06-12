@@ -11,12 +11,18 @@ name: Spec drift watch
 # Sources + extraction logic: scripts/spec-drift-check.sh (DRY — workflow only
 # handles CI side effects, not the polling logic itself).
 #
-# Three layers (the deterministic detection backbone — never replaced by an LLM):
+# Four layers (the deterministic detection backbone — never replaced by an LLM):
 #   1. byte-hash drift   (spec-drift-check.sh) — "did the page change?"
 #   2. field-level diff   (spec-projection-diff.py) — "did the normative SHAPE change?"
 #   3. liveness guards    (watcher-liveness.py) — so it cannot fail silent-green:
 #        - fetch_error_streak >= 3  → a surface is effectively unmonitored → fail loud
 #        - dead-man heartbeat       → external ping (true dead-man) + retrospective gap check on resume
+#   4. taxonomy-gated capture (fetch-capture.py, 052-AT-SPEC) — every fetch attempt
+#      classified FETCH_OK|UNREACHABLE|MOVED|RATELIMITED|SHAPE_CHANGED|TRUNCATED and
+#      archived append-only (tier 1 archive/raw/, sha256-deduplicated bodies); ONLY a
+#      FETCH_OK record updates the tier-2 vendored snapshot (specs/_vendor/). A bad
+#      fetch keeps the last-good snapshot, alerts via ntfy, and NEVER opens a
+#      reconciliation issue/PR.
 #
 # Side effects on drift / liveness trip:
 #   1. Workflow fails (visible red X)
@@ -38,6 +44,8 @@ on:
       - 'scripts/spec-drift-check.sh'
       - 'scripts/spec-projection-diff.py'
       - 'scripts/watcher-liveness.py'
+      - 'scripts/fetch-capture.py'
+      - 'specs/upstream-surface-registry.v1.json'
       - 'specs/snapshots/.sha/**'
       - '_vendor/upstream/**'
   push:
@@ -47,12 +55,14 @@ on:
       - 'scripts/spec-drift-check.sh'
       - 'scripts/spec-projection-diff.py'
       - 'scripts/watcher-liveness.py'
+      - 'scripts/fetch-capture.py'
+      - 'specs/upstream-surface-registry.v1.json'
       - 'specs/snapshots/.sha/**'
       - '_vendor/upstream/**'
 
 permissions:
-  contents: read
-  issues: write   # for auto-opening drift issues
+  contents: write  # archive commit-back (tier-1 raw + tier-2 vendored, append-only)
+  issues: write    # for auto-opening drift issues
 
 jobs:
   spec-drift-check:
@@ -121,6 +131,73 @@ jobs:
           cat /tmp/drift-report.txt
           scripts/spec-drift-check.sh --json > /tmp/drift-report.json 2>/dev/null || true
 
+      # Taxonomy-gated capture self-test (052-AT-SPEC): offline, fixtures-driven —
+      # proves all 6 statuses classify correctly and the append/dedup/tier-2 gating
+      # is sound. Gates every event (a real CI check, like the projection self-test).
+      - name: Fetch-capture self-test (offline, deterministic)
+        id: capture_selftest
+        shell: bash
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          if python3 scripts/fetch-capture.py --self-test; then
+            echo "selftest=pass" >> "${GITHUB_OUTPUT}"
+          else
+            echo "selftest=fail" >> "${GITHUB_OUTPUT}"
+          fi
+
+      # Tier-1/tier-2 capture (scheduled + manual runs only — a PR must not hit the
+      # network or grow the archive). Every fetch attempt appends a raw record under
+      # archive/raw/<surface>/ (bodies sha256-deduplicated); ONLY FETCH_OK records
+      # update specs/_vendor/<surface>/. A bad fetch leaves the last-good vendored
+      # snapshot untouched and surfaces bad_fetch=true for the ntfy alert below —
+      # it NEVER feeds the differ and NEVER opens a reconciliation issue.
+      - name: Capture raw fetches into the archive tiers
+        id: capture
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        shell: bash
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          if python3 scripts/fetch-capture.py --report /tmp/capture-report.json > /tmp/capture-log.txt 2>&1; then
+            echo "bad_fetch=false" >> "${GITHUB_OUTPUT}"
+          else
+            echo "bad_fetch=true" >> "${GITHUB_OUTPUT}"
+          fi
+          cat /tmp/capture-log.txt
+
+      # Persist the appended archive records + any tier-2 promotion. Append-only by
+      # construction: fetch-capture.py never deletes or rewrites an existing record,
+      # so this commit is purely additive. [skip ci] keeps the bot commit from
+      # re-triggering doc/CI workflows.
+      - name: Commit archive tiers back (append-only)
+        id: archive_commit
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "$(git status --porcelain archive/ specs/_vendor/ 2>/dev/null)" ]]; then
+            echo "No archive/vendored changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add archive/ specs/_vendor/
+          git commit -m "chore(spec-archive): capture $(date -u +%Y-%m-%dT%H:%MZ) raw fetches [skip ci]"
+          if ! git push origin "HEAD:${GITHUB_REF_NAME}"; then
+            echo "::warning::archive commit-back push failed (branch protection?) — delta preserved as a workflow artifact."
+            echo "push_failed=true" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Upload archive delta artifact (push-failure fallback)
+        if: steps.archive_commit.outputs.push_failed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: spec-archive-delta-${{ github.run_id }}
+          path: |
+            archive/
+            specs/_vendor/
+
       # Dead-man heartbeat (true, external): ping an uptime monitor so absence of
       # a daily ping alerts even when the cron itself stops firing. Optional
       # secret — if unset, skip (the retrospective gap check + record-run remain).
@@ -185,6 +262,8 @@ jobs:
             echo "| field-level projection drift | ${{ steps.projection.outputs.drift }} |"
             echo "| dead-man heartbeat stale | ${{ steps.heartbeat.outputs.stale }} |"
             echo "| fetch-error streak exceeded | ${{ steps.streak.outputs.exceeded }} |"
+            echo "| capture self-test | ${{ steps.capture_selftest.outputs.selftest }} |"
+            echo "| capture bad fetch (taxonomy) | ${{ steps.capture.outputs.bad_fetch }} |"
             echo ""
             echo "### Byte-hash report"
             echo '```'
@@ -194,15 +273,23 @@ jobs:
             echo '```'
             cat /tmp/projection-report.txt 2>/dev/null || true
             echo '```'
+            echo "### Capture report (tier-1/tier-2)"
+            echo '```'
+            cat /tmp/capture-log.txt 2>/dev/null || echo "(capture runs on schedule/dispatch only)"
+            echo '```'
           } >> "${GITHUB_STEP_SUMMARY}"
 
-      - name: Fire ntfy notification on drift or liveness trip
+      # bad_fetch is in THIS condition (alert) but deliberately NOT in the
+      # issue-open condition below — a bad fetch never opens a reconciliation
+      # issue/PR (052-AT-SPEC: only FETCH_OK output feeds anything downstream).
+      - name: Fire ntfy notification on drift, liveness trip, or bad fetch
         if: >-
           github.event_name == 'schedule' &&
           (steps.check.outputs.drift == 'true' ||
            steps.projection.outputs.drift == 'true' ||
            steps.heartbeat.outputs.stale == 'true' ||
-           steps.streak.outputs.exceeded == 'true')
+           steps.streak.outputs.exceeded == 'true' ||
+           steps.capture.outputs.bad_fetch == 'true')
         shell: bash
         run: |
           if [[ -z "${NTFY_URL:-}" ]]; then
@@ -210,8 +297,9 @@ jobs:
             exit 0
           fi
           {
-            echo "byte-drift=${{ steps.check.outputs.drift }} field-drift=${{ steps.projection.outputs.drift }} heartbeat-stale=${{ steps.heartbeat.outputs.stale }} streak-exceeded=${{ steps.streak.outputs.exceeded }}"
+            echo "byte-drift=${{ steps.check.outputs.drift }} field-drift=${{ steps.projection.outputs.drift }} heartbeat-stale=${{ steps.heartbeat.outputs.stale }} streak-exceeded=${{ steps.streak.outputs.exceeded }} bad-fetch=${{ steps.capture.outputs.bad_fetch }}"
             head -10 /tmp/drift-report.txt
+            grep -v FETCH_OK /tmp/capture-log.txt 2>/dev/null | head -6 || true
           } > /tmp/ntfy-body.txt
           curl -fsSL \
             -H "Title: Spec drift / liveness (intent-eval-lab)" \
@@ -285,13 +373,15 @@ jobs:
             --label "refiner"
 
       # Offline-deterministic gates fail on EVERY event (they are real CI checks of
-      # the differ + snapshot↔projection consistency): self-test soundness + --check.
-      - name: Fail on projection self-test / consistency failure (all events)
+      # the differ + snapshot↔projection consistency + the capture taxonomy):
+      # self-test soundness + --check + fetch-capture --self-test.
+      - name: Fail on projection / capture self-test or consistency failure (all events)
         if: >-
           steps.projection.outputs.selftest == 'fail' ||
-          steps.projection.outputs.drift == 'true'
+          steps.projection.outputs.drift == 'true' ||
+          steps.capture_selftest.outputs.selftest == 'fail'
         run: |
-          echo "::error::Projection fitness function failed (self-test unsound or snapshot↔projection drift)."
+          echo "::error::Offline gate failed (projection self-test/consistency or fetch-capture taxonomy self-test)."
           exit 1
 
       # Live / stateful monitoring gates fail only on the scheduled run (a PR
