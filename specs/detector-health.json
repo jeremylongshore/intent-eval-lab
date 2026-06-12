@@ -1,0 +1,236 @@
+{
+  "_generated": "GENERATED-DO-NOT-EDIT \u2014 composite detector-health document derived from committed state (watcher-liveness state + surface registry + lineage coverage map + drift baselines). Regenerate: python3 scripts/detector-health.py. Normative spec: 000-docs/057-AT-SPEC-detector-health-composite-dashboard-2026-06-12.md",
+  "conditions": {
+    "coverage-at-target": {
+      "coverage_pct": 100.0,
+      "detail": "16/16 registered surfaces monitored (100.0% of target 100%)",
+      "monitored_surfaces": 16,
+      "pass": true,
+      "registered_surfaces": 16,
+      "target_pct": 100.0
+    },
+    "no-fetch-error-streaks": {
+      "detail": "all 0 tracked surfaces under the streak threshold (3)",
+      "pass": true,
+      "streak_threshold": 3,
+      "surfaces_at_or_over_threshold": []
+    },
+    "watcher-run-recent": {
+      "detail": "no successful watcher run recorded \u2014 bootstrap state is not proof of life; an unproven watcher is DEGRADED, never green",
+      "gap_hours": null,
+      "last_run_utc": null,
+      "max_gap_hours": 26.0,
+      "pass": false
+    }
+  },
+  "drift_rows": [
+    {
+      "adopted": true,
+      "authority_tier": "official-spec",
+      "baseline_sha256": "9d770de8f1b0556e6198defeba162e3336df431b60b52bf786f3700c5555493b",
+      "contract": "skill-frontmatter",
+      "divergences_outstanding": 7,
+      "fetch_error_streak": 0,
+      "last_ok_utc": null,
+      "monitored": true,
+      "surface": "agentskills-spec"
+    },
+    {
+      "adopted": false,
+      "authority_tier": "release-feed",
+      "baseline_sha256": "f99507064aeba1e13c4ff77d3b1d84a9f74a575bbeb088038dbaa505a31ae70f",
+      "contract": "cross-cutting-signal",
+      "divergences_outstanding": 0,
+      "fetch_error_streak": 0,
+      "last_ok_utc": null,
+      "monitored": true,
+      "surface": "anthropic-engineering"
+    },
+    {
+      "adopted": false,
+      "authority_tier": "changelog",
+      "baseline_sha256": "1ef5cb06ed90f3d9acebbd8aadc58fa85862f9a3ea9c4650d5631363a8e5345f",
+      "contract": "version-signal",
+      "divergences_outstanding": 0,
+      "fetch_error_streak": 0,
+      "last_ok_utc": null,
+      "monitored": true,
+      "surface": "claude-code-changelog"
+    },
+    {
+      "adopted": false,
+      "authority_tier": "changelog",
+      "baseline_sha256": "8c12dd45ecf0c4d2261efe911b7fe17f9e17ab503ddcc57d628f02dafdefc969",
+      "contract": "version-signal",
+      "divergences_outstanding": 0,
+      "fetch_error_streak": 0,
+      "last_ok_utc": null,
+      "monitored": true,
+      "surface": "claude-code-npm"
+    },
+    {
+      "adopted": false,
+      "authority_tier": "release-feed",
+      "baseline_sha256": "556b4faba702ab3977637554457b52e4316ea37998bcc316fc5a5b27273afb54",
+      "contract": "version-signal",
+      "divergences_outstanding": 0,
+      "fetch_error_streak": 0,
+      "last_ok_utc": null,
+      "monitored": true,
+      "surface": "claude-code-releases"
+    },
+    {
+      "adopted": true,
+      "authority_tier": "reference",
+      "baseline_sha256": "0b644e2208f80b860530d578d85872d405d9c529c500b34fd24ed7c223a22ab7",
+      "contract": "hook-config",
+      "divergences_outstanding": 0,
+      "fetch_error_streak": 0,
+      "last_ok_utc": null,
+      "monitored": true,
+      "surface": "claude-hooks"
+    },
+    {
+      "adopted": true,
+      "authority_tier": "reference",
+      "baseline_sha256": "491b623ae2740a7266454309276f0de09fb9e843c5e950a99c0fe116cf952fd9",
+      "contract": "hook-config",
+      "divergences_outstanding": 0,
+      "fetch_error_streak": 0,
+      "last_ok_utc": null,
+      "monitored": true,
+      "surface": "claude-settings"
+    },
+    {
+      "adopted": false,
+      "authority_tier": "reference",
+      "baseline_sha256": "d7d367c7d0040ba05b96688511727ff9456a9057f22b417c5e1f279b7f6b08d7",
+      "contract": "slash-commands",
+      "divergences_outstanding": 0,
+      "fetch_error_streak": 0,
+      "last_ok_utc": null,
+      "monitored": true,
+      "surface": "claude-slash-commands"
+    },
+    {
+      "adopted": true,
+      "authority_tier": "release-feed",
+      "baseline_sha256": "1b180712c47fbf17e7bd4256a568508709ccd7240a6c32c18a5daffa3f962dad",
+      "contract": "mcp-config",
+      "divergences_outstanding": 0,
+      "fetch_error_streak": 0,
+      "last_ok_utc": null,
+      "monitored": true,
+      "surface": "mcp-releases"
+    },
+    {
+      "adopted": true,
+      "authority_tier": "official-spec-machine-readable",
+      "baseline_sha256": "1bf94a601817ab07fc04058a9ff2e031227f9b9384e198ea7f187e75eb4b9ec6",
+      "contract": "mcp-config",
+      "divergences_outstanding": 0,
+      "fetch_error_streak": 0,
+      "last_ok_utc": null,
+      "monitored": true,
+      "surface": "mcp-schema-ts"
+    },
+    {
+      "adopted": true,
+      "authority_tier": "official-spec",
+      "baseline_sha256": "9afb71b14f689387a6d29cdb89ba7f47d8a5555ae4565cc31b253ab53da2abf2",
+      "contract": "mcp-config",
+      "divergences_outstanding": 0,
+      "fetch_error_streak": 0,
+      "last_ok_utc": null,
+      "monitored": true,
+      "surface": "mcp-spec-docs"
+    },
+    {
+      "adopted": true,
+      "authority_tier": "anthropic-doc",
+      "baseline_sha256": "0bd9758afca5cc32441bb59a9b59b1a3fe3717b77fa7cc48abd6f24b0ff0e9cb",
+      "contract": "skill-frontmatter",
+      "divergences_outstanding": 0,
+      "fetch_error_streak": 0,
+      "last_ok_utc": null,
+      "monitored": true,
+      "surface": "platform-skills-overview"
+    },
+    {
+      "adopted": true,
+      "authority_tier": "reference",
+      "baseline_sha256": "1f37e87ff3442fb7bcf35dd07bcff6509a49c4e0140119849b472ee8794317cd",
+      "contract": "marketplace-catalog",
+      "divergences_outstanding": 0,
+      "fetch_error_streak": 0,
+      "last_ok_utc": null,
+      "monitored": true,
+      "surface": "plugin-marketplaces"
+    },
+    {
+      "adopted": true,
+      "authority_tier": "reference",
+      "baseline_sha256": "bbb4618ec8b1f1a29d20fae1792e5aab1e0f1f04efc528d86cfde458e9e727e7",
+      "contract": "plugin-manifest",
+      "divergences_outstanding": 0,
+      "fetch_error_streak": 0,
+      "last_ok_utc": null,
+      "monitored": true,
+      "surface": "plugins-reference"
+    },
+    {
+      "adopted": true,
+      "authority_tier": "release-feed",
+      "baseline_sha256": "8ab0fc2a54fa7c0323e1585b61e53a5a6e8d9a98435134428bfd5b8624d41ae1",
+      "contract": "skill-frontmatter",
+      "divergences_outstanding": 0,
+      "fetch_error_streak": 0,
+      "last_ok_utc": null,
+      "monitored": true,
+      "surface": "skills-releases"
+    },
+    {
+      "adopted": true,
+      "authority_tier": "reference",
+      "baseline_sha256": "824162201ae408cdb5b6746d6fd433eeae9165a3425e0cd58ee19d840a01b846",
+      "contract": "agent-definition",
+      "divergences_outstanding": 0,
+      "fetch_error_streak": 0,
+      "last_ok_utc": null,
+      "monitored": true,
+      "surface": "sub-agents"
+    }
+  ],
+  "evaluated_at": "2026-06-12T19:58:10Z",
+  "failing_conditions": [
+    "watcher-run-recent"
+  ],
+  "health_version": "detector-health/v1",
+  "inputs": {
+    "specs/lineage/coverage-map.json": "86460ac3b6df54e3446ac7ba84b13eb1f8aef2509aedb83c2093c5cc48117873",
+    "specs/snapshots/.sha/agentskills-spec.sha": "abd9c47b9f663c9325ff00463f3bbb3aab7b1027e05bccd188d4bd94b883cca5",
+    "specs/snapshots/.sha/anthropic-engineering.sha": "f7b2166fb88215842ced23bb35ac38bbc13c313fb4a0fd862032c5684ebd33db",
+    "specs/snapshots/.sha/claude-code-changelog.sha": "3680d5061d691d527445f5c2559586551d48e3f02446805eb1460eb1d635ad5d",
+    "specs/snapshots/.sha/claude-code-npm.sha": "e858ace3cc91048f520807fc33af68ec3989d1bd0a4ddc5a64af5b1b3dee3fe5",
+    "specs/snapshots/.sha/claude-code-releases.sha": "40e6fa03facce13fbf32fa6edcbab623dd49c3579d7e1d72e64c983a68bf8807",
+    "specs/snapshots/.sha/claude-hooks.sha": "8ab1352ad3d111b5a081dc1e46b10138207e971ddd547ce93bac57aaffc19b51",
+    "specs/snapshots/.sha/claude-settings.sha": "5af3b7ec7f863c0b8f49914247ba30129d42eb9683d3725025f55c132c39a8e0",
+    "specs/snapshots/.sha/claude-slash-commands.sha": "2fbf7f3c475fe43ba304e1356b644d144240fe76d331763ae80fac29a589dcc5",
+    "specs/snapshots/.sha/mcp-releases.sha": "abacf9472a98686b4a292a255a81707532fbb14a1eeaf4976cc0a93cb2428a29",
+    "specs/snapshots/.sha/mcp-schema-ts.sha": "637ec1c4c3c60701906def8019805e2da38aabee3472597df559b8673412ac4e",
+    "specs/snapshots/.sha/mcp-spec-docs.sha": "4059d11327d17616918ec9890949fbeed15722a7bb7faab85fe9b566424e2a35",
+    "specs/snapshots/.sha/platform-skills-overview.sha": "0fb25330e8d7b377f1986213b3ec1d0ac9174d8000acce7cb0f3006a62a8a09f",
+    "specs/snapshots/.sha/plugin-marketplaces.sha": "565e27084d7e20065397a8cad29a709981a955e05b1e8d57f2c3621602b0d5a8",
+    "specs/snapshots/.sha/plugins-reference.sha": "5cf5a002ae7f9c23da303407c889f9d8a4e9829fe961c07b5b693a1687cb3557",
+    "specs/snapshots/.sha/skills-releases.sha": "698ed71afca22f55068c34b7d92ea5b6551f6bd4ce8a126a5b1b4c68de349668",
+    "specs/snapshots/.sha/sub-agents.sha": "bd8f915ad666f53f6d1b914ffc5e931d502c65d645803d6cc4be22dfe52ceea9",
+    "specs/snapshots/.state.json": "ae615f3644a1a9edf2a8dfc08a59525e82d1c13de4f2a645e67d30cff4e1ba83",
+    "specs/upstream-surface-registry.v1.json": "ee8f88bea7fe3bb23945aae06aa11b20a46d51ef7b77ad115edb7bdc04073d9b"
+  },
+  "lineage": {
+    "convergence_triggers_fired": 0,
+    "divergences_outstanding": 7,
+    "surfaces_adopted": 11
+  },
+  "verdict": "DEGRADED"
+}
