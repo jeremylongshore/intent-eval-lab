@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
-# Polls 6 spec sources, compares each against a committed snapshot hash, and
+# Polls 11 spec sources, compares each against a committed snapshot hash, and
 # reports drift. Used by .github/workflows/spec-drift-watch.yml (daily cron)
 # and locally for ad-hoc checks or seeding new baselines via --init.
+#
+# Surface coverage (9k5h): the 6 original surfaces (Claude Code changelog + npm,
+# the platform SKILL.md page, the engineering blog, anthropics/skills, agentskills.io)
+# plus the Wave-1 expansion (9k5h.7): the MCP protocol spec + machine-readable
+# schema.ts, and the Claude Code hooks / settings / slash-commands references.
+# Wave 2 (9k5h.8) adds plugins-reference, sub-agents, marketplace, MCP releases.
 #
 # Sources defined here in one place (DRY); the workflow only handles CI side
 # effects (open issue, fire ntfy).
@@ -81,6 +87,44 @@ fetch_agentskills_spec() {
     | sha256sum | awk '{print $1}'
 }
 
+# ── Wave 1 expansion (9k5h.7): the 5 surfaces with no prior coverage. These add
+# the contracts the kernel authoring family governs but the watcher was blind to —
+# the MCP protocol (the ONE truly machine-readable upstream) + the Claude Code
+# hooks / settings / slash-commands references. Each verified deterministic across
+# consecutive fetches (the .md-shim / raw-file pattern the existing extractors use).
+
+fetch_mcp_schema_ts() {
+  # THE machine-readable upstream — the MCP protocol schema as TypeScript source.
+  # Authority precedence: this spec beats Claude's mcp doc page. It is the
+  # field-level-diff proving ground (9k5h.11); the byte-hash here catches any change.
+  curl -fsSL "https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/schema/draft/schema.ts" \
+    | sha256sum | awk '{print $1}'
+}
+
+fetch_mcp_spec_docs() {
+  # MCP specification (draft) — the human-facing normative spec page.
+  curl -fsSL "https://modelcontextprotocol.io/specification/draft" \
+    | sha256sum | awk '{print $1}'
+}
+
+fetch_claude_hooks() {
+  # Claude Code hooks reference — Mintlify .md shim (deterministic).
+  curl -fsSL "https://code.claude.com/docs/en/hooks.md" \
+    | sha256sum | awk '{print $1}'
+}
+
+fetch_claude_settings() {
+  # Claude Code settings reference (incl. hook `if` syntax) — .md shim.
+  curl -fsSL "https://code.claude.com/docs/en/settings.md" \
+    | sha256sum | awk '{print $1}'
+}
+
+fetch_claude_slash_commands() {
+  # Claude Code slash-commands reference — .md shim.
+  curl -fsSL "https://code.claude.com/docs/en/slash-commands.md" \
+    | sha256sum | awk '{print $1}'
+}
+
 # Source registry: name | description | extractor
 SOURCES=(
   "claude-code-changelog|Claude Code published changelog (code.claude.com/docs/en/changelog.md)|fetch_cc_changelog"
@@ -89,6 +133,12 @@ SOURCES=(
   "anthropic-engineering|Anthropic engineering blog (top article)|fetch_anthropic_engineering"
   "skills-releases|github.com/anthropics/skills releases + commits|fetch_skills_releases_atom"
   "agentskills-spec|agentskills.io open standard|fetch_agentskills_spec"
+  # Wave 1 (9k5h.7) — MCP protocol + Claude Code hooks/settings/slash-commands.
+  "mcp-schema-ts|MCP protocol schema (machine-readable schema.ts, draft)|fetch_mcp_schema_ts"
+  "mcp-spec-docs|MCP specification draft (modelcontextprotocol.io)|fetch_mcp_spec_docs"
+  "claude-hooks|Claude Code hooks reference|fetch_claude_hooks"
+  "claude-settings|Claude Code settings reference (hook if-syntax)|fetch_claude_settings"
+  "claude-slash-commands|Claude Code slash-commands reference|fetch_claude_slash_commands"
 )
 
 declare -a DRIFT_LIST=()
