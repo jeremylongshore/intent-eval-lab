@@ -1,0 +1,187 @@
+{
+  "captured_from": {
+    "reference_doc": "claude-code-sub-agents.md",
+    "samples": [
+      "sample-agent-creator.agent.md",
+      "sample-agent-sdk-verifier-py.agent.md",
+      "sample-architecture-critic.agent.md",
+      "sample-code-architect.agent.md",
+      "sample-conversation-analyzer.agent.md"
+    ],
+    "supporting_docs": [
+      "platform-skill-authoring-best-practices.md"
+    ]
+  },
+  "contract": "agent-definition",
+  "frontmatter": {
+    "fields": {
+      "background": {
+        "observed_in_samples": false,
+        "required": false,
+        "set_to_value": "true",
+        "source": "documented"
+      },
+      "color": {
+        "enum": [
+          "red",
+          "blue",
+          "green",
+          "yellow",
+          "purple",
+          "orange",
+          "pink",
+          "cyan"
+        ],
+        "observed_in_samples": true,
+        "required": false,
+        "source": "documented"
+      },
+      "description": {
+        "observed_in_samples": true,
+        "required": true,
+        "source": "documented"
+      },
+      "disallowedTools": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented"
+      },
+      "effort": {
+        "enum": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented"
+      },
+      "hooks": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented"
+      },
+      "initialPrompt": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented"
+      },
+      "isolation": {
+        "observed_in_samples": false,
+        "required": false,
+        "set_to_value": "worktree",
+        "source": "documented"
+      },
+      "maxTurns": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented"
+      },
+      "mcpServers": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented"
+      },
+      "memory": {
+        "enum": [
+          "user",
+          "project",
+          "local"
+        ],
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented"
+      },
+      "model": {
+        "observed_in_samples": true,
+        "required": false,
+        "source": "documented"
+      },
+      "name": {
+        "observed_in_samples": true,
+        "required": true,
+        "source": "documented"
+      },
+      "permissionMode": {
+        "enum": [
+          "default",
+          "acceptEdits",
+          "auto",
+          "dontAsk",
+          "bypassPermissions",
+          "plan"
+        ],
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented"
+      },
+      "skills": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented"
+      },
+      "tools": {
+        "observed_in_samples": true,
+        "required": false,
+        "source": "documented"
+      }
+    },
+    "model_aliases_documented": [
+      "sonnet",
+      "opus",
+      "haiku",
+      "fable"
+    ],
+    "model_default_inherit": true,
+    "model_full_id_latitude": true,
+    "model_inherit_documented": true,
+    "name_description_only_required": true,
+    "name_lowercase_hyphens_prose": true,
+    "table_columns": [
+      "Field",
+      "Required",
+      "Description"
+    ],
+    "table_documents_no_types": true,
+    "tools_inherit_all_if_omitted": true,
+    "tools_wire_form_in_example": "comma-separated-string",
+    "write_example_fields": [
+      "description",
+      "model",
+      "name",
+      "tools"
+    ]
+  },
+  "projection_version": "spec-projection/v1",
+  "samples": {
+    "block_scalar_description_count": 1,
+    "color_values_observed": [
+      "green",
+      "magenta",
+      "yellow"
+    ],
+    "color_values_outside_documented_enum": [
+      "magenta"
+    ],
+    "count": 5,
+    "fields_observed_not_documented": [],
+    "model_values_observed": [
+      "inherit",
+      "sonnet"
+    ],
+    "tools_wire_forms_observed": [
+      "comma-separated-string",
+      "flow-array"
+    ],
+    "top_level_fields_observed": [
+      "color",
+      "description",
+      "model",
+      "name",
+      "tools"
+    ]
+  },
+  "spec_version": "unversioned-2026-06-12"
+}
