@@ -1,0 +1,190 @@
+{
+  "_generated": "GENERATED-DO-NOT-EDIT \u2014 derived projection of the append-only lineage log (specs/lineage/log.jsonl). Regenerate: python3 scripts/lineage-log.py project-coverage. Normative spec: 000-docs/054-AT-SPEC-lineage-log-and-derived-coverage-map-2026-06-12.md",
+  "derived_from": {
+    "last_event_id": 19,
+    "line_count": 19,
+    "log": "specs/lineage/log.jsonl"
+  },
+  "projection_version": "lineage-coverage/v1",
+  "surfaces": {
+    "agentskills-spec": {
+      "adopted": {
+        "at": "2026-06-09T00:00:00Z",
+        "event_id": 2
+      },
+      "contract": "skill-frontmatter",
+      "convergence_fired": [],
+      "convergence_triggers_outstanding": 7,
+      "divergences_outstanding": [
+        {
+          "convergence_trigger": "agentskills.io promotes allowed-tools out of EXPERIMENTAL and into its required set -> move the required-membership to upstream-base",
+          "event_id": 5,
+          "since": "2026-06-09T00:00:00Z",
+          "subject": "skill-frontmatter/allowed-tools"
+        },
+        {
+          "convergence_trigger": "agentskills.io adds a top-level required `version` -> move it to upstream-base",
+          "event_id": 6,
+          "since": "2026-06-09T00:00:00Z",
+          "subject": "skill-frontmatter/version"
+        },
+        {
+          "convergence_trigger": "agentskills.io adds a top-level required `author` -> move it to upstream-base",
+          "event_id": 7,
+          "since": "2026-06-09T00:00:00Z",
+          "subject": "skill-frontmatter/author"
+        },
+        {
+          "convergence_trigger": "agentskills.io makes license required -> move the required-membership to upstream-base",
+          "event_id": 8,
+          "since": "2026-06-09T00:00:00Z",
+          "subject": "skill-frontmatter/license"
+        },
+        {
+          "convergence_trigger": "agentskills.io makes compatibility required -> move the required-membership to upstream-base",
+          "event_id": 9,
+          "since": "2026-06-09T00:00:00Z",
+          "subject": "skill-frontmatter/compatibility"
+        },
+        {
+          "convergence_trigger": "only if the open standard introduces a top-level `tags` array (zero upstream provenance; convergence unlikely)",
+          "event_id": 10,
+          "since": "2026-06-09T00:00:00Z",
+          "subject": "skill-frontmatter/tags"
+        },
+        {
+          "convergence_trigger": "none declared upstream \u2014 pure IS optional extension fields (validator schema 3.5.0/3.6.0); converge only if the open standard adds equivalent top-level fields",
+          "event_id": 11,
+          "since": "2026-06-09T00:00:00Z",
+          "subject": "skill-frontmatter/is-optional-extensions"
+        }
+      ],
+      "last_fetch_degraded": null,
+      "last_snapshot_updated": {
+        "at": "2026-05-28T00:00:00Z",
+        "event_id": 1,
+        "upstream_version": "baf88bdba9ea84f37113b6ebf45ece9613c9897cc6d0474f3b99e84a8569106d"
+      }
+    },
+    "claude-hooks": {
+      "adopted": {
+        "at": "2026-06-11T00:00:00Z",
+        "event_id": 15
+      },
+      "contract": "hook-config",
+      "convergence_fired": [],
+      "convergence_triggers_outstanding": 0,
+      "divergences_outstanding": [],
+      "last_fetch_degraded": null,
+      "last_snapshot_updated": null
+    },
+    "claude-settings": {
+      "adopted": {
+        "at": "2026-06-11T00:00:00Z",
+        "event_id": 16
+      },
+      "contract": "hook-config",
+      "convergence_fired": [],
+      "convergence_triggers_outstanding": 0,
+      "divergences_outstanding": [],
+      "last_fetch_degraded": null,
+      "last_snapshot_updated": null
+    },
+    "mcp-releases": {
+      "adopted": {
+        "at": "2026-06-11T00:00:00Z",
+        "event_id": 14
+      },
+      "contract": "mcp-config",
+      "convergence_fired": [],
+      "convergence_triggers_outstanding": 0,
+      "divergences_outstanding": [],
+      "last_fetch_degraded": null,
+      "last_snapshot_updated": null
+    },
+    "mcp-schema-ts": {
+      "adopted": {
+        "at": "2026-06-11T00:00:00Z",
+        "event_id": 12
+      },
+      "contract": "mcp-config",
+      "convergence_fired": [],
+      "convergence_triggers_outstanding": 0,
+      "divergences_outstanding": [],
+      "last_fetch_degraded": null,
+      "last_snapshot_updated": null
+    },
+    "mcp-spec-docs": {
+      "adopted": {
+        "at": "2026-06-11T00:00:00Z",
+        "event_id": 13
+      },
+      "contract": "mcp-config",
+      "convergence_fired": [],
+      "convergence_triggers_outstanding": 0,
+      "divergences_outstanding": [],
+      "last_fetch_degraded": null,
+      "last_snapshot_updated": null
+    },
+    "platform-skills-overview": {
+      "adopted": {
+        "at": "2026-06-09T00:00:00Z",
+        "event_id": 3
+      },
+      "contract": "skill-frontmatter",
+      "convergence_fired": [],
+      "convergence_triggers_outstanding": 0,
+      "divergences_outstanding": [],
+      "last_fetch_degraded": null,
+      "last_snapshot_updated": null
+    },
+    "plugin-marketplaces": {
+      "adopted": {
+        "at": "2026-06-11T00:00:00Z",
+        "event_id": 19
+      },
+      "contract": "marketplace-catalog",
+      "convergence_fired": [],
+      "convergence_triggers_outstanding": 0,
+      "divergences_outstanding": [],
+      "last_fetch_degraded": null,
+      "last_snapshot_updated": null
+    },
+    "plugins-reference": {
+      "adopted": {
+        "at": "2026-06-11T00:00:00Z",
+        "event_id": 17
+      },
+      "contract": "plugin-manifest",
+      "convergence_fired": [],
+      "convergence_triggers_outstanding": 0,
+      "divergences_outstanding": [],
+      "last_fetch_degraded": null,
+      "last_snapshot_updated": null
+    },
+    "skills-releases": {
+      "adopted": {
+        "at": "2026-06-09T00:00:00Z",
+        "event_id": 4
+      },
+      "contract": "skill-frontmatter",
+      "convergence_fired": [],
+      "convergence_triggers_outstanding": 0,
+      "divergences_outstanding": [],
+      "last_fetch_degraded": null,
+      "last_snapshot_updated": null
+    },
+    "sub-agents": {
+      "adopted": {
+        "at": "2026-06-11T00:00:00Z",
+        "event_id": 18
+      },
+      "contract": "agent-definition",
+      "convergence_fired": [],
+      "convergence_triggers_outstanding": 0,
+      "divergences_outstanding": [],
+      "last_fetch_degraded": null,
+      "last_snapshot_updated": null
+    }
+  }
+}

@@ -68,6 +68,8 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_REGISTRY = os.path.join(REPO_ROOT, "specs", "upstream-surface-registry.v1.json")
 DEFAULT_ARCHIVE_ROOT = os.path.join(REPO_ROOT, "archive", "raw")
 DEFAULT_VENDOR_ROOT = os.path.join(REPO_ROOT, "specs", "_vendor")
+DEFAULT_LINEAGE_LOG = os.path.join(REPO_ROOT, "specs", "lineage", "log.jsonl")
+LINEAGE_SCRIPT = os.path.join(REPO_ROOT, "scripts", "lineage-log.py")
 
 FETCH_OK = "FETCH_OK"
 UNREACHABLE = "UNREACHABLE"
@@ -289,6 +291,42 @@ def update_vendored(
     return True
 
 
+# ── Lineage emission (054-AT-SPEC: the capture stage emits; the differ writes nothing) ──
+
+
+def append_lineage_event(
+    lineage_log: str, registry_path: str, surface: dict, meta: dict, now: datetime
+) -> bool:
+    """Append a snapshot-updated event to the lineage log for a tier-2 promotion.
+    Delegates to scripts/lineage-log.py append (which validates the event shape,
+    enforces append-only, and regenerates the derived coverage map). A failure is
+    loud (stderr) but never rolls back the promotion that already happened."""
+    details = {
+        "source_raw_record": f"archive/raw/{surface['name']}/{meta['record']}.meta.json",
+        "bytes": meta["bytes"],
+    }
+    argv = [
+        sys.executable, LINEAGE_SCRIPT, "append",
+        "--log", lineage_log,
+        "--registry", registry_path,
+        "--event-type", "snapshot-updated",
+        "--upstream-identity", surface["name"],
+        "--upstream-version", meta["sha256"],
+        "--subject", surface.get("contract", surface["name"]),
+        "--at", now.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "--details", json.dumps(details),
+    ]
+    proc = subprocess.run(argv, capture_output=True, text=True, check=False)
+    if proc.returncode != 0:
+        print(
+            f"WARNING: lineage snapshot-updated append failed for {surface['name']}: "
+            f"{(proc.stdout + proc.stderr).strip()}",
+            file=sys.stderr,
+        )
+        return False
+    return True
+
+
 # ── Orchestration ────────────────────────────────────────────────────────────
 
 
@@ -310,6 +348,8 @@ def run_capture(
     fetcher: Callable[[dict], list[RawFetch]] = default_fetcher,
     now: datetime | None = None,
     report_path: str | None = None,
+    lineage_log: str | None = None,
+    lineage_registry: str = DEFAULT_REGISTRY,
 ) -> int:
     now = now or datetime.now(timezone.utc)
     rows: list[dict] = []
@@ -326,6 +366,11 @@ def run_capture(
             vendor_updated = update_vendored(
                 vendor_root, surface["name"], capture.get("ext", ".txt"), body, meta, now
             )
+            # A tier-2 promotion is a lineage fact: emit snapshot-updated
+            # (054-AT-SPEC). Only the capture stage emits; the differ writes
+            # nothing. Non-promotions (dedup or bad fetch) emit nothing.
+            if vendor_updated and lineage_log:
+                append_lineage_event(lineage_log, lineage_registry, surface, meta, now)
         else:
             bad += 1
         rows.append(
@@ -427,6 +472,16 @@ def cmd_self_test() -> int:
         vendor_root = os.path.join(tmp, "specs", "_vendor")
         surface_dir = os.path.join(archive_root, "fixture-surface")
         vendor_snap = os.path.join(vendor_root, "fixture-surface", "snapshot.md")
+        lineage_log = os.path.join(tmp, "specs", "lineage", "log.jsonl")
+        fixture_registry = os.path.join(tmp, "registry.json")
+        with open(fixture_registry, "w", encoding="utf-8") as fh:
+            json.dump({"surfaces": [surface]}, fh)
+
+        def lineage_events() -> list[dict]:
+            if not os.path.exists(lineage_log):
+                return []
+            with open(lineage_log, encoding="utf-8") as fh:
+                return [json.loads(line) for line in fh if line.strip()]
 
         def run_at(minute: int, raws: list[RawFetch]) -> int:
             script.append(raws)
@@ -436,15 +491,26 @@ def cmd_self_test() -> int:
                 vendor_root,
                 fetcher=fake_fetcher,
                 now=datetime(2026, 6, 12, 9, minute, 0, tzinfo=timezone.utc),
+                lineage_log=lineage_log,
+                lineage_registry=fixture_registry,
             )
 
         # run 1: FETCH_OK body A -> body stored, vendored == A
         rc1 = run_at(0, [RawFetch(requested_url=url, http_code=200, body=good_body)])
         check("run1 exit 0 on FETCH_OK", rc1 == 0)
         check("run1 vendored snapshot == body A", open(vendor_snap, "rb").read() == good_body)
+        events = lineage_events()
+        check(
+            "run1 lineage: tier-2 promotion emitted snapshot-updated (054-AT-SPEC)",
+            len(events) == 1
+            and events[0]["event_type"] == "snapshot-updated"
+            and events[0]["upstream_identity"] == "fixture-surface"
+            and events[0]["upstream_version"] == hashlib.sha256(good_body).hexdigest(),
+        )
 
         # run 2: identical body -> meta appends, body deduplicated (not rewritten)
         run_at(1, [RawFetch(requested_url=url, http_code=200, body=good_body)])
+        check("run2 lineage: dedup (no promotion) emitted nothing", len(lineage_events()) == 1)
         metas = sorted(f for f in os.listdir(surface_dir) if f.endswith(".meta.json"))
         bodies = sorted(f for f in os.listdir(surface_dir) if f.endswith(".body"))
         meta2 = json.load(open(os.path.join(surface_dir, metas[1]), encoding="utf-8"))
@@ -469,6 +535,7 @@ def cmd_self_test() -> int:
         check("run3 exit 1 on bad fetch", rc3 == 1)
         check("run3 archived as UNREACHABLE", meta3["status"] == UNREACHABLE)
         check("run3 last-good vendored untouched", open(vendor_snap, "rb").read() == good_body)
+        check("run3 lineage: bad fetch emitted nothing", len(lineage_events()) == 1)
 
         # run 4: FETCH_OK body B -> new body stored, vendored == B
         body_b = b"# Spec heading v2\n\n" + b"z" * 128
@@ -476,6 +543,13 @@ def cmd_self_test() -> int:
         bodies = sorted(f for f in os.listdir(surface_dir) if f.endswith(".body"))
         check("run4 new body stored (2 body files)", len(bodies) == 2)
         check("run4 vendored snapshot == body B", open(vendor_snap, "rb").read() == body_b)
+        events = lineage_events()
+        check(
+            "run4 lineage: second promotion appended event_id 2 with body B's sha",
+            len(events) == 2
+            and events[1]["event_id"] == 2
+            and events[1]["upstream_version"] == hashlib.sha256(body_b).hexdigest(),
+        )
 
         # append-only: run1's meta is byte-identical to what was first written
         meta1 = json.load(open(os.path.join(surface_dir, metas[0]), encoding="utf-8"))
@@ -524,6 +598,9 @@ def main() -> int:
     parser.add_argument("--registry", default=DEFAULT_REGISTRY, help="surface registry path")
     parser.add_argument("--archive-root", default=DEFAULT_ARCHIVE_ROOT, help="tier-1 root")
     parser.add_argument("--vendor-root", default=DEFAULT_VENDOR_ROOT, help="tier-2 root")
+    parser.add_argument(
+        "--lineage-log", default=DEFAULT_LINEAGE_LOG, help="lineage log appended on tier-2 promotion"
+    )
     args = parser.parse_args()
 
     if args.self_test:
@@ -535,7 +612,14 @@ def main() -> int:
         if not surfaces:
             print(f"ERROR: unknown surface: {args.surface}", file=sys.stderr)
             return 2
-    return run_capture(surfaces, args.archive_root, args.vendor_root, report_path=args.report)
+    return run_capture(
+        surfaces,
+        args.archive_root,
+        args.vendor_root,
+        report_path=args.report,
+        lineage_log=args.lineage_log,
+        lineage_registry=args.registry,
+    )
 
 
 if __name__ == "__main__":
