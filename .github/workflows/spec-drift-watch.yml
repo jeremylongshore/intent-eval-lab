@@ -218,7 +218,7 @@ jobs:
             -H "Priority: high" \
             -H "Tags: warning,page_facing_up" \
             -d "$(cat /tmp/ntfy-body.txt)" \
-            "${NTFY_URL}/prod-alerts" || echo "ntfy push failed (non-fatal)"
+            "${NTFY_URL}/prod-health" || echo "ntfy push failed (non-fatal)"
         env:
           NTFY_URL: ${{ secrets.NTFY_URL }}
 
