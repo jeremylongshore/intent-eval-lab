@@ -1,0 +1,2063 @@
+{
+  "stats": {
+    "beads_total": 443,
+    "dispositioned": 443,
+    "unaudited": 0,
+    "downgraded_evidence_gate": 0,
+    "dropped_unknown_ids": [],
+    "close_refuted": 0,
+    "surfaces_reviewed": 10,
+    "findings_total": 35,
+    "confirmed_p0p1": 9,
+    "refuted_p0p1": 3,
+    "disposition_counts": {
+      "keep": 331,
+      "re-scope": 62,
+      "close-now": 39,
+      "duplicate": 6,
+      "lands-with-PR-103": 5
+    }
+  },
+  "surfaces": [
+    {
+      "key": "iec-validators",
+      "repo": "intent-eval-core",
+      "cohort": "east",
+      "reviewed": true,
+      "summary": "The runtime v1 entity validators are tightly pared against their JSON Schemas with only a handful of divergences. The hand-authored validators for the 13 entities are in excellent shape; the authoring/v1 and authoring/v2 codegen-generated layer is also clean. Four concrete parity defects were found: a strict/open-world mismatch in EvalSpec.scoring that will silently reject valid tool-extension payloads; missing minLength:1 enforcement on four string fields (license, author, compatibility, description) in both v1 and v2 skill-frontmatter Zod validators; the NORMATIVE Blueprint B \u00a7 7.4 gate_reasons non-empty invariant is documented in the JSON Schema description but enforced in neither the JSON Schema allOf nor the Zod superRefine; and EvidenceStatement/EvidenceBundlePayload ship as exported Zod validators with no corresponding JSON Schema file on disk and no registration in schemas/v1/index.json."
+    },
+    {
+      "key": "iec-scripts",
+      "repo": "intent-eval-core",
+      "cohort": "east",
+      "reviewed": true,
+      "summary": "The scripts and gate-chain are well-structured with no exit-code swallowing, proper use of `&&`-chaining, and fail-closed semantics throughout. The codegen is deterministic: it re-derives output from frozen JSON schemas, uses `guardedWrite` to protect the byte-frozen v1 schema tree, and the `--check` idempotency gate is correctly wired into both `pnpm run check` and CI. Two real defects were found: the predicate-namespace isolation gate defaults to scanning only `schemas/authoring/v1`, leaving the new `schemas/authoring/v2` family uncovered in both the local gate chain and CI; and the v1 byte-freeze test omits five of the seven v1 validator source files from its frozen-path list, so `codegen:authoring` in write mode can silently overwrite those files if codegen logic ever changes."
+    },
+    {
+      "key": "jrig-core",
+      "repo": "j-rig-binary-eval",
+      "cohort": "west",
+      "reviewed": true,
+      "summary": "The core/checks/evidence packages are well-structured with solid Zod schema enforcement, deterministic exit codes, and careful invariant checking on evidence statements. Two correctness issues stand out: the judgment engine silently drops the `params` argument when dispatching built-in deterministic checks, making `contains`, `regex_match`, `min_length`, and `max_length` pass vacuously on any criterion that uses them from the engine path; and the CISO gate timeout implementation sets a flag but never aborts the underlying `invokeProvider()` awaitable, so a hung adapter will block the caller indefinitely rather than return after `timeoutMs`. The evidence writer has a minor but silent data-shape inconsistency in the `array` format path."
+    },
+    {
+      "key": "jrig-security",
+      "repo": "j-rig-binary-eval",
+      "cohort": "west",
+      "reviewed": true,
+      "summary": "The emit + signing scope is generally careful: the CLI refuses to sign without --artifact, verifies the artifact's sha256 against predicate.input_hash before invoking cosign, validates every row against a strict() Zod schema (blocking field injection via untrusted metadata), cleans up temp dirs in finally, and the dashboard emit script fails closed on kernel-invalid bundles. Two falsifiable defects exist: the default --sign path double-wraps the attestation by feeding cosign the full Statement as its predicate body (the in-code comment documents the inverse of what the code does), and the coverage-floor detection regex over-matches any `lines:` token in vitest.config.ts, which can flip honest advisory evidence into a fabricated signed pass/fail."
+    },
+    {
+      "key": "iel-scripts",
+      "repo": "intent-eval-lab",
+      "cohort": "east",
+      "reviewed": true,
+      "summary": "The watcher infrastructure is architecturally sound \u2014 the three-layer detection model (byte-hash, field-diff, liveness streaks) is well-thought-out and the injection whitelist guards in validate-trilink.sh and bd-claim-precheck.sh are correctly implemented. The two weakest spots are: (1) a class of extractors that silently hash empty input when their grep pattern matches nothing, producing a stable sha256(empty) baseline that never detects drift after an upstream structural change, and (2) the RATIFIED-WITH-DELTAS gate in bd-claim-precheck.sh that documents its own bypass path in the denial message, defeating its stated enforcement purpose. A retired ntfy topic name means spec-drift phone alerts are silently dropped."
+    },
+    {
+      "key": "iah-python",
+      "repo": "audit-harness",
+      "cohort": "east",
+      "reviewed": true,
+      "summary": "The Python scoring scripts are well-structured and follow the advisory-first, fail-open design consistently across all six files. The CRAP formula itself (C^2 * (1-cov)^3 + C) is implemented correctly, fp-rate.py has proper division-by-zero guards, and currency.py's parse/report logic is clean. However, three of the four language backends in crap-score.py produce systematically wrong CRAP scores in production: the Go test-kind backend issues a gocyclo regexp that matches all .go files (yielding permanently empty test scores), the Go src-kind backend has a path-format mismatch between gocyclo relative paths and go-tool-cover module-qualified paths (so all Go methods score at 0% coverage), and the JS backend has the same absolute-vs-relative path mismatch against coverage-summary.json. Rust hardcodes coverage=0.0 despite the comment promising tarpaulin integration. These bugs produce silently inflated CRAP scores (or silently suppressed test scores for Go) that affect gate pass/fail decisions on real repos \u2014 the golden test suite does not catch them because it was intentionally designed for the no-provider code path."
+    },
+    {
+      "key": "iah-bash",
+      "repo": "audit-harness",
+      "cohort": "east",
+      "reviewed": true,
+      "summary": "Exit-code propagation through the Node dispatcher (bin/audit-harness.js) is mechanically correct: child exit codes pass through verbatim via process.exit(code ?? 0), signal handling is separated, and timeout exits as 124. The underlying shell scripts are well-structured with set -euo pipefail throughout and || true guards on intentionally-ignorable grep calls. Three concrete defects were found: the CI escape-scan self-check is permanently dark due to a pipeline/tee exit-code masking bug, arch-check.sh silently degrades provenance hashes on macOS by using sha256sum directly without the cross-platform SHA256_CMD pattern every other script implements, and emit-evidence.sh produces structurally broken JSON in its OTEL diagnostic output when AUDIT_HARNESS_SIDE contains a double-quote."
+    },
+    {
+      "key": "ccp-validator",
+      "repo": "claude-code-plugins",
+      "cohort": "west",
+      "reviewed": true,
+      "summary": "The validator core is structurally sound: tier routing is correct (TIER_ENTERPRISE and TIER_MARKETPLACE are the same constant so all tier comparisons are consistent), the ALWAYS_REQUIRED 8-field set correctly generates errors at marketplace tier per SCHEMA_CHANGELOG NON-NEGOTIABLES, and the kernel-shadow script is clean advisory-only infrastructure. Three real defects were found: (1) validate_tool_permission always returns True so malformed allowed-tools entries silently pass at all tiers; (2) missing name at standard tier produces zero diagnostic output despite the field being listed in STANDARD_REQUIRED; (3) a stale docstring cluster at lines 13-17, 126-127, and 140 incorrectly describes marketplace-tier enforcement as warnings-only when the code has correctly errored on all 8 ALWAYS_REQUIRED fields since schema 3.3.0. The sync-marketplace.cjs DISALLOWED_KEYS blocklist does not strip any ALWAYS_REQUIRED fields and is clean. No kernel-shadow.mjs file exists at the repo root; the shadow logic lives in scripts/kernel-shadow-validation.mjs and is well-engineered."
+    },
+    {
+      "key": "ccp-workflows",
+      "repo": "claude-code-plugins",
+      "cohort": "west",
+      "reviewed": true,
+      "summary": "The 31 workflows are, on the whole, security-conscious for a high-traffic public repo: the one pull_request_target workflow (pr-prescreen.yml) is correctly hardened (PR head checked out with persist-credentials:false into ./pr, all executable scripts and the validator run FROM the trusted base/main checkout, never from PR content), publish/release/deploy workflows are gated to push-to-main or tag/dispatch with constrained inputs, and untrusted PR fields (title/body) are consistently passed via env: rather than interpolated into run:. The one real defect is a GitHub Actions template-injection in sync-external.yml where repository_dispatch client_payload.source is interpolated directly into a run: block. Secondary supply-chain softness (unpinned trufflesecurity/trufflehog@main, mutable mcp-publisher \"latest\" download) exists only in schedule/tag/dispatch-triggered jobs with read scope, so it is not a fork-PR exposure."
+    },
+    {
+      "key": "iar-fused",
+      "repo": "intent-rollout-gate",
+      "cohort": "west",
+      "reviewed": true,
+      "summary": "The action.yml is a deliberately minimal bootstrap stub (v0.0.0) that emits decision=not-implemented and exits 0. The injection-hardening posture is sound: inputs pass through env vars and are consumed by jq with --arg, not shell string concatenation. Two real defects exist: (1) `actions/checkout@v6` and `actions/setup-node@v6` are referenced in ci.yml but v6 does not exist for either action \u2014 the latest stable versions are v4 and v4 respectively, meaning CI runs against a non-existent tag and silently falls back or errors; (2) three inputs (predicate-uri, rekor-url, cosign-key) are declared in action.yml but never passed into the env block, so any downstream behavior that attempts to consume them will silently receive empty/default values. The bead docket is uniformly consistent with the repo state: M5 is not started, @j-rig/rollout-gate@2.0.0 is not published, and virtually all 59 beads are legitimately blocked on either M5 implementation work or the upstream j-rig v2.0.0 release."
+    }
+  ],
+  "confirmed_findings": [
+    {
+      "id": "f-iec-validators-1",
+      "repo": "intent-eval-core",
+      "severity": "P1",
+      "category": "correctness",
+      "file": "src/validators/v1/eval-spec.ts",
+      "lines": "17-23",
+      "claim": "ScoringConfigSchema uses .strict() but the JSON Schema declares scoring as an open object with no additionalProperties:false, so any tool-emitted scoring extension field that passes JSON Schema validation is silently rejected by the Zod validator.",
+      "trigger": "Parsing an EvalSpec with a scoring object that contains any key besides aggregation_rule and extensions, e.g. { aggregation_rule: 'majority', pass_threshold: 0.8 }. JSON Schema accepts it; ScoringConfigSchema.parse() throws ZodError 'Unrecognized key(s): pass_threshold'.",
+      "evidence": "schemas/v1/eval-spec.schema.json: `\"scoring\": { \"type\": \"object\", \"required\": [\"aggregation_rule\"], \"properties\": { ... } }` \u2014 no `additionalProperties: false` at the scoring level. src/validators/v1/eval-spec.ts lines 17-23: `export const ScoringConfigSchema = z.object({ aggregation_rule: ScoringAggregationRuleSchema, extensions: z.record(z.string",
+      "fix_sketch": "Remove .strict() from ScoringConfigSchema (or replace with .passthrough()) to match the JSON Schema's open-world semantics. The schema comment 'Additions require ISEDC review' refers to the JSON Schema surface, not to Zod rejection of runtime data.",
+      "verify_reasoning": "Divergence verified in both artifacts. schemas/v1/eval-spec.schema.json lines 39-54: `\"scoring\": { \"type\": \"object\", \"description\": \"Scoring configuration...\", \"required\": [\"aggregation_rule\"], \"properties\": { \"aggregation_rule\": {...}, \"extensions\": {...} } }` \u2014 NO `additionalProperties: false` at the scoring level, while the top-level object has it (line 7 `\"additionalProperties\": false`) and the sibling nested `composition` objects do too (lines 59, 66, 86), making scoring the odd open object"
+    },
+    {
+      "id": "f-iec-validators-3",
+      "repo": "intent-eval-core",
+      "severity": "P1",
+      "category": "correctness",
+      "file": "src/validators/v1/gate-result-v1.ts",
+      "lines": "48, 63-72",
+      "claim": "The NORMATIVE Blueprint B \u00a7 7.4 line 829 rule that gate_reasons MUST be non-empty for gate_decision in {fail, advisory, error} is documented in the JSON Schema description but enforced by neither the JSON Schema allOf nor the Zod superRefine, so a gate that failed with no reasons silently produces a valid predicate row.",
+      "trigger": "Parsing or emitting a gate-result/v1 row with { gate_decision: 'fail', gate_reasons: [] }. GateResultV1Schema.parse() succeeds. ajv validation against gate-result.schema.json also succeeds. The row enters the signed evidence bundle without a mandatory reason trace.",
+      "evidence": "schemas/v1/gate-result.schema.json lines 41-44: `\"gate_reasons\": { \"type\": \"array\", \"description\": \"Structured reason strings. Empty array permitted ONLY for unconditional pass. For fail/advisory/error, at least one entry MUST appear; for error, gate_reasons[0] MUST capture the error class per \u00a7 7.4 line 829.\", \"items\": { \"type\": \"string\" } }` \u2014 no",
+      "fix_sketch": "Add an allOf/if/then block to gate-result.schema.json (analogous to the advisory_severity block) that when gate_decision is 'fail', 'advisory', or 'error', requires gate_reasons.minItems:1. Mirror in GateResultV1Schema.superRefine: `if (['fail','advisory','error'].includes(data.gate_decision) && data.gate_reasons.length === 0) { ctx.addIssue(...) }`. This is a Class-1 ISEDC matter per the schema's own annotation.",
+      "verify_reasoning": "Verified unenforced in both surfaces. schemas/v1/gate-result.schema.json lines 40-44: `\"gate_reasons\": { \"type\": \"array\", \"description\": \"Structured reason strings. Empty array permitted ONLY for unconditional pass. For fail/advisory/error, at least one entry MUST appear; for error, gate_reasons[0] MUST capture the error class per \u00a7 7.4 line 829.\", \"items\": { \"type\": \"string\" } }` \u2014 no minItems; `rg -n minItems schemas/v1/gate-result.schema.json` returns zero matches. The schema's only condition"
+    },
+    {
+      "id": "f-jrig-core-1",
+      "repo": "j-rig-binary-eval",
+      "severity": "P0",
+      "category": "logic",
+      "file": "packages/core/src/judgment/engine.ts",
+      "lines": "50",
+      "claim": "The judgment engine calls runCheck without forwarding any params argument, causing all built-in parameterized checks to evaluate against their silent defaults and pass vacuously.",
+      "trigger": "Any EvalSpec criterion with method='deterministic' and deterministic_check='contains' (or 'regex_match', 'min_length', 'max_length') is dispatched via judgeDeterministic; no params are passed. The 'contains' check resolves needle to '' and every string includes '', so every input passes. 'regex_match' resolves pattern to '' and every string matches. 'min_length' resolves min to 0 and every string length >= 0 passes.",
+      "evidence": "const checkResult = runCheck(criterion.deterministic_check, outcome.output.text);\n\n// In deterministic-registry.ts:\nregisterCheck(\"contains\", (input, params) => {\n  const needle = String(params?.[\"value\"] ?? \"\");\n  return input.includes(needle);\n});\n\nregisterCheck(\"regex_match\", (input, params) => {\n  const pattern = String(params?.[\"pattern\"] ?? \"",
+      "fix_sketch": "Either (a) add a params field to CriterionSchema and thread it through judgeDeterministic -> runCheck, or (b) remove the vacuous defaults so missing params returns an error CheckResult (severity='error') rather than silently passing. Option (b) is safer as a fast fix: in each built-in check, throw or return false when the required param is absent.",
+      "verify_reasoning": "Verified on origin/main worktree. /tmp/review-worktrees/jrig-main/packages/core/src/judgment/engine.ts line 50 reads exactly: `const checkResult = runCheck(criterion.deterministic_check, outcome.output.text);` \u2014 no third (params) argument, while runCheck's signature in checks/deterministic-registry.ts:28-32 is `runCheck(checkName: string, input: string, params?: Record<string, unknown>)`. Built-ins then default vacuously: `registerCheck(\"contains\", (input, params) => { const needle = String(para"
+    },
+    {
+      "id": "f-jrig-core-2",
+      "repo": "j-rig-binary-eval",
+      "severity": "P1",
+      "category": "logic",
+      "file": "packages/core/src/providers/ciso-gates/g1-credential-redaction.ts",
+      "lines": "107-130",
+      "claim": "The G-1 (and G-2) timeout implementation sets a flag after timeoutMs but does not cancel the awaited invokeProvider(); a hung adapter causes runCisoGateG1 to block indefinitely.",
+      "trigger": "A provider adapter that never resolves its completion promise (network hang, infinite retry loop, blocked I/O) is passed as invokeProvider. setTimeout fires at timeoutMs and sets timedOut=true, but 'await args.invokeProvider()' is still outstanding. The function never proceeds past the await, the finally block never runs, and process.stdout.write remains patched permanently in the calling process.",
+      "evidence": "let timedOut = false;\nconst timeoutHandle = setTimeout(() => {\n  timedOut = true;\n}, timeoutMs);\n\nlet invocationError: Error | null = null;\ntry {\n  await args.invokeProvider();   // <-- hangs here indefinitely\n} catch (err) {\n  ...\n} finally {\n  clearTimeout(timeoutHandle);\n  process.stdout.write = origStdoutWrite;  // never reached\n  process.stder",
+      "fix_sketch": "Use Promise.race with an explicit rejection after timeoutMs: wrap invokeProvider() in a race against a timeout-rejection promise. The timeout branch should also restore the originals inside the race loser's cleanup via a finally on the wrapping race. The same fix applies identically to g2-env-var-spillover.ts.",
+      "verify_reasoning": "Verified on origin/main. g1-credential-redaction.ts:107-122 reads exactly as quoted: `let timedOut = false; const timeoutHandle = setTimeout(() => { timedOut = true; }, timeoutMs);` then `try { await args.invokeProvider(); } catch ... finally { clearTimeout(timeoutHandle); process.stdout.write = origStdoutWrite; process.stderr.write = origStderrWrite; }`. There is no Promise.race/AbortSignal \u2014 if invokeProvider never settles, the await blocks forever, the finally never runs, and runCisoGateG1 ne"
+    },
+    {
+      "id": "f-jrig-security-1",
+      "repo": "j-rig-binary-eval",
+      "severity": "P1",
+      "category": "correctness",
+      "file": "packages/cli/src/commands/emit-evidence.ts",
+      "lines": "129-132, 257-261",
+      "claim": "The default `j-rig emit-evidence --sign` path serializes the FULL in-toto Statement as cosign's `--predicate`, so cosign attest-blob nests our Statement inside its own DSSE Statement, producing a double-wrapped attestation whose gate-result fields are not at predicate.* where verifiers expect them.",
+      "trigger": "Run `j-rig emit-evidence --sign --key k.pem --artifact f` (or with --keyless) WITHOUT passing `--predicate-body-only`. opts.predicateBodyOnly is undefined (commander sets no default), so predicateContent = JSON.stringify(statement) \u2014 the whole {_type, subject, predicateType, predicate} object \u2014 is written and handed to `cosign attest-blob --predicate`.",
+      "evidence": "Option declared with no default: `.option(\"--predicate-body-only\", \"Emit ONLY the predicate body (cosign-friendly)...\")`. Signing path: `const predicateContent = opts.predicateBodyOnly ? JSON.stringify(statement.predicate, null, 2) : JSON.stringify(statement, null, 2);` immediately under the comment `// Predicate file: by default we send just the p",
+      "fix_sketch": "Make body-only the default: either set `.option(\"--predicate-body-only\", ..., true)` / invert to a `--full-statement` opt-out flag, or change the ternary to `opts.predicateBodyOnly === false ? JSON.stringify(statement) : JSON.stringify(statement.predicate)` so the absent-flag default emits the predicate body cosign expects.",
+      "verify_reasoning": "Verified on origin/main at the exact cited lines. Option declaration (emit-evidence.ts:129-132) has no default: `.option(\"--predicate-body-only\", \"Emit ONLY the predicate body (cosign-friendly). Cosign attest-blob then wraps it in its own Statement envelope. Without this, emits the full v1 Statement.\")` \u2014 commander leaves `opts.predicateBodyOnly` undefined when the flag is absent. Signing path (lines 257-261): `const predicateContent = opts.predicateBodyOnly ? JSON.stringify(statement.predicate,"
+    },
+    {
+      "id": "f-iah-python-1",
+      "repo": "audit-harness",
+      "severity": "P1",
+      "category": "correctness",
+      "file": "scripts/crap-score.py",
+      "lines": "168",
+      "claim": "For kind='test', gocyclo is invoked with -ignore '.*\\.go$' which matches ALL .go files, so gocyclo emits zero output and Go test CRAP scores are permanently empty regardless of actual test complexity.",
+      "trigger": "Run crap-score.py on any Go repo with --target test (or --target both). The gocyclo call is: gocyclo -ignore '.*\\.go$' . which tells gocyclo to ignore every .go file, producing no output lines. The python-side include-filter on line 181 then operates on an empty list. test_scores stays [], test_max=0.0, test_blockers=[] \u2014 the test CRAP gate silently passes for all Go repos.",
+      "evidence": "rc, out, _ = run([\"gocyclo\", \"-ignore\", \"_test.go\" if kind == \"src\" else \".*\\\\.go$\", \".\"], root)",
+      "fix_sketch": "For kind='test', do not pass -ignore at all (or pass -ignore '' if the flag is mandatory) and let the python-side filter on line 181 \u2014 `include = fpath.endswith('_test.go')` \u2014 do the work as intended. The python filter is correct; the gocyclo -ignore pattern for the test branch is the error.",
+      "verify_reasoning": "Verbatim at scripts/crap-score.py line 168: `rc, out, _ = run([\"gocyclo\", \"-ignore\", \"_test.go\" if kind == \"src\" else \".*\\\\.go$\", \".\"], root)`. For kind='test' the -ignore regex is `.*\\.go$`. gocyclo's -ignore flag ignores files MATCHING the regex, and every file gocyclo analyzes ends in .go, so the regex matches 100% of analyzable files \u2192 gocyclo emits zero lines. The downstream include filter at line 181 `include = fpath.endswith(\"_test.go\") if kind == \"test\" else not fpath.endswith(\"_test.go\""
+    },
+    {
+      "id": "f-iah-python-2",
+      "repo": "audit-harness",
+      "severity": "P1",
+      "category": "correctness",
+      "file": "scripts/crap-score.py",
+      "lines": "180, 190-199",
+      "claim": "For Go repos, complexity paths from gocyclo (relative filesystem paths like 'pkg/file.go') never match coverage paths from 'go tool cover -func' (module-qualified paths like 'github.com/user/repo/pkg/file.go'), so every Go method silently uses coverage=0.0 and CRAP is computed as if coverage is zero.",
+      "trigger": "Run crap-score.py on any Go module that is not a flat single-package repo. gocyclo with cwd=root and target='.' outputs relative paths ('pkg/file.go'). go tool cover -func reads coverage.out and outputs module-qualified paths ('github.com/user/repo/pkg/file.go'). The dict lookup `coverage.get(fpath, 0.0)` on line 203 always misses, so all Go methods receive coverage=0.0 and their CRAP scores are the maximum possible (C^2 + C), artificially inflating FAIL counts.",
+      "evidence": "fpath = parts[3].split(\":\", 1)[0]  # gocyclo: relative path\n...\nfpath = parts[0].split(\":\", 1)[0]  # go tool cover: module-qualified path\n...\ncov = coverage.get(fpath, 0.0)  # always misses",
+      "fix_sketch": "After extracting gocyclo fpath, compute the absolute path (os.path.join(root, fpath)) and compare against absolute paths derived from the module prefix. Alternatively, strip the module prefix from go-cover paths by reading go.mod and resolving both sides to repo-relative paths before building the coverage dict.",
+      "verify_reasoning": "Verified the key-space mismatch. Complexity side, line 180: `fpath = parts[3].split(\":\", 1)[0]` \u2014 gocyclo is invoked with target '.' and cwd=root (line 168), so it reports filesystem-relative paths like 'pkg/file.go'. Coverage side, lines 190-199: `rc, out, _ = run([\"go\", \"tool\", \"cover\", \"-func=coverage.out\"], root)` then `fpath = parts[0].split(\":\", 1)[0]` \u2014 go coverage profiles record files by import path, so -func output keys are module-qualified like 'github.com/user/repo/pkg/file.go'. Line"
+    },
+    {
+      "id": "f-iah-python-3",
+      "repo": "audit-harness",
+      "severity": "P1",
+      "category": "correctness",
+      "file": "scripts/crap-score.py",
+      "lines": "231-240, 246-247",
+      "claim": "For JS/TS repos, complexity-report emits repo-relative paths (e.g. 'src/foo.js') while c8/istanbul coverage-summary.json uses absolute paths as keys (e.g. '/abs/path/to/project/src/foo.js'), so the coverage dict lookup always misses and every JS method is scored with coverage=0.0.",
+      "trigger": "Run crap-score.py on any JS/TS repo that has c8-generated coverage/coverage-summary.json. complexity-report run with cwd=root and target='src' emits 'path': 'src/foo.js'. The c8 coverage-summary.json standard format uses absolute paths as top-level keys. `coverage.get(fpath, 0.0)` on line 247 always returns 0.0, so all JS method CRAP scores are computed at 0% coverage, producing systematically inflated scores.",
+      "evidence": "cov_path = root / \"coverage\" / \"coverage-summary.json\"\n...\nfor fpath, summary in cov_data.items():\n    ...\n    coverage[fpath] = float(lines_pct)\n...\nfpath = report.get(\"path\", \"\")\ncov = coverage.get(fpath, 0.0)",
+      "fix_sketch": "Normalize both sides to absolute paths before inserting into the coverage dict: `coverage[os.path.abspath(fpath)] = ...` in the loading loop, and `cov = coverage.get(os.path.join(str(root), fpath), 0.0)` at lookup time. Alternatively resolve both to repo-relative paths.",
+      "verify_reasoning": "Verified in score_js. Coverage side, lines 231-240: `cov_path = root / \"coverage\" / \"coverage-summary.json\"` ... `for fpath, summary in cov_data.items(): if fpath == \"total\": continue; lines_pct = summary.get(\"lines\", {}).get(\"pct\", 0.0); coverage[fpath] = float(lines_pct)` \u2014 c8/istanbul's json-summary reporter keys entries by ABSOLUTE file path (plus the 'total' row), so the coverage dict keys are absolute. Complexity side, lines 220-223 + 246: `target = \"src\" if kind == \"src\" else \"tests\"` ..."
+    },
+    {
+      "id": "f-iah-bash-1",
+      "repo": "audit-harness",
+      "severity": "P1",
+      "category": "exit-code",
+      "file": ".github/workflows/ci.yml",
+      "lines": "74-79",
+      "claim": "The escape-scan CI self-check is permanently dark: piping escape-scan through tee makes the `if` test always evaluate the exit code of tee (0), so the 'did NOT refuse' warning fires whether escape-scan refused or not, and the 'correctly refused' branch is unreachable.",
+      "trigger": "Any CI run of the self-check step, regardless of whether escape-scan actually refuses the synthetic threshold-lowering input.",
+      "evidence": "Line 74: `if bash $GITHUB_WORKSPACE/scripts/escape-scan.sh --staged 2>&1 | tee /tmp/escape-scan.log; then` \u2014 in bash without pipefail, the exit code of a pipeline is the exit code of the last command (tee), which is always 0. Line 75: `echo \"::warning::escape-scan did NOT refuse...\"` \u2014 this branch always executes. Line 78: `echo \"\u2713 escape-scan corr",
+      "fix_sketch": "Separate the invocation from the log capture: `bash ... --staged > /tmp/escape-scan.log 2>&1; ec=$?; cat /tmp/escape-scan.log; if [[ $ec -ne 0 ]]; then echo 'correctly refused'; else echo '::warning::did NOT refuse'; fi`. Or use `set -o pipefail` inside the run block.",
+      "verify_reasoning": "Confirmed, including the shell-mode nuance the claim depends on. The step at .github/workflows/ci.yml lines 54-79 declares NO `shell:` key (verified: only the version-canonical-check job's steps at lines 150/234 carry `shell: bash`), so GitHub Actions runs it with the Linux default `bash -e {0}` \u2014 which does NOT include `-o pipefail` (pipefail is only added when `shell: bash` is explicit). Therefore line 74 `if bash $GITHUB_WORKSPACE/scripts/escape-scan.sh --staged 2>&1 | tee /tmp/escape-scan.lo"
+    }
+  ],
+  "refuted_appendix": [
+    {
+      "id": "f-jrig-core-3",
+      "repo": "j-rig-binary-eval",
+      "file": "packages/core/src/evidence/writer.ts",
+      "claim": "writeBundle with format='array' wraps rows in a {bundle_format, rows} container but the CHANGELOG documents that the v2 wire format for 'array' is a plain JSON array; the reader correctly accepts both",
+      "why_refuted": "The mismatch does not exist on origin/main, and the two halves of the finding's evidence come from DIFFERENT branches. On main (worktree HEAD 23b683c): (1) writer.ts:141-145 does emit the container \u2014 `const container = { bundle_format: \"json-array\" as const, rows };` \u2014 as quoted; BUT (2) no CHANGELOG on main contains the quoted v2 text. Grep of every .md on main for 'plain JSON array'/'json-array' returns zero hits; the root CHANGELOG.md's only related line is in the *Pending* (future v2.0.0) se"
+    },
+    {
+      "id": "f-iel-scripts-1",
+      "repo": "intent-eval-lab",
+      "file": "scripts/spec-drift-check.sh",
+      "claim": "Four extractors that use `curl | grep | head -1 | sha256sum` silently hash empty input (sha256sum always exits 0) when their grep pattern finds no match, producing a stable e3b0c44... hash that masks ",
+      "why_refuted": "The claimed failure mode is defeated by line 24 `set -euo pipefail`. With pipefail, a grep no-match (exit 1) becomes the pipeline's exit status \u2014 sha256sum/awk exiting 0 does NOT mask it \u2014 so the extractor function returns non-zero, and the caller at line 199 `if ! current_hash=\"$(\"${extractor}\" 2>/dev/null)\" || [[ -z \"${current_hash}\" ]]; then FETCH_ERRORS+=(...)` ... `continue` traps it BEFORE any seed/compare in every mode (the continue at line 203 precedes the init/refresh/check case at line"
+    },
+    {
+      "id": "f-iar-fused-1",
+      "repo": "intent-rollout-gate",
+      "file": ".github/workflows/ci.yml",
+      "claim": "ci.yml references actions/checkout@v6 and actions/setup-node@v6, which do not exist; the latest stable release for both is v4, so CI will fail to resolve the action on every run.",
+      "why_refuted": "The cited lines exist as claimed \u2014 intent-rollout-gate/.github/workflows/ci.yml line 17 `- uses: actions/checkout@v6`, line 20 `uses: actions/setup-node@v6`, line 47 `- uses: actions/checkout@v6` \u2014 but the core assertion ('v6 does not exist; latest stable for both is v4; CI will fail to resolve the action on every run') is factually wrong on every count. GitHub API (read-only): `repos/actions/checkout/releases/latest` \u2192 tag_name `v6.0.3`; `repos/actions/setup-node/releases/latest` \u2192 tag_name `v6"
+    }
+  ],
+  "unverified_p0p1": [],
+  "p2p3_findings": [
+    {
+      "id": "f-iec-validators-2",
+      "repo": "intent-eval-core",
+      "severity": "P2",
+      "file": "src/validators/v1/authoring/skill-frontmatter.ts",
+      "lines": "112-117, 171-172",
+      "claim": "The v1 skill-frontmatter Zod validator does not enforce minLength:1 on description, license, author, or compatibility, so empty-string values that the JSON Schema is-overlay rejects pass the Zod validator silently.",
+      "trigger": "Submitting a skill frontmatter with any of the following empty strings: { name: 'my-skill', description: '', license: '', author: '', compatibility: '"
+    },
+    {
+      "id": "f-iec-validators-4",
+      "repo": "intent-eval-core",
+      "severity": "P2",
+      "file": "src/validators/v1/evidence-statement.ts",
+      "lines": "52-105",
+      "claim": "EvidenceStatementSchema and EvidenceBundlePayloadSchema are exported from the validators barrel and depend on cross-field invariants not enforceable in JSON Schema, but no corresponding JSON Schema file exists on disk an",
+      "trigger": "A consumer importing @intentsolutions/core/schemas/v1/index.json to enumerate all v1 contracts will find no entry for evidence-statement or evidence-b"
+    },
+    {
+      "id": "f-iec-scripts-1",
+      "repo": "intent-eval-core",
+      "severity": "P2",
+      "file": "scripts/check-predicate-namespace-isolation.ts",
+      "lines": "85",
+      "claim": "The predicate-namespace isolation gate defaults to scanning only `schemas/authoring/v1`, leaving the entire `schemas/authoring/v2` family uncovered in both `pnpm run check` and CI.",
+      "trigger": "Any future addition of the `evals.intentsolutions.io` predicate namespace string to a v2 schema file (e.g., in a `$id`, `$comment`, or `$ref`). The CI"
+    },
+    {
+      "id": "f-iec-scripts-2",
+      "repo": "intent-eval-core",
+      "severity": "P3",
+      "file": "src/__tests__/authoring-v1-frozen.test.ts",
+      "lines": "30-43",
+      "claim": "The v1 byte-freeze test only covers two of the seven v1 validator source files (`skill-frontmatter.ts` and `marketplace-tier.ts`), leaving five generated validators (`plugin-manifest.ts`, `agent-definition.ts`, `mcp-conf",
+      "trigger": "A change to the codegen logic in `scripts/codegen-authoring.ts` that alters output for contracts 2\u20136, followed by a developer running `pnpm run codege"
+    },
+    {
+      "id": "f-jrig-core-4",
+      "repo": "j-rig-binary-eval",
+      "severity": "P2",
+      "file": "packages/core/src/judgment/calibration.ts",
+      "lines": "50",
+      "claim": "runCalibration returns accuracy=1 (100%) when goldenCases is empty, which silently passes any calibration threshold check a caller applies.",
+      "trigger": "A caller passes an empty goldenCases array (e.g., when fixtures haven't been loaded or a filter produces zero cases). The returned CalibrationResult.a"
+    },
+    {
+      "id": "f-jrig-core-5",
+      "repo": "j-rig-binary-eval",
+      "severity": "P2",
+      "file": "packages/core/src/schemas/evidence-bundle.ts",
+      "lines": "123",
+      "claim": "Cross-field invariant I2 (subject digest must match predicate.input_hash) is guarded by a truthiness check on subjectDigest, but subjectDigest is a 64-char hex string which is always truthy when the schema is satisfied; ",
+      "trigger": "Because SubjectSchema enforces digest.sha256 as a 64-char hex regex, the empty-string case cannot pass SubjectSchema validation and subjectDigest will"
+    },
+    {
+      "id": "f-jrig-core-6",
+      "repo": "j-rig-binary-eval",
+      "severity": "P2",
+      "file": "packages/cli/src/commands/emit-evidence.ts",
+      "lines": "423-430",
+      "claim": "safeGitHead() falls back to '0000000' when git rev-parse fails, which satisfies COMMIT_SHA_REGEX (/^[a-f0-9]{7,40}$/) but produces a sentinel value that is semantically invalid as a real commit SHA and will be silently e",
+      "trigger": "Running emit-evidence in a directory that is not a git repository (e.g., in a CI sandbox, a Docker build context without .git, or after a shallow clon"
+    },
+    {
+      "id": "f-jrig-security-2",
+      "repo": "j-rig-binary-eval",
+      "severity": "P2",
+      "file": "scripts/emit-evidence.ts",
+      "lines": "352-361",
+      "claim": "coverageFloor() reads any `lines: N` token anywhere in vitest.config.ts as a coverage floor because the `thresholds?` prefix is optional, so a `lines:` in a comment or non-threshold context fabricates a floor and flips t",
+      "trigger": "vitest.config.ts contains `lines:` outside any coverage.thresholds block (e.g. a code comment `// lines: 5`, a future `coverage.lines` reporter option"
+    },
+    {
+      "id": "f-iel-scripts-2",
+      "repo": "intent-eval-lab",
+      "severity": "P2",
+      "file": "scripts/bd-claim-precheck.sh",
+      "lines": "81-107",
+      "claim": "The RATIFIED-WITH-DELTAS hard-gate bypass is self-defeating: the denial message at line 105-107 documents exactly how to self-authorize any bead by running `bd update $BEAD_ID --append-notes 'DR-028 authorized per <reaso",
+      "trigger": "Any developer whose bead claim is denied under RATIFIED-WITH-DELTAS can immediately run the command printed in the denial output, wait one second, and"
+    },
+    {
+      "id": "f-iel-scripts-3",
+      "repo": "intent-eval-lab",
+      "severity": "P2",
+      "file": ".github/workflows/spec-drift-watch.yml",
+      "lines": "221",
+      "claim": "The ntfy notification step sends to the retired `prod-alerts` topic instead of the current `prod-health` topic, meaning spec-drift and liveness-trip alerts are silently dropped and never reach the subscriber's phone.",
+      "trigger": "Any scheduled run that detects byte-hash drift, projection drift, a dead-man heartbeat trip, or a fetch-error streak \u2014 the ntfy push succeeds (curl ex"
+    },
+    {
+      "id": "f-iel-scripts-4",
+      "repo": "intent-eval-lab",
+      "severity": "P3",
+      "file": "scripts/bd-claim-precheck.sh",
+      "lines": "59-61, 110",
+      "claim": "The STATE extraction regex `[A-Z-]+` stops at the first digit, so intermediate states like `PHASE-3-SYNTHESIS-COMPLETE-\u2014-AWAITING-USER-ARBITRATION` are truncated to `PHASE-` and fall through to the default wildcard case ",
+      "trigger": "The STATUS.md file contains `**State:** PHASE-3-SYNTHESIS-COMPLETE-\u2014-AWAITING-USER-ARBITRATION` (the exact string quoted in the case pattern at line 1"
+    },
+    {
+      "id": "f-iah-python-4",
+      "repo": "audit-harness",
+      "severity": "P2",
+      "file": "scripts/crap-score.py",
+      "lines": "286-287",
+      "claim": "Rust CRAP scoring hardcodes coverage=0.0 for every method, so all Rust code is scored as if completely uncovered \u2014 the CRAP value is always C^2 + C regardless of actual tarpaulin coverage data.",
+      "trigger": "Run crap-score.py on a Rust repo that has tarpaulin coverage output. The comment block heading says 'rust-code-analysis + tarpaulin' but tarpaulin out"
+    },
+    {
+      "id": "f-iah-python-5",
+      "repo": "audit-harness",
+      "severity": "P2",
+      "file": "scripts/scan.py",
+      "lines": "150",
+      "claim": "consume_jrig silently treats a valid but schema-mismatched j-rig verdict file as a FAIL: when the verdict dict has neither a 'result' nor a 'passed' key, the or-chain evaluates to 'FAIL', which under strict or blocking e",
+      "trigger": "A j-rig verdict file exists at the expected path (.j-rig/verdict.json) but uses a different schema version or has an unexpected top-level structure (e"
+    },
+    {
+      "id": "f-iah-python-6",
+      "repo": "audit-harness",
+      "severity": "P2",
+      "file": "scripts/currency.py",
+      "lines": "45-46",
+      "claim": "The staleness boundary uses strict greater-than (age > window) so a pin exactly at the window boundary is reported as 'current' when it should be 'stale' \u2014 a pin checked exactly 90 days ago with a 90-day window gets stat",
+      "trigger": "A pin with staleness_window_days=90 has checked_at exactly 90 days before --today. age=(today-checked).days == 90. The condition `age > window` (90 > "
+    },
+    {
+      "id": "f-iah-bash-2",
+      "repo": "audit-harness",
+      "severity": "P2",
+      "file": "scripts/arch-check.sh",
+      "lines": "54,59",
+      "claim": "arch-check.sh calls sha256sum directly without the cross-platform SHA256_CMD fallback, so on macOS (where sha256sum does not exist) the source-tree input_hash and policy_hash in the emitted gate-result/v1 JSON silently d",
+      "trigger": "Running `audit-harness arch --json` on macOS where sha256sum is absent and shasum -a 256 is the only available SHA-256 tool."
+    },
+    {
+      "id": "f-iah-bash-3",
+      "repo": "audit-harness",
+      "severity": "P2",
+      "file": "scripts/emit-evidence.sh",
+      "lines": "184-187",
+      "claim": "The OTEL diagnostic event is built with printf interpolating $GATE_ID and $RESULT directly into a JSON format string; if AUDIT_HARNESS_SIDE contains a double-quote character the emitted JSON line is structurally invalid ",
+      "trigger": "Set `AUDIT_HARNESS_SIDE='ci\"injection'` and run any gate with `--json | audit-harness emit-evidence` while `AUDIT_HARNESS_OTEL=1` is set."
+    },
+    {
+      "id": "f-iah-bash-4",
+      "repo": "audit-harness",
+      "severity": "P3",
+      "file": "scripts/escape-scan.sh",
+      "lines": "29,78",
+      "claim": "When invoked as `escape-scan --staged` outside a git working tree, set -euo pipefail causes the script to exit with git's own signal-derived exit code (129) rather than any of the three documented exit codes (0/1/2), bre",
+      "trigger": "Run `bash escape-scan.sh --staged` from a directory that is not inside a git repository; git diff --cached fails and bash exits the script with git's "
+    },
+    {
+      "id": "f-ccp-validator-1",
+      "repo": "claude-code-plugins",
+      "severity": "P2",
+      "file": "scripts/validate-skills-schema.py",
+      "lines": "1620-1640, 1837-1840",
+      "claim": "validate_tool_permission always returns True, making the if not valid caller branch dead code and silently passing all malformed or unknown tool names in allowed-tools.",
+      "trigger": "A SKILL.md with allowed-tools containing a misspelled tool name (e.g. 'Reads' instead of 'Read'), a malformed wildcard without a colon (e.g. 'Bash(git"
+    },
+    {
+      "id": "f-ccp-validator-2",
+      "repo": "claude-code-plugins",
+      "severity": "P2",
+      "file": "scripts/validate-skills-schema.py",
+      "lines": "1683-1686, 128, 1663",
+      "claim": "A SKILL.md missing the name field at standard tier produces zero diagnostic output despite STANDARD_REQUIRED = {name, description} and the inline comment stating both are required.",
+      "trigger": "Run the validator in standard tier (default, non-CI environment) against a SKILL.md that has a description but no name field. The validator exits 0 wi"
+    },
+    {
+      "id": "f-ccp-validator-3",
+      "repo": "claude-code-plugins",
+      "severity": "P2",
+      "file": "scripts/validate-skills-schema.py",
+      "lines": "13-17, 126-127, 140-141",
+      "claim": "The module docstring and block comments describe marketplace-tier enforcement as warnings-only with no additional errors beyond standard, but the code has errored on all 8 ALWAYS_REQUIRED fields since schema 3.3.0.",
+      "trigger": "A developer reads the module docstring before deciding which tier to run in CI; they see 'No additional ERRORS beyond Standard' and 'Validator warns a"
+    },
+    {
+      "id": "f-ccp-validator-4",
+      "repo": "claude-code-plugins",
+      "severity": "P3",
+      "file": "scripts/validate-skills-schema.py",
+      "lines": "1667",
+      "claim": "Dead expression: the conditional on line 1667 computes a value and discards it silently, likely a dropped assignment.",
+      "trigger": "Present in every call to validate_frontmatter. The computed dict is never used; a linter with --no-expression-statements would flag this."
+    },
+    {
+      "id": "f-ccp-workflows-1",
+      "repo": "claude-code-plugins",
+      "severity": "P2",
+      "file": ".github/workflows/sync-external.yml",
+      "lines": "75-84",
+      "claim": "The repository_dispatch payload field github.event.client_payload.source is interpolated with ${{ }} directly into a shell run: block, allowing arbitrary command execution on the runner.",
+      "trigger": "An actor able to POST a repository_dispatch event of type external-plugin-sync (requires a token with contents:write \u2014 e.g. an over-scoped/leaked PAT "
+    },
+    {
+      "id": "f-iar-fused-2",
+      "repo": "intent-rollout-gate",
+      "severity": "P2",
+      "file": "action.yml",
+      "lines": "27-45,77-98",
+      "claim": "Three declared inputs (predicate-uri, rekor-url, cosign-key) are never surfaced into the shell step's env block, so any M5 implementation that reads them via environment variables will silently receive empty strings rath",
+      "trigger": "A caller sets predicate-uri, rekor-url, or cosign-key to non-default values; the bootstrap step's env: block only maps BUNDLE_PATH, POLICY_FILE, and D"
+    }
+  ],
+  "dispositions": {
+    "close_now": [
+      {
+        "bead_id": "bd_000-projects-k4na",
+        "chunk": "iec-1",
+        "title": "Author 6 formal valid_C(skill, tier) predicates in schema $comment structured blocks per plan 033 \u00a7 14.A.1-2",
+        "evidence": [
+          "schemas/authoring/v1/marketplace-tier.schema.json line 6: \"$comment\": \"PREDICATE valid_universalFolds(artifact) := deprecationRegistry \u2227 securityChecks \u2227 disclosureMarkers ... valid_C(artifact) := requiredFields_C \u2227 universalFolds \u2227 upstreamBase_C \u2227 overlay_C\" (formal predicate, structured)",
+          "schemas/authoring/v1/CHANGELOG.md lines 16-19: canonical valid_C predicate, monotone-in-tier, order-independent",
+          "All 6 per-contract schemas (skill-frontmatter, plugin-manifest, agent-definition, mcp-config, hook-config, marketplace-catalog) carry generated $comment EFFECTIVE-REQUIRED MANIFEST structured blocks (DR-044 D7(e)) \u2014 PRs #26/#29/#30",
+          "Merged PR #25 'test: schema-policy eval for the marketplace-tier foundation (closes audit C2)' + 000-docs/008-AA-EVAL-schema-policy-marketplace-tier-2026-06-09.md"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-3kye.13",
+        "chunk": "iec-1",
+        "title": "DECISION + reconcile: should the kernel marketplace tier require scoped Bash (Bash(scope:*)) over bare Bash in",
+        "evidence": [
+          "Merged PR #35 'feat(iec): authoring/v2 skill-frontmatter \u2014 strict IS-marketplace contract (v0.5.0) [DR-049 / CCP-shadow parity]' (2026-06-11) \u2014 commit 27ee000",
+          "CHANGELOG [0.5.0] 'Scoped-Bash (is-overlay NARROW) \u2014 allowed-tools rejects a BARE unscoped Bash token in BOTH the string and array forms; only Bash(scope:*) is accepted' \u2014 the decision resolved as: add the IS-overlay rule in a strict authoring/v2 fork while v1 stays upstream-permissive and BYTE-FROZEN at v0.4.1 (accepts bare Bash forever)",
+          "schemas/authoring/v2/ exists with the composed v2 skill-frontmatter + is-overlay; src/validators/v1/authoring/v2/ validator generated",
+          "Corpus reconciliation follow-through is tracked by open bead bd_000-projects-3kye.15 (re-target CCP kernel-shadow to authoring/v2)"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-3kye.14",
+        "chunk": "iec-2",
+        "title": "DECISION: reconcile skill-frontmatter description max length \u2014 kernel allows 1536, Python marketplace validato",
+        "evidence": [
+          "Merged PR #35 (commit 27ee000, 2026-06-11): authoring/v2 strict fork lowers the description cap 1536 \u2192 1024",
+          "CHANGELOG [0.5.0]: 'Description cap 1024 (disclosureMarkers fold) \u2014 token budget lowered 1536 \u2192 1024 chars (the agentskills.io documented soft cap + the CCP prose-validator ERROR cap)'",
+          "schemas/authoring/v2/marketplace-tier.schema.json encodes the 1024 cap; schemas/authoring/v1/upstream-base/skill-frontmatter.v1.json $comment documents 1536 as the deliberate frozen-v1 divergence \u2014 the decision (both: v2 aligns to 1024, v1 stays 1536 byte-frozen and documented) is made and shipped on main per DR-049"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-0r8m.7",
+        "chunk": "jrig-1",
+        "title": "Convene ISEDC Session 7 to ratify skill-refiner-pass/v1 URI namespace addition + file DR",
+        "evidence": [
+          "intent-eval-lab/000-docs/028-AT-DECR-isedc-council-session-7-skill-refiner-plan-ratification-2026-05-27.md exists \u2014 Session 7 convened 2026-05-27 with 7-seat verbatim positions",
+          "DR-028 P0-RATIFY-1: 'Predicate ships in signed skill-refiner-pass/v1 URI' (Q1 URI namespace ratified); line 88: 'SkillVersion ships as a NEW entity in @intentsolutions/core@0.3.0 schema (14th canonical)' (Q2); P0-RATIFY-2 ratifies the Rekor staging/production signing model (Q3)"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-07oc",
+        "chunk": "jrig-1",
+        "title": "iaj-E07d \u2014 fixture trace recordings (vendor-generic per S1Q2)",
+        "evidence": [
+          "packages/core/fixtures/mm-traces/ on main contains trace-recording fixture sets for all six checkers: MM-1, MM-2, MM-3, MM-4, MM-5, MM-6 (e.g. MM-5/pass-context-present.json, MM-6/fail-no-reformat.json)",
+          "merged PR #48 'feat(M3 phase 3a): MM-N infrastructure + MM-1 async-race checker + fixtures' (commit 9d10659) + PR #49 'MM-2 through MM-6 checkers + fixtures' (commit b2fae3b)"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-0jtr",
+        "chunk": "jrig-1",
+        "title": "iaj-E07c \u2014 MM-5 + MM-6 implementations",
+        "evidence": [
+          "packages/core/src/intentional-mapping/mm-5-context-augmentation.ts and mm-6-strict-mode-protocol.ts exist on main, covered by mm-2-through-6.test.ts + fixtures mm-traces/MM-5/ and MM-6/",
+          "merged PR #49 'feat(M3 phase 3b): MM-2 through MM-6 checkers + fixtures' (commit b2fae3b, 2026-05-13)"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-addh",
+        "chunk": "jrig-2",
+        "title": "iaj-E06b \u2014 env-var spillover test fixture + CI gate",
+        "evidence": [
+          "packages/core/src/providers/ciso-gates/g2-env-var-spillover.ts (on main, implements PB-7 \u00a7 6 G-2)",
+          "packages/core/src/providers/ciso-gates/g2-env-var-spillover.test.ts",
+          "packages/core/src/providers/test-fixtures/{clean-provider,leaky-provider}.ts",
+          "Merged PR #53 'feat(M4 phase 2a): Provider interface + CISO gates G-1, G-2' (2026-05-13)"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-bbw9",
+        "chunk": "jrig-2",
+        "title": "iaj-E05d \u2014 measurement protocol per Q5 CTO binding",
+        "evidence": [
+          "000-docs/018-AT-SPEC-pb7-adapter-measurement-protocol-2026-05-12.md exists on main",
+          "Merged PR #52 'docs(M4 PB-7): provider-adapter measurement protocol (CTO Q5 binding gate)' (2026-05-13), commit f32b8cb",
+          "CISO gates G-1/G-2 on main cite 'PB-7 measurement protocol \u00a7 6' as their source, proving the protocol is in active normative use"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-f9rp",
+        "chunk": "jrig-2",
+        "title": "iaj-stub-negative-test \u2014 CI negative test proves stub vs production-mode",
+        "evidence": [
+          "packages/cli/src/providers/anthropic.test.ts on main \u2014 file header explicitly cites 'iaj-stub-negative-test' and asserts: assertStubAllowed() REFUSES when J_RIG_ALLOW_STUB unset or !='1' (production-mode refusal), plus mandatory loud banner when stub mode active",
+          "packages/cli/src/commands/eval.ts calls assertStubAllowed() before instantiating any stub provider",
+          "Merged PR #75 'feat(iep-P2): release hardening \u2014 remove ||true + stub-provider opt-in + constructor enforcement' (2026-05-24). The (a) variant (provider.mode='stub' in bundle output) was implemented as banner + refuse-rows discipline per STUB-PROVIDERS.md \u2014 same regression-prevention intent."
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-fzjx",
+        "chunk": "jrig-2",
+        "title": "iaj-E02a \u2014 add @intentsolutions/core dep",
+        "evidence": [
+          "Root package.json on main: devDependencies includes \"@intentsolutions/core\": \"0.3.1\"",
+          "Merged PR #102 'feat(core): bump kernel to 0.3.1 + add kernel shadow-equivalence test (iaj-E02 safe slice)' commit 23b683c (2026-06-11); dep first added at 0.2.0 via PR #95",
+          "packages/core/src/schemas/evidence-bundle.kernel-shadow.test.ts consumes the dep on main. The additional direct dep in packages/core lands with PR #103 but the bead as scoped (add the dep) is done on main."
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-i884",
+        "chunk": "jrig-2",
+        "title": "iaj-E06a \u2014 credential-redaction test fixture + CI gate",
+        "evidence": [
+          "packages/core/src/providers/ciso-gates/g1-credential-redaction.ts (on main, implements PB-7 \u00a7 6 G-1)",
+          "packages/core/src/providers/ciso-gates/g1-credential-redaction.test.ts exercising clean-provider/leaky-provider fixtures",
+          "Merged PR #53 'feat(M4 phase 2a): Provider interface + CISO gates G-1, G-2' (2026-05-13)",
+          "Runs in blocking CI Test job (.github/workflows/ci.yml). Required-status-check promotion tracked separately by bd_000-projects-71hx."
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-qkwg",
+        "chunk": "jrig-2",
+        "title": "iaj-E07a \u2014 MM-1 + MM-2 implementations",
+        "evidence": [
+          "packages/core/src/intentional-mapping/mm-1-async-race.ts + mm-1-async-race.test.ts on main",
+          "packages/core/src/intentional-mapping/mm-2-shape-drift.ts + mm-2-through-6.test.ts on main",
+          "packages/core/fixtures/mm-traces/MM-1/ and MM-2/ fixture dirs",
+          "Merged PR #48 'feat(M3 phase 3a): MM-N infrastructure + MM-1 async-race checker + fixtures' commit 9d10659; merged PR #49 'feat(M3 phase 3b): MM-2 through MM-6 checkers + fixtures' commit b2fae3b (both 2026-05-13)"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-sizs",
+        "chunk": "jrig-2",
+        "title": "iaj-stub-docs \u2014 STUB-PROVIDERS.md + README cross-ref",
+        "evidence": [
+          "STUB-PROVIDERS.md exists at repo root on main",
+          "README.md:157 cross-references it ('Full discipline: [STUB-PROVIDERS.md](./STUB-PROVIDERS.md)')",
+          "Stub banner in packages/cli/src/providers/anthropic.ts points users to STUB-PROVIDERS.md; landed via merged PRs #75/#80 (2026-05-24/26)",
+          "The 'each provider package's README' clause is structurally inapplicable: providers are modules inside packages/core and packages/cli, no per-provider packages or package READMEs exist on main"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-z6n1",
+        "chunk": "jrig-3",
+        "title": "iaj-E06c \u2014 broker pattern enforcement (no creds across subprocess)",
+        "evidence": [
+          "packages/core/src/providers/ciso-gates/g2-env-var-spillover.ts + g2-env-var-spillover.test.ts (tests subprocess spawned with sanitized env PASSES, key-passed FAILS)",
+          "merged PR #53 (commit 23299e6) feat(M4 phase 2a): Provider interface + CISO gates G-1, G-2",
+          "000-docs/021-AT-ARCH-repo-blueprint-2026-06-10.md:340 states broker pattern is 'enforced by G2 env-var spillover test'"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-zcdo",
+        "chunk": "jrig-3",
+        "title": "iaj-E07b \u2014 MM-3 + MM-4 implementations",
+        "evidence": [
+          "packages/core/src/intentional-mapping/mm-3-cooldown.ts",
+          "packages/core/src/intentional-mapping/mm-4-side-effect-verification.ts",
+          "packages/core/fixtures/mm-traces/MM-3/ + MM-4/ fixture JSONs",
+          "merged PR #49 (commit b2fae3b) feat(M3 phase 3b): MM-2 through MM-6 checkers + fixtures"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-zye",
+        "chunk": "jrig-3",
+        "title": "iaj-E07 \u2014 MM-1..MM-6 intentional-mapping checks",
+        "evidence": [
+          "packages/core/src/intentional-mapping/ contains mm-1-async-race.ts, mm-2-shape-drift.ts, mm-3-cooldown.ts, mm-4-side-effect-verification.ts, mm-5-context-augmentation.ts, mm-6-strict-mode-protocol.ts + registry.ts + types.ts + tests",
+          "packages/core/fixtures/mm-traces/MM-1..MM-6 fixture dirs all exist",
+          "merged PR #48 (commit 9d10659) MM-N infrastructure + MM-1; merged PR #49 (commit b2fae3b) MM-2 through MM-6 checkers + fixtures"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-0tmh",
+        "chunk": "jrig-3",
+        "title": "iaj-E04b \u2014 ~120 LOC + 20+ fixture tests",
+        "evidence": [
+          "packages/core/src/parsers/agents-md-parser.ts (244 LOC) + agents-md-parser.test.ts (17 test cases across 6 describe blocks incl. realistic full-document fixture)",
+          "merged PR #56 (commit ddfb509) feat(M3 phase 2 / PB-8): AGENTS.md parser; CHANGELOG v0.17.0 entry",
+          "Note: 17 tests vs the '20+' planning estimate \u2014 the deliverable (implementation + fixture test suite) substantively shipped"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-wqif",
+        "chunk": "jrig-3",
+        "title": "iaj-E04a \u2014 parser implementation + types",
+        "evidence": [
+          "packages/core/src/parsers/agents-md-parser.ts (244 LOC, typed extractors) exported via packages/core/src/parsers/index.ts",
+          "merged PR #56 (commit ddfb509) feat(M3 phase 2 / PB-8): AGENTS.md parser; CHANGELOG v0.17.0 entry"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-nfe",
+        "chunk": "iel-1",
+        "title": "iel-E02d \u2014 runtime isolation + cost governance + observability",
+        "evidence": [
+          "000-docs/012-AT-ARCH-platform-runtime-blueprint.md \u00a7 4 'Runtime Isolation + Cost Governance + Observability' (line 396; \u00a7\u00a7 4.1 isolation, 4.2 cost governance, observability per \u00a7 intro)",
+          "merged PR #53, commit c78a74a (2026-05-14) \u2014 Blueprint B landed with this section; parent epic iel-E02 is Phase A foundation, complete per CHANGELOG v0.2.0"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-rqwk.10",
+        "chunk": "iel-1",
+        "title": "Author plan 027 v5 with all DR-028 amendments folded inline (GATES STATUS \u2192 RATIFIED)",
+        "evidence": [
+          "000-docs/027-PP-PLAN-skill-refiner-snoopy-fluttering-comet-v4-2026-05-26.md line 20: '2026-05-27 v5 (THIS) \u2014 DR-028 amendments folded inline' + line 22 '## DR-028 Amendments Index (v5 changes \u2014 read first)'",
+          "000-docs/audit/2026-05-26-plan-audit/STATUS.md: 'State: RATIFIED ... Plan ratified: v5'",
+          "commit 0f56bfc (PR #77, 2026-05-28) carries the v5 file on main"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-dhss",
+        "chunk": "iel-1",
+        "title": "iel-E16a \u2014 /repo-dress --fill-gaps pass",
+        "evidence": [
+          "commit 0814969 (2026-05-10) 'docs: complete /repo-dress 21-file canon (8 governance files, closes #24)'",
+          "Full governance set present at repo root on main: CODE_OF_CONDUCT.md, CONTRIBUTING.md, SECURITY.md, SUPPORT.md, AGENTS.md, KNOWN-ISSUES.md, CHANGELOG.md, LICENSE, README.md, lychee.toml \u2014 a fresh --fill-gaps pass has nothing structural to fill"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-hruf",
+        "chunk": "iel-1",
+        "title": "iel-E16f \u2014 Quarterly cron workflow for Anthropic spec snapshot diff (folds into iel-E07)",
+        "evidence": [
+          ".github/workflows/spec-drift-watch.yml \u2014 DAILY cron ('0 9 * * *', line 33) diffing 16 Anthropic/Claude upstream surfaces against vendored snapshots, a strict superset of the quarterly ask",
+          "scripts/spec-drift-check.sh + specs/upstream-surfaces/ + specs/upstream-surface-registry.v1.json",
+          "merged PRs #113 (skeleton + watcher-liveness), #118/#119 (Wave-1/2 surfaces), #120 (versioned registry + consistency gate), commit db5a629"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-qne6",
+        "chunk": "iel-1",
+        "title": "iel-E16c \u2014 Run /audit-tests \u2192 TEST_AUDIT.md (narrow L0+L6+schema scope)",
+        "evidence": [
+          "TEST_AUDIT.md exists at repo root on main",
+          "merged PR #85 'chore(testing): implement P1-1,2,3,4 from TEST_AUDIT.md' (2026-05-30) proves the audit ran and its findings were consumed downstream"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-ac1",
+        "chunk": "iel-2",
+        "title": "iel-E07b \u2014 quarterly CI cron",
+        "evidence": [
+          ".github/workflows/spec-drift-watch.yml runs a DAILY cron ('0 9 * * *') polling Anthropic spec surfaces \u2014 supersedes the quarterly ask",
+          "PR #113 (commit a36dfe8) landed the workflow; PRs #118/#119 expanded coverage to 16 surfaces incl. plugins, sub-agents, marketplace, MCP, hooks, slash-commands"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-v44",
+        "chunk": "iel-2",
+        "title": "iel-E07a \u2014 snapshot diff detector script",
+        "evidence": [
+          "scripts/spec-drift-check.sh exists on main: 'Polls 16 spec sources, compares each against a committed snapshot hash' (pins in specs/snapshots/.sha/)",
+          "scripts/spec-projection-diff.py adds field-level normative-shape diff",
+          "Landed via merged PRs #113 (commit a36dfe8), #118, #119, #120; wired into .github/workflows/spec-drift-watch.yml"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-08tj",
+        "chunk": "iah",
+        "title": "iah-E11a \u2014 /repo-dress --fill-gaps pass",
+        "evidence": [
+          "Merged PR #11 'docs: fill baseline OSS governance gaps via /repo-dress (closes #10)' (2026-05-10)",
+          "Merged PR #15 'docs: add release.yml \u2014 complete /repo-dress 21-file canon (21/21)'",
+          "Commits 29a8520 + c0298ef on main"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-3e1f",
+        "chunk": "iah",
+        "title": "iah-E05a \u2014 cli surface snapshot at v0.3.0",
+        "evidence": [
+          "SEMVER.md (declared CLI/output contract with 'Stable since' rows) exists at repo root",
+          "tests/semver/run-semver-tests.sh pins the frozen subcommand roster + exit codes + --json flag + predicate URI as live assertions",
+          "Merged PR #65 'test(semver): pin CLI/output contract so MAJOR-worthy changes fail CI' (commit f8b1fcb, 2026-06-11)"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-5bb4",
+        "chunk": "iah",
+        "title": "iah-E05b \u2014 breaking-change detector",
+        "evidence": [
+          "tests/semver/run-semver-tests.sh is the live breaking-change detector: every SEMVER.md MAJOR row maps to an assertion that trips when a frozen surface drifts",
+          "Merged PR #65 (commit f8b1fcb) \u2014 'so MAJOR-worthy changes fail CI'"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-ef1c",
+        "chunk": "iah",
+        "title": "iah-E07c \u2014 collector-absent best-effort path",
+        "evidence": [
+          "scripts/emit-evidence.sh:178-183 \u2014 OTel emit is best-effort and env-gated (AUDIT_HARNESS_OTEL=1 or OTEL_EXPORTER_OTLP_ENDPOINT); silent no-op when no collector is configured"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-gkmv",
+        "chunk": "iah",
+        "title": "iah-E09c \u2014 propagation via /sync-testing-harness across IS repos",
+        "evidence": [
+          "Commit c6b69cd / PR #43 'chore(gitignore): exclude HARNESS-SYNC-REPORT.md (weekly cron output)' \u2014 proves /sync-testing-harness propagation runs on a weekly cron and emits its report in this repo",
+          "/sync-testing-harness is the canonical propagator per Intent Solutions Testing SOP"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-mm0i",
+        "chunk": "iah",
+        "title": "iah-E07d \u2014 OTel attribute schema citation to OTel RFC draft",
+        "evidence": [
+          "scripts/emit-evidence.sh:179 \u2014 'Fire agent.rollout.gate.evaluated per intent-eval-lab/000-docs/001-DR-RFC-...md' citation accompanying the attribute set (gate.id/gate.result/gate.runner/gate.commit_sha)"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-uhrj",
+        "chunk": "iah",
+        "title": "iah-E05c \u2014 CI gate on un-versioned breaking change",
+        "evidence": [
+          ".github/workflows/ci.yml 'semver' job (line 269) runs tests/semver/run-semver-tests.sh on every PR/push",
+          "Merged PR #65 'test(semver): pin CLI/output contract so MAJOR-worthy changes fail CI' (commit f8b1fcb)"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-umja",
+        "chunk": "iah",
+        "title": "iah-E04d \u2014 production Rekor mode (v0.4.0+, gated on iel-E02 SPEC.md normative)",
+        "evidence": [
+          "scripts/emit-evidence.sh:26-28 \u2014 --rekor-url option with default https://rekor.sigstore.dev (production)",
+          "release.yml emit-evidence job (PR #59, commit 458e2ca) keyless-signs with cosign (Fulcio OIDC + production Rekor) on every tag; dashboard re-verifies Rekor inclusion at ingest",
+          "Gate condition satisfied: Blueprint B \u00a7 7 gate-result/v1 NORMATIVE spec landed (intent-eval-lab CHANGELOG 0.2.0, iel-E02 PR #53)"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-kt4o",
+        "chunk": "iah",
+        "title": "iep-changelog-hygiene-sweep \u2014 bring every IEP repo CHANGELOG to Keep-a-Changelog 1.1.0 compliance",
+        "evidence": [
+          "audit-harness/CHANGELOG.md head cites Keep a Changelog 1.1.0 + SemVer (reference template per the bead)",
+          "intent-eval-lab/CHANGELOG.md (the formerly-BROKEN one) now has clean Keep-a-Changelog 1.1.0 header, [Unreleased] at top, single [0.2.0] - 2026-05-26 entry",
+          "intent-eval-core/CHANGELOG.md, j-rig-binary-eval/CHANGELOG.md, intent-rollout-gate/CHANGELOG.md all carry Keep-a-Changelog 1.1.0 + SemVer headers with structured entries"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-x9xkl",
+        "chunk": "umbrella",
+        "title": "Refactor /audit-tests to call classify first and refine only the unresolved residue, never co-authoring the de",
+        "evidence": [
+          "/home/jeremy/.claude/skills/audit-tests/SKILL.md (version 7.2.0) Step 2: 'Deterministic floor first (the harness brain). Run pnpm exec audit-harness classify ... and an explicit unresolved[]' + 'dispatch test-discovery-agent ... only to refine the unresolved[] residue ... it never overrides the deterministic classification value'",
+          "/home/jeremy/.claude/skills/implement-tests/SKILL.md lines 111-112 consume the audit-profile/v1 payload from audit-tests Step 2",
+          "audit-harness merged PR #53 (classify verb) + PR #55 (gen-layer-applicability projection the skill references)"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-gnu4",
+        "chunk": "iar",
+        "title": "iar-E02b \u2014 reference DR-010 \u00a7 13.5",
+        "evidence": [
+          "intent-rollout-gate/000-docs/004-AT-DECR-runtime-language-typescript-2026-06-10.md",
+          "commit 927d151 (PR #19)"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-jdm0",
+        "chunk": "iar",
+        "title": "iar-E02a \u2014 record TS-primary lock rationale",
+        "evidence": [
+          "intent-rollout-gate/000-docs/004-AT-DECR-runtime-language-typescript-2026-06-10.md sections 3 and 4 document the full rationale",
+          "commit 927d151 (PR #19)"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-oi8d",
+        "chunk": "iar",
+        "title": "iar-E02d \u2014 acceptance criteria for v0.1.0 \u2192 v0.2.0 transition",
+        "evidence": [
+          "intent-rollout-gate/000-docs/004-AT-DECR-runtime-language-typescript-2026-06-10.md \u00a7 6 enumerates all five acceptance criteria",
+          "commit 927d151 (PR #19)"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-xnan",
+        "chunk": "iar",
+        "title": "iar-E02c \u2014 alternatives considered + what's deferred",
+        "evidence": [
+          "intent-rollout-gate/000-docs/004-AT-DECR-runtime-language-typescript-2026-06-10.md \u00a7 4 (alternatives) + \u00a7 5 (what stays deferred)",
+          "commit 927d151 (PR #19)"
+        ],
+        "rescope_note": "",
+        "decision_needed": ""
+      }
+    ],
+    "duplicates": [
+      {
+        "bead_id": "bd_000-projects-rqwh",
+        "chunk": "iec-2",
+        "title": "Dual changelog consolidation: kernel CHANGELOG.md canonical; CCP SCHEMA_CHANGELOG.md cites kernel for authorin",
+        "evidence": [
+          "This bead: 'Dual changelog consolidation: kernel CHANGELOG.md canonical; CCP SCHEMA_CHANGELOG.md cites kernel for authoring/v1 entries instead of duplicating'",
+          "Open bead bd_000-projects-9k5h.12: 'Add the changelog-observance CI gate (kernel CHANGELOG canonical; a schema change without a changelog + lineage record fails); CCP SCHEMA_CHANGELOG cites the kernel' \u2014 strict superset of this bead's scope",
+          "Work not done either way: CCP SCHEMA_CHANGELOG.md line 149 only cites the kernel prospectively ('Future kernel ... will mirror'); no changelog-observance script in intent-eval-core scripts/"
+        ],
+        "duplicate_of": "bd_000-projects-9k5h.12",
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-brij.3",
+        "chunk": "iec-2",
+        "title": "Embed D5 \u2014 SkillVersion ER diagram in iec/002-AT-ARCH (replace existing \u00a7 ER)",
+        "evidence": [
+          "This bead: 'Embed D5 \u2014 SkillVersion ER diagram in iec/002-AT-ARCH (replace existing \u00a7 ER)'",
+          "Open bead bd_000-projects-brij.2 (P1, same parent epic brij): 'Update intent-eval-core repo blueprint ER diagram to show 14th entity (D5)' \u2014 same doc (002-AT-ARCH repo blueprint), same D5 SkillVersion ER diagram",
+          "Work not done in either: 000-docs/002-AT-ARCH-repo-blueprint-2026-05-18.md has zero SkillVersion mentions and no skill-version.schema.json exists in schemas/v1/"
+        ],
+        "duplicate_of": "bd_000-projects-brij.2",
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-0r8m.4",
+        "chunk": "jrig-1",
+        "title": "Extend Blueprint B \u00a7 7 (intent-eval-lab) with normative skill-refiner-pass/v1 spec",
+        "evidence": [
+          "This bead: 'Extend Blueprint B \u00a7 7 (intent-eval-lab) with normative skill-refiner-pass/v1 spec \u2014 predicate URI, field definitions, cross-field invariants, emitter/consumer expectations'",
+          "Open bead bd_000-projects-rqwk.1: 'Author intent-eval-lab/000-docs/028-AT-SPEC-skill-refiner-pass-v1-predicate.md (normative predicate spec)' \u2014 same normative skill-refiner-pass/v1 spec deliverable, two competing homes",
+          "Neither done: rg 'skill-refiner' in intent-eval-lab/000-docs/012-AT-ARCH-platform-runtime-blueprint.md returns 0 hits"
+        ],
+        "duplicate_of": "bd_000-projects-rqwk.1",
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-3zol.1",
+        "chunk": "jrig-1",
+        "title": "Scaffold @j-rig/refiner package + value types module (SkillDocHash, EvalSetHash, ScoreRecord, EditProposal...)",
+        "evidence": [
+          "This bead: 'Scaffold @j-rig/refiner package + value types module (SkillDocHash, EvalSetHash, ScoreRecord, EditProposal, AddOp/DeleteOp/ReplaceOp)' \u2014 scaffolds the pure value-types package skeleton",
+          "Open bead bd_000-projects-214c.1: 'Create packages/refiner-core/ boundary split in j-rig-binary-eval (pure value-objects, zero adapters)' \u2014 same package, same four value types (SkillDocHash, EvalSetHash, ScoreRecord, EditProposal), same zero-adapter constraint",
+          "3zol.1 still uses the pre-DR-028 '@j-rig/keeper-core' naming; 214c.1 aligns with ratified Plan 027 \u00a7 4 Phase A build-order"
+        ],
+        "duplicate_of": "bd_000-projects-214c.1",
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-rqwk.3",
+        "chunk": "iel-1",
+        "title": "Update 014-DR-GLOS-canonical-glossary.md with Skill Refiner brand canon entries",
+        "evidence": [
+          "This bead: 'Update 014-DR-GLOS-canonical-glossary.md with Skill Refiner brand canon entries'; open bead bd_000-projects-0r8m.5: 'Update canonical glossary (014-DR-GLOS) with Skill Refiner brand canon entries: SkillVersion, Skill Refiner, 3-layer hooks (sinker/line/hook), ScoreRecord, EditProposal, Skill Refiner evidence reports' \u2014 identical deliverable on the same file; rqwk.3's own description says 'parent = bd_000-projects-0r8m.5 (existing glossary-update child of 0r8m)'",
+          "Work itself NOT done: 014-DR-GLOS has only a passing SkillVersion mention (line 396), no brand-canon entries \u2014 0r8m.5 should remain the surviving open bead"
+        ],
+        "duplicate_of": "bd_000-projects-0r8m.5",
+        "rescope_note": "",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-q9vn",
+        "chunk": "umbrella",
+        "title": "Convert bd<->GH<->Plane from three-way sync to canonical-bd + computed projections (design spike)",
+        "evidence": [
+          "The design question was ratified by DR-028 T3 (intent-eval-lab/000-docs/028-AT-DECR-isedc-council-session-7-skill-refiner-plan-ratification-2026-05-27.md, 20/20 consensus: bd is canonical writer; GH/Plane are projections via bd-sync generator)",
+          "This bead: 'Convert bd<->GH<->Plane from three-way sync to canonical-bd + computed projections (design spike)' \u2014 the open bead bd_000-projects-rqwk.8: 'Extend bd-sync as the GENERATOR for bead\u2194GH\u2194doc cross-refs (collapse T3 \u2014 bd is sole writer, GH/Plane as projections)' covers the same target architecture; the spike's decision output already exists in DR-028 T3"
+        ],
+        "duplicate_of": "bd_000-projects-rqwk.8",
+        "rescope_note": "",
+        "decision_needed": ""
+      }
+    ],
+    "rescope": [
+      {
+        "bead_id": "bd_000-projects-0r8m.8",
+        "chunk": "iec-1",
+        "title": "Ship @intentsolutions/core@0.3.0 release ceremony with SkillVersion entity + skill-refiner-pass/v1 predicate +",
+        "evidence": [],
+        "rescope_note": "The version number 0.3.0 is already consumed: v0.3.0 shipped 2026-06-07 via PR #20 carrying EvidenceBundlePayload + EvidenceStatement (CHANGELOG [0.3.0]), and the repo is now at v0.5.0 (PR #35, 2026-06-11). The SkillVers",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-3kye",
+        "chunk": "iec-1",
+        "title": "Spec Authority Kernel (SAK) \u2014 bicameral kernel adds schemas/authoring/v1/ family with 6 IS-marketplace-tier au",
+        "evidence": [
+          "PR #33 release: v0.4.0 \u2014 bicameral kernel authoring/v1 family (merged 2026-06-11)",
+          "PRs #26/#28/#29/#30 \u2014 all 6 contracts (skill-frontmatter, plugin-manifest, agent-definition, mcp-config, hook-config, marketplace-catalog) + single-source codegen",
+          "schemas/authoring/v1/ contains all 6 contract schemas + index.json + CHANGELOG.md; src/validators/v1/authoring/ has all 6 Zod validators",
+          "CHANGELOG [0.4.0]/[0.4.1]/[0.5.0] entries"
+        ],
+        "rescope_note": "The title scope (kernel ships schemas/authoring/v1/ with 6 contracts) is DONE: v0.4.0 (PR #33) shipped all 6, skill-frontmatter PUBLISHED, #2-6 SHIPPED-INTERNAL; v0.4.1 + v0.5.0 strict v2 fork followed. Remaining per the",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-3kye.4",
+        "chunk": "iec-1",
+        "title": "Add per-chamber kernel isolation: independent $schemaVersion lane + distinct predicate-URI namespace + NO shar",
+        "evidence": [
+          "PR #32 (merged 2026-06-11, commit 61da1f3) landed scripts/check-predicate-namespace-isolation.ts + tests/predicate-namespace-isolation/{clean,violation} \u2014 fails CI if any schemas/authoring/v1/** references the evals.intentsolutions.io predicate namespace",
+          "CHANGELOG [0.4.0]: 'Authoring conformance is a deterministic lint, never a signed attestation; the two namespaces stay isolated'"
+        ],
+        "rescope_note": "Distinct predicate-URI namespace is DONE (PR #32 CI gate). Remaining: an explicit independent $schemaVersion lane per chamber (no schemaVersion field in schemas/authoring/v1/index.json or schemas/v1/index.json) and an ex",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-bt75",
+        "chunk": "iec-1",
+        "title": "Phase 5 decompose to 5a/5b/5c/5d/5e (one per remaining contract) with same state-machine discipline as Phase 4",
+        "evidence": [
+          "PRs #29 + #30 (merged 2026-06-11): authoring contracts #2-6 (plugin-manifest, agent-definition, mcp-config, hook-config, marketplace-catalog) already SHIPPED-INTERNAL via single-source codegen \u2014 schemas + validators exist in schemas/authoring/v1/ and src/validators/v1/authoring/",
+          "CHANGELOG [0.4.0]: contracts #2-6 ship EXPERIMENTAL, 'pending the vendored deep-capture + the \u00a7 14.A policy-eval refinement (planned for a future minor)'"
+        ],
+        "rescope_note": "The premise (5 contracts not yet authored, weeks 17-26 calendar plan) changed: all 5 remaining contracts already shipped SHIPPED-INTERNAL in v0.4.0, skipping the planned per-contract sub-phasing. What remains of the bead",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-g6zu",
+        "chunk": "iec-2",
+        "title": "iep-harness-hash-platform-rollout \u2014 Initialize .harness-hash self-pin across 4 currently-uninitialized IEP rep",
+        "evidence": [
+          "fd -H '^\\.harness-hash$' across the 4 repos returns only audit-harness/.harness-hash and intent-eval-lab/.harness-hash"
+        ],
+        "rescope_note": "2 of 4 target repos now have .harness-hash: intent-eval-lab/.harness-hash and audit-harness/.harness-hash exist (verified via fd). Remaining scope: j-rig-binary-eval and intent-rollout-gate still have NO .harness-hash an",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-59tx",
+        "chunk": "jrig-1",
+        "title": "Add Release workflow failure alerting (ntfy 'prod-alerts' topic) across IEP repos",
+        "evidence": ["/usr/bin/grep -rn 'ntfy|prod-alerts' .github/workflows/ \u2192 no matches on main"],
+        "rescope_note": "Work entirely undone (zero ntfy/prod-alerts references in j-rig .github/workflows/; no release-health.yml; only ci.yml + doc-quality.yml + release.yml exist), but the bead targets the retired 'prod-alerts' ntfy topic \u2014 a",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-9pi3",
+        "chunk": "jrig-1",
+        "title": "Pin OTel semantic conventions in @intentsolutions/core BEFORE v0.2.0 ships",
+        "evidence": ["fd otel intent-eval-core/schemas intent-eval-core/src \u2192 no matches"],
+        "rescope_note": "The 'BEFORE v0.2.0 ships' anchor is blown: kernel shipped 0.2.0, 0.3.0, 0.3.1 (j-rig main pins 0.3.1 via PR #102) and PR #103 consumes 0.5.0 \u2014 none include OTel attribute pinning (no otel-attributes.yaml or otel/ export ",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-sqq8",
+        "chunk": "jrig-1",
+        "title": "iep-P2-j-rig-hardening \u2014 j-rig release + stub-provider hardening",
+        "evidence": [
+          "PR #75 merged 2026-05-24; PR #80 merged 2026-05-26",
+          "STUB-PROVIDERS.md exists on main; release.yml contains no '|| true'"
+        ],
+        "rescope_note": "Core scope shipped on main: '|| true' removed + stub-provider opt-in + constructor enforcement (PR #75, commit ddafc29), build-before-test fix (PR #76), release.yml tag-trigger rewrite (PR #80/v1.1.0), stub banner implem",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-5cbd",
+        "chunk": "jrig-1",
+        "title": "iaj-E05a \u2014 Provider interface + anthropic + openai stub adapters",
+        "evidence": [
+          "packages/cli/src/providers/ contains only anthropic.ts + anthropic.test.ts",
+          "PR #53 merged 2026-05-13"
+        ],
+        "rescope_note": "Provider interface and the anthropic stub adapter shipped on main: packages/core/src/providers/types.ts (interface) + packages/cli/src/providers/anthropic.ts (+ anthropic.test.ts), landed via PR #53 'feat(M4 phase 2a): P",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-66u",
+        "chunk": "jrig-1",
+        "title": "iaj-E09 \u2014 v0.24.0 release",
+        "evidence": [
+          "PR #73 (v1.0.0) merged 2026-05-20; PR #80 (v1.1.0) merged 2026-05-26; CHANGELOG head shows 2.0.0 unreleased"
+        ],
+        "rescope_note": "The v0.24.0 version target is obsolete: the repo went v0.23.2 \u2192 v1.0.0 (Apache-2.0 relicense, PR #73) \u2192 v1.1.0 (PR #80), and v2.0.0 is next via PR #103. The release CONTENT this bead gates on (rollout-gate logic package ",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-71hx",
+        "chunk": "jrig-1",
+        "title": "iaj-E11f \u2014 CISO gates wired as required CI: cred-redaction + env-var spillover (depends iaj-E06)",
+        "evidence": [
+          "packages/core/src/providers/ciso-gates/ exists on main",
+          "ci.yml job list: Lint, Typecheck, Test only"
+        ],
+        "rescope_note": "The two CISO gates are implemented and exercised on main: packages/core/src/providers/ciso-gates/g1-credential-redaction.ts + g2-env-var-spillover.ts with test files (PR #53), running inside the generic 'Test' CI job. Wh",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-9kcy",
+        "chunk": "jrig-2",
+        "title": "iep-testing-cicd-gap-recheck \u2014 Re-verify the 8 gaps surfaced in 2026-05-21 testing+CI/CD review",
+        "evidence": [],
+        "rescope_note": "Gaps 1+2 now verifiable as fixed on main: PR #75 (merged 2026-05-24) removed ||true and made stub-provider opt-in (assertStubAllowed in packages/cli/src/providers/anthropic.ts; release.yml on main runs plain 'pnpm run te",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-edpg",
+        "chunk": "jrig-2",
+        "title": "iaj-E11b \u2014 Install @intentsolutions/audit-harness + TESTING.md + .harness-hash",
+        "evidence": [],
+        "rescope_note": "Harness install is DONE: vendored .audit-harness/ exists on main at v1.1.5 (PR #35 installed v0.1.0; PR #93 bumped to v1.1.5, commit c49d655). Remaining: tests/TESTING.md and .harness-hash do not exist anywhere on main (",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-hbi",
+        "chunk": "jrig-2",
+        "title": "iaj-E06 \u2014 CISO PASS/FAIL gates",
+        "evidence": [],
+        "rescope_note": "G-1 (credential-redaction) + G-2 (env-var spillover) gate harnesses, fixtures, and tests landed on main via PR #53 (packages/core/src/providers/ciso-gates/). Remaining: broker-pattern enforcement (child iaj-E06c bd_000-p",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-m00a",
+        "chunk": "jrig-2",
+        "title": "iaj-E11e \u2014 Multi-workspace release pipeline: pnpm publish --recursive + sigstore + Gemini-review workflow",
+        "evidence": [],
+        "rescope_note": "Partially done/assumptions changed: release.yml tag-trigger rewrite landed (PR #80 v1.1.0) and cosign keyless evidence-signing landed (PR #95 nr75.11). Still missing: npm publish \u2014 all @j-rig/* packages are private:true ",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-usn",
+        "chunk": "jrig-2",
+        "title": "iaj-E05 \u2014 Provider abstraction + adapter measurement",
+        "evidence": [],
+        "rescope_note": "Provider interface landed on main (packages/core/src/providers/types.ts, PR #53) and the measurement protocol doc landed (000-docs/018-AT-SPEC-pb7-adapter-measurement-protocol, PR #52). Remaining: LiteLLM + Vercel AI SDK",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-zw4r",
+        "chunk": "jrig-3",
+        "title": "iaj-E11g \u2014 Branch protection: minimum now; CISO + lint + typecheck + test + Gemini required after 3 green days",
+        "evidence": [
+          "gh api repos/jeremylongshore/j-rig-skill-binary-eval/branches/main/protection \u2192 required_status_checks: null, required_linear_history: true"
+        ],
+        "rescope_note": "Minimum protection IS live on main (GitHub API: PR-review protection object exists, required_linear_history=true, force-pushes/deletions blocked). NOT done: required_status_checks is null \u2014 CISO + lint + typecheck + test",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-z25",
+        "chunk": "jrig-3",
+        "title": "iaj-E04 \u2014 AGENTS.md parser",
+        "evidence": [
+          "packages/core/src/parsers/agents-md-parser.ts",
+          "merged PR #56 commit ddfb509",
+          "packages/cli/src/commands/ lacks parse-agents"
+        ],
+        "rescope_note": "Parser core is DONE on main: packages/core/src/parsers/agents-md-parser.ts + tests via merged PR #56 (commit ddfb509, v0.17.0). Remaining epic scope: CLI surface 'j-rig parse-agents' (no such command in packages/cli/src/",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-2e1s",
+        "chunk": "iel-1",
+        "title": "iel-E16b \u2014 Vendored audit-harness install + TESTING.md (spec-repo flavor) + .harness-hash",
+        "evidence": [
+          ".harness-hash and .audit-harness/ present at repo root",
+          "merged PR #67 'harness-hash self-pin rollout to intent-eval-lab w/ v1.1.1 re-vendor'",
+          "fd TESTING.md returns nothing"
+        ],
+        "rescope_note": "Vendored harness + hash-pin DONE: .audit-harness/ dir, .harness-hash, .harness-hash-extra-patterns, .github/workflows/harness-hash-verify.yml (PR #67, AAR 000-docs/020-AA-AACR-harness-hash-rollout-lab-2026-05-22.md). REM",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-5hf4",
+        "chunk": "iel-1",
+        "title": "iel-E16e \u2014 CI: escape-scan + Gherkin lint + JSON Schema validation against specs/**/schema/*.schema.json",
+        "evidence": [
+          ".github/workflows/ci.yml line 27 JSON Schema syntax step",
+          ".github/workflows/schema-drift.yml",
+          "rg escape-scan/gherkin in workflows = 0 hits"
+        ],
+        "rescope_note": "JSON Schema validation DONE: ci.yml step 'JSON Schema syntax (specs/**/schema/*.json)' + schema-drift.yml redirect-stub gate. REMAINING: escape-scan not wired into any CI workflow (rg 'escape-scan' in .github/workflows/ ",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-8ei",
+        "chunk": "iel-1",
+        "title": "iel-E16 \u2014 Testing SOP + CI/CD (spec-repo light)",
+        "evidence": [
+          "TEST_AUDIT.md at repo root",
+          "merged PRs #67, #82, #85",
+          ".github/workflows/{ci,harness-hash-verify,doc-quality,python-tests,spec-drift-watch}.yml"
+        ],
+        "rescope_note": "Substantially landed: TEST_AUDIT.md (root), .pre-commit-config.yaml L1/L2 hooks, PR #85 (L1 pre-commit + L2 ruff/mypy + L3 coverage), PR #82 doc-quality gates, PR #67 harness-hash self-pin + harness-hash-verify.yml, ci.y",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-8hec",
+        "chunk": "iel-1",
+        "title": "iel-E16g \u2014 Branch protection: minimum now; required checks after 3 green days",
+        "evidence": [
+          "gh api branches/main/protection \u2192 {enforce_admins:false, required_status_checks:null, reviews:0}"
+        ],
+        "rescope_note": "Minimum protection DONE: gh api repos/jeremylongshore/intent-eval-lab/branches/main/protection returns a protection object (protection enabled). REMAINING: required_status_checks is null and required reviews 0 \u2014 the 'req",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-kzvp",
+        "chunk": "iel-1",
+        "title": "iel-E16d \u2014 Run /implement-tests for L0+L6+schema gaps only",
+        "evidence": [
+          "merged PR #85",
+          ".pre-commit-config.yaml on main",
+          "ci.yml JSON Schema syntax step",
+          "fd -e feature = 0 files"
+        ],
+        "rescope_note": "L0/L1 hooks + schema DONE: .pre-commit-config.yaml (ruff, markdownlint, hygiene hooks) via PR #85 'implement P1-1,2,3,4 from TEST_AUDIT.md (L1 pre-commit + L2 ruff/mypy + L3 coverage)'; JSON Schema validation in ci.yml. ",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-rqwk.12",
+        "chunk": "iel-1",
+        "title": "Add AAR cadence schedule to plan 027 v5 (Cunningham F-WC-001 binding: post-phase + quarterly + post-incident)",
+        "evidence": [
+          "027 plan line 40 (Amendments Index row)",
+          "027 plan lines 1720-1739 (Step 8 post-phase AAR + Step 9 quarterly)",
+          "rg 'post-incident' matches only the index row"
+        ],
+        "rescope_note": "Partially folded into v5: Amendments Index row (line 40) declares '\u00a7 4 NEW AAR-cadence subsection (post-phase + quarterly + post-incident \u22647 days)'; \u00a7 13 Step 8 mandates post-phase AAR docs and Step 9 is an explicit quar",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-2bic",
+        "chunk": "iel-2",
+        "title": "iel-E14c \u2014 Author 019-AT-STND-optimizer-safety-model.md",
+        "evidence": [
+          "/home/jeremy/000-projects/intent-eval-platform/intent-eval-lab/000-docs/019-AA-AACR-schema-repoint-iel-link-schemas-2026-05-21.md occupies slot 019"
+        ],
+        "rescope_note": "Doc not authored at all; planned number 019 is now occupied by 019-AA-AACR-schema-repoint-iel-link-schemas-2026-05-21.md. Author the optimizer-safety-model standard under the next free 000-docs number (051+).",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-cst",
+        "chunk": "iel-2",
+        "title": "iel-E07c \u2014 Plane issue auto-filed on drift detected",
+        "evidence": [
+          ".github/workflows/spec-drift-watch.yml: 'GH issue opened with diff summary (auto-deduped by title)' + permissions issues: write"
+        ],
+        "rescope_note": "Drift detection now auto-files a GitHub issue (spec-drift-watch.yml has issues:write permission, auto-deduped by title) but not a Plane issue. Remaining: decide whether the GH-issue projection satisfies the ask per DR-02",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-dtae",
+        "chunk": "iel-2",
+        "title": "iep-tcd-lab \u2014 Testing+CI/CD audit: intent-eval-lab",
+        "evidence": [
+          "/home/jeremy/000-projects/intent-eval-platform/intent-eval-lab/TEST_AUDIT.md exists",
+          "PR #85 / commit c6a71d8 'implement P1-1,2,3,4 from TEST_AUDIT.md'",
+          "No AA-AUDT testing-cicd doc in 000-docs/ (only 015-AA-AUDT appaudit playbook)"
+        ],
+        "rescope_note": "/audit-tests already ran: TEST_AUDIT.md exists at repo root and PR #85 implemented its P1-1..4 (L1 pre-commit + L2 ruff/mypy + L3 coverage). Remaining: file the specified 000-docs/NNN-AA-AUDT-testing-cicd-audit doc inven",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-ecpj",
+        "chunk": "iel-2",
+        "title": "iel-E14d \u2014 Author 022-OD-STND-priority-governance.md",
+        "evidence": ["000-docs/022-AT-DECR-isedc-session-6-beads-reengage-2026-05-23.md occupies slot 022"],
+        "rescope_note": "Doc not authored; planned number 022 is now occupied by 022-AT-DECR-isedc-session-6-beads-reengage-2026-05-23.md. Author the priority-governance doc under the next free 000-docs number.",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-mamv",
+        "chunk": "iel-2",
+        "title": "Scope intent-eval-lab advisory doc-lint (markdownlint/Vale/prettier) to exclude machine-generated re",
+        "evidence": [
+          ".markdownlint-cli2.jsonc ignores research/phase-a-0-baseline/results/raw/**",
+          "gh run view of latest doc-quality.yml run: markdownlint-cli2 (advisory)=failure, Prettier (advisory)=failure, Vale=success",
+          "PR #107 gitignored raw per-run eval outputs"
+        ],
+        "rescope_note": "Partially mitigated: .markdownlint-cli2.jsonc now ignores research/phase-a-0-baseline/results/raw/** and PR #107 gitignored raw per-run outputs (prettier uses --ignore-path .gitignore). But the latest doc-quality run (20",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-ohq",
+        "chunk": "iel-2",
+        "title": "iel-E07 \u2014 Anthropic spec-snapshot auto-update CI gate",
+        "evidence": [
+          ".github/workflows/spec-drift-watch.yml (daily cron, issues:write)",
+          "scripts/spec-drift-check.sh, scripts/spec-projection-diff.py, scripts/watcher-liveness.py",
+          "Merged PRs #113, #118, #119, #120"
+        ],
+        "rescope_note": "Substantially landed via the SAK spec-drift machinery (PRs #113/#118/#119/#120): daily-cron spec-drift-watch.yml + spec-drift-check.sh (16 upstream Anthropic/agentskills surfaces vs committed snapshot hashes) + spec-proj",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-qg0a",
+        "chunk": "iel-2",
+        "title": "CostMeter raises BudgetExceeded on zero-cost call at ceiling",
+        "evidence": [
+          "research/phase-a-0-baseline/scripts/_arm_common.py:690-693 (guard present)",
+          "git show 2c50f2/2c950f2 confirms identical record() since PR #84",
+          "tests/test_arm_common.py:204-219 still carries @pytest.mark.xfail(strict=True)"
+        ],
+        "rescope_note": "The prescribed guard already exists: _arm_common.py:690-693 computes is_paid_call = usage.cost_usd > 0.0 and only raises when (not enforce_paid_only or is_paid_call) \u2014 present since PR #84 (commit 2c950f2). But the cited",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-rtcr",
+        "chunk": "iel-2",
+        "title": "iel-E14a \u2014 Author 017-AT-ARCH-human-review-governance.md",
+        "evidence": ["000-docs/017-RR-LAND-shape-reconciliation-addendum-2026-05-21.md occupies slot 017"],
+        "rescope_note": "Doc not authored; planned number 017 is now occupied by 017-RR-LAND-shape-reconciliation-addendum-2026-05-21.md. Author the human-review-governance doc under the next free 000-docs number.",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-wtna",
+        "chunk": "iel-2",
+        "title": "iel-E14b \u2014 Author 018-OD-STND-economics-and-cost-governance.md",
+        "evidence": [
+          "000-docs/018-AT-DECR-isedc-council-session-5-jrig-reconciliation-2026-05-21.md occupies slot 018"
+        ],
+        "rescope_note": "Doc not authored; planned number 018 is now occupied by 018-AT-DECR-isedc-council-session-5-jrig-reconciliation-2026-05-21.md. Author the economics/cost-governance doc under the next free 000-docs number.",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-pu35.1",
+        "chunk": "iel-2",
+        "title": "Backfill Beads: header in intent-eval-lab docs touched by Skill Refiner work",
+        "evidence": [
+          "grep '| Beads' 000-docs/*.md matches 025/027/029/030/033/034 + SAK-INDEX",
+          "grep confirms NO Beads header in 026-PP-PLAN, 028-AT-DECR, 036-AT-DECR"
+        ],
+        "rescope_note": "Mostly done: refiner-touched docs 025-PP-PLAN, 027-PP-PLAN, 029-DR-BAND, 030-AT-DECR, 033-PP-PLAN, 034-AT-DECR carry '| Beads' front-matter rows and 031/032/048/SAK-INDEX carry 'Beads:' lines. Still missing the header: 0",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-pu35.6",
+        "chunk": "iel-2",
+        "title": "Embed D7 \u2014 tri-link topology diagram in iel/030-AT-STND \u00a7 2",
+        "evidence": [
+          "000-docs/030-AT-DECR-eval-set-bootstrap-decisions-2026-05-28.md occupies slot 030; no 0NN-AT-STND-tri-linkage file exists"
+        ],
+        "rescope_note": "Target doc 000-docs/030-AT-STND-tri-linkage-discipline.md was never authored, slot 030 is now occupied by 030-AT-DECR-eval-set-bootstrap-decisions-2026-05-28.md, and no open bead in the global index authors the tri-linka",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-sl9",
+        "chunk": "iel-2",
+        "title": "iel-E15 \u2014 Governance scaling model",
+        "evidence": [
+          "000-docs/025-PP-PLAN-skill-refiner-2026-05-26.md occupies slot 025; no 0NN-AT-GOV doc exists in 000-docs/"
+        ],
+        "rescope_note": "Doc not authored (correctly deferred \u2014 Phase C, solo-maintainer); planned number 025-AT-GOV is now occupied by 025-PP-PLAN-skill-refiner-2026-05-26.md. When the contributor-growth trigger fires, author under the next fre",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-0wvb",
+        "chunk": "iah",
+        "title": "iah-E11d \u2014 Run /implement-tests for gaps",
+        "evidence": [
+          "/home/jeremy/000-projects/intent-eval-platform/audit-harness/.github/workflows/ci.yml (16 jobs)",
+          "TESTING.md and TEST_AUDIT.md absent from repo"
+        ],
+        "rescope_note": "Test gaps largely filled by bespoke suites instead of the SOP flow: regression/golden/semver/conform/audit/scan/currency CI jobs landed via PRs #38-#65 (.github/workflows/ci.yml). /implement-tests was never run; TESTING.",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-4ag4",
+        "chunk": "iah",
+        "title": "iah-E07a \u2014 agent.rollout.gate.evaluated event",
+        "evidence": [
+          "scripts/emit-evidence.sh:178-188 emits the agent.rollout.gate.evaluated OTLP-shaped event with gate.id/gate.result/gate.runner/gate.commit_sha attributes"
+        ],
+        "rescope_note": "[verify: The event DOES fire: scripts/emit-evidence.sh lines ~178-188 emit '{\"name\":\"agent.rollout.gate.evaluated\",\"attributes\":{\"gate.id\":...,\"gate.result\":...,\"gate.runner\":...,\"gate.commit_sha\":...}}'. BUT the parent ",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-4fmk",
+        "chunk": "iah",
+        "title": "iah-E09b \u2014 release notes (drift-debt paydown summary)",
+        "evidence": [
+          ".github/workflows/release.yml 'Create GitHub Release' step with --generate-notes",
+          "git tag list: no v0.3.0/v0.4.0; v1.1.7 is latest"
+        ],
+        "rescope_note": "The v0.4.0 release this bead targeted never existed (tags went v1.0.0\u2192v1.1.7). GitHub Releases are now auto-generated on every tag (release.yml gh release create --generate-notes). Rescope to: decide whether a one-time d",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-6h71",
+        "chunk": "iah",
+        "title": "iah-E04c \u2014 sigstore-staging mode (default for v0.3.x)",
+        "evidence": ["scripts/emit-evidence.sh:22-28 (option surface; no staging mode; production Rekor default)"],
+        "rescope_note": "Assumption stale: there is no v0.3.x and no staging-Rekor mode. emit-evidence.sh defaults to --no-sign; signing is opt-in (--sign keyless/--key, --rekor-url defaults to PRODUCTION rekor.sigstore.dev), and release.yml alr",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-7irw",
+        "chunk": "iah",
+        "title": "iah-E09a \u2014 npm + PyPI + crates publish",
+        "evidence": [
+          "npm registry: @intentsolutions/audit-harness latest = 1.1.7",
+          "pypi.org/pypi/intent-audit-harness/json \u2192 Not Found; crates.io \u2192 'crate does not exist'",
+          "python/PUBLISH.md:3 + rust/PUBLISH.md:3 'not yet uploaded'"
+        ],
+        "rescope_note": "npm leg DONE: @intentsolutions/audit-harness@1.1.7 live on npm with sigstore provenance via release.yml (PR #51). PyPI + crates legs NOT done: registry queries return 404/'does not exist', and python/PUBLISH.md + rust/PU",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-fis",
+        "chunk": "iah",
+        "title": "iah-E07 \u2014 OTel instrumentation",
+        "evidence": ["scripts/emit-evidence.sh:178-188"],
+        "rescope_note": "E07a (evaluated event), E07c (collector-absent best-effort) and E07d (RFC citation) are live in scripts/emit-evidence.sh:178-188. Remaining: E07b agent.rollout.gate.decision event (only 'evaluated' fires today). Rescope ",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-g0rf",
+        "chunk": "iah",
+        "title": "iah-E11g \u2014 Branch protection: minimum now; required checks after 3 green days",
+        "evidence": [
+          "gh api repos/jeremylongshore/intent-audit-harness/branches/main/protection \u2014 required_pull_request_reviews + required_linear_history present, no required_status_checks key"
+        ],
+        "rescope_note": "'Minimum now' is DONE: gh api shows main protection with required PR reviews, required linear history, force-push + deletion blocked. 'Required checks after 3 green days' is NOT done: the protection object has no require",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-g4dj",
+        "chunk": "iah",
+        "title": "iah-E11b \u2014 Self-bootstrap audit-harness install (pin prior release) + TESTING.md + .harness-hash",
+        "evidence": [
+          ".harness-hash + .harness-hash-extra-patterns in git ls-files",
+          "Merged PR #36 'audit-harness self-pin + per-repo extra-patterns mechanism (v1.1.0)'",
+          "TESTING.md absent"
+        ],
+        "rescope_note": ".harness-hash self-pin leg DONE (PR #36 v1.1.0 + 000-docs/005-AA-AACR-iah-self-pin AAR; .harness-hash + .harness-hash-extra-patterns committed). Remaining: TESTING.md does not exist, and the pin-against-PRIOR-release sel",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-iqyg",
+        "chunk": "iah",
+        "title": "iah-E11f \u2014 sigstore signing config (cosign for npm/crates; sigstore-python for PyPI per DR-010 Q2)",
+        "evidence": [
+          ".github/workflows/release.yml 'npm publish --provenance' + cosign keyless emit-evidence job",
+          "python/PUBLISH.md + rust/PUBLISH.md 'not yet uploaded'"
+        ],
+        "rescope_note": "npm leg DONE: release.yml publishes with npm --provenance (sigstore OIDC) and the emit-evidence job cosign-keyless-signs (Fulcio + Rekor) per PR #51/#59. Remaining: crates cosign/attestation and PyPI sigstore-python \u2014 ne",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-ofs",
+        "chunk": "iah",
+        "title": "iah-E09 \u2014 v0.4.0 release (Evidence Bundle emitter ready)",
+        "evidence": ["git tags v1.0.0..v1.1.7 (no v0.4.0)", "PRs #51, #59, #65 merged"],
+        "rescope_note": "The v0.4.0 version target is obsolete \u2014 tags jumped v0.2.0\u2192v1.0.0\u2192v1.1.7. The epic's substance largely landed across v1.x: tagged npm releases with provenance (PR #51), SEMVER contract suite in CI (PR #65), backward-comp",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-ukxw",
+        "chunk": "iah",
+        "title": "iah-E11e \u2014 Multi-target release pipeline: npm + PyPI + crates + sigstore + /sync-testing-harness invocation",
+        "evidence": [".github/workflows/release.yml", "python/PUBLISH.md:3 + rust/PUBLISH.md:3 'not yet uploaded'"],
+        "rescope_note": "npm leg + GH Release + signed-evidence emit landed (release.yml: npm --provenance, gh release create, cosign keyless emit-evidence job \u2014 PRs #51/#59/#60). Remaining: PyPI + crates publish legs (both registries unpublishe",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-yxu",
+        "chunk": "iah",
+        "title": "iah-E11 \u2014 Testing SOP + multi-target release pipeline + propagation hook",
+        "evidence": ["PRs #36/#51/#59 merged; TESTING.md absent; PyPI/crates unpublished"],
+        "rescope_note": "Epic partially landed: npm release pipeline + sigstore provenance (PR #51), signed evidence emit (PR #59), self-pin .harness-hash (PR #36), weekly /sync-testing-harness cron, minimum branch protection. Remaining: Testing",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-41zy",
+        "chunk": "iah",
+        "title": "iah-E10b \u2014 produce signed bundle for audit-harness's own gates",
+        "evidence": [
+          "ci/emit-evidence.ts + ci/assemble-manifest.ts",
+          "Merged PR #59 'feat(ci): CI-only signed gate-result evidence for the dashboard (nr75.12)'"
+        ],
+        "rescope_note": "Partially done: PR #59 (ci/emit-evidence.ts + release.yml emit-evidence job) produces a cosign-signed kernel EvidenceBundle for the harness-hash --verify self-gate on every tag. Remaining: extend the signed bundle to the",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-aon3.2",
+        "chunk": "iah",
+        "title": "Update audit-harness baseline (010-TQ-SOPS) to include refiner-pass predicate",
+        "evidence": ["ls 000-docs/ shows no TQ-SOPS file; 010 = AT-SPEC-audit-profile-v1"],
+        "rescope_note": "Target file 000-docs/010-TQ-SOPS-audit-harness-baseline-2026-05-01.md does not exist; the 010 slot is occupied by 010-AT-SPEC-audit-profile-v1-2026-06-04.md. The baseline doc must first be created (or the refiner-pass ro",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-fuk9",
+        "chunk": "iah",
+        "title": "iah-E10c \u2014 verify chain end-to-end",
+        "evidence": ["release.yml emit-evidence job comments; PRs #59 + #60 merged"],
+        "rescope_note": "Partially proven: for the self-gate row, the chain emit \u2192 cosign sign (Fulcio+Rekor) \u2192 dashboard re-verify (OIDC subject + Rekor inclusion + DSSE + kernel schema) runs on every tag (PRs #59/#60). Remaining: end-to-end co",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-qub",
+        "chunk": "iah",
+        "title": "iah-E10 \u2014 Internal dogfood pass",
+        "evidence": ["release.yml emit-evidence job; PR #59"],
+        "rescope_note": "Partial dogfood is live: release.yml runs the real self-gate (harness-hash --verify) \u2192 signed EvidenceBundle \u2192 dashboard verification on every tag (PR #59). Remaining: the full chain dogfood per M5.3 \u2014 every gate --json ",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-puxu.12",
+        "chunk": "umbrella",
+        "title": "Render Phase A.0 with symmetric arm display plus HTML structural diff CI plus GC pre-pub review plus blog-only",
+        "evidence": [
+          "intent-eval-dashboard/site/eval-sets/j-rig-bench/phase-a0/index.html",
+          "intent-eval-dashboard/tests/TESTING.md line 29",
+          "dashboard PRs #3 #6 #7"
+        ],
+        "rescope_note": "A Phase A.0 page IS live on the dashboard (intent-eval-dashboard site/eval-sets/j-rig-bench/phase-a0/index.html, PRs dashboard#3/#6/#7) and renders both Arm A and Arm B, and tests/TESTING.md declares the 'HTML structural",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-djf1w",
+        "chunk": "umbrella",
+        "title": "Add L2 static gates (lint, format, types, secrets, dep-audit, doc-quality) as advisory-first shell-outs",
+        "evidence": [
+          "audit-harness PR #57 (scan gate-runner)",
+          "audit-harness/schemas/audit-profile/registry.v1.json (gates: secrets-gitleaks, cve-osv, hygiene-markdown, hygiene-links; no lint/format/types gates)"
+        ],
+        "rescope_note": "Partially shipped via the audit-harness `scan` verb (PR #57, PP-PLAN-040 Phase 4/E6): secrets (secrets-gitleaks), dep-audit (cve-osv), doc-quality (hygiene-markdown via markdownlint + hygiene-links via lychee) all exist ",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-dyois",
+        "chunk": "umbrella",
+        "title": "Add L4 gates (integration, contract, migration) as advisory-first shell-outs",
+        "evidence": [
+          "audit-harness PR #56 (testing-depth gate-runner)",
+          "audit-harness/schemas/audit-profile/registry.v1.json (integration, contract, migration gate ids)",
+          "audit-harness CHANGELOG 'Deliberately does NOT execute the repo's test suite'"
+        ],
+        "rescope_note": "The integration/contract/migration gates EXIST in audit-harness/schemas/audit-profile/registry.v1.json and are assessed advisory-first by the `audit` testing-depth verb (PR #56, PP-PLAN-040 Phase 3/E5) \u2014 but via per-laye",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-kpbdx",
+        "chunk": "umbrella",
+        "title": "Add L5 gates (perf, SAST, DAST, a11y, chaos) plus property-based, fuzz, and flakiness with a fast/deep split a",
+        "evidence": [
+          "audit-harness/schemas/audit-profile/registry.v1.json (perf/sast/a11y/property-based/fuzz present; no DAST/chaos/flakiness)",
+          "audit-harness PRs #56 #57"
+        ],
+        "rescope_note": "Partially shipped: registry.v1.json carries perf, sast, a11y, property-based, fuzz, and sanitizers gates; SAST runs as a semgrep shell-out via `scan` (PR #57); the `audit` verb ships the --fast/--deep split (PR #56). Wha",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-wcv8",
+        "chunk": "umbrella",
+        "title": "iep-gemini-review-policy \u2014 Document Gemini-review gating posture: reactive vs required-status-check",
+        "evidence": [
+          "j-rig-binary-eval PR #51 (remove broken gemini-review workflow)",
+          "no gemini-policy AT-DECR exists in intent-eval-lab/000-docs"
+        ],
+        "rescope_note": "The bead's underlying decision was overtaken by events: gemini-code-assist[bot] was retired ecosystem-wide 2026-05-28 and replaced by required CI checks (per the standing review-gate policy in ~/.claude/CLAUDE.md), and j",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-4jak",
+        "chunk": "iar",
+        "title": "iar-E06a \u2014 ci.yml: lint + typecheck + test",
+        "evidence": [],
+        "rescope_note": "ci.yml already exists and lints action.yml + runs the smoke test. This bead's remaining work is adding lint + typecheck + test steps for the M5 TS shell, which has not been implemented yet. Re-scope from 'create ci.yml' ",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-m15",
+        "chunk": "iar",
+        "title": "iar-E06 \u2014 CI workflow + self-test",
+        "evidence": [],
+        "rescope_note": "ci.yml exists with yamllint + stub smoke. Remaining work is adding the action self-test fixture (synthetic Evidence Bundle) and the pnpm run check gate once M5 TS shell lands. Re-scope from 'create CI' to 'extend existin",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-phj6",
+        "chunk": "iar",
+        "title": "iar-E06c \u2014 self-test job: run action + assert decision",
+        "evidence": [],
+        "rescope_note": "The ci.yml smoke-action-stub job already runs the action against a synthetic empty bundle dir and asserts decision=not-implemented. That covers the bootstrap self-test. Remaining work is a richer self-test against a synt",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-v1k8",
+        "chunk": "iar",
+        "title": "iar-E03c \u2014 read action inputs + parse from env",
+        "evidence": [],
+        "rescope_note": "BUNDLE_PATH, POLICY_FILE, and DRY_RUN already pass through env in the current composite stub. Three inputs (predicate-uri, rekor-url, cosign-key) are NOT wired through \u2014 that gap needs a fix per code-review finding. Re-s",
+        "decision_needed": ""
+      },
+      {
+        "bead_id": "bd_000-projects-jyjv",
+        "chunk": "iar",
+        "title": "iep-tcd-rollout \u2014 Testing+CI/CD audit: intent-rollout-gate",
+        "evidence": [],
+        "rescope_note": "The bead notes the constraint that M5 hasn't landed. That is still true: no package.json, no src/, no TS. The partial audit (yamllint + SECURITY.md mismatch check) can be run now and an interim audit doc filed. Re-scope ",
+        "decision_needed": ""
+      }
+    ],
+    "needs_decision": [],
+    "lands_with_pr103": [
+      "bd_000-projects-5018",
+      "bd_000-projects-7n9n",
+      "bd_000-projects-7wj",
+      "bd_000-projects-m1mn",
+      "bd_000-projects-qklh"
+    ],
+    "keep_ids": [
+      "bd_000-projects-06qk",
+      "bd_000-projects-0h4u",
+      "bd_000-projects-0r8m.1",
+      "bd_000-projects-0r8m.2",
+      "bd_000-projects-0r8m.3",
+      "bd_000-projects-0r8m.5",
+      "bd_000-projects-2t2p",
+      "bd_000-projects-3ptb",
+      "bd_000-projects-9k5h.5",
+      "bd_000-projects-9k5h.6",
+      "bd_000-projects-a010",
+      "bd_000-projects-bno8",
+      "bd_000-projects-brij",
+      "bd_000-projects-brij.1",
+      "bd_000-projects-k8wo",
+      "bd_000-projects-mfus",
+      "bd_000-projects-vyng",
+      "bd_000-projects-046",
+      "bd_000-projects-3bcr",
+      "bd_000-projects-3kye.2",
+      "bd_000-projects-653",
+      "bd_000-projects-9k5h.12",
+      "bd_000-projects-9k5h.14",
+      "bd_000-projects-9k5h.17",
+      "bd_000-projects-9yhe",
+      "bd_000-projects-a5l6",
+      "bd_000-projects-boa",
+      "bd_000-projects-brij.2",
+      "bd_000-projects-chje",
+      "bd_000-projects-dm7v",
+      "bd_000-projects-gzgj",
+      "bd_000-projects-k0fj",
+      "bd_000-projects-mjd",
+      "bd_000-projects-r1u",
+      "bd_000-projects-rtn",
+      "bd_000-projects-tyck",
+      "bd_000-projects-xcs4",
+      "bd_000-projects-218d",
+      "bd_000-projects-21re",
+      "bd_000-projects-3i0",
+      "bd_000-projects-3l2",
+      "bd_000-projects-704w.9",
+      "bd_000-projects-836",
+      "bd_000-projects-84li",
+      "bd_000-projects-9xyk",
+      "bd_000-projects-aft",
+      "bd_000-projects-bbi6",
+      "bd_000-projects-d23",
+      "bd_000-projects-e8kd",
+      "bd_000-projects-f4x",
+      "bd_000-projects-h99",
+      "bd_000-projects-h9r9",
+      "bd_000-projects-m7t",
+      "bd_000-projects-o7h",
+      "bd_000-projects-ra9a",
+      "bd_000-projects-wom",
+      "bd_000-projects-xaos",
+      "bd_000-projects-l44w",
+      "bd_000-projects-l5ut",
+      "bd_000-projects-n6oj",
+      "bd_000-projects-pu35.2",
+      "bd_000-projects-0r8m",
+      "bd_000-projects-0r8m.6",
+      "bd_000-projects-214c.10",
+      "bd_000-projects-214c.9",
+      "bd_000-projects-6hd6",
+      "bd_000-projects-9k5h",
+      "bd_000-projects-jqam",
+      "bd_000-projects-u8xo",
+      "bd_000-projects-0s9t",
+      "bd_000-projects-214c",
+      "bd_000-projects-214c.1",
+      "bd_000-projects-214c.11",
+      "bd_000-projects-214c.2",
+      "bd_000-projects-214c.3",
+      "bd_000-projects-3zol",
+      "bd_000-projects-3zol.2",
+      "bd_000-projects-3zol.3",
+      "bd_000-projects-3zol.4",
+      "bd_000-projects-3zol.6",
+      "bd_000-projects-3zol.7",
+      "bd_000-projects-3zol.8",
+      "bd_000-projects-5ooo",
+      "bd_000-projects-6l8h",
+      "bd_000-projects-8yj",
+      "bd_000-projects-99oc",
+      "bd_000-projects-9b8u",
+      "bd_000-projects-9k5h.15",
+      "bd_000-projects-9k5h.9",
+      "bd_000-projects-9sr",
+      "bd_000-projects-b3z2",
+      "bd_000-projects-bost",
+      "bd_000-projects-ehyd",
+      "bd_000-projects-f3zo",
+      "bd_000-projects-iev7",
+      "bd_000-projects-jsy3",
+      "bd_000-projects-jsy3.1",
+      "bd_000-projects-jsy3.3",
+      "bd_000-projects-jsy3.5",
+      "bd_000-projects-jsy3.8",
+      "bd_000-projects-jsy3.9",
+      "bd_000-projects-kp5q",
+      "bd_000-projects-m3fb",
+      "bd_000-projects-n7df",
+      "bd_000-projects-paj2",
+      "bd_000-projects-qu9t",
+      "bd_000-projects-rzen",
+      "bd_000-projects-s58e",
+      "bd_000-projects-s9p2",
+      "bd_000-projects-tj2q",
+      "bd_000-projects-upj1",
+      "bd_000-projects-vzdd",
+      "bd_000-projects-wdfd",
+      "bd_000-projects-wr6u",
+      "bd_000-projects-1p1",
+      "bd_000-projects-214c.4",
+      "bd_000-projects-214c.5",
+      "bd_000-projects-5s7",
+      "bd_000-projects-5zq0",
+      "bd_000-projects-704w.11",
+      "bd_000-projects-8toa",
+      "bd_000-projects-a1ne",
+      "bd_000-projects-aa7h",
+      "bd_000-projects-i1c0",
+      "bd_000-projects-k98u",
+      "bd_000-projects-ka6a",
+      "bd_000-projects-mh0h",
+      "bd_000-projects-mj38",
+      "bd_000-projects-nr75",
+      "bd_000-projects-qb6z",
+      "bd_000-projects-rau9",
+      "bd_000-projects-vb9e",
+      "bd_000-projects-x97g",
+      "bd_000-projects-y8o3",
+      "bd_000-projects-y8q4",
+      "bd_000-projects-ygmj",
+      "bd_000-projects-zc8o",
+      "bd_000-projects-214c.6",
+      "bd_000-projects-214c.7",
+      "bd_000-projects-b5o6",
+      "bd_000-projects-pu35.3",
+      "bd_000-projects-uska",
+      "bd_000-projects-14z",
+      "bd_000-projects-1xz",
+      "bd_000-projects-3vf9",
+      "bd_000-projects-84l2",
+      "bd_000-projects-blr7",
+      "bd_000-projects-cp8k",
+      "bd_000-projects-czgl",
+      "bd_000-projects-doij",
+      "bd_000-projects-nzua",
+      "bd_000-projects-rqwk.1",
+      "bd_000-projects-rqwk.9",
+      "bd_000-projects-sms2",
+      "bd_000-projects-va7a",
+      "bd_000-projects-z1a3",
+      "bd_000-projects-0r8m.9",
+      "bd_000-projects-39qj",
+      "bd_000-projects-7gs",
+      "bd_000-projects-im30",
+      "bd_000-projects-kj6p",
+      "bd_000-projects-njw9",
+      "bd_000-projects-or1s",
+      "bd_000-projects-puxu",
+      "bd_000-projects-r3se",
+      "bd_000-projects-rqwk",
+      "bd_000-projects-rqwk.11",
+      "bd_000-projects-rqwk.2",
+      "bd_000-projects-rqwk.8",
+      "bd_000-projects-skrs",
+      "bd_000-projects-0c3",
+      "bd_000-projects-0ks",
+      "bd_000-projects-14j",
+      "bd_000-projects-1gdo",
+      "bd_000-projects-1h5",
+      "bd_000-projects-1o2",
+      "bd_000-projects-24x",
+      "bd_000-projects-3jr",
+      "bd_000-projects-5bi",
+      "bd_000-projects-8fe",
+      "bd_000-projects-8tv4",
+      "bd_000-projects-ce2",
+      "bd_000-projects-fa3x",
+      "bd_000-projects-ho0",
+      "bd_000-projects-hv9",
+      "bd_000-projects-i91",
+      "bd_000-projects-mywk",
+      "bd_000-projects-r5r",
+      "bd_000-projects-s2u",
+      "bd_000-projects-saj",
+      "bd_000-projects-sod",
+      "bd_000-projects-t6gm",
+      "bd_000-projects-u7ta",
+      "bd_000-projects-utk",
+      "bd_000-projects-af18",
+      "bd_000-projects-fqtm",
+      "bd_000-projects-q4fk",
+      "bd_000-projects-qmte",
+      "bd_000-projects-rqwk.4",
+      "bd_000-projects-rqwk.5",
+      "bd_000-projects-rqwk.6",
+      "bd_000-projects-rqwk.7",
+      "bd_000-projects-aon3.4",
+      "bd_000-projects-t3q8",
+      "bd_000-projects-00ha",
+      "bd_000-projects-5l3t",
+      "bd_000-projects-6fm8",
+      "bd_000-projects-873c",
+      "bd_000-projects-9k5h.10",
+      "bd_000-projects-aon3",
+      "bd_000-projects-aon3.1",
+      "bd_000-projects-b3u6",
+      "bd_000-projects-bq42",
+      "bd_000-projects-e3ey",
+      "bd_000-projects-fwc6",
+      "bd_000-projects-gpos",
+      "bd_000-projects-hedg",
+      "bd_000-projects-n76b",
+      "bd_000-projects-q0f",
+      "bd_000-projects-ro0u",
+      "bd_000-projects-s3fs",
+      "bd_000-projects-u1d",
+      "bd_000-projects-vc6m",
+      "bd_000-projects-wrxt",
+      "bd_000-projects-13ty",
+      "bd_000-projects-2904",
+      "bd_000-projects-65k4",
+      "bd_000-projects-je3f",
+      "bd_000-projects-jm1z5",
+      "bd_000-projects-k5e22",
+      "bd_000-projects-kyk1",
+      "bd_000-projects-rnpy",
+      "bd_000-projects-wgqi",
+      "bd_000-projects-yv75",
+      "bd_000-projects-zrzv",
+      "bd_000-projects-aon3.3",
+      "bd_000-projects-cp2n",
+      "bd_000-projects-jcgw",
+      "bd_000-projects-pu35.4",
+      "bd_000-projects-u29b",
+      "bd_000-projects-9k5h.2",
+      "bd_000-projects-9k5h.3",
+      "bd_000-projects-9k5h.4",
+      "bd_000-projects-uprg",
+      "bd_000-projects-0r8m.10",
+      "bd_000-projects-3zol.5",
+      "bd_000-projects-51f0f",
+      "bd_000-projects-5qcy",
+      "bd_000-projects-704w.1",
+      "bd_000-projects-704w.3",
+      "bd_000-projects-704w.5",
+      "bd_000-projects-704w.7",
+      "bd_000-projects-969j",
+      "bd_000-projects-9k5h.13",
+      "bd_000-projects-jsy3.2",
+      "bd_000-projects-jsy3.4",
+      "bd_000-projects-sujb",
+      "bd_000-projects-uv6yx",
+      "bd_000-projects-woun8",
+      "bd_000-projects-1pgx",
+      "bd_000-projects-704w",
+      "bd_000-projects-awe3",
+      "bd_000-projects-brka4",
+      "bd_000-projects-jsy3.6",
+      "bd_000-projects-jzuf",
+      "bd_000-projects-nr75.17",
+      "bd_000-projects-pu35",
+      "bd_000-projects-puxu.8",
+      "bd_000-projects-qm77",
+      "bd_000-projects-qm77.1",
+      "bd_000-projects-qm77.2",
+      "bd_000-projects-fzdr",
+      "bd_000-projects-ktm0",
+      "bd_000-projects-vbqp",
+      "bd_000-projects-9l35",
+      "bd_000-projects-11hl",
+      "bd_000-projects-3kye.9",
+      "bd_000-projects-3wt1f",
+      "bd_000-projects-9k5h.11",
+      "bd_000-projects-3kye.15",
+      "bd_000-projects-3kye.8",
+      "bd_000-projects-0c2d",
+      "bd_000-projects-3hm",
+      "bd_000-projects-3knk",
+      "bd_000-projects-41xw",
+      "bd_000-projects-4d0g",
+      "bd_000-projects-4hk3",
+      "bd_000-projects-5com",
+      "bd_000-projects-5vy6",
+      "bd_000-projects-60nu",
+      "bd_000-projects-7k1n",
+      "bd_000-projects-998u",
+      "bd_000-projects-9e7d",
+      "bd_000-projects-alof",
+      "bd_000-projects-cab3",
+      "bd_000-projects-crqu",
+      "bd_000-projects-d1va",
+      "bd_000-projects-dpr",
+      "bd_000-projects-du4u",
+      "bd_000-projects-dv7",
+      "bd_000-projects-eix",
+      "bd_000-projects-fd23",
+      "bd_000-projects-fgwy",
+      "bd_000-projects-gci2",
+      "bd_000-projects-h84p",
+      "bd_000-projects-ha3x",
+      "bd_000-projects-i59m",
+      "bd_000-projects-jb1q",
+      "bd_000-projects-krr0",
+      "bd_000-projects-llqt",
+      "bd_000-projects-m6hz",
+      "bd_000-projects-o3nr",
+      "bd_000-projects-ouxi",
+      "bd_000-projects-pf4",
+      "bd_000-projects-pgy5",
+      "bd_000-projects-ppd",
+      "bd_000-projects-r8w0",
+      "bd_000-projects-ssqd",
+      "bd_000-projects-tbg4",
+      "bd_000-projects-u4u2",
+      "bd_000-projects-xyrr",
+      "bd_000-projects-yns",
+      "bd_000-projects-z0os",
+      "bd_000-projects-7lsf",
+      "bd_000-projects-hs89",
+      "bd_000-projects-l47f",
+      "bd_000-projects-pv6",
+      "bd_000-projects-r8ir",
+      "bd_000-projects-r8ir.1",
+      "bd_000-projects-u7dr",
+      "bd_000-projects-pu35.5"
+    ],
+    "unaudited": []
+  },
+  "synthesis": {
+    "repo_health": [
+      {
+        "repo": "intent-eval-core",
+        "grade": "B+",
+        "summary": "Validators and gate-chain are tight, codegen is deterministic, and the SAK shipped through v0.5.0 on schedule with strong bead hygiene (multiple verified close-nows). Four parity defects (strict/open scoring mismatch, unenforced NORMATIVE gate_reasons invariant, missing minLength on 4 skill-frontmatter fields, unregistered Evidence schemas) plus two gate-coverage gaps (authoring/v2 uncovered by the namespace gate, byte-freeze omits 5 of 7 validator files) keep it off an A."
+      },
+      {
+        "repo": "j-rig-binary-eval",
+        "grade": "C",
+        "summary": "A confirmed P0 in the judgment engine \u2014 params silently dropped, so contains/regex_match/min_length/max_length pass vacuously \u2014 undermines the product's core correctness claim, compounded by a hangable CISO-gate timeout, a double-wrapping default --sign path, and an over-matching coverage-floor regex that can fabricate signed evidence. The shipped surface is otherwise solid (MM-1..6, CISO gates G-1/G-2, AGENTS.md parser, stub discipline) and 15 beads verified done, but nothing should publish as v2.0.0 until the P0/P1s land."
+      },
+      {
+        "repo": "intent-eval-lab",
+        "grade": "B-",
+        "summary": "Watcher architecture is sound and the spec-drift machinery (16 surfaces, daily cron, field-diff, liveness) is the most advanced continuity infrastructure in the ecosystem, but a class of extractors silently hashes empty grep output (permanent drift blindness after upstream structural change), the claim-precheck gate prints its own bypass, and a retired ntfy topic silently drops drift alerts. Bead docket carries heavy rescope debt: four planned doc-number slots were stolen by later files and several quarterly asks are superseded by daily crons."
+      },
+      {
+        "repo": "audit-harness",
+        "grade": "C-",
+        "summary": "Three of four CRAP language backends produce systematically wrong scores in production (Go test scores permanently empty, Go and JS coverage always read 0%, Rust hardcoded to 0.0) and the golden suite was deliberately built around the no-provider path so it cannot catch any of it; the CI escape-scan self-check is also permanently dark from a tee exit-code mask. The dispatcher, bash layer, and npm release pipeline are well-built \u2014 this is a correctness failure in the scoring core of a measurement tool, not a structural one."
+      },
+      {
+        "repo": "intent-rollout-gate",
+        "grade": "B-",
+        "summary": "The v0.0.0 stub is honest, injection-hardened (env + jq --arg), and its 59-bead docket is uniformly consistent with reality \u2014 everything legitimately blocked on M5 work or the unpublished @j-rig/rollout-gate@2.0.0. Two real but small defects: ci.yml references non-existent actions/checkout@v6 and setup-node@v6, and three declared inputs (predicate-uri, rekor-url, cosign-key) are never wired into the env block."
+      },
+      {
+        "repo": "claude-code-plugins",
+        "grade": "B-",
+        "summary": "The validator core honors the SCHEMA_CHANGELOG non-negotiables (8-field ALWAYS_REQUIRED errors at marketplace tier, consistent tier routing) and 30 of 31 workflows are properly hardened including the pull_request_target path. But validate_tool_permission always returns True so malformed allowed-tools pass silently at every tier, missing name at standard tier emits zero diagnostics, and sync-external.yml carries a live template injection from repository_dispatch client_payload.source."
+      }
+    ],
+    "duplicate_pairs": [
+      {
+        "bead_id": "bd_000-projects-rqwh",
+        "duplicate_of": "bd_000-projects-9k5h.12",
+        "note": "Dual-changelog consolidation; 9k5h.12 is a strict superset (adds the changelog-observance CI gate). Work undone in both \u2014 close rqwh, keep 9k5h.12."
+      },
+      {
+        "bead_id": "bd_000-projects-brij.3",
+        "duplicate_of": "bd_000-projects-brij.2",
+        "note": "Same D5 SkillVersion ER diagram in the same iec/002-AT-ARCH doc, same parent epic. Neither done \u2014 keep brij.2."
+      },
+      {
+        "bead_id": "bd_000-projects-0r8m.4",
+        "duplicate_of": "bd_000-projects-rqwk.1",
+        "note": "Same normative skill-refiner-pass/v1 spec deliverable with two competing homes; rqwk.1 (dedicated 028-AT-SPEC predicate doc) survives."
+      },
+      {
+        "bead_id": "bd_000-projects-3zol.1",
+        "duplicate_of": "bd_000-projects-214c.1",
+        "note": "Same refiner-core value-types package scaffold; 3zol.1 still uses pre-DR-028 '@j-rig/keeper-core' naming, 214c.1 matches ratified Plan 027 \u00a7 4 \u2014 keep 214c.1."
+      },
+      {
+        "bead_id": "bd_000-projects-rqwk.3",
+        "duplicate_of": "bd_000-projects-0r8m.5",
+        "note": "Identical glossary brand-canon update on 014-DR-GLOS; rqwk.3's own description names 0r8m.5 as parent. Work undone \u2014 keep 0r8m.5."
+      },
+      {
+        "bead_id": "bd_000-projects-q9vn",
+        "duplicate_of": "bd_000-projects-rqwk.8",
+        "note": "The design-spike question was already answered by DR-028 T3 (20/20: bd canonical writer, GH/Plane projections); rqwk.8 is the implementation bead and survives."
+      }
+    ],
+    "needs_decision_questions": [
+      {
+        "question": "Branch protection: j-rig-binary-eval, intent-eval-lab, and audit-harness all have minimum protection live but required_status_checks is still null, long past the '3 green days' trigger. Authorize flipping required checks on main now (lint + typecheck + test everywhere, plus CISO gates G-1/G-2 as required on j-rig)?",
+        "bead_ids": ["bd_000-projects-zw4r", "bd_000-projects-8hec", "bd_000-projects-g0rf", "bd_000-projects-71hx"]
+      },
+      {
+        "question": "audit-harness multi-registry publishing: npm is live at 1.1.7 with sigstore provenance, but PyPI (intent-audit-harness) and crates.io remain unpublished and both PUBLISH.md files say 'not yet uploaded'. Are the PyPI + crates legs still in scope (and on what trigger), or do we formally descope to npm-only and close the polyglot-publish beads?",
+        "bead_ids": [
+          "bd_000-projects-7irw",
+          "bd_000-projects-iqyg",
+          "bd_000-projects-ukxw",
+          "bd_000-projects-yxu",
+          "bd_000-projects-ofs"
+        ]
+      },
+      {
+        "question": "Per DR-028 T3 (bd canonical, GH/Plane are projections), does spec-drift-watch's auto-filed GitHub issue satisfy the original 'Plane issue auto-filed on drift' ask, or must a Plane projection also be generated?",
+        "bead_ids": ["bd_000-projects-cst"]
+      },
+      {
+        "question": "All @j-rig/* packages are private:true, but shipping v2.0.0 requires publishing @j-rig/rollout-gate publicly to unblock the entire intent-rollout-gate docket. Publish only @j-rig/rollout-gate, or flip the whole workspace public on the v2.0.0 release?",
+        "bead_ids": ["bd_000-projects-m00a", "bd_000-projects-66u"]
+      },
+      {
+        "question": "The four never-authored lab standards docs (human-review governance, economics/cost-governance, optimizer-safety model, priority governance) lost their planned 000-docs numbers to later files. Author them now under the next free numbers (051+), or formally defer them to a Phase C / contributor-growth trigger and mark the beads deferred?",
+        "bead_ids": [
+          "bd_000-projects-rtcr",
+          "bd_000-projects-wtna",
+          "bd_000-projects-2bic",
+          "bd_000-projects-ecpj",
+          "bd_000-projects-sl9"
+        ]
+      }
+    ],
+    "action_sequence": [
+      "Fix the j-rig P0 (f-jrig-core-1): forward params through runCheck in packages/core/src/judgment/engine.ts:50 and add engine-path regression tests proving contains/regex_match/min_length/max_length actually fail on bad input.",
+      "Fix the remaining j-rig P1s in the same PR series: make CISO gate timeouts actually abort/race invokeProvider (g1/g2), flip the emit-evidence --sign default to predicate-body-only (or invert the flag) to stop double-wrapped attestations, and anchor the coverage-floor regex so vitest.config.ts noise can't fabricate signed pass/fail (f-jrig-core-2, f-jrig-security-1).",
+      "Fix intent-eval-core parity defects: resolve the EvalSpec.scoring strict/open mismatch by picking one world (f-iec-validators-1), enforce gate_reasons non-empty for fail/advisory/error in BOTH the JSON Schema allOf and the Zod superRefine (f-iec-validators-3), add minLength:1 to license/author/compatibility/description in v1+v2 skill-frontmatter validators, and author+register EvidenceStatement/EvidenceBundlePayload JSON Schemas in schemas/v1/index.json.",
+      "Extend intent-eval-core gate coverage: point the predicate-namespace isolation scan at schemas/authoring/v2 (local gate chain + CI) and add the five missing v1 validator source files to the byte-freeze frozen-path list.",
+      "Fix the audit-harness CRAP backends (f-iah-python-1/2/3): correct the gocyclo -ignore pattern for test-kind, normalize Go module-qualified vs relative paths, normalize JS absolute coverage-summary keys, and either implement tarpaulin for Rust or report coverage as unavailable instead of 0.0; add provider-path golden fixtures so this whole class can't silently regress.",
+      "Fix the audit-harness bash defects: un-mask the CI escape-scan self-check exit code (f-iah-bash-1, pipefail or capture before tee), adopt SHA256_CMD in arch-check.sh, and JSON-escape AUDIT_HARNESS_SIDE in emit-evidence.sh OTEL output.",
+      "Fix intent-eval-lab watcher defects: make extractors fail loudly when their grep matches nothing instead of hashing empty input, strip the bypass instructions from the bd-claim-precheck denial message, and retarget the retired ntfy topic to the live prod-health topic.",
+      "Fix claude-code-plugins: implement real validation in validate_tool_permission, emit a standard-tier diagnostic for missing name, route sync-external.yml client_payload.source through env: instead of run: interpolation, pin trufflehog to a SHA, and refresh the stale warnings-only docstrings (lines 13-17, 126-127, 140) with a SCHEMA_VERSION-noted changelog entry.",
+      "Fix intent-rollout-gate ci.yml: pin actions/checkout and actions/setup-node to existing tags (@v4) and wire predicate-uri/rekor-url/cosign-key into the action env block (folds into the rescoped iar-E03c).",
+      "Merge j-rig PR #103, then re-judge the five lands-with-PR-103 beads (bd_000-projects-5018, -7n9n, -7wj, -m1mn, -qklh) and close the ones it actually lands with merge-commit evidence.",
+      "Publish @j-rig/rollout-gate@2.0.0 to npm with provenance (after the P0/P1 fixes and the publish-scope decision) \u2014 this single release unblocks iaj-E02b downstream and the ~59-bead intent-rollout-gate M5 docket.",
+      "Serialized bd closes of the 39 verified close-now beads: one bd close per command with a bd export JSONL flush between each, then grep-verify every bead shows CLOSED (rapid-write race rule); mirror via bd-sync close where GH/Plane links exist.",
+      "Close the 6 duplicate beads as duplicates with cross-ref notes pointing at survivors (9k5h.12, brij.2, rqwk.1, 214c.1, 0r8m.5, rqwk.8), same serialized flush discipline.",
+      "Apply the 62 rescope notes as bd description updates batched by chunk (blown version anchors, stolen doc slots, partially-landed epics, superseded asks), and put the five needs-decision questions to Jeremy \u2014 branch-protection flips, PyPI/crates scope, Plane projection, @j-rig publish scope, and the four displaced lab standards docs."
+    ],
+    "narrative": "Six repos, 443 beads, 10 surfaces, everything adversarially verified. The headline: the platform's two measurement engines are both lying in production. j-rig's judgment engine drops the params argument, so every built-in deterministic check \u2014 contains, regex_match, min_length, max_length \u2014 passes vacuously. That's a P0 in the exact code that is supposed to be the trust anchor. audit-harness's CRAP scorer is wrong on three of four language backends (Go test scores permanently empty, Go and JS coverage always read 0%), and the golden suite was deliberately designed around the no-provider path, so CI stays green while the numbers are garbage. Both repos look healthy from the outside because every failure mode is silent.\n\nSecond tier: the evidence/signing chain has integrity bugs that corrupt the product story without being catastrophic \u2014 j-rig's default --sign double-wraps the attestation, the coverage-floor regex can flip honest advisory evidence into a fabricated signed pass/fail, the kernel doesn't enforce its own NORMATIVE gate_reasons invariant, and the lab's drift-watch extractors can go permanently blind by hashing empty grep output. Fix all of this before publishing anything new \u2014 especially before @j-rig/rollout-gate@2.0.0, which would ship the engine P0 to the one consumer waiting on it.\n\nBead hygiene is better than feared: 331 keep, 39 verifiably done and awaiting serialized closes, 6 duplicates with clear survivors, 62 rescopes \u2014 mostly blown version anchors (v0.24.0, v0.3.x, v0.4.0 targets that no longer exist) and doc-number slots stolen by later files. Zero unverified P0/P1 claims survived review. intent-rollout-gate has the cleanest docket in the portfolio: 59 beads, all legitimately blocked on j-rig 2.0.0, no rot.\n\nSequence: j-rig P0 first, then the P1 cluster per repo, then merge j-rig #103 and re-judge its five beads, then publish @j-rig/rollout-gate@2.0.0 \u2014 one release unblocks the largest blocked docket. bd closes run serialized with JSONL flushes.\n\nFive human decisions pending, none blocking the P0 work: flip required status checks on three repos (long past the 3-green-day trigger), PyPI/crates scope for audit-harness, whether the GH-issue projection satisfies the Plane-on-drift ask under DR-028 T3, @j-rig publish scope (rollout-gate only vs workspace), and whether the four displaced lab standards docs get authored at 051+ or formally deferred."
+  }
+}
