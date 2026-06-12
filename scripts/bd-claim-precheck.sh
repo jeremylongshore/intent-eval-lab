@@ -100,11 +100,9 @@ case "$STATE" in
     echo "        NOT in the DR-028 authorized set." >&2
     echo "        Authorized work shorthands:" >&2
     for s in "${DR_028_AUTHORIZED_SHORTHANDS[@]}"; do echo "          - $s" >&2; done
-    echo "        To proceed, either:" >&2
-    echo "          (a) Wait for plan 027 v5 to land (STATUS → RATIFIED), OR" >&2
-    echo "          (b) Add 'DR-028 authorized' to the bead's notes via:" >&2
-    echo "              bd update $BEAD_ID --append-notes 'DR-028 authorized per <reason>'" >&2
-    echo "              (only if the work genuinely falls under one of DR-028's directives)" >&2
+    echo "        To proceed, wait for plan 027 v5 to land (STATUS → RATIFIED)," >&2
+    echo "        or obtain explicit DR-028 authorization through the ISEDC process:" >&2
+    echo "        $DR_028" >&2
     exit 1
     ;;
   OPEN | PHASE-3-SYNTHESIS-COMPLETE* | "PHASE-3-SYNTHESIS-COMPLETE-—-AWAITING-USER-ARBITRATION")
