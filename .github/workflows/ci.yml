@@ -98,6 +98,19 @@ jobs:
 
       # Offline + deterministic: fixtures exercise all 6 fetch-taxonomy statuses
       # (FETCH_OK|UNREACHABLE|MOVED|RATELIMITED|SHAPE_CHANGED|TRUNCATED) plus the
-      # tier-1 append/dedup and tier-2 FETCH_OK-only gating (052-AT-SPEC).
+      # tier-1 append/dedup, tier-2 FETCH_OK-only gating (052-AT-SPEC), and the
+      # snapshot-updated lineage emission on tier-2 promotion (054-AT-SPEC).
       - name: Fetch-capture taxonomy self-test
         run: python3 scripts/fetch-capture.py --self-test
+
+      # Offline + deterministic (054-AT-SPEC): the append-only lineage log must
+      # schema-validate (sequential event_ids, monotonic timestamps); the
+      # committed coverage map must be a FRESH derivation of the log (it is a
+      # derived projection, never hand-maintained — the check fails if stale);
+      # and the self-test proves append/verify/project plus the staleness and
+      # tamper failure modes.
+      - name: Lineage log verify + projection freshness + self-test
+        run: |
+          python3 scripts/lineage-log.py verify
+          python3 scripts/lineage-log.py project-coverage --check
+          python3 scripts/lineage-log.py --self-test

@@ -22,7 +22,9 @@ name: Spec drift watch
 #      archived append-only (tier 1 archive/raw/, sha256-deduplicated bodies); ONLY a
 #      FETCH_OK record updates the tier-2 vendored snapshot (specs/_vendor/). A bad
 #      fetch keeps the last-good snapshot, alerts via ntfy, and NEVER opens a
-#      reconciliation issue/PR.
+#      reconciliation issue/PR. A tier-2 promotion additionally appends a
+#      snapshot-updated event to the append-only lineage log (specs/lineage/,
+#      054-AT-SPEC) and regenerates its derived coverage map.
 #
 # Side effects on drift / liveness trip:
 #   1. Workflow fails (visible red X)
@@ -45,7 +47,9 @@ on:
       - 'scripts/spec-projection-diff.py'
       - 'scripts/watcher-liveness.py'
       - 'scripts/fetch-capture.py'
+      - 'scripts/lineage-log.py'
       - 'specs/upstream-surface-registry.v1.json'
+      - 'specs/lineage/**'
       - 'specs/snapshots/.sha/**'
       - '_vendor/upstream/**'
   push:
@@ -56,7 +60,9 @@ on:
       - 'scripts/spec-projection-diff.py'
       - 'scripts/watcher-liveness.py'
       - 'scripts/fetch-capture.py'
+      - 'scripts/lineage-log.py'
       - 'specs/upstream-surface-registry.v1.json'
+      - 'specs/lineage/**'
       - 'specs/snapshots/.sha/**'
       - '_vendor/upstream/**'
 
@@ -166,23 +172,25 @@ jobs:
           fi
           cat /tmp/capture-log.txt
 
-      # Persist the appended archive records + any tier-2 promotion. Append-only by
-      # construction: fetch-capture.py never deletes or rewrites an existing record,
-      # so this commit is purely additive. [skip ci] keeps the bot commit from
-      # re-triggering doc/CI workflows.
+      # Persist the appended archive records + any tier-2 promotion, plus the
+      # lineage log + its derived coverage map (a tier-2 promotion appends a
+      # snapshot-updated event and regenerates the projection — 054-AT-SPEC).
+      # Append-only by construction: fetch-capture.py never deletes or rewrites
+      # an existing record, and lineage-log.py append refuses any prefix change.
+      # [skip ci] keeps the bot commit from re-triggering doc/CI workflows.
       - name: Commit archive tiers back (append-only)
         id: archive_commit
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         shell: bash
         run: |
           set -euo pipefail
-          if [[ -z "$(git status --porcelain archive/ specs/_vendor/ 2>/dev/null)" ]]; then
-            echo "No archive/vendored changes to commit."
+          if [[ -z "$(git status --porcelain archive/ specs/_vendor/ specs/lineage/ 2>/dev/null)" ]]; then
+            echo "No archive/vendored/lineage changes to commit."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add archive/ specs/_vendor/
+          git add archive/ specs/_vendor/ specs/lineage/
           git commit -m "chore(spec-archive): capture $(date -u +%Y-%m-%dT%H:%MZ) raw fetches [skip ci]"
           if ! git push origin "HEAD:${GITHUB_REF_NAME}"; then
             echo "::warning::archive commit-back push failed (branch protection?) — delta preserved as a workflow artifact."
@@ -197,6 +205,7 @@ jobs:
           path: |
             archive/
             specs/_vendor/
+            specs/lineage/
 
       # Dead-man heartbeat (true, external): ping an uptime monitor so absence of
       # a daily ping alerts even when the cron itself stops firing. Optional
