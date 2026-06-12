@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://evals.intentsolutions.io/drift-classification/v1/row.schema.json",
+  "title": "drift-classification/v1 — one classification row",
+  "description": "The OUTPUT CONTRACT for the (future) LLM drift classifier. A classification is a schema-validated ROW, not prose. The classifier earns exactly ONE hop — classifying an ALREADY-DETECTED diff's materiality + contract owner — and every row it emits must pass scripts/classifier-walls.py before any side effect: this schema (output contract), the literal-substring pre-wall against the tier-2 vendored snapshot the diff came from, and the autonomy gradient in autonomy-policy.json. Schema identifier only — NOT an in-toto attestation predicate URI. Normative spec: 000-docs/055-AT-SPEC-llm-classifier-deterministic-walls-2026-06-12.md.",
+  "type": "object",
+  "properties": {
+    "row_version": {
+      "const": "drift-classification/v1",
+      "description": "Optional self-describing version discriminator, matching the repo's registry_version/projection_version convention."
+    },
+    "case_ref": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Reference to an eval case (evals/drift-classification/v1 case id). A row carries case_ref (eval mode) or surface_id (live mode) — at least one is required."
+    },
+    "surface_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "A `name` from specs/upstream-surface-registry.v1.json — the monitored surface whose tier-2 vendored snapshot the diff came from."
+    },
+    "diff_ref": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Reference to the ALREADY-DETECTED diff being classified (e.g. a spec-projection-diff finding, a tier-1 raw-record path, or a drift-issue ref). The classifier never detects drift itself — detection is deterministic and upstream of this row."
+    },
+    "label": {
+      "enum": ["material", "immaterial"],
+      "description": "Materiality verdict. `material` = the diff plausibly changes a normative contract; `immaterial` = cosmetic/editorial."
+    },
+    "contract_owner": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "Which contract owns the change — a `contract` value from specs/upstream-surface-registry.v1.json (e.g. skill-frontmatter, mcp-config, hook-config)."
+    },
+    "claimed_changed_fields": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true,
+      "description": "Every field the classification claims changed. PRE-WALL: each entry must appear as a LITERAL SUBSTRING of the fetched snapshot bytes the diff came from — else the row is rejected outright."
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Classifier self-reported confidence in [0, 1]. Advisory — confidence never overrides a wall."
+    },
+    "model_pin": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^\\S+$",
+      "description": "Exact pinned model identifier that produced the classification (no aliases like `latest`)."
+    },
+    "classified_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$",
+      "description": "RFC 3339 timestamp of the classification."
+    }
+  },
+  "required": [
+    "diff_ref",
+    "label",
+    "contract_owner",
+    "claimed_changed_fields",
+    "confidence",
+    "model_pin",
+    "classified_at"
+  ],
+  "anyOf": [
+    { "required": ["case_ref"] },
+    { "required": ["surface_id"] }
+  ],
+  "if": {
+    "properties": { "label": { "const": "material" } },
+    "required": ["label"]
+  },
+  "then": {
+    "properties": { "claimed_changed_fields": { "minItems": 1 } },
+    "description": "A material claim with zero claimed fields would dodge the substring pre-wall entirely — forbidden by construction."
+  },
+  "additionalProperties": false
+}
