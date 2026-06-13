@@ -1,0 +1,2 @@
+# Run-phase outputs only. Raw per-question I/O is gitignored; aggregated results are committed.
+raw/
