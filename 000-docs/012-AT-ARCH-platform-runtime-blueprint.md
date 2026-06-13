@@ -784,6 +784,19 @@ The URI is **effectively immutable** once any row referencing it is signed and p
 
 **Predicate-type registry.** Per DR-010 Q3 GC discipline, the file `intent-eval-lab/specs/PREDICATE-TYPES.md` lists every URI subtype, first-signed-attestation date, and Decision Record link. The registry MUST be updated within 7 days of any new subtype going live. Drift in this registry is unrecoverable; the registry IS the canonical record of which URIs exist.
 
+**OTel attribute emission — `must emit` list per predicate kind.** Every runtime span that produces or gates an Evidence Bundle row MUST emit the OpenTelemetry attributes required for that predicate kind. The **canonical naming authority** for these attribute names is the kernel YAML at `intent-eval-core/schemas/v1/otel-attributes.yaml` (shipped as the `@intentsolutions/core/otel/v1` module). This blueprint cites that source and MUST NOT inline-duplicate the attribute name strings — there is exactly one naming authority, and it is the kernel YAML. The kernel YAML wins on any disagreement, per the § 7.0 schema-authority precedence (machine-readable kernel source is canonical; this prose section is amended to match it, never the reverse).
+
+The `must emit` requirement, stated per predicate kind (attribute names resolve to the kernel YAML keyed by predicate kind):
+
+| Predicate kind | Span that MUST emit | What the `must emit` set covers (names per kernel YAML) |
+| --- | --- | --- |
+| `gate-result/v1` | the gate-evaluation span | gate identity + decision + the lineage IDs that pivot a trace back to the EvalRun, matching the predicate body's required fields (§ 7.4) |
+| `eval-verdict/v1` | the JudgeDecision span | judge identity + verdict + the disagreement attributes (§ 4.3) |
+| `runtime-receipt/v1` | the ToolInvocation span | tool identity + loop-depth + the cost-record back-reference (§ 4.3) |
+| `cost-attribution/v1` | the cost-record span | the per-evaluation cost attributes back-referenced by `cost_record_ref` (§ 7.4) |
+
+The kernel YAML is the single place where each predicate kind's required attribute names, types, and stability level are enumerated; this table fixes only the **binding** (which span emits which predicate kind's set) and defers every name to the kernel. New predicate kinds add their `must emit` set to the kernel YAML first, then add a binding row here. This pairs with the kernel OTel semantic-convention pin landing in `intent-eval-core` (`schemas/v1/otel-attributes.yaml` + `@intentsolutions/core/otel/v1`); the category lock (`runtime.*`, `gate.*`, `judge.*`, `cost.*`, etc.) remains per § 4.3, and the per-event names remain deferred to iel-E12 (`020-AT-ARCH-runtime-event-taxonomy.md`).
+
 ### 7.3 Subject naming convention
 
 The in-toto `subject` field of each `gate-result/v1` row MUST contain at least one entry whose `name` field matches the following regular expression:
