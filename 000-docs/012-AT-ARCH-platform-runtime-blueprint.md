@@ -3,6 +3,7 @@ date: 2026-05-14
 authors:
   - Jeremy Longshore (Intent Solutions, acting head of board)
 status: NORMATIVE
+state_label: NORMATIVE
 binding_authority: ISEDC Session 4 (DR-010, 2026-05-13)
 inherits_from: 011-AT-ARCH-ecosystem-master-blueprint.md (Blueprint A)
 master_plan: ~/.claude/plans/se-the-council-bubbly-frog.md
@@ -24,6 +25,8 @@ forward_refs:
 ---
 
 # Platform Runtime Blueprint — Intent Eval Platform
+
+> **State label: NORMATIVE.** Applied retroactively per the State-Labeling Standard (`069-DR-STND-state-labeling-standard-2026-06-18.md`, bead iel-E13d). In force; amendments route per Blueprint A § 2.3.
 
 > **This document is the kernel specification.** Blueprint A (`011-AT-ARCH-ecosystem-master-blueprint.md`) is the constitution; Blueprint B is the kernel. Where Blueprint A locks the shape of the ecosystem — mission, principles, anti-goals, governance routing, shared terminology — Blueprint B locks the shape of the runtime: how a single execution flows from queued to archived, which 13 entities the platform manipulates and what their schemas are, how state machines transition, how replay reconstructs evidence, how runtime isolation enforces the credential and execution boundaries, how cost governance enforces the bandwidth and budget ceilings, how observability emits the trace fabric that makes the whole thing legible to an external reviewer, and which deployment philosophy carries all of the above to production.
 >
