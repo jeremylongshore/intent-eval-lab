@@ -1,0 +1,225 @@
+name: Leading-indicator watch
+
+# The Anthropic leading-indicator (bitter-lesson) watcher — plan 033 § 14.11.
+# Distinct from spec-drift-watch.yml (which asks "did an upstream contract page
+# change?"). THIS workflow asks the strategic question: "has Anthropic shipped
+# something that signals the Spec Authority Kernel should stop investing and cut
+# over to upstream?" It polls the 12 indicators (§ 14.11.1), classifies each
+# firing by severity, and renders the disposition-matrix verdict (§ 14.11.2):
+# CONTINUE | NOTE | RETRO | PAUSE | STOP.
+#
+# Authority: 000-docs/063-AT-SPEC-leading-indicator-watcher
+#            000-docs/033-PP-PLAN-skill-refiner-sak-amendment-v7-2026-05-28.md § 14.11
+# Indicators + extraction logic: scripts/leading-indicator-watch.py +
+# specs/leading-indicators.v1.json (DRY — the workflow only handles CI side effects).
+#
+# Deterministic-detection + typed-fetch-failure posture (mirrors the spec-drift
+# machinery exactly):
+#   * Only a clean fetch (FETCH_OK) feeds disposition. A fetch failure
+#     (UNREACHABLE | MOVED | RATELIMITED | SHAPE_CHANGED) is alerted + recorded
+#     but is NEVER a hit — it cannot masquerade as an Anthropic signal.
+#   * Structured sources (GitHub releases, RSS, JSON/TS schema) escalate
+#     IMMEDIATELY on a parsed change.
+#   * The 2 prose sources (#1, #6) HOLD a change for a 7-day disposition window
+#     before escalating — the <5% flake budget (§ 14.11.3).
+#
+# Side effects on a new escalating hit (schedule only):
+#   1. Workflow fails (visible red X)
+#   2. ntfy push (subscribed on Jeremy's phone)
+#   3. GH issue opened with the disposition verdict (auto-deduped by title)
+#
+# Trigger:
+#   - Daily cron at 09:30 UTC (offset from spec-drift-watch's 09:00)
+#   - Manual workflow_dispatch
+#   - PR + push that touches the script or the indicator registry (offline self-test)
+
+on:
+  schedule:
+    - cron: '30 9 * * *'   # daily 09:30 UTC
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/leading-indicator-watch.yml'
+      - 'scripts/leading-indicator-watch.py'
+      - 'specs/leading-indicators.v1.json'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/leading-indicator-watch.yml'
+      - 'scripts/leading-indicator-watch.py'
+      - 'specs/leading-indicators.v1.json'
+
+permissions:
+  contents: read   # poll-only; state is cached, not committed back
+  issues: write    # for auto-opening leading-indicator issues
+
+jobs:
+  leading-indicator-check:
+    name: Poll Anthropic leading indicators + disposition
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # Offline + deterministic: fixtures exercise a new-hit case, a no-change
+      # case, a fetch-failure case, the prose 7-day window, and the full
+      # disposition matrix. This gates EVERY event (a real CI check).
+      - name: Watcher self-test (offline, deterministic)
+        id: selftest
+        shell: bash
+        run: python3 scripts/leading-indicator-watch.py --self-test
+
+      # Persist the per-indicator window state (baselines + prose pending_since)
+      # across scheduled runs. Cache (not commit-back) avoids branch-protection
+      # friction; the seed is the registry's null last_known_snapshot.
+      - name: Restore window state
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        uses: actions/cache/restore@v4
+        with:
+          path: specs/snapshots/.leading-indicator-state.json
+          key: leading-indicator-state-${{ github.run_id }}
+          restore-keys: |
+            leading-indicator-state-
+
+      # Live poll (scheduled + manual only — a PR must not hit the network).
+      - name: Poll indicators
+        id: poll
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        shell: bash
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          if python3 scripts/leading-indicator-watch.py \
+               --report /tmp/li-report.json > /tmp/li-log.txt 2>&1; then
+            echo "hit=false" >> "${GITHUB_OUTPUT}"
+          else
+            echo "hit=true" >> "${GITHUB_OUTPUT}"
+          fi
+          cat /tmp/li-log.txt
+          # Surface the verdict for downstream steps.
+          verdict="$(python3 -c "import json;print(json.load(open('/tmp/li-report.json'))['verdict']['verdict'])" 2>/dev/null || echo UNKNOWN)"
+          echo "verdict=${verdict}" >> "${GITHUB_OUTPUT}"
+
+      - name: Save window state
+        if: always() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        uses: actions/cache/save@v4
+        with:
+          path: specs/snapshots/.leading-indicator-state.json
+          key: leading-indicator-state-${{ github.run_id }}
+
+      - name: Summarize
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## Leading-indicator watch"
+            echo ""
+            echo "| Field | Value |"
+            echo "|---|---|"
+            echo "| self-test | ${{ steps.selftest.outcome }} |"
+            echo "| new escalating hit | ${{ steps.poll.outputs.hit }} |"
+            echo "| disposition verdict | ${{ steps.poll.outputs.verdict }} |"
+            echo ""
+            echo '```'
+            cat /tmp/li-log.txt 2>/dev/null || echo "(poll runs on schedule/dispatch only)"
+            echo '```'
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Fire ntfy notification on a new escalating hit
+        if: github.event_name == 'schedule' && steps.poll.outputs.hit == 'true'
+        shell: bash
+        env:
+          NTFY_URL: ${{ secrets.NTFY_URL }}
+        run: |
+          if [[ -z "${NTFY_URL:-}" ]]; then
+            echo "NTFY_URL secret not set; skipping ntfy push."
+            exit 0
+          fi
+          {
+            echo "Anthropic leading indicator fired — verdict ${{ steps.poll.outputs.verdict }}"
+            grep -E 'FIRE|VERDICT' /tmp/li-log.txt | head -10
+          } > /tmp/li-ntfy.txt
+          curl -fsSL \
+            -H "Title: Leading-indicator hit (intent-eval-lab)" \
+            -H "Priority: high" \
+            -H "Tags: warning,satellite" \
+            -d "$(cat /tmp/li-ntfy.txt)" \
+            "${NTFY_URL}/prod-health" || echo "ntfy push failed (non-fatal)"
+
+      # A new escalating hit opens a deduped [leading-indicator] issue carrying
+      # the disposition verdict. Bad fetches deliberately do NOT open an issue
+      # (only FETCH_OK output feeds anything downstream — same discipline as
+      # spec-drift-watch's bad_fetch exclusion).
+      - name: Open or update leading-indicator issue
+        if: github.event_name == 'schedule' && steps.poll.outputs.hit == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          DATE="$(date -u +%Y-%m-%d)"
+          TITLE="[leading-indicator] Anthropic signal fired — ${DATE}"
+          existing=$(gh issue list --state open --search "in:title \"[leading-indicator]\"" --json number,title --jq '.[] | select(.title | startswith("[leading-indicator] Anthropic signal fired — '"${DATE}"'")) | .number' | head -1)
+          if [[ -n "${existing}" ]]; then
+            echo "Already opened issue #${existing} today; skipping duplicate."
+            exit 0
+          fi
+          body=$(cat <<EOF
+          The daily leading-indicator watch detected a new escalating Anthropic signal.
+
+          **Disposition verdict: ${{ steps.poll.outputs.verdict }}**
+
+          See workflow run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+
+          ## Watch report
+
+          \`\`\`
+          $(cat /tmp/li-log.txt)
+          \`\`\`
+
+          ## Disposition matrix (§ 14.11.2)
+
+          | Indicators firing | Verdict |
+          |---|---|
+          | 0-2 Low-severity | CONTINUE — continue per plan |
+          | 1 Medium | NOTE — note in next AAR; no plan change |
+          | 2-3 Medium OR 1 High | RETRO — ISEDC Class-2 retrospective; consider pausing Phase >= 3 |
+          | 1 CRITICAL | PAUSE — pause all SAK phases; ISEDC Class-1 re-charter |
+          | 2 CRITICAL | STOP — stop SAK; archive as historical contribution; cut over to upstream |
+
+          ## Next steps
+
+          1. Confirm the firing indicator(s) against the source URL — a structured-source change escalates immediately; a prose change has already survived its 7-day disposition window (§ 14.11.3).
+          2. Act per the verdict above. PAUSE/STOP verdicts route to ISEDC; the bitter-lesson port-not-delete playbook (§ 14.14) governs cutover so the SAK investment transfers rather than evaporates.
+          3. If the signal is a false positive (extractor flake on a prose source), tighten the extractor and refresh the baseline.
+
+          ## Authority
+
+          - Plan 033 § 14.11 (the 12 indicators + matrix + polling mechanism)
+          - 000-docs/063-AT-SPEC-leading-indicator-watcher
+
+          - Jeremy Longshore
+          intentsolutions.io
+          EOF
+          )
+          gh issue create \
+            --title "${TITLE}" \
+            --body "${body}" \
+            --label "leading-indicator" \
+            --label "refiner"
+
+      # Live gate fails only on the scheduled run (a PR self-test must not red on
+      # a genuine upstream signal it didn't cause).
+      - name: Fail on a new escalating hit (scheduled run)
+        if: github.event_name == 'schedule' && steps.poll.outputs.hit == 'true'
+        run: |
+          echo "::error::Leading-indicator hit — verdict ${{ steps.poll.outputs.verdict }}. See report + auto-opened issue."
+          exit 1

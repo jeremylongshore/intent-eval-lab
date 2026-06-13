@@ -256,3 +256,15 @@ jobs:
         run: |
           python3 scripts/extract-marketplace-catalog-projection.py --check
           python3 scripts/extract-marketplace-catalog-projection.py --self-test
+
+      # Offline + deterministic (063-AT-SPEC): the Anthropic leading-indicator
+      # (bitter-lesson) watcher. --self-test exercises a new-hit case, a
+      # no-change case, a fetch-failure case (typed + alert-only, NEVER a hit),
+      # the 2 prose sources' 7-day disposition window, and the full
+      # disposition matrix (CONTINUE | NOTE | RETRO | PAUSE | STOP). The live
+      # poll runs only in the scheduled cron
+      # (.github/workflows/leading-indicator-watch.yml) — CI never hits the
+      # network. <5% flake budget: structured sources escalate immediately;
+      # prose sources hold 7 days (§ 14.11.3).
+      - name: Leading-indicator watcher self-test
+        run: python3 scripts/leading-indicator-watch.py --self-test
