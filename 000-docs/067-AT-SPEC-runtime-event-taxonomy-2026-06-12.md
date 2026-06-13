@@ -77,10 +77,13 @@ MUST NOT be redefined here. This doc places them in the taxonomy and adds the re
 | `replay.input.drift` | **kernel YAML** (deferred from this doc) | `replay.original_trace_id` (string), `replay.input.drifted_field` (enum over the five frozen-input dimensions) |
 | `replay.started` | this doc | `replay.original_trace_id` (string), `replay.fidelity_level` (enum `RF-0..RF-4`) — marks the re-execution span before a verdict exists |
 
-The `replay.verdict` enum (`match`/`semantic_match`/`drift`/`failed`) and the
-`replay.fidelity_level` enum (`RF-0..RF-4`, iel-E11) are pinned in the kernel YAML; the
-divergence-handling table that maps them per RF level lives in `066-AT-SPEC` § 3. This doc does
-NOT re-pin those attribute names — it defers them to the kernel YAML, which already carries them.
+Two distinct authorities apply here. The kernel `schemas/v1/otel-attributes.yaml` pins the
+ATTRIBUTE NAMES and their enum VALUES — `replay.verdict` (closed enum
+`match`/`semantic_match`/`drift`/`failed`) and `replay.fidelity_level` (enum `RF-0..RF-4`), both
+carried on the `replay.verdict` event. The RF-level SEMANTICS — what each level guarantees and the
+divergence-handling table that maps verdicts per RF level — are defined normatively in
+`066-AT-SPEC` (§ 1, § 3), which is the authority for RF-level MEANING. This doc re-pins neither: it
+defers the attribute names to the kernel YAML and the RF semantics to `066-AT-SPEC`.
 
 ### 2.2 GOVERNANCE events (`gate.*`)
 
