@@ -3,6 +3,7 @@ date: 2026-05-14
 authors:
   - Jeremy Longshore (Intent Solutions)
 status: NORMATIVE
+state_label: NORMATIVE
 binding_authority: ISEDC Session 4 (DR-010, 2026-05-13)
 inherits_from:
   - 011-AT-ARCH-ecosystem-master-blueprint.md (Blueprint A)
@@ -25,6 +26,8 @@ applies_to:
 ---
 
 # Blueprint C — Repo Blueprint Template
+
+> **State label: NORMATIVE.** Applied retroactively per the State-Labeling Standard (`069-DR-STND-state-labeling-standard-2026-06-18.md`, bead iel-E13d). The `NORMATIVE` label is the document-lifecycle label: the **template structure** below is binding on every per-repo blueprint (every repo MUST apply it). It is a template in the sense that its _content_ is instantiated per repo — not in the sense that following it is optional. Per 069-DR-STND § 3, this is the case of an `AT-SPEC` doc whose role (template) and lifecycle label (NORMATIVE) differ in kind; the reconciliation is stated here.
 
 > **This document is a TEMPLATE, not a normative platform doc.** Blueprint A (`011-AT-ARCH-ecosystem-master-blueprint.md`) is the constitution. Blueprint B (`012-AT-ARCH-platform-runtime-blueprint.md`) is the kernel specification. Blueprint C — **this document** — is the reusable scaffold that every repo in the ecosystem applies to produce its **own per-repo blueprint** (`NNN-AT-ARCH-repo-blueprint.md` in that repo's `000-docs/`).
 >

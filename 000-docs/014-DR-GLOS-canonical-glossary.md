@@ -3,6 +3,7 @@ date: 2026-05-14
 authors:
   - Jeremy Longshore (Intent Solutions)
 status: NORMATIVE
+state_label: NORMATIVE
 binding_authority: ISEDC Session 4 (DR-010, 2026-05-13)
 master_plan: ~/.claude/plans/se-the-council-bubbly-frog.md
 epic: iel-E03
@@ -21,6 +22,8 @@ forward_refs:
 ---
 
 # Canonical Glossary — Intent Eval Platform
+
+> **State label: NORMATIVE.** Applied retroactively per the State-Labeling Standard (`069-DR-STND-state-labeling-standard-2026-06-18.md`, bead iel-E13d). In force; amendments route per Blueprint A § 2.3.
 
 ## 1. Purpose + How to read
 
