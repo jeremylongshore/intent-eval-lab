@@ -123,6 +123,15 @@ Use cases recognized but not yet ready for namespace reservation.
 substrings and tool-output payloads whose redaction discipline is not yet specified; admitting the
 URI before the sanitization spec lands risks a credential leak into a transparency log.
 
+The gating sanitization spec is now authored at
+[`specs/sanitization/v0.1.0-draft/SPEC.md`](sanitization/v0.1.0-draft/SPEC.md) (iel-E10) — it
+defines the prompt-redaction (§ 4), tool-call-arg sanitization (§ 5), and agent-reasoning
+summarization (§ 6) rules plus the CISO PASS/FAIL fixture suite (§ 7). **Authoring the spec does
+NOT un-reject the URI.** Per DR-010 § 7 Q3 the revisit trigger is: the sanitization spec authored
+AND its fixture suite green in CI. Even then, un-rejecting and reserving `agent-loop-trace/v1` is a
+**Class-1 ISEDC act** — moving this row out of REJECTED is a separate council decision, not a
+consequence of the spec landing (sanitization SPEC § 7 R15).
+
 ---
 
 ## Maintenance discipline

@@ -296,6 +296,120 @@ Per Q3 CISO per-predicate assessment, the following predicate URIs are deferred 
 
 ---
 
+## `intent-review-console` — human-review surface repo candidate
+
+**Insight recognized:** 2026-06-18 (epic iel-E14, human-review governance doctrine)
+**Doctrine reference:** `072-AT-ARCH-human-review-governance-2026-06-18.md`
+
+### What the insight is
+
+The human-review governance doctrine (`072-AT-ARCH`) fixes the closed set of human-review
+triggers (HR-1..HR-5), the read-only review surface, and the signed-row discipline by which a
+human verdict re-enters the evidence chain — **without building any console.** The doctrine is
+authored "document now, build later." When a review surface is built, it becomes a candidate
+for a dedicated repo, working name `intent-review-console`: the surface that renders the
+already-sanitized evidence (per `072-AT-ARCH` R3) for an authorized reviewer and emits a signed
+`human-review/v1` row (per `072-AT-ARCH` R5).
+
+### Why it is not being built now
+
+- Human review is the *bounded exception*, not the default path (`072-AT-ARCH` § 1). Today's
+  HR-N adjudications are handled as Class-N Decision Records, not through a console — and that
+  is sufficient at current volume.
+- The `human-review/v1` predicate URI is **not reserved** — reserving it is a Class-1 ISEDC act
+  (`072-AT-ARCH` R5). A console that emits an unreserved predicate would be premature.
+- The console MUST NOT become a second uncontrolled egress for credential-shaped substrings
+  (`072-AT-ARCH` R3 anti-pattern). It can only show `agent-loop-trace` evidence *after* the
+  sanitization SPEC's PASS/FAIL fixtures are green — so the sanitization spec is a hard
+  prerequisite.
+- Sole-prop bandwidth is committed elsewhere (`073-AT-STND` § 5 cap; `075-AT-STND` lattice puts
+  this below P-TOP and the P0/P1 unblockers).
+
+### Architecture (when trigger fires)
+
+- A **read-only** surface over the evidence chain (`072-AT-ARCH` R4) — never a mutation surface.
+- Composes from already-sanitized evidence only (`072-AT-ARCH` R3); loop-trace content gated on
+  the sanitization SPEC (`specs/sanitization/v0.1.0-draft/SPEC.md`) fixtures being green.
+- Emits `human-review/v1` signed rows (after the URI is reserved, Class-1).
+- Whether it is a new repo vs a module inside an existing repo is itself a Class-1/Class-2
+  routing call (5-repo taxonomy discipline, Blueprint A § 2.1) decided at trigger time — the
+  default-honest answer follows the Gateway precedent (FUTURE.md § Gateway: a demonstration
+  surface lives *inside* an existing repo, not a new release lifecycle, unless it is a
+  distributable tool).
+
+### Trigger condition
+
+Revisit and create bead + GH issue + Plane issue when ALL of:
+
+- **(a)** The `agent-loop-trace/v1` sanitization SPEC fixture suite is green in CI (the
+  precondition that also gates the predicate URI), AND
+- **(b)** the `human-review/v1` predicate URI has been reserved via a Class-1 ISEDC act, AND
+- **(c)** HR-N adjudication volume is high enough that Class-N Decision Records alone are
+  friction (a bandwidth signal, not a customer signal — `075-AT-STND` R7).
+
+When (a)+(b)+(c) hold, file the three tracking artifacts before writing any console code, and
+make the new-repo-vs-module routing call.
+
+---
+
+## Optimizer sandbox — Skill Refiner build trigger
+
+**Insight recognized:** 2026-06-18 (epic iel-E14, optimizer safety model doctrine)
+**Doctrine reference:** `074-AT-STND-optimizer-safety-model-2026-06-18.md`; DR-028; DR-036
+
+### What the insight is
+
+The optimizer safety model (`074-AT-STND`) fixes the autonomy ladder (A-0..A-2 + HR-2), the
+accept predicate, and the blast-radius bounds for any automated optimizer — concretely the
+Skill Refiner — **before the optimizer mechanism is trusted to ship.** The "sandbox" is the
+isolated environment in which Refiner strategies run at autonomy rung A-0 (PROPOSE-ONLY,
+`074-AT-STND` § 2): propose an edit, run the accept predicate, emit the result as evidence,
+apply nothing. It is where a new strategy earns its way up the ladder on an evidence-backed
+track record before it is ever allowed to stage (A-1) or gated-auto-apply (A-2).
+
+### Why it is not being built (beyond A-0) now
+
+- The Refiner mechanism is `EXPERIMENTAL`: the Phase A.0 null-hypothesis baseline (DR-028
+  P0-RATIFY-3; DR-036 proceed result) is the gate on whether the mechanism beats
+  naive-Opus-in-context *at all* (`074-AT-STND` R9). An optimizer that loses to naive must not
+  ship.
+- Phase D (optimizer self-generation of eval targets) is a **killed anti-goal** (DR-028 T2;
+  `074-AT-STND` R8) absent the Karpathy+Gregg re-open trigger. The sandbox is for *proposing
+  edits against a curated eval set*, never for self-generating the eval set.
+- An optimizer that can move its own gate is the reward-hacking failure (`074-AT-STND` R7); the
+  sandbox enforces that the strategy under test cannot touch the predicate, eval set, or rollout
+  policy that scores it.
+- Bandwidth + Python-package cost: any Refiner strategy adding a Python package costs ≥15
+  founder-hrs/release (`073-AT-STND` § 5; DR-010 § 7 Q2). The optimizer's own run cost is a
+  `CostRecord`.
+
+### Architecture (when trigger fires — strategies earn rungs, never a global flag)
+
+- Strategies start at **A-0 PROPOSE-ONLY** (`074-AT-STND` § 2) and earn A-1/A-2 **per strategy,
+  per artifact class**, on an acceptance-vs-regression track record — never a global autonomy
+  switch.
+- A production-pinned artifact is always at least **HR-2 human-gated** (`074-AT-STND` R4) — the
+  optimizer never auto-applies across that line.
+- Every accepted proposal is a new `SkillVersion` (the 14th kernel entity, DR-028 T1), never an
+  in-place edit (`074-AT-STND` R5); rollback is a pin flip.
+- Ships as `@j-rig/refiner-core` + `@j-rig/refiner` in the j-rig monorepo (per the Skill Refiner
+  plan `027-PP-PLAN` v5) with the operationalized RefinerStrategy interface + reference impls.
+
+### Trigger condition
+
+The autonomy ladder graduates a strategy beyond A-0 when:
+
+- **(a)** the Phase A.0 baseline cleared (DR-036 proceed) AND a strategy demonstrates a
+  positive acceptance-vs-regression record against the kernel-pinned eval set, AND
+- **(b)** the artifact-class-specific rung criteria in `074-AT-STND` § 2 are met (A-1 for
+  non-production-pinned snapshots; A-2 only where a `RolloutGate` policy explicitly opts in;
+  HR-2 always for production-pinned).
+
+Each rung promotion is an evidence-backed decision recorded as the matching governance-class
+artifact — not a developer flipping a flag.
+
+---
+
 _This file is maintained by the ISEDC process. Entries graduate to tracked backlog when their
 trigger condition is met. Do not delete entries without ISEDC deliberation or acting-head-of-board
 direction._
