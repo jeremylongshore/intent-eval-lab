@@ -84,7 +84,7 @@
       "authority_tier": "reference",
       "baseline_sha256": "0b644e2208f80b860530d578d85872d405d9c529c500b34fd24ed7c223a22ab7",
       "contract": "hook-config",
-      "divergences_outstanding": 0,
+      "divergences_outstanding": 1,
       "fetch_error_streak": 0,
       "last_ok_utc": null,
       "monitored": true,
@@ -128,7 +128,7 @@
       "authority_tier": "official-spec-machine-readable",
       "baseline_sha256": "1bf94a601817ab07fc04058a9ff2e031227f9b9384e198ea7f187e75eb4b9ec6",
       "contract": "mcp-config",
-      "divergences_outstanding": 0,
+      "divergences_outstanding": 1,
       "fetch_error_streak": 0,
       "last_ok_utc": null,
       "monitored": true,
@@ -161,7 +161,7 @@
       "authority_tier": "reference",
       "baseline_sha256": "1f37e87ff3442fb7bcf35dd07bcff6509a49c4e0140119849b472ee8794317cd",
       "contract": "marketplace-catalog",
-      "divergences_outstanding": 0,
+      "divergences_outstanding": 1,
       "fetch_error_streak": 0,
       "last_ok_utc": null,
       "monitored": true,
@@ -172,7 +172,7 @@
       "authority_tier": "reference",
       "baseline_sha256": "bbb4618ec8b1f1a29d20fae1792e5aab1e0f1f04efc528d86cfde458e9e727e7",
       "contract": "plugin-manifest",
-      "divergences_outstanding": 0,
+      "divergences_outstanding": 1,
       "fetch_error_streak": 0,
       "last_ok_utc": null,
       "monitored": true,
@@ -194,20 +194,20 @@
       "authority_tier": "reference",
       "baseline_sha256": "824162201ae408cdb5b6746d6fd433eeae9165a3425e0cd58ee19d840a01b846",
       "contract": "agent-definition",
-      "divergences_outstanding": 0,
+      "divergences_outstanding": 1,
       "fetch_error_streak": 0,
       "last_ok_utc": null,
       "monitored": true,
       "surface": "sub-agents"
     }
   ],
-  "evaluated_at": "2026-06-12T22:12:08Z",
+  "evaluated_at": "2026-06-13T01:06:35Z",
   "failing_conditions": [
     "watcher-run-recent"
   ],
   "health_version": "detector-health/v1",
   "inputs": {
-    "specs/lineage/coverage-map.json": "b0f87ac0ec360c1a1e4c7e05ea997aba611c75c1c0e7c8c38d90964ffb7965f7",
+    "specs/lineage/coverage-map.json": "c5e0bfe353a5df27c92e6ef1b144bd65ecf506620fec214e5146804ab9269b82",
     "specs/snapshots/.sha/agentskills-spec.sha": "abd9c47b9f663c9325ff00463f3bbb3aab7b1027e05bccd188d4bd94b883cca5",
     "specs/snapshots/.sha/anthropic-engineering.sha": "f7b2166fb88215842ced23bb35ac38bbc13c313fb4a0fd862032c5684ebd33db",
     "specs/snapshots/.sha/claude-code-changelog.sha": "3680d5061d691d527445f5c2559586551d48e3f02446805eb1460eb1d635ad5d",
@@ -229,7 +229,7 @@
   },
   "lineage": {
     "convergence_triggers_fired": 0,
-    "divergences_outstanding": 7,
+    "divergences_outstanding": 12,
     "surfaces_adopted": 11
   },
   "verdict": "DEGRADED"

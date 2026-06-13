@@ -1,8 +1,8 @@
 {
   "_generated": "GENERATED-DO-NOT-EDIT \u2014 derived projection of the append-only lineage log (specs/lineage/log.jsonl). Regenerate: python3 scripts/lineage-log.py project-coverage. Normative spec: 000-docs/054-AT-SPEC-lineage-log-and-derived-coverage-map-2026-06-12.md",
   "derived_from": {
-    "last_event_id": 24,
-    "line_count": 24,
+    "last_event_id": 34,
+    "line_count": 34,
     "log": "specs/lineage/log.jsonl"
   },
   "projection_version": "lineage-coverage/v1",
@@ -68,13 +68,20 @@
     },
     "claude-hooks": {
       "adopted": {
-        "at": "2026-06-11T00:00:00Z",
-        "event_id": 15
+        "at": "2026-06-13T01:06:29Z",
+        "event_id": 31
       },
       "contract": "hook-config",
       "convergence_fired": [],
-      "convergence_triggers_outstanding": 0,
-      "divergences_outstanding": [],
+      "convergence_triggers_outstanding": 1,
+      "divergences_outstanding": [
+        {
+          "convergence_trigger": "upstream documents a top-level `metadata` field for the hooks document -> move it to upstream-base",
+          "event_id": 32,
+          "since": "2026-06-13T01:06:29Z",
+          "subject": "hook-config/is-overlay"
+        }
+      ],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
         "at": "2026-06-12T21:48:29Z",
@@ -108,13 +115,20 @@
     },
     "mcp-schema-ts": {
       "adopted": {
-        "at": "2026-06-11T00:00:00Z",
-        "event_id": 12
+        "at": "2026-06-13T01:06:28Z",
+        "event_id": 25
       },
       "contract": "mcp-config",
       "convergence_fired": [],
-      "convergence_triggers_outstanding": 0,
-      "divergences_outstanding": [],
+      "convergence_triggers_outstanding": 1,
+      "divergences_outstanding": [
+        {
+          "convergence_trigger": "upstream documents the per-server required-set (`type`/`command`/`args`/`env` required on the per-server entry) or a top-level `metadata` field for the per-server entry -> move the required-membership / field to upstream-base",
+          "event_id": 26,
+          "since": "2026-06-13T01:06:29Z",
+          "subject": "mcp-config/is-overlay"
+        }
+      ],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
         "at": "2026-06-12T19:55:31Z",
@@ -148,13 +162,20 @@
     },
     "plugin-marketplaces": {
       "adopted": {
-        "at": "2026-06-11T00:00:00Z",
-        "event_id": 19
+        "at": "2026-06-13T01:06:29Z",
+        "event_id": 33
       },
       "contract": "marketplace-catalog",
       "convergence_fired": [],
-      "convergence_triggers_outstanding": 0,
-      "divergences_outstanding": [],
+      "convergence_triggers_outstanding": 1,
+      "divergences_outstanding": [
+        {
+          "convergence_trigger": "upstream documents a minimum entry count (move minItems to upstream-base) or publishes a machine-readable name pattern or length cap (move the structural encoding to upstream-base)",
+          "event_id": 34,
+          "since": "2026-06-13T01:06:29Z",
+          "subject": "marketplace-catalog/is-overlay"
+        }
+      ],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
         "at": "2026-06-12T22:12:02Z",
@@ -164,13 +185,20 @@
     },
     "plugins-reference": {
       "adopted": {
-        "at": "2026-06-11T00:00:00Z",
-        "event_id": 17
+        "at": "2026-06-13T01:06:29Z",
+        "event_id": 27
       },
       "contract": "plugin-manifest",
       "convergence_fired": [],
-      "convergence_triggers_outstanding": 0,
-      "divergences_outstanding": [],
+      "convergence_triggers_outstanding": 1,
+      "divergences_outstanding": [
+        {
+          "convergence_trigger": "upstream publishes a machine-readable name length cap or pattern, or documents a top-level `metadata` field for the plugin manifest -> move the structural encoding / field to upstream-base",
+          "event_id": 28,
+          "since": "2026-06-13T01:06:29Z",
+          "subject": "plugin-manifest/is-overlay"
+        }
+      ],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
         "at": "2026-06-12T20:45:20Z",
@@ -192,13 +220,20 @@
     },
     "sub-agents": {
       "adopted": {
-        "at": "2026-06-11T00:00:00Z",
-        "event_id": 18
+        "at": "2026-06-13T01:06:29Z",
+        "event_id": 29
       },
       "contract": "agent-definition",
       "convergence_fired": [],
-      "convergence_triggers_outstanding": 0,
-      "divergences_outstanding": [],
+      "convergence_triggers_outstanding": 1,
+      "divergences_outstanding": [
+        {
+          "convergence_trigger": "upstream publishes a machine-readable name length cap or pattern, or documents a top-level `metadata` field for the subagent frontmatter -> move the structural encoding / field to upstream-base",
+          "event_id": 30,
+          "since": "2026-06-13T01:06:29Z",
+          "subject": "agent-definition/is-overlay"
+        }
+      ],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
         "at": "2026-06-12T21:12:55Z",
