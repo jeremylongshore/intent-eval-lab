@@ -101,3 +101,48 @@ jobs:
           tag="${GITHUB_REF#refs/tags/}"
           gh release upload "$tag" build/evidence/report-manifest.json --clobber
           echo "✓ report-manifest.json published to release $tag"
+
+  # Failure-only alert: if the tag-release job fails, push a ntfy alert over the
+  # tailnet to the prod-deploys topic. Tag-triggered only — never runs on a PR.
+  alert-on-failure:
+    name: alert-on-failure
+    needs: [release-and-emit]
+    if: failure()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Connect to tailnet (Tailscale OIDC)
+        uses: tailscale/github-action@v4.1.2
+        with:
+          oauth-client-id: ${{ secrets.TS_OIDC_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_AUDIENCE }}
+          tags: tag:ci
+
+      - name: Wait for tailnet
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 20); do
+            if sudo tailscale ping --c 1 --timeout 2s 100.88.144.55 >/dev/null 2>&1; then
+              echo "✓ tailnet reachable (attempt $i)"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "::error::tailnet host 100.88.144.55 unreachable after 20 attempts"
+          exit 1
+
+      - name: Notify ntfy
+        env:
+          NTFY_AUTH_TOKEN: ${{ secrets.NTFY_AUTH_TOKEN }}
+        run: |
+          set -euo pipefail
+          run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          curl -s -m 10 -X POST \
+            -H "Title: [intent-eval-lab] Release CI FAILED" \
+            -H "Priority: high" \
+            -H "Tags: prod-deploys,rotating_light" \
+            -H "Authorization: Bearer ${NTFY_AUTH_TOKEN}" \
+            --data "Release CI failed on ${GITHUB_REF_NAME} (sha ${GITHUB_SHA}). Run: ${run_url}" \
+            http://intentsolutions:8080/prod-deploys
