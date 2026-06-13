@@ -1,0 +1,116 @@
+{
+  "registry_version": "leading-indicators/v1",
+  "description": "The 12 Anthropic leading indicators the bitter-lesson watcher monitors (plan 033 § 14.11.1). One row per indicator. A 'hit' is a structured-source change (new GitHub release tag, RSS entry, JSON-schema presence) or — for the 2 prose sources (#1, #6) — a prose-content change that survives a 7-day disposition window before escalation (§ 14.11.3, <5% flake budget). The disposition matrix (§ 14.11.2) counts firings by severity into a verdict. Authority: 000-docs/063-AT-SPEC-leading-indicator-watcher. Mirrors the deterministic-detection + typed-fetch-failure posture of the spec-drift watcher (scripts/spec-drift-check.sh, scripts/fetch-capture.py): only a clean fetch (FETCH_OK) feeds disposition; a fetch failure alerts but is NEVER a hit. The poller that consumes this list is scripts/leading-indicator-watch.py; the daily cron is .github/workflows/leading-indicator-watch.yml.",
+  "severity_order": ["Low", "Medium", "High", "CRITICAL"],
+  "source_kinds": {
+    "github-release": "the latest tagged release of a GitHub repo (releases.atom <id>) — structured; escalates immediately on a new tag",
+    "rss": "an Atom/RSS feed's latest entry id — structured; escalates immediately on a new entry",
+    "json-schema": "presence/identity of a machine-readable JSON/TS schema artifact — structured; escalates immediately on a new schema landing",
+    "prose": "a human-readable doc/blog page — UNstructured; a content change holds for a 7-day disposition window before it counts as an escalating hit (§ 14.11.3)"
+  },
+  "disposition_matrix": [
+    {"when": "0-2 Low-severity firing", "verdict": "CONTINUE", "action": "Continue per plan"},
+    {"when": "1 Medium firing", "verdict": "NOTE", "action": "Note in next AAR; no plan change"},
+    {"when": "2-3 Medium OR 1 High firing", "verdict": "RETRO", "action": "ISEDC Class-2 retrospective; consider pausing Phase >= 3"},
+    {"when": "1 CRITICAL firing", "verdict": "PAUSE", "action": "PAUSE all SAK phases; ISEDC Class-1 re-charter to evaluate upstream cutover"},
+    {"when": "2 CRITICAL firing", "verdict": "STOP", "action": "STOP SAK; archive as historical contribution; cut over to upstream"}
+  ],
+  "indicators": [
+    {
+      "id": 1,
+      "indicator": "Anthropic publishes public roadmap including machine-readable spec",
+      "source_url": "https://www.anthropic.com/engineering",
+      "source_kind": "prose",
+      "severity": "High",
+      "last_known_snapshot": null
+    },
+    {
+      "id": 2,
+      "indicator": "claude CLI begins ingesting .claude/schema/ directory",
+      "source_url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",
+      "source_kind": "rss",
+      "severity": "High",
+      "last_known_snapshot": null
+    },
+    {
+      "id": 3,
+      "indicator": "claude doctor adds plugin-format validation",
+      "source_url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",
+      "source_kind": "rss",
+      "severity": "High",
+      "last_known_snapshot": null
+    },
+    {
+      "id": 4,
+      "indicator": "agentskills.io v2 RFC published",
+      "source_url": "https://agentskills.io/specification.md",
+      "source_kind": "rss",
+      "severity": "High",
+      "last_known_snapshot": null
+    },
+    {
+      "id": 5,
+      "indicator": "Anthropic publishes machine-readable agentskills.io v2 schemas",
+      "source_url": "https://github.com/agentskills/agentskills/releases.atom",
+      "source_kind": "github-release",
+      "severity": "CRITICAL",
+      "last_known_snapshot": null
+    },
+    {
+      "id": 6,
+      "indicator": "Anthropic ships skill-author-onboarding doc citing field validation",
+      "source_url": "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview.md",
+      "source_kind": "prose",
+      "severity": "Medium",
+      "last_known_snapshot": null
+    },
+    {
+      "id": 7,
+      "indicator": "claude-codemod or equivalent field-migration tool ships",
+      "source_url": "https://github.com/anthropics/claude-code/releases.atom",
+      "source_kind": "github-release",
+      "severity": "Medium",
+      "last_known_snapshot": null
+    },
+    {
+      "id": 8,
+      "indicator": "Anthropic ships skill-shell-validation",
+      "source_url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",
+      "source_kind": "rss",
+      "severity": "Medium",
+      "last_known_snapshot": null
+    },
+    {
+      "id": 9,
+      "indicator": "Anthropic ships skill-security-audit",
+      "source_url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",
+      "source_kind": "rss",
+      "severity": "Medium",
+      "last_known_snapshot": null
+    },
+    {
+      "id": 10,
+      "indicator": "agentskills.io spec adds vendor-namespacing section",
+      "source_url": "https://agentskills.io/specification.md",
+      "source_kind": "rss",
+      "severity": "Low",
+      "last_known_snapshot": null
+    },
+    {
+      "id": 11,
+      "indicator": "Vercel skills.sh adopts kernel-schema-compatible format",
+      "source_url": "https://github.com/anthropics/skills/releases.atom",
+      "source_kind": "github-release",
+      "severity": "Low",
+      "last_known_snapshot": null
+    },
+    {
+      "id": 12,
+      "indicator": "Frontier model demonstrates schema-validator equivalence from prose+examples",
+      "source_url": "https://github.com/anthropics/skills/releases.atom",
+      "source_kind": "github-release",
+      "severity": "CRITICAL",
+      "last_known_snapshot": null
+    }
+  ]
+}
