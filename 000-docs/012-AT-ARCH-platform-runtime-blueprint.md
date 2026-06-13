@@ -738,6 +738,22 @@ This reverses the 2026-05-11 framing in § 7.4 (which said "the JSON Schema file
 
 **Drift detection.** The lab CI workflow `.github/workflows/schema-drift.yml` fails any PR that re-introduces normative schema content under `intent-eval-lab/specs/evidence-bundle/*/schema/` (allowlist: redirect-stub pattern carrying an `x-redirect` field).
 
+### 7.0.1 Parallel Change discipline for kernel schema additions (expand-contract)
+
+The kernel schema is canon (Blueprint A principle 10), and breaking changes to it cost a MAJOR bump that ripples a coordinated deploy across all four consumer repos. To keep that cost rare and independent versioning honest, every additive evolution of a kernel-owned schema — the `gate-result/v1` predicate body and every future predicate body per § 7.0 — MUST follow the **Parallel Change** (expand-contract) discipline (Danilo Sato's term, endorsed by Martin Fowler). A field is never introduced as required in a single step; it is widened, aged, and only then narrowed.
+
+The discipline binds as three ordered phases:
+
+1. **Expand (optional-first).** A new field MUST land as **optional** in the kernel schema. The kernel package version that introduces it bumps MINOR (additive, backward-compatible) — never MAJOR, never required-on-arrival. Both producers that emit the field and consumers that ignore it MUST validate against the schema in this phase. A row that omits the new field MUST still pass schema validation; consumers MUST NOT treat the absence of an optional field as a verification failure (consistent with § 7.5 verification step 5).
+
+2. **Age (at least one consumer release).** The field MUST remain optional for at least **one full consumer release cycle** — i.e., a kernel MINOR that ships the field optional MUST be published and consumable by every downstream repo before the field may be considered for promotion. During the aging window the kernel MAY emit a **deprecation warning** against the still-optional shape (rows that omit the field, or producers pinned to the pre-field kernel) so that operators see, at producer time, that the field is migrating from optional to required. The deprecation warning is advisory and MUST NOT fail validation while the field is still optional.
+
+3. **Contract (promote to required).** A field becomes **required** only after (a) it has aged at least one consumer release as optional, AND (b) the deprecation-warning window against the still-optional shape has fired, AND (c) the kernel package bumps **MINOR** at the promotion. Promoting an already-shipped optional field to required is treated as a backward-compatible tightening at the kernel-package level provided every producing consumer has had a release in which to begin emitting the field; it MUST NOT be done as a MAJOR-free surprise on a shape that consumers have not yet had a release to adopt. If a field must become required faster than the aging window permits, that is a **breaking change** and MUST follow the § 7.2 URI-versioning policy (mint `gate-result/v2`) — not a same-URI tightening.
+
+**Relationship to the URI versioning policy.** § 7.2 governs the EXTERNAL contract of the predicate URI: removing a required field, narrowing an enum, or changing the semantics of an existing field mints a new major URI. This § 7.0.1 governs the INTERNAL discipline by which a field travels from new-and-optional to required *without* breaking that external contract. The two are complementary: § 7.2 is what consumers may rely on; § 7.0.1 is the path the kernel walks so that what § 7.2 promises stays honorable. A field addition that completes all three Parallel Change phases never trips the § 7.2 breaking-change clause, because at no single release did any consumer break.
+
+**Why this is binding.** Without an explicit expand-contract discipline, every kernel field addition degrades into a coordinated cross-repo deploy event — the exact failure mode that independent package versioning exists to prevent. Parallel Change makes additive schema evolution a sequence of independently-shippable steps, so a kernel MINOR never forces a same-day deploy of `audit-harness`, `j-rig-skill-binary-eval`, `intent-rollout-gate`, and the lab simultaneously.
+
 ### 7.1 In-toto Statement v1 envelope
 
 Every `gate-result/v1` row MUST be a well-formed [in-toto Statement v1](https://github.com/in-toto/attestation/blob/main/spec/v1/statement.md) document with the following top-level structure:
