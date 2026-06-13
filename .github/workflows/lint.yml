@@ -1,0 +1,83 @@
+name: Lint
+
+# Workflow-YAML + GitHub-Actions linting for intent-eval-lab.
+#
+# Per iel-lint-rollout (bd_000-projects-1gdo), P6 Phase B of the IEP
+# Convergence Debt Plan. The lab already lints prose/Markdown/links via
+# doc-quality.yml, and Python via python-tests.yml / pre-commit (ruff). The gap
+# this workflow closes: nothing lints the 10+ GitHub Actions workflow files
+# themselves. A typo in a `run:` shell block or a broken `uses:` ref currently
+# only surfaces when the workflow fails at runtime.
+#
+# Two gates, both hard-fail (the existing corpus passes — verified at install):
+#   1. yamllint  — structural YAML correctness against .yamllint.yml
+#                  (key-duplicates, indentation, truthy ambiguity, empty values).
+#   2. actionlint — GitHub Actions semantic checks (shellcheck on run: blocks,
+#                  expression syntax, deprecated/typo'd action refs, matrix shape).
+#
+# markdownlint is intentionally NOT duplicated here — doc-quality.yml owns it.
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/**"
+      - ".yamllint.yml"
+      - ".pre-commit-config.yaml"
+      - ".github/workflows/lint.yml"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/**"
+      - ".yamllint.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  yamllint:
+    name: yamllint (workflow + config YAML)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install yamllint
+        run: python3 -m pip install --quiet yamllint==1.38.0
+
+      - name: Run yamllint
+        run: |
+          yamllint -c .yamllint.yml \
+            .github/ \
+            .yamllint.yml \
+            .pre-commit-config.yaml \
+            .sops.yaml \
+            secrets.example.yaml
+
+  actionlint:
+    name: actionlint (GitHub Actions semantics)
+    runs-on: ubuntu-latest
+    env:
+      # actionlint shells out to shellcheck for every `run:` block. SC2129 is a
+      # cosmetic style nit ("group your >> redirects with { ...; }") that the
+      # existing step-summary blocks in three workflows trip. We exclude it so
+      # the lane is a clean correctness signal, not a style refactor mandate —
+      # all substantive shellcheck classes (SC2086 word-splitting, SC2046,
+      # quoting, undefined vars) stay on. Tighten by dropping this in a
+      # follow-up PR that also regroups those redirects.
+      SHELLCHECK_OPTS: "--exclude=SC2129"
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Run actionlint
+        uses: raven-actions/actionlint@v2
+        with:
+          version: "1.7.7"
+          fail-on-error: true

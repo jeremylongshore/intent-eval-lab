@@ -1,0 +1,38 @@
+# yamllint config — intent-eval-lab
+#
+# Per iel-lint-rollout (bd_000-projects-1gdo), P6 Phase B of the IEP
+# Convergence Debt Plan. The lab is a spec/methodology repo with 10+ GitHub
+# Actions workflows; doc-quality.yml already lints Markdown/prose/links, but
+# nothing lints the workflow YAML itself. This config + .github/workflows/lint.yml
+# close that gap (yamllint + actionlint).
+#
+# Posture: structural correctness over cosmetics. We lint for the failure modes
+# that actually bite (syntax errors, duplicate keys, truthy ambiguity, empty
+# values) and relax cosmetic rules (line-length, document-start, comment
+# spacing) so the existing 10 workflows pass without a churny reformat. The
+# tighten-later path is to flip the disabled rules back on in a follow-up PR.
+
+extends: default
+
+rules:
+  # Inline run: scripts and step descriptions routinely exceed 80 cols.
+  # Disable rather than warn so the lane is a clean pass/fail signal.
+  line-length: disable
+
+  # GitHub Actions workflows do not use a leading `---` document marker.
+  document-start: disable
+
+  # The workflows use a mix of 0-space and 1-space comment indentation in
+  # heredoc-style step bodies; not worth a reformat.
+  comments:
+    min-spaces-from-content: 1
+
+  # `on:` is a legitimate top-level key in Actions; do not warn on the
+  # YAML 1.1 truthy interpretation of on/off/yes/no for that and the like.
+  truthy:
+    allowed-values: ["true", "false", "on", "off"]
+    check-keys: false
+
+# Real correctness gates kept on (yamllint defaults):
+#   key-duplicates, empty-values, trailing-spaces, new-line-at-end-of-file,
+#   indentation, brackets, colons, commas, hyphens.
