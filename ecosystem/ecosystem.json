@@ -1,0 +1,76 @@
+{
+  "$schema-note": "Manifest of every managed Intent Eval Platform repo. Hand-authored; the cross-repo source of truth for which repos are wired with ecosystem-sync automation and the schema/harness versions each pins. Read ecosystem/README.md and the sibling coherence-check.sh.",
+  "version": 1,
+  "generated": "2026-06-13",
+  "home": "intent-eval-lab",
+  "notes": [
+    "kind values: kernel | methodology | gates | behavioral-eval | action.",
+    "core_schema_version = the @intentsolutions/core version the repo pins (the canonical contracts kernel + JSON Schemas). 'self' means the repo IS the kernel; null means no direct dependency.",
+    "audit_harness_version = the @intentsolutions/audit-harness version the repo pins, whether as an npm devDependency or a vendored .audit-harness/ install. For the harness repo itself (harness_install=self) this is the repo's own published package version.",
+    "harness_install = npm-dep (devDependency in package.json) | vendored (.audit-harness/ + scripts/audit-harness wrapper) | self.",
+    "Pinned versions captured 2026-06-13 from each repo's package.json / vendored .audit-harness/VERSION. Update this file whenever a repo bumps either pin; coherence-check.sh fails when a repo drifts from these values."
+  ],
+  "managed": [
+    {
+      "repo": "intent-eval-core",
+      "gh": "jeremylongshore/intent-eval-core",
+      "kind": "kernel",
+      "core_schema_version": "self",
+      "audit_harness_version": "^1.1.5",
+      "harness_install": "npm-dep",
+      "npm_package": "@intentsolutions/core",
+      "package_version": "0.6.0"
+    },
+    {
+      "repo": "intent-eval-lab",
+      "gh": "jeremylongshore/intent-eval-lab",
+      "kind": "methodology",
+      "core_schema_version": null,
+      "audit_harness_version": "v1.1.5",
+      "harness_install": "vendored",
+      "npm_package": null,
+      "package_version": null
+    },
+    {
+      "repo": "audit-harness",
+      "gh": "jeremylongshore/intent-audit-harness",
+      "kind": "gates",
+      "core_schema_version": null,
+      "audit_harness_version": "1.1.7",
+      "harness_install": "self",
+      "npm_package": "@intentsolutions/audit-harness",
+      "package_version": "1.1.7"
+    },
+    {
+      "repo": "j-rig-skill-binary-eval",
+      "gh": "jeremylongshore/j-rig-skill-binary-eval",
+      "fs_dir": "j-rig-binary-eval",
+      "kind": "behavioral-eval",
+      "core_schema_version": "0.5.0",
+      "audit_harness_version": "v1.1.5",
+      "harness_install": "vendored",
+      "npm_package": "j-rig-binary-eval",
+      "package_version": "2.0.0"
+    },
+    {
+      "repo": "intent-rollout-gate",
+      "gh": "jeremylongshore/intent-rollout-gate",
+      "kind": "action",
+      "core_schema_version": null,
+      "audit_harness_version": "^1.1.7",
+      "harness_install": "npm-dep",
+      "npm_package": "intent-rollout-gate-action",
+      "package_version": "0.1.0"
+    }
+  ],
+  "deferred": [
+    {
+      "repo": "claude-code-plugins",
+      "gh": "jeremylongshore/claude-code-plugins",
+      "kind": "marketplace",
+      "status": "deferred-pending-CCP-study",
+      "bead": "3wt1f",
+      "reason": "claude-code-plugins has bespoke in-flight CI/CD that tests plugins. It is NOT wired with any ecosystem-sync automation. Study and coordinate with its existing CI before touching it; never bolt generic automation on. Listed here only so the deferral is explicit, not so it is managed."
+    }
+  ]
+}
