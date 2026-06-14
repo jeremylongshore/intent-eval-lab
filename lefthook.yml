@@ -1,0 +1,101 @@
+# lefthook — fast pre-commit gates for intent-eval-lab [iep-lefthook-rollout].
+#
+# Mirrors the cheap, staged-only subset of the CI gates so obvious problems are
+# caught locally before a push, without re-running the full CI matrix. The
+# authoritative gates remain CI (.github/workflows/*.yml); this is a fast local
+# pre-filter, intentionally non-exhaustive and OPT-IN.
+#
+# intent-eval-lab is a spec/methodology/docs repo with no build system. The
+# load-bearing local gates are therefore: the partner-name vendor-generic grep
+# (DR-004 S1Q2), the vendored audit-harness hash-pin verify, the AI-escape gate,
+# and lightweight lint on staged Python / Markdown / YAML.
+#
+# Install the git hooks once per checkout (these hooks are a LOCAL DEV AID, not a
+# CI requirement — nothing breaks if a contributor never runs this):
+#     lefthook install
+#
+# This repo already ships a pre-commit-framework config (.pre-commit-config.yaml)
+# covering ruff + markdownlint + hygiene hooks. lefthook and pre-commit both
+# write to .git/hooks and the last installer wins — pick ONE per checkout. This
+# lefthook config is the audit-harness-aligned alternative; it additionally
+# wires the partner-name grep, harness-hash verify, and escape-scan that the
+# pre-commit config does not. Prefer this for parity with the rest of the IEP
+# ecosystem (audit-harness, the TS repos).
+#
+# Each job runs ONLY against the staged files matching its glob, so a commit that
+# touches no .py / .md / .yml files skips the irrelevant gates entirely.
+# `{staged_files}` is empty-safe: lefthook skips a job whose file list is empty
+# after glob filtering.
+
+pre-commit:
+  parallel: true
+  jobs:
+    # The canonical AI-escape gate: refuse a staged diff that lowers a wall.
+    # Mirrors the audit-harness lefthook escape-scan job, dispatched through the
+    # vendored wrapper so it uses the hash-pinned .audit-harness/scripts copy.
+    - name: escape-scan
+      run: scripts/audit-harness escape-scan --staged
+
+    # Partner-name vendor-generic discipline (DR-004 S1Q2, reaffirmed DR-010 §10).
+    # Local backstop for .github/workflows/partner-name-guard.yml. The pattern is
+    # the same backstop list the CI workflow inlines; both must stay in sync with
+    # the canonical pattern in the PRIVATE umbrella CLAUDE.md (the source of
+    # truth). Scoped to the public-facing artifact globs the CI guard watches.
+    - name: partner-name-grep
+      glob:
+        - "000-docs/*"
+        - "specs/*"
+        - "README.md"
+        - "CLAUDE.md"
+        - "KNOWN-ISSUES.md"
+      run: |
+        hits=$(grep -rEni \
+          --include='*.md' \
+          --include='*.html' \
+          --include='*.yaml' \
+          --include='*.yml' \
+          --include='*.json' \
+          --include='*.txt' \
+          'Kobiton|Polygon|Nixtla|Lit Protocol|Mudit Gupta|Mudit' \
+          {staged_files} 2>/dev/null || true)
+        if [ -n "$hits" ]; then
+          echo "✗ Partner-name vendor-generic discipline violation (DR-004 S1Q2):"
+          echo "$hits"
+          echo "Replace partner names with vendor-generic phrasing per 014-DR-GLOS §8."
+          exit 1
+        fi
+
+    # Vendored audit-harness hash-pin verify. Mirrors the required CI check
+    # `harness-hash --verify`. Cheap (sha256 over a small pinned set); catches a
+    # silent edit to a pinned CI workflow / schema stub / vendored harness script
+    # before it reaches CI. Exit 2 = HARNESS_TAMPERED.
+    - name: harness-hash-verify
+      run: scripts/audit-harness verify
+
+    # Python lint on staged .py files only (same ruff ruleset as the CI lane and
+    # the .pre-commit-config.yaml ruff hook). No-op if ruff is not installed
+    # locally — see `skip` note below; install with `pip install ruff`.
+    - name: ruff
+      glob: "*.py"
+      run: ruff check {staged_files}
+
+    # Markdown lint on staged .md files only (same .markdownlint-cli2.jsonc the
+    # CI doc-quality lane uses). Skips vendored + raw research output, matching
+    # the .pre-commit-config.yaml exclude.
+    - name: markdownlint
+      glob: "*.md"
+      exclude:
+        - ".audit-harness/*"
+        - "research/phase-a-0-baseline/results/raw/*"
+      run: npx --yes markdownlint-cli2 {staged_files}
+
+    # YAML lint on staged workflow + config YAML only (same .yamllint.yml the CI
+    # lint lane uses). Catches duplicate keys / indentation / truthy ambiguity in
+    # the files that enforce platform discipline before they reach CI.
+    - name: yamllint
+      glob:
+        - ".github/**/*.yml"
+        - ".github/**/*.yaml"
+        - "*.yml"
+        - "*.yaml"
+      run: yamllint -c .yamllint.yml {staged_files}
