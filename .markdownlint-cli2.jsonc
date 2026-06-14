@@ -16,6 +16,7 @@
   "ignores": [
     ".audit-harness/**",
     "node_modules/**",
-    "research/phase-a-0-baseline/results/raw/**"
+    "research/phase-a-0-baseline/results/raw/**",
+    "research/**/results/**"
   ]
 }

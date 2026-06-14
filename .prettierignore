@@ -1,0 +1,12 @@
+# Prettier ignore — intent-eval-lab
+#
+# Machine-generated eval-result files under research/*/results/** are not
+# authored prose; formatting them produces noise and renders the advisory
+# prettier-md gate permanently red. Exclude every baseline's results dir so
+# the gate carries real signal on authored docs only.
+#
+# NOTE: the doc-quality.yml prettier step passes BOTH --ignore-path .gitignore
+# AND --ignore-path .prettierignore (prettier 3.x honors multiple ignore
+# paths). A bare .prettierignore is NOT auto-read when --ignore-path is set
+# explicitly, so the workflow flag is load-bearing.
+research/**/results/**
