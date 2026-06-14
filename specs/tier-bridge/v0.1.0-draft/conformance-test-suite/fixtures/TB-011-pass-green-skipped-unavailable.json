@@ -1,0 +1,11 @@
+{
+  "fixture_id": "TB-011",
+  "class": "reachable",
+  "description": "The unavailable-behavioral-tier edge case: Tier 1 PASS, Tier 2 GREEN, and the behavioral harness was UNAVAILABLE (not installed / not on PATH), so Tier 3 is SKIPPED — never FAIL. A promotion run MUST NOT fail solely because the behavioral tier did not run. Final PASS, and the run MUST NOT report VERIFIED (absence of a behavioral failure is not evidence of behavioral correctness).",
+  "spec_rules": ["R8", "R15", "R16", "R9"],
+  "input": { "t1": "PASS", "t2": "GREEN", "t3": "SKIPPED" },
+  "skip_reason": "behavioral-harness-unavailable",
+  "expected_final": "PASS",
+  "must_not_be": ["FAIL", "VERIFIED"],
+  "why": "§ 9 R15 (absence is SKIPPED, never FAIL) + R16 (SKIPPED caps at PASS, never VERIFIED) + § 6 R8. Algebraically identical to TB-009; the distinction is the SKIPPED *cause* (unavailable vs opt-out), which the spec says MUST yield the same final verdict."
+}

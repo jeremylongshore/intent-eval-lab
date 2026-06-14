@@ -1,0 +1,9 @@
+{
+  "fixture_id": "TB-002",
+  "class": "reachable",
+  "description": "Same R3 fail-fast as TB-001 but with a YELLOW (warnings-only) static production gate, proving the 'any' in the (FAIL, any, SKIPPED) decision-table row covers the YELLOW column too. t3 is SKIPPED because the behavioral tier never runs after a Tier 1 floor miss.",
+  "spec_rules": ["R3", "R7", "R9"],
+  "input": { "t1": "FAIL", "t2": "YELLOW", "t3": "SKIPPED" },
+  "expected_final": "FAIL",
+  "why": "§ 5 R3 fail-fast independent of the t2 column; § 6 R7 (t1=FAIL). Row (FAIL, any, SKIPPED) -> FAIL."
+}

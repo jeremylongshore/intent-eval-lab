@@ -64,6 +64,7 @@ reconcile by hand.
 | The Evidence Bundle each tier emits + how a bundle carries multi-tier evidence | § 7   |
 | Determinism + reproducibility obligations per tier                             | § 8   |
 | The unavailable-behavioral-tier rule (Tier 3 absent ≠ failure)                 | § 9   |
+| Normative pointers (which validate-skillmd / j-rig output feeds which input)   | § 9.5 |
 | Conformance fixtures (the composition decision table proven by example)        | § 10  |
 
 ### 2.2 Out of scope (v0.1.0-draft)
@@ -293,13 +294,144 @@ Per R6, `VERIFIED` is unreachable when `t3 = SKIPPED`. A static-only promotion r
 — it is the signal that a downstream consumer can trust the skill's _behavior_, not merely its
 _shape_.
 
+## 9.5 Normative pointers — which tool output feeds which bridge input
+
+§ 4 names the three tiers abstractly (`t1`, `t2`, `t3`). This section binds each abstract input
+to the **concrete tool output** that produces it, so an implementer wiring the bridge knows
+_exactly_ which value to read. These pointers are NORMATIVE for the binding (which output → which
+input); they are NOT normative for how each tool _computes_ its output (§ 2.2 out-of-scope — that
+is the validator's / harness's concern). Where a named output lives in a tool whose source is in
+another repository, the binding is stated here AND the cross-repo wiring remainder is flagged so a
+reader is not misled into thinking the emitter itself lives in this spec.
+
+### 9.5.1 Normative pointers — Tier 1–2 (validate-skillmd)
+
+The static side of the bridge (`t1` and `t2`) is produced by the **`validate-skillmd`** validator
+(glossary § harness: `audit-harness` = "deterministic gates … emits `gate-result/v1` rows"; a
+deterministic validator returns PASS/FAIL mechanically). `validate-skillmd` runs four tiers —
+Tier 0 (locate), Tier 1 (grading), Tier 2 (static production gate), Tier 3 (behavioral, which it
+delegates to `j-rig`). The bridge consumes its Tier 1 and Tier 2 outputs as follows.
+
+#### R17 — `t1` is the validate-skillmd Tier 1 **gate verdict** for the requested mode
+
+The bridge's `t1` ∈ { `PASS`, `FAIL` } (§ 6 R5) is the validate-skillmd **Tier 1 gate verdict**
+for the requested grading mode (standard or marketplace), NOT the numeric grade. Concretely:
+
+- In **marketplace** mode (`--marketplace`), `t1 = FAIL` iff any field of the **8-field IS
+  enterprise required-field set** — `{ name, description, allowed-tools, version, author, license,
+compatibility, tags }` — is missing; otherwise `t1 = PASS`. That required-field floor is the
+  canonical authority of the Claude Skills Standard (6767-b) § 4.6 "IS Enterprise Required Fields"
+  and its "IS Enterprise / Marketplace Required-Fields Summary" table — the validator emits
+  **ERRORS** (not warnings) for missing required fields at this tier, and an ERROR is a `FAIL`.
+- In **standard** mode (default), the floor is the Anthropic spec floor (`name` + `description`
+  only) per 6767-b § 4.1; `t1 = FAIL` iff either is missing or invalid, else `t1 = PASS`.
+- The numeric **grade** (the IS 100-point rubric score) is carried in the Evidence Bundle row's
+  `dimensions_evaluated` for audit, but it is **NOT** the bridge input — a high grade with a
+  missing required field is still `t1 = FAIL`. The bridge composes the binary gate verdict, not
+  the score (§ 6 R5 fixes `t1 ∈ { PASS, FAIL }`).
+
+This matches the validator's own rule that "missing required fields = ERROR, not warning" at
+marketplace tier and that standard tier "mirrors the Anthropic spec floor exactly."
+
+#### R18 — `t2` is the validate-skillmd Tier 2 **aggregate** of the five static production checks
+
+The bridge's `t2` ∈ { `GREEN`, `YELLOW`, `RED` } (§ 6 R5) is the validate-skillmd **Tier 2 static
+production gate** aggregate over its five binary checks — **allowed-tools accuracy, auth protocol,
+dead code, tool safety, orchestration bounds** (§ 4.2; this spec references the check set, it does
+not redefine it). The aggregation is fixed:
+
+- `t2 = RED` iff at least one Tier 2 check returns a **blocking** failure (e.g. a tool used but not
+  declared in `allowed-tools`, or unscoped `Bash` paired with `Write`/`WebFetch` without a safety
+  justification — the tool-safety check).
+- `t2 = YELLOW` iff there are only **warnings** (non-blocking flags, e.g. a conservative dead-code
+  flag raised for human review) and no blocking failure.
+- `t2 = GREEN` iff every Tier 2 check passes with no warning.
+
+Per § 5 R2, a `RED` `t2` fails fast (the behavioral tier MUST NOT run); per § 6 R8, a `YELLOW`
+`t2` does **not** block and is treated as passing for promotion (`VERIFIED`/`PASS` remain
+reachable). The `allowed-tools` accuracy check that drives the most common `RED` is anchored in
+6767-b § 4 (`allowed-tools` is the IS enterprise required tool-allowlist field) and § "Choosing
+`allowed-tools` Conservatively".
+
+#### R19 — Both static rows are `audit-harness`-class `gate-result/v1` rows
+
+Per § 7 R10, the `t1` and `t2` verdicts MUST each be emitted as a deterministic `gate-result/v1`
+row (glossary § 2.4 EvidenceBundle; § gate). Each static row carries an `input_hash` over the
+graded SKILL.md bytes (§ 8 R12) and a `dimensions_evaluated` naming the rubric surface (Tier 1) or
+the five-check surface (Tier 2). The downstream RolloutGate (glossary § 2.8) re-derives the final
+verdict from these rows via the § 6 algebra without re-running the validator (§ 7 R11).
+
+#### 9.5.1.1 Cross-repo wiring remainder (not in this spec)
+
+`validate-skillmd` is a Claude Code **skill** (`~/.claude/skills/validate-skillmd/`) backed by the
+validator script in the **`claude-code-plugins`** repository (`scripts/validate-skills-schema.py`),
+which consumes the kernel `@intentsolutions/core` authoring schema. THIS spec defines _which of its
+outputs_ are `t1` and `t2`; it does **not** define the validator's internal grading algorithm, its
+schema version, or the wiring that serializes its Tier 1/Tier 2 verdicts into Evidence Bundle rows.
+That emitter wiring is the validator's deliverable in its own repo. A claim that the static tiers
+"feed the bridge" is satisfied by R17–R19 here PLUS the emitter existing in `claude-code-plugins` —
+this spec owns the binding, not the emitter.
+
+### 9.5.2 Normative pointers — Tier 3 (j-rig)
+
+The behavioral side of the bridge (`t3`) is produced by **`j-rig`** (glossary § harness:
+`j-rig` = "behavioral evaluation, TypeScript, emits + consumes Evidence Bundle rows"; glossary
+§ 2.5 JudgeDecision distinguishes the deterministic validator from the probabilistic LLM-as-judge).
+`validate-skillmd`'s Tier 3 (`--thorough`) delegates to `j-rig`; the bridge consumes `j-rig`'s
+behavioral verdict as `t3`.
+
+#### R20 — `t3` is the j-rig behavioral-eval **aggregate** verdict over the evaluated model matrix
+
+The bridge's `t3` ∈ { `GREEN`, `RED`, `SKIPPED` } (§ 6 R5) is the **aggregate** of the `j-rig`
+behavioral eval across the evaluated model matrix (§ 4.3):
+
+- `t3 = GREEN` iff the behavioral eval passed across the evaluated model matrix.
+- `t3 = RED` iff the behavioral eval surfaced a blocking failure — _which_ behavioral-eval layer
+  (trigger / functional / regression / baseline / model-variance / rollout-safety / cost) and
+  _which_ model failed is carried in the evidence, NOT in this aggregate (§ 4.3, § 4.4
+  disambiguation: these behavioral-eval layers are NOT the 7-layer testing taxonomy).
+- `t3 = SKIPPED` iff the harness was unavailable or not requested (§ 9 R15) — including a fail-fast
+  skip forced by `t1 = FAIL` (§ 5 R3) or `t2 = RED` (§ 5 R2).
+
+#### R21 — The `t3` aggregate is carried as a `gate_result`-shaped Evidence Bundle row
+
+Per § 7 R10, the behavioral aggregate MUST be carried as a `gate_result`-shaped row so the three
+tiers compose in one bundle (§ 7 R11). The **full behavioral predicate body** — the per-layer,
+per-model detail, the judge confidence, the seed / eval-spec identity (§ 8 R13) — is a **kernel
+concern** reserved for the behavioral-eval predicate (glossary § 2.4: the kernel owns predicate
+bodies; the `eval-verdict/v1` and `runtime-receipt/v1` row types named in glossary § harness are
+`j-rig`'s emitted Evidence Bundle rows). This bridge requires only the _aggregate_ tier verdict as
+`t3`; it does not define the behavioral predicate body.
+
+#### R22 — The `t3` row records its non-determinism inputs; the algebra stays deterministic
+
+Per § 8 R13, the `t3` row MUST record the model matrix evaluated and the eval-spec / seed identity
+so the verdict is reproducible-in-principle; per § 8 R14, this probabilistic origin MUST NOT leak
+into the § 6 combination — the algebra over `(t1, t2, t3)` is a pure deterministic function
+regardless of how `t3` was produced. `VERIFIED` is reachable ONLY when this `t3 = GREEN` (§ 6 R6);
+a `SKIPPED` `t3` caps the run at `PASS` (§ 9 R16).
+
+#### 9.5.2.1 Cross-repo wiring remainder (not in this spec)
+
+`j-rig` is the **`j-rig-skill-binary-eval`** repository (local FS dir `j-rig-binary-eval`); its
+decision logic ships as `@j-rig/rollout-gate` and its behavioral eval runs the model matrix.
+THIS spec defines _which of its outputs_ is `t3` (the aggregate behavioral verdict) and the shape
+of the row that carries it; it does **not** define the behavioral-eval layer algorithms, the judge
+implementation, the model-matrix policy, or the `eval-verdict/v1` predicate body (kernel +
+`j-rig`'s deliverables, in their own repos). A claim that the behavioral tier "feeds the bridge" is
+satisfied by R20–R22 here PLUS the `j-rig` emitter and the kernel behavioral predicate existing in
+their repos — this spec owns the binding, not the emitter or the predicate body.
+
 ## 10. Conformance fixtures
 
 A conformant tier-bridge implementation MUST reproduce the § 6 R9 decision table exactly. The
 reference fixture set under
-[`conformance-test-suite/`](./conformance-test-suite/) (to be authored alongside the first
-implementation) enumerates each reachable triple and its expected final verdict, plus the
-fail-fast invariants:
+[`conformance-test-suite/`](./conformance-test-suite/) enumerates each reachable triple and its
+expected final verdict, plus the fail-fast invariants. The fixtures are concrete `(t1, t2, t3)` →
+expected-final tuples (one JSON file each) and a stdlib-only runner
+([`conformance-test-suite/run.py`](./conformance-test-suite/run.py)) that re-implements the § 6
+algebra and asserts every fixture's `expected_final` against it — so the algebra is proven by
+example, not merely asserted in prose. The suite covers:
 
 1. `(FAIL, *, *)` → final `FAIL` AND `t3 = SKIPPED` (R3).
 2. `(PASS, RED, *)` → final `FAIL` AND `t3 = SKIPPED` (R2).
@@ -321,6 +453,17 @@ A claim of conformance without a fixture pass is not a claim (specs/README § "T
 - **Unification thesis (every validator emits Evidence Bundle):**
   [DR-010 § 7 Q2](../../../000-docs/010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md).
 - **Repo roles (which tool is which):** [Blueprint A § 2.1](../../../000-docs/011-AT-ARCH-ecosystem-master-blueprint.md).
+- **The IS marketplace required-field floor that defines a `t1 = FAIL` (§ 9.5.1 R17):** the Claude
+  Skills Standard (6767-b) § 4.6 "IS Enterprise Required Fields" + its required-fields summary table
+  — the 8-field set `{ name, description, allowed-tools, version, author, license, compatibility,
+tags }`, missing-any = ERROR at marketplace tier. (Authored in the `claude-code-plugins` repo;
+  cited, not restated, per § 9.5.1.1.)
+- **The validate-skillmd four-tier model (the source of `t1`/`t2`, § 9.5.1):** the `validate-skillmd`
+  skill — Tier 0 locate · Tier 1 grading · Tier 2 static production gate · Tier 3 (delegates to
+  `j-rig`). Emitter wiring lives in `claude-code-plugins` (§ 9.5.1.1).
+- **The j-rig behavioral verdict (the source of `t3`, § 9.5.2):** glossary § harness (`j-rig` emits
+  `eval-verdict/v1` + `runtime-receipt/v1` Evidence Bundle rows) + glossary § 2.5 JudgeDecision.
+  Emitter + behavioral predicate body live in `j-rig-skill-binary-eval` + the kernel (§ 9.5.2.1).
 - **Evidence Bundle envelope + `gate-result/v1`:**
   [`../../evidence-bundle/v0.1.0-draft/SPEC.md`](../../evidence-bundle/v0.1.0-draft/SPEC.md) +
   [Blueprint B § 7](../../../000-docs/012-AT-ARCH-platform-runtime-blueprint.md).

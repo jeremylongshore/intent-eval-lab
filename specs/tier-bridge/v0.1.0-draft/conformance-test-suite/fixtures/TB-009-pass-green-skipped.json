@@ -1,0 +1,9 @@
+{
+  "fixture_id": "TB-009",
+  "class": "reachable",
+  "description": "The default promotion-run outcome: Tier 1 PASS, Tier 2 GREEN, behavioral eval NOT requested (Tier 3 SKIPPED by opt-out, not by fail-fast). Clears the static bar; behavioral eval not performed -> final PASS. A SKIPPED behavioral tier caps the run at PASS (never VERIFIED).",
+  "spec_rules": ["R8", "R16", "R9"],
+  "input": { "t1": "PASS", "t2": "GREEN", "t3": "SKIPPED" },
+  "expected_final": "PASS",
+  "why": "§ 6 R8 (t1=PASS AND t2 ∈ {GREEN,YELLOW} AND t3=SKIPPED) + § 9 R16 (SKIPPED caps at PASS). Row (PASS, GREEN|YELLOW, SKIPPED) -> PASS."
+}

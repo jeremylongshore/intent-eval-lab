@@ -1,0 +1,9 @@
+{
+  "fixture_id": "TB-U04",
+  "class": "unreachable",
+  "description": "(_, RED, RED) is forbidden: a RED Tier 2 forces fail-fast (§ 5 R2), so the behavioral tier never runs and t3 cannot be RED. A conformant implementation MUST reject this triple rather than combine two RED signals.",
+  "spec_rules": ["R2", "R9"],
+  "input": { "t1": "PASS", "t2": "RED", "t3": "RED" },
+  "expected": "rejected",
+  "why": "§ 6 R9 names (_, RED, RED) as unreachable; § 5 R2 fail-fast forces t3=SKIPPED after a RED production gate."
+}

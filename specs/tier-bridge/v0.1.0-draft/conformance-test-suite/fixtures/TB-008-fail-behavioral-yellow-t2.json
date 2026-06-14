@@ -1,0 +1,9 @@
+{
+  "fixture_id": "TB-008",
+  "class": "reachable",
+  "description": "Behavioral RED dominates a YELLOW static gate: Tier 1 PASS, Tier 2 YELLOW (warnings only, did not block Tier 3), Tier 3 ran and returned RED. Covers the (PASS, YELLOW, RED) corner of the (PASS, GREEN|YELLOW, RED) decision-table row.",
+  "spec_rules": ["R7", "R9"],
+  "input": { "t1": "PASS", "t2": "YELLOW", "t3": "RED" },
+  "expected_final": "FAIL",
+  "why": "§ 6 R7 (t3=RED). YELLOW did not block Tier 3 from running (§ 5 R2). Row (PASS, GREEN|YELLOW, RED) -> FAIL."
+}

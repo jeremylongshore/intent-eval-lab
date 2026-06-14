@@ -1,0 +1,9 @@
+{
+  "fixture_id": "TB-004",
+  "class": "reachable",
+  "description": "Tier 1 PASS but Tier 2 RED (a blocking production hazard, e.g. a tool used but not declared in allowed-tools). R2 fail-fast: the behavioral tier never runs against a known production hazard, so t3 is SKIPPED and the final verdict is FAIL.",
+  "spec_rules": ["R2", "R7", "R9"],
+  "input": { "t1": "PASS", "t2": "RED", "t3": "SKIPPED" },
+  "expected_final": "FAIL",
+  "why": "§ 5 R2 fail-fast (production hazard) + § 6 R7 (t2=RED disjunct). Row (PASS, RED, SKIPPED) -> FAIL."
+}

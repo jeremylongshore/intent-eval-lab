@@ -1,0 +1,9 @@
+{
+  "fixture_id": "TB-007",
+  "class": "reachable",
+  "description": "Static tiers pass (Tier 1 PASS, Tier 2 GREEN) and the behavioral tier ran but surfaced a blocking failure (Tier 3 RED). A behavioral failure blocks promotion: final FAIL. Which behavioral-eval layer / which model failed is in the evidence, not in this aggregate.",
+  "spec_rules": ["R7", "R9"],
+  "input": { "t1": "PASS", "t2": "GREEN", "t3": "RED" },
+  "expected_final": "FAIL",
+  "why": "§ 6 R7 (t3=RED disjunct) on a run where Tier 3 actually executed. Row (PASS, GREEN|YELLOW, RED) -> FAIL."
+}
