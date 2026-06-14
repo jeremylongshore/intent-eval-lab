@@ -5,10 +5,10 @@ Cross-repo coordination for the Intent Eval Platform (IEP) lives here, in
 
 ## Files
 
-| File | What it is |
-|---|---|
-| `ecosystem.json` | Manifest of every **managed** IEP repo: its `kind`, the `@intentsolutions/core` schema version it pins, the `@intentsolutions/audit-harness` version it pins, and how the harness is installed (`npm-dep`, `vendored`, or `self`). The source of truth for "what versions should every repo be on". |
-| `coherence-check.sh` | Read-only verifier. For each managed repo it confirms the working copy is present, the pinned schema + harness versions match `ecosystem.json`, and the harness resolves. Clear `PASS` / `FAIL` per check; exit 0 = all pass, 1 = drift, 2 = setup error. Mutates nothing. |
+| File                 | What it is                                                                                                                                                                                                                                                                                          |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ecosystem.json`     | Manifest of every **managed** IEP repo: its `kind`, the `@intentsolutions/core` schema version it pins, the `@intentsolutions/audit-harness` version it pins, and how the harness is installed (`npm-dep`, `vendored`, or `self`). The source of truth for "what versions should every repo be on". |
+| `coherence-check.sh` | Read-only verifier. For each managed repo it confirms the working copy is present, the pinned schema + harness versions match `ecosystem.json`, and the harness resolves. Clear `PASS` / `FAIL` per check; exit 0 = all pass, 1 = drift, 2 = setup error. Mutates nothing.                          |
 
 ## Managed repos
 
