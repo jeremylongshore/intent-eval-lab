@@ -14,16 +14,26 @@
  * ── Gate selection (honest spec-integrity, no fake evidence) ──
  *
  * The lab ships specs + decision records, not a product eval — so it emits
- * META-gate(s) about its own integrity, NOT product gate-results. Its one clean,
- * deterministic gate is HARNESS-HASH (`scripts/audit-harness verify`), which the
- * lab's `.harness-hash` manifest pins over a broad spec-integrity surface: the CI
- * workflow definitions (including partner-name-guard.yml and schema-drift.yml),
- * the kernel schema redirect stub, and the vendored audit-harness scripts. So a
- * passing harness-hash transitively attests that those OTHER spec-integrity gates'
- * definitions are themselves untampered — making it the right single meta-gate.
- * partner-name-guard + schema-drift are NOT emitted as separate rows: doing so
- * would either duplicate the PRIVATE partner-name pattern or re-implement the
- * schema-drift checker — both anti-patterns. harness-hash covers their integrity.
+ * META-gate(s) about its own integrity, NOT product gate-results. It emits two
+ * clean, deterministic meta-gates:
+ *
+ *   1. HARNESS-HASH (`scripts/audit-harness verify`) — the lab's `.harness-hash`
+ *      manifest is consistent over a broad spec-integrity surface: the CI workflow
+ *      definitions (including partner-name-guard.yml and schema-drift.yml), the
+ *      kernel schema redirect stub, and the vendored audit-harness scripts. A
+ *      passing harness-hash transitively attests those OTHER gates' definitions are
+ *      untampered. partner-name-guard + schema-drift are NOT emitted as separate
+ *      rows: doing so would either duplicate the PRIVATE partner-name pattern or
+ *      re-implement the schema-drift checker — both anti-patterns.
+ *   2. SNAPSHOT-STILL-CURRENT (`scripts/spec-drift-check.sh --json`) — the vendored
+ *      upstream spec snapshots committed under `specs/snapshots/.sha/` still match
+ *      their live sources, so the eval-set timestamp anchor (DR-029 § 6) the
+ *      platform pins is provably not stale at release time. This reuses the EXACT
+ *      detection output the daily spec-drift-watch workflow consumes (DRY — the
+ *      polling logic lives once, in the script); the row turns that daily check
+ *      into a per-run signed currency attestation. It does NOT re-implement the
+ *      poller, and (like harness-hash for the OTHER gates) it covers the watcher's
+ *      detection surface without duplicating it.
  *
  * Output (gitignored build/), contract, and canonicalisation are identical to the
  * iec/iah emitters; see those for the field-by-field rationale. Signing + Rekor +
@@ -243,6 +253,107 @@ function harnessHashOutcome(): GateOutcome {
   };
 }
 
+/**
+ * snapshot-still-current (`scripts/spec-drift-check.sh --json`): the vendored
+ * Anthropic / upstream spec snapshots committed under `specs/snapshots/.sha/`
+ * still match their live upstream sources — i.e. the eval-set timestamp anchor
+ * (DR-029 § 6) the platform pins is not silently stale. The spec-drift-watch
+ * workflow runs this surface on a daily cron + opens an issue on drift; THIS
+ * row makes the same currency claim a *per-run, signed* attestation, so every
+ * release carries cryptographic evidence of the snapshot state it shipped under.
+ *
+ * Decision mapping (honest — no fake "all-clear"):
+ *   - drift > 0                       → FAIL  (a snapshot is provably stale)
+ *   - drift == 0 && unreachable == 0  → PASS  (all sources fetched + matched)
+ *   - drift == 0 && unreachable > 0   → ADVISORY/warn  (could not fetch some
+ *       sources, so currency is undeterminable for those — NOT a clean pass and
+ *       NOT a stale-snapshot failure; mirrors the script's own posture that a
+ *       fetch error alone does not fail the gate, § spec-drift-check.sh tail).
+ * `--json` never exits non-zero, so detection output is parsed, not exit-coded.
+ */
+function snapshotStillCurrentOutcome(): GateOutcome {
+  const r = run('scripts/spec-drift-check.sh', ['--json']);
+  type Row = { source: string; status: string };
+  let rows: Row[] = [];
+  let parseError: string | undefined;
+  try {
+    const parsed = JSON.parse(r.out) as { sources?: Row[] };
+    rows = Array.isArray(parsed.sources) ? parsed.sources : [];
+  } catch (err: unknown) {
+    parseError = err instanceof Error ? err.message : String(err);
+  }
+
+  // If --json itself could not run or produce parseable output, the detector is
+  // broken — emit an `error` decision (distinct from a clean pass or a drift).
+  if (parseError !== undefined || rows.length === 0) {
+    return {
+      gateName: 'snapshot-still-current',
+      gateVersion: '1.0.0',
+      decision: 'error',
+      reasons: [
+        'spec-drift-check.sh --json produced no parseable source report',
+        ...(parseError !== undefined ? [parseError.slice(0, 200)] : []),
+        ...(r.ok ? [] : [firstLines(r.out, 4)]),
+      ].filter((s) => s.length > 0),
+      dimensionsEvaluated: [],
+      dimensionsSkipped: ['snapshot-currency'],
+      failureMode: 'drift-detector-unavailable',
+    };
+  }
+
+  const drift = rows.filter((s) => s.status === 'drift').map((s) => s.source);
+  // "unreachable" = the source could not be hashed-and-compared this run:
+  // a transient/structural fetch failure OR a not-yet-seeded baseline. Either
+  // way currency is undeterminable for that source — neither pass nor fail.
+  const unreachable = rows
+    .filter((s) => s.status === 'fetch_error' || s.status === 'no_baseline')
+    .map((s) => s.source);
+  const ok = rows.filter((s) => s.status === 'ok').length;
+  const total = rows.length;
+
+  if (drift.length > 0) {
+    return {
+      gateName: 'snapshot-still-current',
+      gateVersion: '1.0.0',
+      decision: 'fail',
+      reasons: [
+        `${drift.length} of ${total} vendored spec snapshot(s) drifted from upstream`,
+        `drifted: ${drift.slice(0, 8).join(', ')}`,
+      ],
+      dimensionsEvaluated: ['snapshot-currency'],
+      dimensionsSkipped: unreachable.length > 0 ? [`unreachable: ${unreachable.join(', ')}`] : [],
+      failureMode: 'snapshot-drift',
+    };
+  }
+
+  if (unreachable.length > 0) {
+    return {
+      gateName: 'snapshot-still-current',
+      gateVersion: '1.0.0',
+      decision: 'advisory',
+      advisorySeverity: 'warn',
+      reasons: [
+        `no snapshot drift across ${ok} of ${total} reachable source(s)`,
+        `currency undeterminable for ${unreachable.length} unreachable source(s): ${unreachable.slice(0, 8).join(', ')}`,
+      ],
+      dimensionsEvaluated: ['snapshot-currency'],
+      dimensionsSkipped: [`unreachable: ${unreachable.join(', ')}`],
+    };
+  }
+
+  return {
+    gateName: 'snapshot-still-current',
+    gateVersion: '1.0.0',
+    decision: 'pass',
+    reasons: [
+      `all ${total} vendored spec snapshots match their live upstream sources`,
+      'eval-set timestamp anchor (DR-029 § 6) is current — no silent upstream drift',
+    ],
+    dimensionsEvaluated: ['snapshot-currency'],
+    dimensionsSkipped: [],
+  };
+}
+
 function firstLines(s: string, n: number): string {
   return s
     .split('\n')
@@ -295,6 +406,32 @@ function selfCheck(): void {
       dimensionsSkipped: [],
       failureMode: 'harness-hash-drift',
     },
+    {
+      gateName: 'snapshot-still-current',
+      gateVersion: '1.0.0',
+      decision: 'pass',
+      reasons: ['all 16 vendored spec snapshots match their live upstream sources'],
+      dimensionsEvaluated: ['snapshot-currency'],
+      dimensionsSkipped: [],
+    },
+    {
+      gateName: 'snapshot-still-current',
+      gateVersion: '1.0.0',
+      decision: 'fail',
+      reasons: ['2 of 16 vendored spec snapshot(s) drifted from upstream'],
+      dimensionsEvaluated: ['snapshot-currency'],
+      dimensionsSkipped: [],
+      failureMode: 'snapshot-drift',
+    },
+    {
+      gateName: 'snapshot-still-current',
+      gateVersion: '1.0.0',
+      decision: 'advisory',
+      advisorySeverity: 'warn',
+      reasons: ['currency undeterminable for 3 unreachable source(s)'],
+      dimensionsEvaluated: ['snapshot-currency'],
+      dimensionsSkipped: ['unreachable: a, b, c'],
+    },
   ];
   const rows = buildRows(outcomes, ctx);
   for (const row of rows) {
@@ -302,7 +439,7 @@ function selfCheck(): void {
       throw new Error('canonical bundle is not stable under re-canonicalisation');
     }
   }
-  if (rows.length !== 2) throw new Error('expected 2 rows');
+  if (rows.length !== 5) throw new Error('expected 5 rows');
   console.log(`✓ self-check: ${rows.length} kernel-valid, canonical-stable rows built`);
 }
 
@@ -361,7 +498,7 @@ function main(argv: readonly string[]): number {
   }
   const ctx = ciCtx(args.ref);
   mkdirSync(args.out, { recursive: true });
-  const outcomes: GateOutcome[] = [harnessHashOutcome()];
+  const outcomes: GateOutcome[] = [harnessHashOutcome(), snapshotStillCurrentOutcome()];
   const rows = buildRows(outcomes, ctx);
   writeEmit(rows, args.ref, args.out);
   console.log(
