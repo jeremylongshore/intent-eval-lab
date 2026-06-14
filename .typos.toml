@@ -1,0 +1,68 @@
+# typos config — intent-eval-lab
+#
+# Part of iep-typos-rollout (uska). Drives the advisory crate-ci/typos lane in
+# .github/workflows/typos.yml. This file allow-lists IEP domain vocabulary that
+# typos would otherwise flag as misspellings, and excludes vendored / generated /
+# binary paths from the scan. The lane is advisory only — these entries keep the
+# signal honest (real typos surface; domain jargon does not).
+
+[default]
+# Treat the platform's bead-prefix / repo-shorthand identifiers and domain
+# acronyms as words, not typos. typos lowercases before matching, so one entry
+# covers all cases (IEP / iep / Iep).
+extend-ignore-identifiers-re = [
+  # IEP repo / bead prefixes and the platform acronym itself.
+  "^iep$",
+  "^iec$",
+  "^iel$",
+  "^iah$",
+  "^iar$",
+  "^iaj$",
+  # j-rig package / workspace scopes (e.g. @j-rig/rollout-gate, iaj-E02b).
+  "^j-rig.*",
+  # Statistics variable in the phase-a-0 analysis script (t-stat per stratum).
+  "^t_strat$",
+]
+
+[default.extend-words]
+# Governance / council vocabulary.
+isedc = "isedc"
+# Supply-chain + attestation stack.
+sigstore = "sigstore"
+rekor = "rekor"
+sops = "sops"
+sbom = "sbom"
+intoto = "intoto"
+# TS / build / test toolchain that typos can misread.
+zod = "zod"
+tsup = "tsup"
+deps = "deps"
+peerdep = "peerdep"
+# Domain shorthand frequently flagged.
+crate = "crate"
+structs = "structs"
+enums = "enums"
+# Forecasting evaluation metrics (specs/forecasting-drift-detection) — acronyms,
+# not "MAP". sMAPE/MASE are matched as identifiers by their casing; MAPE collides
+# with a dictionary suggestion, so pin it explicitly.
+mape = "mape"
+smape = "smape"
+mase = "mase"
+# 000-INDEX.md doc-category code for the literature-survey series (not "LIST").
+lits = "lits"
+
+[files]
+# Skip vendored snapshots, generated output, lockfiles, the bead store, and the
+# vendored audit-harness — none of these are repo-authored prose worth scanning.
+extend-exclude = [
+  "node_modules/",
+  "dist/",
+  "build/",
+  "_vendor/",
+  ".beads/",
+  ".audit-harness/",
+  "*.lock",
+  "*.min.js",
+  "*.svg",
+  "*.snap",
+]
