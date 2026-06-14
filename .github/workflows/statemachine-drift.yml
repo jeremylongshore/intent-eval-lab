@@ -1,0 +1,101 @@
+name: State-machine drift guard
+
+# Proves the kernel @intentsolutions/core's exported runtime state machines stay
+# SINGLE-SOURCED with Blueprint B (000-docs/012-AT-ARCH-platform-runtime-blueprint.md
+# § 3.1 + § 2). Closes Kleppmann finding #5 (000-docs/023-AA-AACR-thinker-panel-
+# review-2026-05-25.md § 2.1): the 13-entity state machines were prose triples with
+# no machine-checkable artifact and no gate proving the kernel's canTransition
+# allowed-transitions tables matched the Blueprint. A developer could edit a kernel
+# TransitionMap without touching the Blueprint and ship an out-of-spec runtime that
+# no static gate caught — Blueprint A § 1.2 principle 10 (schema-is-canon) silently
+# failing at the state-machine layer.
+#
+# Single source: specs/state-machines/transition-table.v1.json (extracted from
+# Blueprint B; Blueprint B is the human-normative source). The kernel is checked
+# AGAINST it. Zero runtime deps — stdlib Python only.
+#
+# Authority: 000-docs/076-AT-SPEC-state-machine-single-source-and-drift-gate-2026-06-13.md
+#            000-docs/012-AT-ARCH-platform-runtime-blueprint.md § 3.1 (NORMATIVE)
+#
+# Two assertions:
+#   1. OFFLINE — the committed kernel snapshot equals the Blueprint-B artifact's
+#      kernel_state_map. Catches a lab-side artifact edit not mirrored in the snapshot.
+#   2. LIVE (raw) — re-fetch the kernel's src/entities/*.ts from main and assert it
+#      still matches the artifact, AND that the committed snapshot is byte-current.
+#      Catches a kernel-side edit even when the lab snapshot is stale.
+
+on:
+  pull_request:
+    paths:
+      - 'specs/state-machines/**'
+      - 'scripts/check-statemachine-drift.py'
+      - '000-docs/012-AT-ARCH-platform-runtime-blueprint.md'
+      - '.github/workflows/statemachine-drift.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'specs/state-machines/**'
+      - 'scripts/check-statemachine-drift.py'
+      - '000-docs/012-AT-ARCH-platform-runtime-blueprint.md'
+      - '.github/workflows/statemachine-drift.yml'
+  # Daily — catches kernel main drift even when no lab file changed.
+  schedule:
+    - cron: '0 10 * * *'   # daily 10:00 UTC (after spec-drift-watch at 09:00)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  statemachine-drift:
+    name: Kernel state machines must equal Blueprint B
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Offline check — committed snapshot vs Blueprint-B artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/check-statemachine-drift.py
+
+      - name: Live check — re-fetch kernel main + assert no drift, snapshot current
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Re-fetch the live kernel maps from GitHub raw (no kernel checkout needed)
+          # and rewrite the snapshot in-place, then compare against the artifact.
+          python3 scripts/check-statemachine-drift.py --refresh --source raw
+
+          # The committed snapshot MUST already reflect the live kernel — if --refresh
+          # changed it, the PR is shipping a stale snapshot (or kernel main drifted).
+          if ! git diff --quiet -- specs/state-machines/kernel-transition-snapshot.v1.json; then
+            echo "::group::Stale kernel snapshot"
+            git --no-pager diff -- specs/state-machines/kernel-transition-snapshot.v1.json
+            echo "::endgroup::"
+            echo "::error::The committed kernel snapshot is out of date with kernel main. Run \`python3 scripts/check-statemachine-drift.py --refresh --source raw\` locally and commit specs/state-machines/kernel-transition-snapshot.v1.json. If the live kernel itself drifted from Blueprint B, the previous step already failed — fix Blueprint B + the artifact + the kernel in lock-step."
+            exit 1
+          fi
+          echo "Committed snapshot matches kernel main; kernel matches Blueprint B."
+
+      - name: Summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## State-machine drift guard"
+            echo ""
+            echo "Asserts the kernel \`@intentsolutions/core\` exported \`TransitionMap\` state machines equal the single-source Blueprint-B artifact \`specs/state-machines/transition-table.v1.json\` (extracted from \`000-docs/012-AT-ARCH-platform-runtime-blueprint.md\` § 3.1 + § 2)."
+            echo ""
+            echo "Closes Kleppmann finding #5 — the 13-entity state machines now have a machine-checkable artifact + a drift gate."
+            echo ""
+            echo "See \`000-docs/076-AT-SPEC-state-machine-single-source-and-drift-gate-2026-06-13.md\`."
+          } >> "${GITHUB_STEP_SUMMARY}"

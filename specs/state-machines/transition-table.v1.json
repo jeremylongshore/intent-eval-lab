@@ -1,0 +1,402 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/hyper-schema",
+  "$id": "https://evals.intentsolutions.io/state-machines/transition-table/v1",
+  "title": "Canonical 13-entity runtime state-machine transition table (v1)",
+  "version": "1.0.0",
+  "authority": "000-docs/012-AT-ARCH-platform-runtime-blueprint.md (Blueprint B). Blueprint B is the NORMATIVE source for runtime state machines per the IEP source-of-truth hierarchy (CLAUDE.md \u00a7 convergence). This artifact is the machine-checkable extraction of Blueprint B \u00a7 3.1 (EvalRun explicit triple table) + \u00a7 2 per-entity 'Lifecycle states' rows (the other 12 entities). It is the SINGLE SOURCE the lab asserts the kernel's exported TransitionMaps against.",
+  "extraction_note": "REGENERABLE, NOT HAND-DRIFTED. Each entity's `transitions` 4-tuples are extracted from Blueprint B: the EvalRun set comes from the \u00a7 3.1 `(from_state, event, to_state)` table (lines 339-352); the other 12 come from each entity's \u00a7 2 'Lifecycle states' row. The derived `kernel_state_map` view (from -> [to...]) is the SHAPE the kernel's `TransitionMap<S>` uses and is what scripts/check-statemachine-drift.py compares byte-for-byte against the kernel's exported maps. To regenerate after a Blueprint B edit: re-read the cited line ranges, update the 4-tuples, then `python3 scripts/check-statemachine-drift.py --rebuild-kernel-view` recomputes `kernel_state_map` from `transitions` (the from->[to] projection is deterministic). See 000-docs/076-AT-SPEC-state-machine-single-source-and-drift-gate-2026-06-13.md.",
+  "kernel_binding": {
+    "package": "@intentsolutions/core",
+    "source_of_truth_files": "src/entities/<Entity>.ts (the `<entity>Transitions: TransitionMap<...>` const exports, re-exported via src/entities/index.ts -> src/index.ts)",
+    "pinned_ref": "main",
+    "snapshot": "specs/state-machines/kernel-transition-snapshot.v1.json (vendored copy of the kernel's exported maps at the pinned ref; refreshable via --refresh; keeps CI hermetic + offline like specs/_vendor/ and specs/snapshots/.sha)",
+    "shape": "TransitionMap<S> = Readonly<Record<S, readonly S[]>> \u2014 a `from -> [reachable to-states]` adjacency map. Events/guards are NOT modeled in the kernel map; they live in this artifact's 4-tuples and in Blueprint B prose. The drift gate therefore compares the EVENT-ERASED projection (`kernel_state_map`) of this artifact against the kernel."
+  },
+  "scope": {
+    "declared_entities": 13,
+    "kernel_declared_overlap": 13,
+    "note": "All 13 canonical entities declare a TransitionMap in the kernel as of intent-eval-core E05 (state-machines) + E02a-d (13-entity domain model). The gate covers the full 13-entity overlap. No entity is 'pending kernel declaration' at this version. If a future kernel adds a 14th entity (e.g. SkillVersion per DR-028) with a state machine, add it here AND to the snapshot AND it falls under the gate automatically."
+  },
+  "ambiguities_reconciled": [
+    {
+      "entity": "MatcherMap",
+      "blueprint_prose": "\u00a7 2.3 line 167: 'draft -> published -> deprecated. Same transition discipline as EvalSpec.'",
+      "tension": "EvalSpec permits the reverse `deprecated -> published` (\u00a7 2.1 line 137, emergency un-deprecation). Read literally, 'same as EvalSpec' would make MatcherMap reversible too.",
+      "resolution": "MatcherMap is ONE-WAY (`deprecated` is terminal). Basis: \u00a7 2.3 line 163 'Immutable once published. A revision is a new row with the same name and an incremented version' \u2014 you cannot un-deprecate by mutation; you mint a new row. The kernel ships this (deprecated: []). 'Same transition discipline' is read as the shared draft->published->deprecated SHAPE, not EvalSpec's reversibility exception. This artifact encodes the one-way reading; a future Blueprint B clarification should tighten line 167."
+    },
+    {
+      "entity": "FailureTaxonomy",
+      "blueprint_prose": "\u00a7 2.13 line 317: 'proposed -> canonical -> deprecated.'",
+      "tension": "The linear arrow prose omits the `proposed -> deprecated` shortcut (rejecting a proposal outright without canonizing it).",
+      "resolution": "BOTH `proposed -> canonical` and `proposed -> deprecated` are allowed; `canonical -> deprecated` allowed; no reverse transitions (un-deprecation is a new bumped-version `canonical` row, per \u00a7 2.13 mutability line 313 + kernel comment). The kernel ships this. This artifact encodes the kernel reading as the reconciled normative intent."
+    }
+  ],
+  "entities": [
+    {
+      "entity": "EvalSpec",
+      "kernel_const": "evalSpecTransitions",
+      "spec_ref": "Blueprint B \u00a7 2.1 line 137",
+      "transitions": [
+        {
+          "from": "draft",
+          "event": "publish",
+          "to": "published",
+          "guard": "content-hash freeze"
+        },
+        {
+          "from": "published",
+          "event": "deprecate",
+          "to": "deprecated",
+          "guard": "reversible"
+        },
+        {
+          "from": "deprecated",
+          "event": "un_deprecate",
+          "to": "published",
+          "guard": "emergency un-deprecation permitted"
+        }
+      ]
+    },
+    {
+      "entity": "EvalRun",
+      "kernel_const": "evalRunTransitions",
+      "spec_ref": "Blueprint B \u00a7 3.1 EvalRun state-machine table lines 339-352 (events are NORMATIVE here)",
+      "transitions": [
+        {
+          "from": "queued",
+          "event": "worker_lease_acquired",
+          "to": "running",
+          "guard": "worker/provider/user limits not exceeded"
+        },
+        {
+          "from": "queued",
+          "event": "upstream_gate_failed",
+          "to": "skipped_due_to_gate",
+          "guard": "parent DAG node terminal_reason in gate-failure set"
+        },
+        {
+          "from": "queued",
+          "event": "queued_timeout_elapsed",
+          "to": "archived_failed",
+          "guard": "now - queued_at > queued_timeout"
+        },
+        {
+          "from": "running",
+          "event": "judge_invocations_complete",
+          "to": "judged",
+          "guard": "all required JudgeDecision rows recorded"
+        },
+        {
+          "from": "running",
+          "event": "run_timeout_elapsed | worker_crash_detected(exhausted) | credential_leak_detected",
+          "to": "archived_failed",
+          "guard": "see \u00a7 3.1 per-event guards"
+        },
+        {
+          "from": "judged",
+          "event": "report_emit_complete",
+          "to": "reported",
+          "guard": "EvidenceBundle finalized and signed; RuntimeReceipt issued"
+        },
+        {
+          "from": "judged",
+          "event": "judge_unavailable(exhausted)",
+          "to": "archived_failed",
+          "guard": "retry exhausted"
+        },
+        {
+          "from": "reported",
+          "event": "archive_complete",
+          "to": "archived",
+          "guard": "cold-storage migration confirmed"
+        },
+        {
+          "from": "reported",
+          "event": "archive_failed",
+          "to": "archived_failed",
+          "guard": "failure during archive"
+        }
+      ],
+      "spec_note": "The \u00a7 3.1 table also lists two transitions that re-enter an earlier state on retry: `running --worker_crash_detected(retryable)--> queued` and `judged --judge_unavailable(retryable)--> running`. These ARE in the kernel map (queued reachable from running implicitly via retry is modeled as the RETRY state machine, not the EvalRun forward map). The kernel's evalRunTransitions encodes the FORWARD lifecycle adjacency only; retry re-entry is the separate Retry state machine (\u00a7 3.1 'Retry state machine' para + kernel retry TransitionMap). The drift gate compares the forward map. See spec_note in kernel_state_map below."
+    },
+    {
+      "entity": "MatcherMap",
+      "kernel_const": "matcherMapTransitions",
+      "spec_ref": "Blueprint B \u00a7 2.3 line 167 (reconciled one-way; see ambiguities_reconciled[0])",
+      "transitions": [
+        {
+          "from": "draft",
+          "event": "publish",
+          "to": "published",
+          "guard": ""
+        },
+        {
+          "from": "published",
+          "event": "deprecate",
+          "to": "deprecated",
+          "guard": "one-way; revision = new row"
+        }
+      ]
+    },
+    {
+      "entity": "EvidenceBundle",
+      "kernel_const": "evidenceBundleTransitions",
+      "spec_ref": "Blueprint B \u00a7 2.4 line 182",
+      "transitions": [
+        {
+          "from": "building",
+          "event": "rows_appended_seal",
+          "to": "signing",
+          "guard": "rows finalized"
+        },
+        {
+          "from": "signing",
+          "event": "dsse_cosign_complete",
+          "to": "signed",
+          "guard": "DSSE wrap + cosign sign complete; now immutable"
+        },
+        {
+          "from": "signed",
+          "event": "rekor_indices_populated",
+          "to": "archived_to_rekor",
+          "guard": "Rekor log indices recorded (sub-state of signed)"
+        }
+      ]
+    },
+    {
+      "entity": "JudgeDecision",
+      "kernel_const": "judgeDecisionTransitions",
+      "spec_ref": "Blueprint B \u00a7 2.6 line 197",
+      "transitions": [
+        {
+          "from": "recorded",
+          "event": "",
+          "to": "",
+          "guard": "terminal \u2014 single-state entity"
+        }
+      ]
+    },
+    {
+      "entity": "RuntimeReceipt",
+      "kernel_const": "runtimeReceiptTransitions",
+      "spec_ref": "Blueprint B \u00a7 2.5 line 212",
+      "transitions": [
+        {
+          "from": "issued",
+          "event": "",
+          "to": "",
+          "guard": "terminal \u2014 single-state entity"
+        }
+      ]
+    },
+    {
+      "entity": "RegressionPack",
+      "kernel_const": "regressionPackTransitions",
+      "spec_ref": "Blueprint B \u00a7 2.7 line 227",
+      "transitions": [
+        {
+          "from": "draft",
+          "event": "commit",
+          "to": "committed",
+          "guard": ""
+        },
+        {
+          "from": "committed",
+          "event": "supersede",
+          "to": "superseded",
+          "guard": "a descendant pack is committed"
+        }
+      ]
+    },
+    {
+      "entity": "RolloutGate",
+      "kernel_const": "rolloutGateTransitions",
+      "spec_ref": "Blueprint B \u00a7 2.8 line 242",
+      "transitions": [
+        {
+          "from": "evaluated",
+          "event": "",
+          "to": "",
+          "guard": "terminal \u2014 single-state entity"
+        }
+      ]
+    },
+    {
+      "entity": "SkillSnapshot",
+      "kernel_const": "skillSnapshotTransitions",
+      "spec_ref": "Blueprint B \u00a7 2.9 line 257",
+      "transitions": [
+        {
+          "from": "created",
+          "event": "",
+          "to": "",
+          "guard": "terminal \u2014 single-state entity"
+        }
+      ]
+    },
+    {
+      "entity": "SessionTrace",
+      "kernel_const": "sessionTraceTransitions",
+      "spec_ref": "Blueprint B \u00a7 2.10 line 272",
+      "transitions": [
+        {
+          "from": "open",
+          "event": "parent_reached_terminal",
+          "to": "closed",
+          "guard": "trace blob written and content_hash recorded"
+        }
+      ]
+    },
+    {
+      "entity": "ToolInvocation",
+      "kernel_const": "toolInvocationTransitions",
+      "spec_ref": "Blueprint B \u00a7 2.11 line 287",
+      "transitions": [
+        {
+          "from": "invoked",
+          "event": "",
+          "to": "",
+          "guard": "terminal \u2014 single-state entity; retries are separate rows"
+        }
+      ]
+    },
+    {
+      "entity": "CostRecord",
+      "kernel_const": "costRecordTransitions",
+      "spec_ref": "Blueprint B \u00a7 2.12 line 302",
+      "transitions": [
+        {
+          "from": "recorded",
+          "event": "",
+          "to": "",
+          "guard": "terminal \u2014 single-state entity"
+        }
+      ]
+    },
+    {
+      "entity": "FailureTaxonomy",
+      "kernel_const": "failureTaxonomyTransitions",
+      "spec_ref": "Blueprint B \u00a7 2.13 line 317 (reconciled; see ambiguities_reconciled[1])",
+      "transitions": [
+        {
+          "from": "proposed",
+          "event": "canonize",
+          "to": "canonical",
+          "guard": ""
+        },
+        {
+          "from": "proposed",
+          "event": "reject",
+          "to": "deprecated",
+          "guard": "reject a proposal without canonizing"
+        },
+        {
+          "from": "canonical",
+          "event": "deprecate",
+          "to": "deprecated",
+          "guard": "Class-1 ISEDC DR required (\u00a7 2.13 line 313)"
+        }
+      ]
+    }
+  ],
+  "kernel_state_map": {
+    "_comment": "DERIVED VIEW \u2014 the event-erased `from -> sorted unique [to]` projection of `entities[].transitions`, restricted to the FORWARD lifecycle adjacency the kernel's TransitionMap<S> encodes. This is the exact object the drift gate compares against the kernel's exported maps (every reachable state appears as a key, terminal states map to []). Regenerable via `python3 scripts/check-statemachine-drift.py --rebuild-kernel-view`.",
+    "evalSpecTransitions": {
+      "draft": [
+        "published"
+      ],
+      "published": [
+        "deprecated"
+      ],
+      "deprecated": [
+        "published"
+      ]
+    },
+    "evalRunTransitions": {
+      "queued": [
+        "archived_failed",
+        "running",
+        "skipped_due_to_gate"
+      ],
+      "running": [
+        "archived_failed",
+        "judged"
+      ],
+      "judged": [
+        "archived_failed",
+        "reported"
+      ],
+      "reported": [
+        "archived",
+        "archived_failed"
+      ],
+      "skipped_due_to_gate": [],
+      "archived_failed": [],
+      "archived": []
+    },
+    "matcherMapTransitions": {
+      "draft": [
+        "published"
+      ],
+      "published": [
+        "deprecated"
+      ],
+      "deprecated": []
+    },
+    "evidenceBundleTransitions": {
+      "building": [
+        "signing"
+      ],
+      "signing": [
+        "signed"
+      ],
+      "signed": [
+        "archived_to_rekor"
+      ],
+      "archived_to_rekor": []
+    },
+    "judgeDecisionTransitions": {
+      "recorded": []
+    },
+    "runtimeReceiptTransitions": {
+      "issued": []
+    },
+    "regressionPackTransitions": {
+      "draft": [
+        "committed"
+      ],
+      "committed": [
+        "superseded"
+      ],
+      "superseded": []
+    },
+    "rolloutGateTransitions": {
+      "evaluated": []
+    },
+    "skillSnapshotTransitions": {
+      "created": []
+    },
+    "sessionTraceTransitions": {
+      "open": [
+        "closed"
+      ],
+      "closed": []
+    },
+    "toolInvocationTransitions": {
+      "invoked": []
+    },
+    "costRecordTransitions": {
+      "recorded": []
+    },
+    "failureTaxonomyTransitions": {
+      "proposed": [
+        "canonical",
+        "deprecated"
+      ],
+      "canonical": [
+        "deprecated"
+      ],
+      "deprecated": []
+    }
+  }
+}
