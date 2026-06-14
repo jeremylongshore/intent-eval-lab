@@ -1,0 +1,9 @@
+{
+  "fixture_id": "TB-001",
+  "class": "reachable",
+  "description": "Tier 1 gate verdict FAIL (a required field is missing at the requested mode) fails fast: the behavioral tier never runs, so t3 is forced to SKIPPED. Even with a GREEN static production gate, the structural-floor miss yields final FAIL.",
+  "spec_rules": ["R3", "R7", "R9"],
+  "input": { "t1": "FAIL", "t2": "GREEN", "t3": "SKIPPED" },
+  "expected_final": "FAIL",
+  "why": "§ 5 R3 fail-fast (structural floor unmet) + § 6 R7 (t1=FAIL disjunct). The decision-table row (FAIL, any, SKIPPED) -> FAIL."
+}

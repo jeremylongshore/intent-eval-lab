@@ -1,0 +1,9 @@
+{
+  "fixture_id": "TB-U01",
+  "class": "unreachable",
+  "description": "(FAIL, _, GREEN) is forbidden: a FAIL Tier 1 forces fail-fast (§ 5 R3), so the behavioral tier never runs and t3 cannot be GREEN. A conformant implementation MUST reject this triple, not silently combine it.",
+  "spec_rules": ["R3", "R9"],
+  "input": { "t1": "FAIL", "t2": "GREEN", "t3": "GREEN" },
+  "expected": "rejected",
+  "why": "§ 6 R9 names (FAIL, _, GREEN) as unreachable; § 5 R3 fail-fast makes a GREEN behavioral tier after a Tier 1 floor miss a contradiction."
+}

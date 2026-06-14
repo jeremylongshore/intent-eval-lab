@@ -1,0 +1,9 @@
+{
+  "fixture_id": "TB-005",
+  "class": "reachable",
+  "description": "The full-pass behavioral promotion: Tier 1 PASS, Tier 2 GREEN, and the behavioral tier actually ran and passed (Tier 3 GREEN). The final verdict is VERIFIED — strictly stronger than PASS, asserting the skill's behavior was evaluated and correct.",
+  "spec_rules": ["R6", "R9"],
+  "input": { "t1": "PASS", "t2": "GREEN", "t3": "GREEN" },
+  "expected_final": "VERIFIED",
+  "why": "§ 6 R6 iff t1=PASS AND t2 ∈ {GREEN,YELLOW} AND t3=GREEN. Row (PASS, GREEN|YELLOW, GREEN) -> VERIFIED."
+}

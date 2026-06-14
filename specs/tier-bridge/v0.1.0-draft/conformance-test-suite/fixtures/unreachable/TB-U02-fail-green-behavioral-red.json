@@ -1,0 +1,9 @@
+{
+  "fixture_id": "TB-U02",
+  "class": "unreachable",
+  "description": "(FAIL, _, RED) is forbidden: a FAIL Tier 1 forces fail-fast (§ 5 R3), so the behavioral tier never runs and t3 cannot be RED. Although the final verdict would 'happen' to be FAIL, the triple itself is one a conformant implementation MUST NOT produce — it asserts a behavioral run that the fail-fast boundary forbids.",
+  "spec_rules": ["R3", "R9"],
+  "input": { "t1": "FAIL", "t2": "GREEN", "t3": "RED" },
+  "expected": "rejected",
+  "why": "§ 6 R9 names (FAIL, _, RED) as unreachable; § 5 R3 fail-fast forces t3=SKIPPED after a Tier 1 floor miss."
+}

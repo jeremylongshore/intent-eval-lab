@@ -1,0 +1,9 @@
+{
+  "fixture_id": "TB-U03",
+  "class": "unreachable",
+  "description": "(_, RED, GREEN) is forbidden: a RED Tier 2 forces fail-fast (§ 5 R2) — the behavioral tier never runs against a known production hazard — so t3 cannot be GREEN. A conformant implementation MUST reject this triple.",
+  "spec_rules": ["R2", "R9"],
+  "input": { "t1": "PASS", "t2": "RED", "t3": "GREEN" },
+  "expected": "rejected",
+  "why": "§ 6 R9 names (_, RED, GREEN) as unreachable; § 5 R2 fail-fast makes a GREEN behavioral tier after a RED production gate a contradiction."
+}

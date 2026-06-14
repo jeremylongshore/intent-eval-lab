@@ -1,0 +1,9 @@
+{
+  "fixture_id": "TB-006",
+  "class": "reachable",
+  "description": "A YELLOW Tier 2 (warnings only, no blocking failure) does NOT block the behavioral tier. With Tier 1 PASS and Tier 3 GREEN, the YELLOW static gate still permits VERIFIED. Proves YELLOW is treated as passing for promotion (§ 5 R2 only RED blocks Tier 3).",
+  "spec_rules": ["R6", "R9"],
+  "input": { "t1": "PASS", "t2": "YELLOW", "t3": "GREEN" },
+  "expected_final": "VERIFIED",
+  "why": "§ 6 R6: t2 ∈ {GREEN,YELLOW} satisfies the VERIFIED predicate; YELLOW does not block (§ 5 R2). Row (PASS, GREEN|YELLOW, GREEN) -> VERIFIED."
+}
