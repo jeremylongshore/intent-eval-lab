@@ -1,0 +1,43 @@
+name: Typos
+
+# Advisory spell-check lane for intent-eval-lab.
+#
+# Part of iep-typos-rollout (uska) across all 5 IEP repos. This lane runs
+# crate-ci/typos over the tree to surface real spelling mistakes in prose,
+# code comments, and identifiers. It is intentionally ADVISORY (non-blocking):
+# the job is named so it is NOT a required check, and `continue-on-error: true`
+# guarantees a red typos run never blocks a PR or a push to main.
+#
+# Domain terms that are not typos (iep, isedc, iec, iel, iah, iar, iaj, sops,
+# sigstore, rekor, zod, etc.) are allow-listed in .typos.toml at repo root, as
+# are vendored/generated paths (node_modules, dist, *.lock, .beads, .audit-harness).
+#
+# Tighten-later path: once the corpus is clean, flip `continue-on-error` off in a
+# follow-up PR to make this a hard gate.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: typos-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  typos:
+    name: typos (advisory spell-check)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Run typos
+        uses: crate-ci/typos@v1.29.4
+        with:
+          config: .typos.toml
