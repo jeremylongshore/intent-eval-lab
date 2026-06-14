@@ -40,6 +40,7 @@ jobs:
             !.audit-harness
             !node_modules
             !research/phase-a-0-baseline/results/raw
+            !research/**/results/**
 
   vale:
     name: Vale (prose lint, advisory)
@@ -75,4 +76,4 @@ jobs:
         with:
           node-version: "20"
       - run: npm install -g prettier@^3.4.0
-      - run: prettier --check "**/*.md" --ignore-path .gitignore
+      - run: prettier --check "**/*.md" --ignore-path .gitignore --ignore-path .prettierignore
