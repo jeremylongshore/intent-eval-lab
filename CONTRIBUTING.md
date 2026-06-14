@@ -32,6 +32,16 @@ Thanks for your interest in contributing. This repo is currently maintained by a
 - **Doc filing**: numbered + dated + category-coded under `000-docs/` per the doc-filing standard. See existing docs for examples.
 - **One-sentence-per-line markdown** in body prose where practical (eases review diffs)
 
+## Local git hooks (optional)
+
+This repo ships a [lefthook](https://lefthook.dev/) config (`lefthook.yml`) that mirrors the cheap, staged-only subset of the CI gates — the partner-name vendor-generic grep, the vendored audit-harness hash-pin verify, the AI-escape scan, and lightweight `ruff` / `markdownlint` / `yamllint` on staged files. It is **opt-in and advisory**: the authoritative gates run in CI, and nothing breaks if you never install the hooks.
+
+```bash
+lefthook install   # one-time, per checkout
+```
+
+The repo also ships a [pre-commit](https://pre-commit.com) config (`.pre-commit-config.yaml`) covering `ruff` + `markdownlint` + hygiene hooks. Both write to `.git/hooks` and the last installer wins — pick one. `lefthook.yml` is the audit-harness-aligned option and additionally wires the partner-name grep + harness-hash verify + escape-scan, so it is preferred for parity with the rest of the platform.
+
 ## Sandbox contributions
 
 If you're contributing a new experiment sandbox:
