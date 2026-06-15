@@ -20,6 +20,15 @@
 #   scripts/spec-drift-check.sh --init      # seed missing baselines (write .sha files)
 #   scripts/spec-drift-check.sh --refresh   # overwrite existing baselines with current state
 #   scripts/spec-drift-check.sh --json      # emit JSON report to stdout (CI consumption)
+#   scripts/spec-drift-check.sh --both FILE  # ONE fetch pass → text report to stdout +
+#                                           #   JSON report written to FILE. Use this in CI so
+#                                           #   drift detection and liveness see the SAME network
+#                                           #   observation. Running --json as a second invocation
+#                                           #   re-fetches every surface: a transient FETCH_ERROR on
+#                                           #   the text pass that recovers on the JSON pass would
+#                                           #   reset the liveness streak and the 3-consecutive-error
+#                                           #   guard would never fire (a false-green). --both closes
+#                                           #   that gap. Exit code follows check mode (1 on drift).
 
 set -euo pipefail
 
@@ -29,10 +38,21 @@ SHA_DIR="${REPO_ROOT}/specs/snapshots/.sha"
 mkdir -p "${SHA_DIR}"
 
 MODE="check"
+JSON_OUT=""   # set by --both: path the JSON report is written to alongside the text report
 case "${1:-}" in
   --init)    MODE="init" ;;
   --refresh) MODE="refresh" ;;
   --json)    MODE="json" ;;
+  --both)
+    # ONE fetch pass; emit the human text report to stdout AND the JSON report to a file,
+    # so the workflow's drift check and its liveness record-run share a single observation.
+    MODE="both"
+    JSON_OUT="${2:-}"
+    if [[ -z "${JSON_OUT}" ]]; then
+      echo "Usage: $0 --both <json-output-path>" >&2
+      exit 2
+    fi
+    ;;
   "")        MODE="check" ;;
   *) echo "Unknown flag: $1" >&2; exit 2 ;;
 esac
@@ -231,7 +251,7 @@ for entry in "${SOURCES[@]}"; do
       echo "refreshed: ${name} = ${current_hash:0:12}…"
       JSON_ROWS+=("{\"source\":\"${name}\",\"status\":\"refreshed\",\"hash\":\"${current_hash}\"}")
       ;;
-    check|json)
+    check|json|both)
       if [[ ! -f "${sha_path}" ]]; then
         FETCH_ERRORS+=("${name}: no baseline (.sha file missing). Run --init to seed.")
         JSON_ROWS+=("{\"source\":\"${name}\",\"status\":\"no_baseline\",\"description\":\"${desc}\"}")
@@ -248,11 +268,19 @@ for entry in "${SOURCES[@]}"; do
   esac
 done
 
-if [[ "${MODE}" == "json" ]]; then
-  printf '{"checked_at":"%s","sources":[%s]}\n' \
+# JSON emission. --json writes to stdout and exits; --both writes the SAME JSON to
+# the requested file (one fetch pass already populated JSON_ROWS) and then falls
+# through to the text report below so a single invocation produces both outputs.
+if [[ "${MODE}" == "json" || "${MODE}" == "both" ]]; then
+  json_payload="$(printf '{"checked_at":"%s","sources":[%s]}\n' \
     "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-    "$(IFS=,; echo "${JSON_ROWS[*]}")"
-  exit 0
+    "$(IFS=,; echo "${JSON_ROWS[*]}")")"
+  if [[ "${MODE}" == "json" ]]; then
+    printf '%s\n' "${json_payload}"
+    exit 0
+  fi
+  # --both: persist JSON to file, then continue to the text report + drift exit code.
+  printf '%s\n' "${json_payload}" > "${JSON_OUT}"
 fi
 
 if [[ "${MODE}" == "init" || "${MODE}" == "refresh" ]]; then

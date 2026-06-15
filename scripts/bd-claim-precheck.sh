@@ -14,6 +14,7 @@
 #   2  - script error (treat as hard fail)
 
 set -u
+set -o pipefail   # so a `bd | grep` pipeline reflects bd's failure, not just grep's exit
 
 # ---- config ----
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -67,7 +68,19 @@ fi
 
 # ---- check 3: is target bead refiner-labeled? ----
 # Non-refiner beads are not gated; bail early.
-if ! bd show "$BEAD_ID" 2>/dev/null | grep -qE '^LABELS:.*refiner'; then
+#
+# DEFECT GUARD: the previous `if ! bd show ... | grep -qE refiner` idiom tested
+# only grep's exit status. When bd is missing or errors, grep gets no input,
+# `grep -q` exits non-zero, `! grep` becomes true, and the gate WRONGLY concluded
+# "not refiner-labeled" and opened (exit 0). We now capture bd's output and its
+# OWN exit code separately, and HARD-FAIL (exit 2, matching the error exits above)
+# when bd fails — fail closed, before grepping.
+if ! BEAD_TEXT="$(bd show "$BEAD_ID" 2>/dev/null)"; then
+  echo "ERROR: 'bd show $BEAD_ID' failed (bd missing, errored, or unknown bead)." >&2
+  echo "       Refusing to open the refiner hard-gate on a failed bd lookup (fail closed)." >&2
+  exit 2
+fi
+if ! printf '%s\n' "$BEAD_TEXT" | grep -qE '^LABELS:.*refiner'; then
   echo "OK: $BEAD_ID is not refiner-labeled; gate does not apply."
   exit 0
 fi
@@ -81,7 +94,8 @@ case "$STATE" in
   RATIFIED-WITH-DELTAS)
     # Partially lifted: only DR-028-authorized work may claim.
     # Match if bead title or notes contain any of the authorized shorthands.
-    BEAD_TEXT=$(bd show "$BEAD_ID" 2>/dev/null)
+    # BEAD_TEXT was already captured (and bd-success-verified) at check 3 above —
+    # reuse it rather than re-shelling bd (which would re-expose the same idiom).
     for shorthand in "${DR_028_AUTHORIZED_SHORTHANDS[@]}"; do
       # Match shorthand tokens loosely against title + description text.
       # Token boundaries are dashes; case-insensitive.
