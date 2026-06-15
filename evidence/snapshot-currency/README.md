@@ -2,7 +2,7 @@
 
 This directory holds the **`gate-result/v1` Evidence Bundle row** emitted by the
 spec-drift-watch gate on every audit/cron run (`iel-E07` residual; DR-010 Q3
-unification thesis: *every gate emits an Evidence Bundle row*).
+unification thesis: _every gate emits an Evidence Bundle row_).
 
 ## What `gate-result.json` is
 
@@ -12,16 +12,16 @@ predicate body is a schema-valid `gate-result/v1` row (the kernel's NORMATIVE
 predicate — Blueprint B § 7.4, published as
 `@intentsolutions/core` `schemas/v1/gate-result.schema.json`).
 
-The row records the verdict of the spec-snapshot-currency check — *"do all 16
+The row records the verdict of the spec-snapshot-currency check — _"do all 16
 monitored upstream spec surfaces still match their committed byte-hash
-snapshots?"*:
+snapshots?"_:
 
-| Run condition | `gate_decision` | `advisory_severity` |
-| --- | --- | --- |
-| All monitored surfaces still match their anchored snapshots | `pass` | — |
-| One or more surfaces drifted (byte-hash changed) | `advisory` | `warn` |
-| No drift, but a surface could not be observed this run | `advisory` | `info` |
-| Empty / malformed drift report | `error` | — |
+| Run condition                                               | `gate_decision` | `advisory_severity` |
+| ----------------------------------------------------------- | --------------- | ------------------- |
+| All monitored surfaces still match their anchored snapshots | `pass`          | —                   |
+| One or more surfaces drifted (byte-hash changed)            | `advisory`      | `warn`              |
+| No drift, but a surface could not be observed this run      | `advisory`      | `info`              |
+| Empty / malformed drift report                              | `error`         | —                   |
 
 Byte-drift is `advisory`, not `fail`: a changed upstream page is the **signal to
 reconcile** (re-vendor + promote into the kernel — see the auto-opened drift
