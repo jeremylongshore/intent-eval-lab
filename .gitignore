@@ -89,3 +89,9 @@ credentials/
 # explicitly (the general evidence/ ignore above is for ephemeral run telemetry).
 !evidence/phase-a-0-baseline/evidence-bundle.json
 !evidence/phase-a-0-baseline/evidence-bundle.sigstore.json
+
+# Snapshot-currency gate-result/v1 row (iel-E07 residual; DR-010 Q3 unification
+# thesis) — the spec-drift-watch run emits + commits this each audit/cron run.
+# It is DURABLE evidence (the latest snapshot-currency verdict), not ephemeral
+# telemetry, so track it explicitly past the evidence/**/*.json ignore above.
+!evidence/snapshot-currency/gate-result.json
