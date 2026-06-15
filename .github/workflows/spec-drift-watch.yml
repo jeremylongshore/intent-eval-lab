@@ -129,13 +129,20 @@ jobs:
         continue-on-error: true
         run: |
           set -uo pipefail
-          if scripts/spec-drift-check.sh > /tmp/drift-report.txt 2>&1; then
+          # SINGLE fetch pass emits BOTH the text drift report (stdout → drift-report.txt)
+          # and the JSON report (→ drift-report.json that watcher-liveness --record-run
+          # consumes for the fetch-error streak). Previously this step ran the check once
+          # for text and AGAIN with --json — two separate network passes — so a surface
+          # that FETCH_ERRORed on the first pass but recovered on the second reset its
+          # liveness streak, and the 3-consecutive-error guard could never fire (a
+          # false-green: drift saw the error, liveness saw the recovery). --both makes
+          # drift detection and liveness observe the EXACT SAME fetch.
+          if scripts/spec-drift-check.sh --both /tmp/drift-report.json > /tmp/drift-report.txt 2>&1; then
             echo "drift=false" >> "${GITHUB_OUTPUT}"
           else
             echo "drift=true" >> "${GITHUB_OUTPUT}"
           fi
           cat /tmp/drift-report.txt
-          scripts/spec-drift-check.sh --json > /tmp/drift-report.json 2>/dev/null || true
 
       # Taxonomy-gated capture self-test (052-AT-SPEC): offline, fixtures-driven —
       # proves all 6 statuses classify correctly and the append/dedup/tier-2 gating

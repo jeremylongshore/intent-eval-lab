@@ -35,12 +35,28 @@ report() {
 check_beads() {
   echo "=== Check 1: bead → Doc/GitHub presence (label:refiner) ==="
   cd "$UMBRELLA"
-  # Get refiner-labeled bead IDs
-  local ids
-  ids=$(bd list --label refiner --status open --json 2>/dev/null | jq -r '.[].id' 2>/dev/null \
+  # DEFECT GUARD: without a `command -v bd` pre-flight (the gap check_gh closed for
+  # gh), a missing/errored bd produces no IDs, the `[ -z "$ids" ]` branch soft-passed
+  # ("skipping"), and check 1 returned a FALSE PASS with zero beads checked. Guard
+  # the CLI presence + capture bd's OWN exit code so a genuine bd failure is a
+  # violation, not a silent skip. (Mirrors MISS-GH-CLI / MISS-GH-AUTH in check 3.)
+  if ! command -v bd >/dev/null 2>&1; then
+    report "MISS-BD-CLI  bd not installed; Check 1 cannot run (refusing to pass silently)"
+    return
+  fi
+  # Get refiner-labeled bead IDs. Capture bd's exit status explicitly: a non-zero
+  # bd (DB locked, workspace gone, etc.) must surface as MISS-BD-FAIL, distinct
+  # from the legitimate "bd ran fine and there are simply no refiner beads" case.
+  local ids bd_rc
+  ids=$(bd list --label refiner --status open --json 2>/dev/null); bd_rc=$?
+  if [ "$bd_rc" -ne 0 ]; then
+    report "MISS-BD-FAIL  'bd list --label refiner --status open' exited $bd_rc; Check 1 cannot trust its result"
+    return
+  fi
+  ids=$(printf '%s' "$ids" | jq -r '.[].id' 2>/dev/null \
         || bd list --label refiner --status open 2>/dev/null | grep -oE 'bd_000-projects-[a-z0-9]+(\.[0-9]+)?' | sort -u)
   if [ -z "$ids" ]; then
-    echo "  (no refiner-labeled open beads found — skipping)"
+    echo "  (no refiner-labeled open beads found — bd ran clean, genuine empty set; skipping)"
     return
   fi
   local n=0
