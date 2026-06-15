@@ -1,0 +1,51 @@
+{
+  "_type": "https://in-toto.io/Statement/v1",
+  "predicate": {
+    "commit_sha": "007b789bb5d57b6af87f8dd85cc8abb9c80d0cdf",
+    "coverage": {
+      "dimensions_evaluated": [
+        "claude-code-changelog",
+        "claude-code-npm",
+        "platform-skills-overview",
+        "anthropic-engineering",
+        "skills-releases",
+        "agentskills-spec",
+        "mcp-schema-ts",
+        "mcp-spec-docs",
+        "claude-hooks",
+        "claude-settings",
+        "claude-slash-commands",
+        "plugins-reference",
+        "sub-agents",
+        "plugin-marketplaces",
+        "mcp-releases",
+        "claude-code-releases"
+      ],
+      "dimensions_skipped": []
+    },
+    "evaluated_at": "2026-06-15T00:00:00.000Z",
+    "gate_decision": "pass",
+    "gate_id": "spec-drift-watch:ci:snapshot-currency",
+    "gate_name": "spec-snapshot-currency",
+    "gate_reasons": [],
+    "gate_version": "1.0.0",
+    "input_hash": "sha256:33193a9d9e9f3ec5ec7838fb3112329d6588a311f9a3a1094dbb8e986af58ac7",
+    "metadata": {
+      "authority": "Blueprint B § 7.4 (gate-result/v1); DR-010 Q3 unification thesis",
+      "checked_at": "2026-06-15T00:00:00Z",
+      "sources_total": 16
+    },
+    "policy_hash": "sha256:611ea9b0e9c7e07b3405bf8a29332861aad42164b960ab6d0b9dd6d8db072139",
+    "policy_ref": "sha256:611ea9b0e9c7e07b3405bf8a29332861aad42164b960ab6d0b9dd6d8db072139:scripts/spec-drift-check.sh",
+    "runner": "spec-drift-watch@1.0.0"
+  },
+  "predicateType": "https://evals.intentsolutions.io/gate-result/v1",
+  "subject": [
+    {
+      "digest": {
+        "sha256": "33193a9d9e9f3ec5ec7838fb3112329d6588a311f9a3a1094dbb8e986af58ac7"
+      },
+      "name": "spec-drift-watch:ci:snapshot-currency"
+    }
+  ]
+}

@@ -48,6 +48,7 @@ on:
       - 'scripts/watcher-liveness.py'
       - 'scripts/fetch-capture.py'
       - 'scripts/lineage-log.py'
+      - 'scripts/emit-snapshot-currency.py'
       - 'specs/upstream-surface-registry.v1.json'
       - 'specs/lineage/**'
       - 'specs/snapshots/.sha/**'
@@ -61,6 +62,7 @@ on:
       - 'scripts/watcher-liveness.py'
       - 'scripts/fetch-capture.py'
       - 'scripts/lineage-log.py'
+      - 'scripts/emit-snapshot-currency.py'
       - 'specs/upstream-surface-registry.v1.json'
       - 'specs/lineage/**'
       - 'specs/snapshots/.sha/**'
@@ -144,6 +146,53 @@ jobs:
           fi
           cat /tmp/drift-report.txt
 
+      # Evidence Bundle emit (iel-E07 residual; DR-010 Q3 unification thesis):
+      # every gate emits a gate-result/v1 row. The snapshot-currency check IS a
+      # gate, so each audit/cron run emits an in-toto Statement recording the
+      # verdict ("snapshot still current" = pass, byte-drift = advisory/warn,
+      # unobserved surface = advisory/info), schema-bound to @intentsolutions/core
+      # schemas/v1/gate-result.schema.json (Blueprint B § 7.4 NORMATIVE). The row
+      # is UNSIGNED by design — predicate-URI'd Rekor push is gated on DNSSEC+CAA
+      # for evals.intentsolutions.io (CISO binding; iah-E06). Emitting the ROW is
+      # the deliverable; signing is a separate gated step (emit-evidence.sh).
+      # Runs on schedule/dispatch (it reads the live drift-report.json that the
+      # network drift check produced); the offline --self-test below gates PRs.
+      - name: Emit snapshot-currency Evidence Bundle row (gate-result/v1)
+        id: emit_currency
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        shell: bash
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          python3 -m pip install --quiet jsonschema referencing 2>/dev/null || true
+          if [[ ! -f /tmp/drift-report.json ]]; then
+            echo "::warning::drift-report.json absent (drift check did not run) — skipping row emit."
+            exit 0
+          fi
+          python3 scripts/emit-snapshot-currency.py \
+            --report /tmp/drift-report.json \
+            --evaluated-at "$(date -u +%Y-%m-%dT%H:%M:%S.000Z)" \
+            --commit-sha "${GITHUB_SHA}" \
+            --out evidence/snapshot-currency/gate-result.json
+          echo "--- emitted gate-result/v1 row ---"
+          cat evidence/snapshot-currency/gate-result.json
+
+      # Offline self-test of the emitter (gates EVERY event incl. PRs, like the
+      # projection + capture self-tests): proves the decision mapping + schema
+      # conformance against the published kernel gate-result/v1 contract.
+      - name: Snapshot-currency emitter self-test (offline, deterministic)
+        id: emit_currency_selftest
+        shell: bash
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          python3 -m pip install --quiet jsonschema referencing 2>/dev/null || true
+          if python3 scripts/emit-snapshot-currency.py --self-test; then
+            echo "selftest=pass" >> "${GITHUB_OUTPUT}"
+          else
+            echo "selftest=fail" >> "${GITHUB_OUTPUT}"
+          fi
+
       # Taxonomy-gated capture self-test (052-AT-SPEC): offline, fixtures-driven —
       # proves all 6 statuses classify correctly and the append/dedup/tier-2 gating
       # is sound. Gates every event (a real CI check, like the projection self-test).
@@ -191,14 +240,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [[ -z "$(git status --porcelain archive/ specs/_vendor/ specs/lineage/ 2>/dev/null)" ]]; then
-            echo "No archive/vendored/lineage changes to commit."
+          if [[ -z "$(git status --porcelain archive/ specs/_vendor/ specs/lineage/ evidence/snapshot-currency/ 2>/dev/null)" ]]; then
+            echo "No archive/vendored/lineage/evidence changes to commit."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add archive/ specs/_vendor/ specs/lineage/
-          git commit -m "chore(spec-archive): capture $(date -u +%Y-%m-%dT%H:%MZ) raw fetches [skip ci]"
+          git add archive/ specs/_vendor/ specs/lineage/ evidence/snapshot-currency/
+          git commit -m "chore(spec-archive): capture $(date -u +%Y-%m-%dT%H:%MZ) raw fetches + currency row [skip ci]"
           if ! git push origin "HEAD:${GITHUB_REF_NAME}"; then
             echo "::warning::archive commit-back push failed (branch protection?) — delta preserved as a workflow artifact."
             echo "push_failed=true" >> "${GITHUB_OUTPUT}"
@@ -213,6 +262,7 @@ jobs:
             archive/
             specs/_vendor/
             specs/lineage/
+            evidence/snapshot-currency/
 
       # Dead-man heartbeat (true, external): ping an uptime monitor so absence of
       # a daily ping alerts even when the cron itself stops firing. Optional
@@ -280,7 +330,15 @@ jobs:
             echo "| fetch-error streak exceeded | ${{ steps.streak.outputs.exceeded }} |"
             echo "| capture self-test | ${{ steps.capture_selftest.outputs.selftest }} |"
             echo "| capture bad fetch (taxonomy) | ${{ steps.capture.outputs.bad_fetch }} |"
+            echo "| snapshot-currency emitter self-test | ${{ steps.emit_currency_selftest.outputs.selftest }} |"
             echo ""
+            if [[ -f evidence/snapshot-currency/gate-result.json ]]; then
+              echo "### Snapshot-currency gate-result/v1 row"
+              echo '```json'
+              cat evidence/snapshot-currency/gate-result.json
+              echo '```'
+              echo ""
+            fi
             echo "### Byte-hash report"
             echo '```'
             cat /tmp/drift-report.txt
@@ -391,13 +449,14 @@ jobs:
       # Offline-deterministic gates fail on EVERY event (they are real CI checks of
       # the differ + snapshot↔projection consistency + the capture taxonomy):
       # self-test soundness + --check + fetch-capture --self-test.
-      - name: Fail on projection / capture self-test or consistency failure (all events)
+      - name: Fail on projection / capture / currency self-test or consistency failure (all events)
         if: >-
           steps.projection.outputs.selftest == 'fail' ||
           steps.projection.outputs.drift == 'true' ||
-          steps.capture_selftest.outputs.selftest == 'fail'
+          steps.capture_selftest.outputs.selftest == 'fail' ||
+          steps.emit_currency_selftest.outputs.selftest == 'fail'
         run: |
-          echo "::error::Offline gate failed (projection self-test/consistency or fetch-capture taxonomy self-test)."
+          echo "::error::Offline gate failed (projection self-test/consistency, fetch-capture taxonomy self-test, or snapshot-currency emitter self-test)."
           exit 1
 
       # Live / stateful monitoring gates fail only on the scheduled run (a PR
