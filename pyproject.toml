@@ -1,6 +1,6 @@
 [project]
 name = "intent-eval-lab"
-version = "0.0.0"
+version = "0.3.0"
 description = "Intent Eval Lab — methodology repo. The pyproject is only here for pytest/ruff/mypy/coverage config; no Python package is built."
 requires-python = ">=3.11"
 
