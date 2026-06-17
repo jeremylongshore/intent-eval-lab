@@ -28,7 +28,7 @@ This framework defines:
 1. The **canonical end-to-end flow** — the exact path an Evidence Bundle travels
    across the 5 repos (§ 2).
 2. The **contract assertion at each seam** — what MUST hold where one repo's output
-   becomes another's input (§ 3).
+   becomes the next repo's input (§ 3).
 3. A **concrete test-harness design** — fixtures, the kernel-canonical schema checks
    at each hop, and which repo's CI runs the framework (§ 4–6).
 4. A **runnable skeleton** — `e2e/run-e2e.mjs`, shipped in this PR, that pipes a
