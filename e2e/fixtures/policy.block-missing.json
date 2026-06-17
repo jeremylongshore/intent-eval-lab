@@ -1,0 +1,10 @@
+{
+  "required_gates": [
+    "audit-harness:ci:conform",
+    "j-rig:sandbox:behavioral-eval",
+    "intent-rollout-gate:ci:provenance-verify"
+  ],
+  "forbid_decisions": ["fail", "error"],
+  "advisory_blocks": false,
+  "allow_unknown_gates": true
+}
