@@ -131,6 +131,8 @@ Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skelet
 - **`Scorer.score_text`** — temp file must be named `SKILL.md` so the scorer's frontmatter detection fires (#88)
 - Gitignore raw per-run eval outputs, keep `aggregated/` (#107)
 - Link back to the Intent Eval Platform umbrella (#97)
+- Bump the GitHub Actions group across 1 directory with 5 updates (#91)
+- Bump vendored audit-harness to v1.1.5 (#99)
 
 ### Fixed
 
@@ -142,11 +144,6 @@ Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skelet
 - **`ANTHROPIC_API_KEY`** filled from the intentsolutions-vps-runbook SOPS source into `.env.sops` (#83)
 - **`NVIDIA_API_KEY`** added to `.env.sops` (#81)
 - **`DEEPSEEK_API_KEY`** committed SOPS-encrypted to `.env.sops` (#106)
-
-### Dependencies
-
-- Bump the GitHub Actions group across 1 directory with 5 updates (#91)
-- Bump vendored audit-harness to v1.1.5 (#99)
 
 ## [0.2.0] - 2026-05-26
 
@@ -202,6 +199,7 @@ Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skelet
 - **CI**: `release.yml` cleanup — `workflow_dispatch` only, removed push-to-main trigger; subsequently removed redundant workflow entirely (/release skill is canonical for this repo)
 - **Partner-name vendor-generic CI guard** — `.github/workflows/partner-name-guard.yml` fires on every PR + push to main with case-insensitive grep (per DR-004 S1Q2 BINDING)
 - `CHANGELOG.md` — restructured to Keep-a-Changelog 1.1.0 format (#74, Tidy First per Beck thinker-panel finding #5)
+- GitHub Actions group bump (#33)
 
 ### Fixed
 
@@ -212,10 +210,6 @@ Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skelet
 - Partner-name CI guard ratchets DR-004 S1Q2 BINDING into enforcement: case-insensitive grep against the private partner-name pattern returns 0 hits or CI fails. Pattern enumerated in PRIVATE umbrella CLAUDE.md only.
 - Schema-drift CI gate prevents structural drift between lab's redirect-stub schema and kernel canonical
 - Harness-hash discipline lands in lab via vendored `.audit-harness/v1.1.4` (escape-scan + arch + harness-hash via hooks + GitHub Actions)
-
-### Dependencies
-
-- GitHub Actions group bump (#33)
 
 ## [0.1.0] - 2026-05-10
 
