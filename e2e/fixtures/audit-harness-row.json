@@ -1,0 +1,29 @@
+{
+  "_type": "https://in-toto.io/Statement/v1",
+  "subject": [
+    {
+      "name": "audit-harness:ci:conform",
+      "digest": {
+        "sha256": "33193a9d9e9f3ec5ec7838fb3112329d6588a311f9a3a1094dbb8e986af58ac7"
+      }
+    }
+  ],
+  "predicateType": "https://evals.intentsolutions.io/gate-result/v1",
+  "predicate": {
+    "gate_id": "audit-harness:ci:conform",
+    "gate_name": "conform",
+    "gate_version": "1.2.2",
+    "gate_decision": "pass",
+    "gate_reasons": [],
+    "coverage": {
+      "dimensions_evaluated": ["skill-frontmatter", "mcp-config", "agent-definition"],
+      "dimensions_skipped": []
+    },
+    "policy_ref": "sha256:611ea9b0e9c7e07b3405bf8a29332861aad42164b960ab6d0b9dd6d8db072139:.harness-hash",
+    "policy_hash": "sha256:611ea9b0e9c7e07b3405bf8a29332861aad42164b960ab6d0b9dd6d8db072139",
+    "input_hash": "sha256:33193a9d9e9f3ec5ec7838fb3112329d6588a311f9a3a1094dbb8e986af58ac7",
+    "evaluated_at": "2026-06-16T00:00:00.000Z",
+    "runner": "audit-harness@1.2.2",
+    "commit_sha": "1663ef0bb5d57b6af87f8dd85cc8abb9c80d0cdf"
+  }
+}

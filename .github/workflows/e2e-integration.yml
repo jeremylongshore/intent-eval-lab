@@ -1,0 +1,61 @@
+name: E2E Integration (5-repo unification thesis)
+
+# End-to-end integration test for the unification thesis (DR-010 Q3): a single
+# kernel-canonical Evidence Bundle flows across all 5 IEP repos
+# (audit-harness -> kernel -> j-rig -> rollout-gate -> dashboard) with the contract
+# asserted at every seam. Spec + harness:
+#   000-docs/078-AT-SPEC-e2e-integration-test-framework-2026-06-16.md
+#   e2e/run-e2e.mjs  (bead iep-e2e-integration-spec, epic i1c0)
+#
+# The lab owns this lane because it is the only repo neutral across all 5 (it
+# produces no row of its own and depends on no other repo's runtime) — placing it
+# here avoids a circular CI dependency. The harness validates rows against the
+# PUBLISHED @intentsolutions/core@0.7.0 kernel validators (the SSoT) + the published
+# @intentsolutions/rollout-gate decider; no signing, no Rekor, no paid LLM judge.
+
+on:
+  pull_request:
+    paths:
+      - 'e2e/**'
+      - '000-docs/078-AT-SPEC-e2e-integration-test-framework-*.md'
+      - '.github/workflows/e2e-integration.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'e2e/**'
+      - '000-docs/078-AT-SPEC-e2e-integration-test-framework-*.md'
+      - '.github/workflows/e2e-integration.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    name: Pipe a fixture bundle through all 5 seams
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # The harness self-contains its deps in e2e/package.json: the published kernel
+      # (pinned) + the published rollout-gate (optional — the harness cross-checks the
+      # real decider when present and degrades to a faithful inline decider otherwise).
+      - name: Install harness dependencies
+        working-directory: e2e
+        run: npm install --no-audit --no-fund
+
+      - name: Run the end-to-end integration harness
+        working-directory: e2e
+        run: node run-e2e.mjs

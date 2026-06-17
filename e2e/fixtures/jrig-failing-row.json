@@ -1,0 +1,34 @@
+{
+  "_type": "https://in-toto.io/Statement/v1",
+  "subject": [
+    {
+      "name": "j-rig:sandbox:behavioral-eval",
+      "digest": {
+        "sha256": "a1b2c3d4e5f60718293a4b5c6d7e8f90112233445566778899aabbccddeeff00"
+      }
+    }
+  ],
+  "predicateType": "https://evals.intentsolutions.io/gate-result/v1",
+  "predicate": {
+    "gate_id": "j-rig:sandbox:behavioral-eval",
+    "gate_name": "behavioral-eval",
+    "gate_version": "2.1.0",
+    "gate_decision": "fail",
+    "gate_reasons": ["regression on sacred case `delete-confirm` (blocker)"],
+    "coverage": {
+      "dimensions_evaluated": [
+        "trigger-precision",
+        "functional-quality",
+        "regression-protection",
+        "baseline-value"
+      ],
+      "dimensions_skipped": ["model-variance"]
+    },
+    "policy_ref": "sha256:7c0ffeec0ffeec0ffeec0ffeec0ffeec0ffeec0ffeec0ffeec0ffeec0ffee123:eval-contract.yaml",
+    "policy_hash": "sha256:7c0ffeec0ffeec0ffeec0ffeec0ffeec0ffeec0ffeec0ffeec0ffeec0ffee123",
+    "input_hash": "sha256:a1b2c3d4e5f60718293a4b5c6d7e8f90112233445566778899aabbccddeeff00",
+    "evaluated_at": "2026-06-16T00:05:00.000Z",
+    "runner": "j-rig@2.1.0",
+    "commit_sha": "deadbeefcafe1122334455667788990011223344"
+  }
+}

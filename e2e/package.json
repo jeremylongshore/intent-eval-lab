@@ -1,0 +1,16 @@
+{
+  "name": "intent-eval-lab-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "description": "End-to-end integration harness for the 5-repo unification thesis (epic i1c0). NOT published — a CI-only test harness. See ../000-docs/078-AT-SPEC-e2e-integration-test-framework-2026-06-16.md.",
+  "type": "module",
+  "scripts": {
+    "e2e": "node run-e2e.mjs"
+  },
+  "dependencies": {
+    "@intentsolutions/core": "0.7.0"
+  },
+  "optionalDependencies": {
+    "@intentsolutions/rollout-gate": "^2.0.0"
+  }
+}

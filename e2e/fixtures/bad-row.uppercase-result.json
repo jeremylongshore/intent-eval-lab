@@ -1,0 +1,21 @@
+{
+  "_type": "https://in-toto.io/Statement/v1",
+  "subject": [
+    {
+      "name": "audit-harness:client:escape-scan",
+      "digest": {
+        "sha256": "def01245678900abcdef0123456789abcdef0123456789abcdef0123456789ab"
+      }
+    }
+  ],
+  "predicateType": "https://evals.intentsolutions.io/gate-result/v1",
+  "predicate": {
+    "gate_id": "audit-harness:client:escape-scan",
+    "result": "PASS",
+    "policy_hash": "sha256:789abc456def0123456789abcdef0123456789abcdef0123456789abcdef0123",
+    "input_hash": "sha256:def01245678900abcdef0123456789abcdef0123456789abcdef0123456789ab",
+    "timestamp": "2026-05-11T14:23:00Z",
+    "runner": "audit-harness@0.3.0",
+    "commit_sha": "9971183"
+  }
+}

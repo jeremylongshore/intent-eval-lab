@@ -1,0 +1,6 @@
+{
+  "required_gates": ["audit-harness:ci:conform"],
+  "forbid_decisions": ["fail", "error"],
+  "advisory_blocks": false,
+  "allow_unknown_gates": true
+}
