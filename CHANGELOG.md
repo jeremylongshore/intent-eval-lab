@@ -7,12 +7,146 @@ versioning follows [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-### Pending
+Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skeleton, the 6-contract upstream deep-capture program, the spec-drift upstream-surface registry, governance hash-chaining, the IEP PR-review-gate policy, CI-integrity false-green fixes, the tag-triggered release evidence lane, and the end-to-end 5-repo integration test framework.
 
-- Phase B research-eval methodology work (gated on Phase B bandwidth-only kickoff per DR-010 § 13.5)
-- ISEDC Session 7 (cadence TBD; agenda to include thinker-panel findings synthesis per AAR 023)
-- bd memories backfill from 22 DRs + 4 AACRs — `bd_000-projects-tyck` (P1, Cunningham finding)
-- DR status-banding + post-decision-learnings appendix convention rollout — `bd-` queued (P2, Cunningham findings)
+### Added
+
+#### Spec Authority Kernel (SAK) + continuous-spec-compliance
+
+- ISEDC Session 8 Class-1 Charter for the Spec Authority Kernel (DR-044) (#112)
+- SAK governance owners + `SAK-INDEX` + repo-blueprint self-application (#115)
+- DR-049 — ISEDC Class-1 charter RATIFIED (6 D-SAK decisions, 7-seat convening, acting head per CEO-mode delegation); flips SAK disposition to claimable (#117)
+- SAK plan v8 amendment — re-audit-closure deltas (#116)
+- Continuous-spec-compliance skeleton — FF#2 field-diff + 2 P0 watcher-liveness fixes + SSoT declaration (#113)
+- Anthropic leading-indicator bitter-lesson watcher (#138)
+
+#### Upstream deep-capture program (6-contract SSoT)
+
+- MCP deep capture — vendored 2025-11-25 schema + deterministic projection (#129)
+- Plugin-manifest deep capture — vendored reference + 5 official samples + projection (#132)
+- Agent-definition deep capture — sub-agents reference + 5 official samples + projection (#133)
+- Hook-config deep capture — hooks reference + settings + 4 official samples + projection (#134)
+- Marketplace-catalog deep capture — closes the 6-contract deep-capture program (#135)
+- Deterministic walls bracketing the future LLM drift classifier (#128)
+- Frozen `drift-classification/v1` eval set (15 labeled cases + recall-floor scorer) (#126)
+- Typed fetch-failure taxonomy + three-tier append-only archive (#125)
+- Append-only lineage log + derived coverage-map projection (#127)
+- DR-062 convergence lineage — 5 adopt + 5 diverge events (#137)
+
+#### Spec-drift upstream-surface registry
+
+- Wave-1 surfaces (MCP, hooks, settings, slash-commands) (#118)
+- Wave-2 surfaces (plugins, sub-agents, marketplace, releases) (#119)
+- Versioned upstream-surface registry + consistency gate (#120)
+- `gate-result/v1` Evidence Bundle row for snapshot-currency (iel-E07 residual) (#162)
+
+#### Governance + decision records
+
+- Hash-chain Decision Records into an append-only ledger (#147)
+- Ratify pre-Rekor one-way-door gates + OTel must-emit list (#139)
+- DR-062 — tier-3 reconciliation adjudicated; authoring/v2 bases mirror the captured projections (#136)
+- DR-077 — IEP PR-review-gate policy: required CI checks are the gate, AI-review bots reactive-only (#161)
+- Architecture boundary standards + predicate-type registry (iel-E13) (#143)
+- Replay fidelity levels (iel-E11) + canonical runtime event taxonomy (iel-E12) (#140)
+- Operational-doctrine bundle + agent-loop-trace sanitization spec (iel-E14, iel-E10) (#150)
+- Pre-register citation-integrity eval design + feasibility (gbrain 704w.1, 704w.3) (#149)
+- IEP testing + CI/CD posture audit matrix (5 repos) (#144)
+
+#### Cross-repo + ecosystem
+
+- End-to-end integration test framework for the 5-repo unification thesis (#164)
+- Tier 1-2 + Tier 3 normative pointers + conformance fixture suite (#156)
+- Tier-bridge + taxonomy specs + snapshot-still-current emit row (#153)
+- `ecosystem.json` manifest + coherence-check (CCP-fenced) (#151)
+- Composite detector-health dashboard that leads with detector health (#130)
+- Tombstone superseded upstream-spec captures (#131)
+- Record public gist id for sweep/release tooling (#124)
+
+#### CI lanes
+
+- Tag-triggered release + signed spec-integrity evidence (nr75.13) (#110 landed in 0.3.0; extended here)
+- ntfy CI-failure alert over tailnet (#146)
+- Workflow-YAML lint lane + spec-repo Testing SOP policy (#142)
+- Advisory typos spell-check lane (#154)
+- `lefthook.yml` git-hooks config (#155)
+
+### Changed
+
+- Blueprint B § 7 — add Parallel Change discipline (expand-contract for kernel schema additions) (#148)
+- Scope advisory doc-lint to exclude machine-generated research results (#157)
+
+### Removed
+
+- Stop dependabot github-actions updates (harness-hash pin friction) (#111)
+
+### Fixed
+
+- Close three false-green gates in CI-integrity scripts (#159)
+- Watcher hardening from the 2026-06-11 umbrella review (#121)
+
+### Security
+
+- `PYPI_TOKEN` added to the SOPS-encrypted `.env.sops` (#145)
+
+## [0.3.0] - 2026-06-08
+
+**Phase A.0 empirically validated + labs dashboard ratified.** This release lands the multi-provider Phase A.0 null-hypothesis baseline (DR-036 PROCEED), the first production-Rekor-signed Evidence Bundle from this repo, the ISEDC Session 8 labs-dashboard architecture (DR-035), L2 doc-quality + testing gates, and the audit-trio comprehensive master plan (PP-PLAN-040). Vendored audit-harness re-vendored to v1.1.5; renamed-repo link fixes throughout.
+
+### Added
+
+#### Phase A.0 multi-provider baseline (Skill Refiner null-hypothesis gate)
+
+- **Multi-provider runners + pytest suite (free-tier baseline)** — Phase A.0 multi-provider eval harness (#84)
+- **Paced execution sub-plan for the A.0 baseline** (#87)
+- **Phase A.0 PROCEED** — Refiner empirically validated; ratified as DR-036 (#89)
+- **DR-036 PROCEED frontmatter-only scope caveat** added to `RESULTS.md` + DR-036 to match the public page (#95)
+
+#### Evidence signing (first production-Rekor attestation from this repo)
+
+- **Sign Phase A.0 Evidence Bundle to production Rekor** (blob, predicate reserved) (#92)
+- **Commit signed Phase A.0 bundle** — Rekor log index 1689291334 (#94)
+
+#### ISEDC governance corpus
+
+- **DR-035** — ISEDC Session 8 ratification of the labs dashboard architecture (#86)
+- **DR-037 + DR-038** — research-decision pair: SkillSpector INTEGRATE + bead-naming HYBRID standard (#90)
+- **DR-039** — ratify the Evidence Bench public-scorecard direction (#96)
+- **DR-040** — basicauth override of DR-035 § 8 for the internal testing dashboard (#109)
+
+#### Planning + positioning docs
+
+- **SkillOpt-pattern plugin ecosystem plan** — 5-phase roadmap (#77)
+- **Audit-trio comprehensive master plan + IEP rollback baseline** (PP-PLAN-040) (#102)
+- **Prompt + context-engineering eval positioning** — intent-bearing-artifact reframe (#104)
+- **Cross-repo release sweep final summary** (2026-05-25/26) AAR (#76)
+
+#### CI
+
+- **Tag-triggered release + signed spec-integrity evidence** (nr75.13) (#110)
+
+### Changed
+
+- **L2 doc-quality gates** installed (advisory first run) (#82)
+- **Testing harness** — implement P1-1,2,3,4 from `TEST_AUDIT.md` (L1 pre-commit + L2 ruff/mypy + L3 coverage) (#85)
+- **`Scorer.score_text`** — temp file must be named `SKILL.md` so the scorer's frontmatter detection fires (#88)
+- Gitignore raw per-run eval outputs, keep `aggregated/` (#107)
+- Link back to the Intent Eval Platform umbrella (#97)
+
+### Fixed
+
+- **Drift-guard self-reference** — make the signed bundle commit-independent (the drift check caught a self-reference) (#93)
+- Fix audit-harness link to the renamed `intent-audit-harness` repo (#98)
+
+### Security
+
+- **`ANTHROPIC_API_KEY`** filled from the intentsolutions-vps-runbook SOPS source into `.env.sops` (#83)
+- **`NVIDIA_API_KEY`** added to `.env.sops` (#81)
+- **`DEEPSEEK_API_KEY`** committed SOPS-encrypted to `.env.sops` (#106)
+
+### Dependencies
+
+- Bump the GitHub Actions group across 1 directory with 5 updates (#91)
+- Bump vendored audit-harness to v1.1.5 (#99)
 
 ## [0.2.0] - 2026-05-26
 
@@ -75,17 +209,9 @@ versioning follows [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 ### Security
 
-- Partner-name CI guard ratchets DR-004 S1Q2 BINDING into enforcement: case-insensitive grep against `Kobiton|Polygon|Nixtla|Lit Protocol|Mudit Gupta|Mudit` returns 0 hits or CI fails. Pattern enumerated in PRIVATE umbrella CLAUDE.md only.
+- Partner-name CI guard ratchets DR-004 S1Q2 BINDING into enforcement: case-insensitive grep against the private partner-name pattern returns 0 hits or CI fails. Pattern enumerated in PRIVATE umbrella CLAUDE.md only.
 - Schema-drift CI gate prevents structural drift between lab's redirect-stub schema and kernel canonical
 - Harness-hash discipline lands in lab via vendored `.audit-harness/v1.1.4` (escape-scan + arch + harness-hash via hooks + GitHub Actions)
-
-### Architectural bindings
-
-- [DR-010](./000-docs/010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md) — ISEDC Session 4 widened-scope lock (BINDING)
-- [Blueprint A](./000-docs/011-AT-ARCH-ecosystem-master-blueprint.md) — 12 binding principles
-- [Blueprint B](./000-docs/012-AT-ARCH-platform-runtime-blueprint.md) — runtime architecture + 13-entity domain model + `gate-result/v1` NORMATIVE spec
-- [Blueprint C](./000-docs/013-AT-SPEC-repo-blueprint-template.md) — repo template (applied to all 5 IEP sub-repos)
-- [Canonical Glossary](./000-docs/014-DR-GLOS-canonical-glossary.md) — single source of truth for terminology
 
 ### Dependencies
 
@@ -120,5 +246,7 @@ First public release of the Intent Eval Lab repository — the methodology + spe
 
 - `/validate-consistency` audit fixes — INDEX stale entries, README j-rig claim drift, PB-12 DR mapping
 
-[Unreleased]: https://github.com/jeremylongshore/intent-eval-lab/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/jeremylongshore/intent-eval-lab/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/jeremylongshore/intent-eval-lab/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/jeremylongshore/intent-eval-lab/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/jeremylongshore/intent-eval-lab/releases/tag/v0.1.0
