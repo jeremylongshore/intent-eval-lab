@@ -44,7 +44,9 @@ cd "${REPO_ROOT}"
 
 # Path / content patterns that mark a ONE-WAY-DOOR surface. Deterministic,
 # path-based — this is the reliable signal. (Conflict semantics are NOT here.)
-ONE_WAY_DOOR_PATTERN='(predicate|skill-refiner-pass|gate-result|/schemas/.*\.schema\.json|skill[-_]?version|evals\.intentsolutions\.io|in-toto|attestation|\$schemaVersion|signing_mode|rekor)'
+# NOTE: paths come from `git diff --name-only`, which are ROOT-RELATIVE (no leading
+# slash) — so the schema pattern is anchored `(^|/)schemas/`, NOT `/schemas/`.
+ONE_WAY_DOOR_PATTERN='(predicate|skill-refiner-pass|gate-result|(^|/)schemas/.*\.schema\.json|skill[-_]?version|evals\.intentsolutions\.io|in-toto|attestation|\$schemaVersion|signing_mode|rekor)'
 
 # Collect the changed-file list.
 declare -a CHANGED=()
@@ -66,7 +68,7 @@ fi
 # De-dupe + keep only files that still exist.
 declare -a UNIQUE=()
 declare -A SEEN=()
-for f in "${CHANGED[@]:-}"; do
+for f in ${CHANGED[@]+"${CHANGED[@]}"}; do
   [[ -n "${f}" ]] || continue
   [[ -n "${SEEN[$f]:-}" ]] && continue
   SEEN[$f]=1
@@ -75,7 +77,7 @@ done
 
 # Which changed files touch a one-way-door surface (by path)?
 declare -a HITS=()
-for f in "${UNIQUE[@]:-}"; do
+for f in ${UNIQUE[@]+"${UNIQUE[@]}"}; do
   [[ -n "${f}" ]] || continue
   if printf '%s' "${f}" | grep -qiE "${ONE_WAY_DOOR_PATTERN}"; then
     HITS+=("${f}")
