@@ -156,7 +156,7 @@ I, Claude, as Acting Head of Board (designated by Jeremy Longshore via CTO-mode 
 
 ## 14. References
 
-- DR-028 (Session 7): `intent-eval-lab/000-docs/028-AT-DECR-...-skill-refiner-plan-ratification-2026-05-27.md` (amended here re: T1 line 105 / P0-RATIFY-2 lines 233-236).
-- DR-082: `intent-eval-lab/000-docs/082-AT-DECR-...-skill-refiner-pass-v1-predicate-uri-2026-06-17.md` (erratum here re: freeze-point doctrine + body shape).
+- DR-028 (Session 7): `intent-eval-lab/000-docs/028-AT-DECR-isedc-council-session-7-skill-refiner-plan-ratification-2026-05-27.md` (amended here re: T1 line 105 / P0-RATIFY-2 lines 233-236).
+- DR-082: `intent-eval-lab/000-docs/082-AT-DECR-isedc-skill-refiner-pass-v1-predicate-uri-2026-06-17.md` (erratum here re: freeze-point doctrine + body shape).
 - Glance input: code-reviewer + `martin-kleppmann-reviewer` + `rich-hickey-reviewer` adversarial second-look on PRs #56 / #57.
 - Session provenance: `session.jsonl` in the session directory above.
