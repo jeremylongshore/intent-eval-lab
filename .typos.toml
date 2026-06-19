@@ -1,10 +1,11 @@
 # typos config — intent-eval-lab
 #
-# Part of iep-typos-rollout (uska). Drives the advisory crate-ci/typos lane in
-# .github/workflows/typos.yml. This file allow-lists IEP domain vocabulary that
-# typos would otherwise flag as misspellings, and excludes vendored / generated /
-# binary paths from the scan. The lane is advisory only — these entries keep the
-# signal honest (real typos surface; domain jargon does not).
+# Part of iep-typos-rollout (uska). Drives the crate-ci/typos lane in
+# .github/workflows/typos.yml (a REQUIRED gate). This file allow-lists IEP domain
+# vocabulary that typos would otherwise flag as misspellings, plus structural
+# false-positive classes (truncated hash digests, opaque bead handles, git SHAs),
+# and excludes vendored / generated / data-snapshot paths from the scan. The
+# entries keep the signal honest (real typos surface; domain jargon does not).
 
 [default]
 # Treat the platform's bead-prefix / repo-shorthand identifiers and domain
@@ -22,6 +23,21 @@ extend-ignore-identifiers-re = [
   "^j-rig.*",
   # Statistics variable in the phase-a-0 analysis script (t-stat per stratum).
   "^t_strat$",
+]
+# Structural false-positive classes — content the spell-checker parses as words
+# but which is identifier/hash data, not prose.
+extend-ignore-re = [
+  # Truncated hash digests shown in backticks with an ellipsis, e.g. `35caf7e3…`,
+  # `0bf3a186…`, `b67c8d21…` (evidence + citation digests in research docs). typos
+  # otherwise reads the hex substrings (caf, ba, afe, daa, …) as misspellings.
+  "`[0-9a-fA-F]{6,}…`",
+  # git short-SHAs / hash tokens, in backticks or bare, length 7+ (e.g. `0ba4f76`,
+  # "at sha 1e7ba423").
+  "\\b[0-9a-f]{7,40}\\b",
+  # Opaque bead handles, e.g. bd_000-projects-9yhe and the bare 4-char form that
+  # appears in backtick/comma lists (9yhe, q9vn, t0ba, 5qcy).
+  "bd_[0-9a-z-]+",
+  "\\b[0-9][0-9a-z]{3}\\b",
 ]
 
 [default.extend-words]
@@ -50,6 +66,26 @@ smape = "smape"
 mase = "mase"
 # 000-INDEX.md doc-category code for the literature-survey series (not "LIST").
 lits = "lits"
+# Deliberate domain spellings used in code identifiers + governance prose.
+unparseable = "unparseable"
+overrideable = "overrideable"
+invokable = "invokable"
+# Hyphenated prefix mis-/Mis- (mis-interpreting, mis-classification, Mis-routing) —
+# typos splits on the hyphen and flags the bare prefix.
+mis = "mis"
+# Verbatim-preserved voice-dictation in DR-018 ("make the roght call") — Decision
+# Records preserve quotes verbatim per the ISEDC adversarial-integrity protocol.
+roght = "roght"
+# Council-seat acronym (Chief Marketing Officer), not "COM".
+cmo = "cmo"
+# Product / metric proper nouns frequently flagged.
+trulens = "trulens"
+tru = "tru"
+ttest = "ttest"
+# Deliberate plural-of-"required" domain usage in tier-3 reconciliation DR.
+requireds = "requireds"
+# Citation author surname (research bibliography + README).
+suh = "suh"
 
 [files]
 # Skip vendored snapshots, generated output, lockfiles, the bead store, and the
@@ -65,4 +101,8 @@ extend-exclude = [
   "*.min.js",
   "*.svg",
   "*.snap",
+  # Machine-captured audit-data snapshots (bead dumps, brief-pack JSON) — words
+  # truncated at JSON-string boundaries are not authored prose.
+  "000-docs/*-data.json",
+  "000-docs/audit/**/*.json",
 ]

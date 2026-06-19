@@ -54,7 +54,7 @@ jobs:
 
       - name: Run yamllint
         run: |
-          yamllint -c .yamllint.yml \
+          yamllint --strict -c .yamllint.yml \
             .github/ \
             .yamllint.yml \
             .pre-commit-config.yaml \

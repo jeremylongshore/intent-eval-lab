@@ -1581,6 +1581,7 @@ For EACH new bead:
 
 - Plain-English title (per bead-naming rule in force 2026-05-22)
 - Full description body including:
+
   - Plan section citation (e.g., "Per plan 025 § 4 Phase A …")
   - Architectural commitment refs (e.g., "Honors AC-2 append-only event log")
   - Dependencies on companion beads (via `--deps`)
@@ -1595,7 +1596,7 @@ For EACH new bead:
 
 Sequence: file in dependency order so `--deps` resolve cleanly. Roughly: RC-IEL → RC-IEC → RC-IAJ → RC-IAH → RC-IAR → leaf tasks → TL-EPIC → TL-\* → DIAG-D1..D9.
 
-After every 10 beads: run `bd backup sync` to push to file:///home/jeremy/000-projects/beads-backups/ per § 3.5 PR-1.
+After every 10 beads: run `bd backup sync` to push to `file:///home/jeremy/000-projects/beads-backups/` per § 3.5 PR-1.
 
 **Checkpoint:** `bd list --label refiner --status open` returns ≥ 60 beads (33 new + 27 pre-existing).
 
@@ -1609,6 +1610,7 @@ For each bead that has a code-anchored unit of work (i.e., not just an epic umbr
 - Create GH issue in the appropriate repo per § 5.5 cluster mapping
 - Title: same as bead title (plain English)
 - Body: includes:
+
   - `**Beads:**` line listing all related bead IDs
   - Brief restatement of scope
   - Acceptance criteria (from bead description)

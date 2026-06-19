@@ -12,11 +12,11 @@ A drift table full of green rows is a **vanity metric** when the watcher that pr
 
 `HEALTHY` iff **all** of, evaluated in this fixed order:
 
-| # | Condition | Predicate | Source of the signal |
-|---|---|---|---|
-| 1 | `watcher-run-recent` | last successful watcher run <= `max_gap_hours` (26 — one daily cron + slack) ago; a **null** last-run (bootstrap) FAILS — an unproven watcher is never green | `specs/snapshots/.state.json` (`last_run_utc`, written by `watcher-liveness.py --record-run`) |
-| 2 | `no-fetch-error-streaks` | zero surfaces with `fetch_error_streak >= streak_threshold` (3) — such a surface is effectively unmonitored | `specs/snapshots/.state.json` (per-surface streaks) |
-| 3 | `coverage-at-target` | monitored surfaces / registered surfaces at the registry-declared target: **100% of registered surfaces monitored** | `specs/upstream-surface-registry.v1.json` |
+| #   | Condition                | Predicate                                                                                                                                                    | Source of the signal                                                                          |
+| --- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| 1   | `watcher-run-recent`     | last successful watcher run <= `max_gap_hours` (26 — one daily cron + slack) ago; a **null** last-run (bootstrap) FAILS — an unproven watcher is never green | `specs/snapshots/.state.json` (`last_run_utc`, written by `watcher-liveness.py --record-run`) |
+| 2   | `no-fetch-error-streaks` | zero surfaces with `fetch_error_streak >= streak_threshold` (3) — such a surface is effectively unmonitored                                                  | `specs/snapshots/.state.json` (per-surface streaks)                                           |
+| 3   | `coverage-at-target`     | monitored surfaces / registered surfaces at the registry-declared target: **100% of registered surfaces monitored**                                          | `specs/upstream-surface-registry.v1.json`                                                     |
 
 Thresholds are read from the state file (the same constants `watcher-liveness.py` enforces), so the dashboard and the liveness guards can never disagree at a boundary.
 

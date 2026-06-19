@@ -3,8 +3,7 @@
 > **Document type:** RR-LAND (Research Report — Landscape Mapping) per Document Filing Standard v4.3
 > **Date:** 2026-05-10
 > **Status:** Draft v1.0 — Part 2 research deliverable (Workstream C)
-> **Author:** Intent Solutions LLC — `jeremy@intentsolutions.io`
-> **Workstream:** Part 2 of three-repo convergence (Workstream C: Bridge-Gap Landscape)
+> **Author:** Intent Solutions LLC — `jeremy@intentsolutions.io` > **Workstream:** Part 2 of three-repo convergence (Workstream C: Bridge-Gap Landscape)
 > **Master plan:** `~/.claude/plans/please-take-your-time-glimmering-stardust.md` § Part 2
 > **Sibling workstreams:** A (Spec-anchored OTel Phase B handoff), B (Vendor-neutral conformance harness design)
 

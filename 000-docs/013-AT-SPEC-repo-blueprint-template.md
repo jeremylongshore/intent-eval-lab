@@ -28,7 +28,7 @@ applies_to:
 # Blueprint C — Repo Blueprint Template
 
 > **State label: NORMATIVE.** Applied retroactively per the State-Labeling Standard (`069-DR-STND-state-labeling-standard-2026-06-18.md`, bead iel-E13d). The `NORMATIVE` label is the document-lifecycle label: the **template structure** below is binding on every per-repo blueprint (every repo MUST apply it). It is a template in the sense that its _content_ is instantiated per repo — not in the sense that following it is optional. Per 069-DR-STND § 3, this is the case of an `AT-SPEC` doc whose role (template) and lifecycle label (NORMATIVE) differ in kind; the reconciliation is stated here.
-
+>
 > **This document is a TEMPLATE, not a normative platform doc.** Blueprint A (`011-AT-ARCH-ecosystem-master-blueprint.md`) is the constitution. Blueprint B (`012-AT-ARCH-platform-runtime-blueprint.md`) is the kernel specification. Blueprint C — **this document** — is the reusable scaffold that every repo in the ecosystem applies to produce its **own per-repo blueprint** (`NNN-AT-ARCH-repo-blueprint.md` in that repo's `000-docs/`).
 >
 > The per-repo blueprint that results from applying this template is the single source of truth for _that_ repo's identity, architecture, boundaries, and DoD. It inherits Blueprint A's principles and anti-goals, declares which Blueprint B canonical entities it touches, and links — never redefines — terminology from the canonical glossary (`014-DR-GLOS-canonical-glossary.md`).
@@ -612,6 +612,7 @@ This repo is "complete enough to release" when **every** check below passes:
 3. **Replace `{REPO_NAME}` everywhere** with the canonical GitHub repo name (the name `gh repo view <name>` resolves to). It must match the local working-dir name.
 
 4. **Walk every section.** For each section:
+
    - Replace every `<placeholder>` token with repo-specific content.
    - **Delete every Author's Guide callout** (block quotes prefixed with `> Author's Guide:`).
    - Tables: delete rows that do not apply; do NOT delete the table header.

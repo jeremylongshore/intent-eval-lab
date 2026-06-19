@@ -34,47 +34,47 @@ boundary suite. **Issued under:** DR-085 D1 (`085-AT-DECR-isedc-kernel-onewaydoo
 DR-028 (ISEDC Session 7) contained an **internal contradiction** about the v0.8.0
 `SkillVersion` shape:
 
-- **T1 (line 105)** — *defer* the signing fields (`status` / `signing_mode` /
+- **T1 (line 105)** — _defer_ the signing fields (`status` / `signing_mode` /
   `rekor_log_index`); signing fields with no trust root are dead slots.
-- **P0-RATIFY-2 (lines 233-236)** — *add them now*.
+- **P0-RATIFY-2 (lines 233-236)** — _add them now_.
 
 Both clauses were 20/20-ratified. They are contradictory. When the build agent implemented
 the `SkillVersion` entity in kernel PR #57, it **silently resolved** the contradiction in one
 direction without recording the conflict or escalating — an unrecorded exercise of authority
 the agent does not hold. The corrective ISEDC council (DR-085) flagged this as the **more
-serious finding** of the whole session (GC: *"the silent unilateral resolution is the more
-serious finding"*; the GC seat named the CTO seat — the PR #57 reviewer — as the
+serious finding** of the whole session (GC: _"the silent unilateral resolution is the more
+serious finding"_; the GC seat named the CTO seat — the PR #57 reviewer — as the
 silent-resolver to its face). DR-085 D1 reconciled the conflict (defer-then-add: T1 governs
 sequencing, P0-RATIFY-2 governs eventual shape) **and** established the standing gate this
 document records.
 
 ## 1. (a) The governance rule
 
-> **Any build agent — human or automated — that detects two contradictory *ratified* clauses
-> bearing on a *one-way-door* artifact MUST HALT and escalate. It must NEVER silently resolve
+> **Any build agent — human or automated — that detects two contradictory _ratified_ clauses
+> bearing on a _one-way-door_ artifact MUST HALT and escalate. It must NEVER silently resolve
 > the contradiction.**
 
 Definitions, so the rule is operable:
 
 - **Ratified clause** — a decision recorded in an ISEDC Decision Record (or an equivalent
   ratified standard) with a vote tally, e.g. a DR-028 T-tension resolution, a P0-RATIFY-N
-  directive, a DR-082 Q-decision. Two clauses *conflict* when implementing one as written
+  directive, a DR-082 Q-decision. Two clauses _conflict_ when implementing one as written
   makes the other false-as-written for the same artifact.
 - **One-way-door artifact** — anything whose shape becomes irreversible once it is
   signed/tagged/published: a predicate URI, an in-toto predicate body, a kernel entity that
   feeds a signed predicate, a `$schemaVersion` lane, an attestation envelope, a
-  standards-body filing. (The fix window for #56/#57 existed *only* because they were
+  standards-body filing. (The fix window for #56/#57 existed _only_ because they were
   merged-but-unpublished; once the next `@intentsolutions/core` tag fires the door shuts.)
 - **HALT** — stop the implementation of the conflicting region, do not pick a side, and
   surface the conflict to the human decision-maker (or convene a corrective ISEDC) with both
   clauses quoted **verbatim** including their source DR + line numbers.
-- **Escalate, not wait-a-week** — the duty is *halt-and-flag*, not *halt-and-block-the-repo*.
+- **Escalate, not wait-a-week** — the duty is _halt-and-flag_, not _halt-and-block-the-repo_.
   Non-conflicting work proceeds; only the conflicting region is gated until a recorded
   reconciliation (a Class-1 amendment naming the clauses verbatim, as DR-085 D1 did for
   DR-028) resolves it.
 
 The agent that silently resolves a ratified-clause conflict is exercising an authority it
-does not hold. The remedy is structural: make the silent resolution *detectable* and make the
+does not hold. The remedy is structural: make the silent resolution _detectable_ and make the
 honest path (halt + flag) the path of least resistance.
 
 ## 2. (b) The mechanism — and an honest account of what is and isn't auto-detectable
@@ -85,9 +85,9 @@ Two things are genuinely mechanizable and are mandated here:
 
 1. **A pre-merge checklist line in the PR template.** Every PR that changes a schema, a
    predicate file, or a kernel entity must affirmatively check the box:
-   *"I checked the governing Decision Records for contradictory ratified clauses on any
+   _"I checked the governing Decision Records for contradictory ratified clauses on any
    one-way-door artifact this PR touches; if I found one I HALTED and escalated rather than
-   resolving it silently (DR-085 D1)."* This converts the duty from tribal knowledge into a
+   resolving it silently (DR-085 D1)."_ This converts the duty from tribal knowledge into a
    recorded affirmation the reviewer can hold the author to. (Landed in
    `.github/PULL_REQUEST_TEMPLATE.md`.)
 2. **A lightweight reminder script** — `scripts/ratified-clause-conflict-check.sh` — that
@@ -100,11 +100,11 @@ Two things are genuinely mechanizable and are mandated here:
 **The script does NOT, and cannot honestly claim to, automatically detect a semantic
 contradiction between two ratified clauses.** Determining that DR-028 T1 ("defer signing
 fields") and P0-RATIFY-2 ("add them now") contradict each other requires reading both
-clauses, understanding that they bear on the *same* artifact, and reasoning that one makes the
+clauses, understanding that they bear on the _same_ artifact, and reasoning that one makes the
 other false — that is a judgment task, not a regex. Any tool that claimed to detect arbitrary
 ratified-clause conflicts automatically would be lying.
 
-What the script *can* do is the honest, bounded thing:
+What the script _can_ do is the honest, bounded thing:
 
 - **Detect that a PR touches a one-way-door surface** (by path/content grep). This is a
   reliable, deterministic signal.
@@ -138,18 +138,18 @@ here as a binding gate:
 Bindings on the deferral (from DR-085 D1):
 
 1. **Pre-specified, added verbatim later — NO third migration.** The deferred signing fields
-   are pre-specified in DR-085 D1 and are added to `SkillVersion` *verbatim* only after the
+   are pre-specified in DR-085 D1 and are added to `SkillVersion` _verbatim_ only after the
    **authoring signing trust root is provisioned** (DR-082 trigger 3). They are not
    re-designed at that point; the shape is fixed now and merely installed later. This avoids a
    third migration of the entity (CSO/CTO binding).
 2. **Why deferred, not added-now.** Signing fields with no trust root behind them are dead
    slots — an attestation field that can only lie until a production Rekor exists (CISO). T1
-   governs *sequencing* (defer); P0-RATIFY-2 governs *eventual shape* (the fields, when added,
+   governs _sequencing_ (defer); P0-RATIFY-2 governs _eventual shape_ (the fields, when added,
    are exactly P0-RATIFY-2's). The two ratified clauses are thereby both honored, in order.
 3. **A CI gate asserts the absence.** A standing kernel gate asserts that v0.8.0
    `SkillVersion` does NOT carry the signing fields (CTO binding). This is a real, blocking
    structural check — distinct from the advisory conflict-reminder of § 2 — because "the
-   fields must be absent at this tag" *is* mechanically decidable (unlike "two clauses
+   fields must be absent at this tag" _is_ mechanically decidable (unlike "two clauses
    contradict," which is not).
 4. **Dated re-open tied to DR-082 trigger 3.** The deferral re-opens when the authoring
    chamber's separate signing trust root is provisioned-and-live (DR-082 Q3 trigger 3 /

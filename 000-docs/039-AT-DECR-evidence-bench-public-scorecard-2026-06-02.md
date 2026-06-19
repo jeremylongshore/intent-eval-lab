@@ -49,6 +49,7 @@ These are not aspirational — the live implementation already satisfies all of 
 2. **No predicate URI declared at `labs.*`.** Published bundles are signed as **blobs**;
    `predicate_uri_set` is empty. The `skill-binary-eval/v1` predicate stays **reserved,
    not declared** — production-Rekor _predicate declaration_ remains gated (per DR-010 Q3
+
    - DR-018) on a normative SPEC.md + DNSSEC + CAA clearing for
      `evals.intentsolutions.io`, none of which have. (Verified 2026-06-01: `evals.*` has no
      DNSSEC and serves no TLS.) Predicate URIs live ONLY at `evals.*`, never `labs.*`.

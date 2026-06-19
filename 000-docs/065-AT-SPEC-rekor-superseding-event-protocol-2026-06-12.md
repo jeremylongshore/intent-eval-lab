@@ -36,11 +36,11 @@ Therefore a rollback appends a SUPERSEDING event. The original rows stay; the su
 
 The rollback applies to attestations emitted in a bounded window, per the plan 033 § 14.4 state machine:
 
-| Phase | What is emitted | Binding force |
-| --- | --- | --- |
-| **shadow** | Evidence Bundle rows emitted while the gate runs in advisory/shadow mode | non-blocking by construction |
-| **blocking** | rows emitted after the advisory→blocking flip; these gate real PRs | binding |
-| **rollback** | the governance-authorized revert of the blocking flip | the trigger that mints the superseding event |
+| Phase        | What is emitted                                                          | Binding force                                |
+| ------------ | ------------------------------------------------------------------------ | -------------------------------------------- |
+| **shadow**   | Evidence Bundle rows emitted while the gate runs in advisory/shadow mode | non-blocking by construction                 |
+| **blocking** | rows emitted after the advisory→blocking flip; these gate real PRs       | binding                                      |
+| **rollback** | the governance-authorized revert of the blocking flip                    | the trigger that mints the superseding event |
 
 Any Evidence Bundle rows emitted between SHADOW-MODE entry and the BLOCKING flip — and the BLOCKING-window rows themselves — are PRESERVED. They are real attestations. The rollback does not pretend they never happened; it records that the BLOCKING-window attestations are advisory-not-binding via the superseding event.
 

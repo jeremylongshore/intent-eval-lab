@@ -42,7 +42,7 @@ mint `/v2`, because nothing had ever been signed into the **production** Rekor
 transparency log — the immutability cost had not yet been incurred.
 
 DR-082 § 6 Q5 had written the freeze event as attaching **at SPEC.md-landing** (CISO Q5
-position, line 140: *"v1 is FROZEN at SPEC.md-landing"*). DR-085 D2 supersedes that wording.
+position, line 140: _"v1 is FROZEN at SPEC.md-landing"_). DR-085 D2 supersedes that wording.
 This erratum records the corrected doctrine, the attestation that legitimizes the
 amend-in-place, and the body changes that were applied.
 
@@ -54,8 +54,8 @@ staging-first predicate on `evals.intentsolutions.io`:
 1. **"Frozen" attaches at the first production-Rekor signature — NOT at ratification, and
    NOT at SPEC.md-landing.** The transparency log is the only real freeze; everything
    upstream of a production signature is correction surface (DR-085 CSO memo:
-   *"The transparency log is the only real freeze; everything upstream of a production
-   signature is correction surface."*).
+   _"The transparency log is the only real freeze; everything upstream of a production
+   signature is correction surface."_).
 2. **Amend-in-place is permitted ONLY while `signing_mode = sigstore_staging` (the canonical
    staging label per DR-085 D4; legacy alias `ln`) AND zero production-Rekor entries exist**
    for the predicate. Under those two conditions the body shape may be corrected without a
@@ -70,9 +70,9 @@ staging-first predicate on `evals.intentsolutions.io`:
    that a staging predicate which has never been production-signed has incurred no
    immutability cost and is therefore still correctable.
 
-**Net effect on DR-082 Q5:** the Q5 *evolution* rule (add/loosen = Class-1, breaking =
+**Net effect on DR-082 Q5:** the Q5 _evolution_ rule (add/loosen = Class-1, breaking =
 `/v2`, v1 never mutates in place) stands unchanged **as of the first production signature**.
-The only correction is *when the clock starts*: the freeze attaches at first
+The only correction is _when the clock starts_: the freeze attaches at first
 production-Rekor signature, not at SPEC.md-landing. The CISO Q5 phrasing
 ("FROZEN at SPEC.md-landing", DR-082 line 140) and the CTO Q5 phrasing
 ("the freeze event is named at FIRST PRODUCTION-SIGNED ROW", DR-082 line 135) were in latent
@@ -114,12 +114,12 @@ The `skill-refiner-pass/v1` body shape DR-082 Q2 ratified was amended in place �
 **unchanged** (`https://evals.intentsolutions.io/skill-refiner-pass/v1`, the flat sibling of
 `gate-result/v1` confirmed in DR-082 Q1) — per the structural-integrity decisions of DR-085:
 
-| Change | Source decision | What changed (verbatim intent) |
-|---|---|---|
-| **Nullable parent** | DR-085 D3 (Q3, 7-0) | The predicate's `parent_version_id` becomes **nullable** to match the entity, so a root attests without forging a parent; root emission is provably zero-forgery (`null parent_version_id` + `null parent_content_hash`). |
-| **`result_snapshot_hash`** | DR-085 D4 (Q4, 7-0) | A distinct `result_snapshot_hash` (post-edit output) is added to the predicate; `source_snapshot_hash` now means **pre-edit input** consistently across entity + predicate (name retained, not renamed on both sides — CISO minimize-diff). |
-| **`sigstore_staging` label** | DR-085 D4 (Q4, 7-0) | Canonical staging `signing_mode` = **`sigstore_staging`** across all predicates; `ln` is retired with a changelog alias + a canonical-label registry entry. |
-| **Three-layer enforcement** | DR-085 D5 (Q5, 7-0) | Every signed cross-field invariant is machine-enforced at all three layers (JSON-Schema `if/then` + Zod `superRefine` + Pydantic `model_validator`) before v0.8.0: `accept ⇒ every named_dimension_delta.non_regressed = true`; `version_kind ∈ {revert,restore} ⇒ parent_version_id ≠ null`; Python optional-not-nullable parity. A standing kernel CI gate ("no unenforced invariant on a signed row," scoped to predicate/entity schemas) is established. |
+| Change                       | Source decision     | What changed (verbatim intent)                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ---------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Nullable parent**          | DR-085 D3 (Q3, 7-0) | The predicate's `parent_version_id` becomes **nullable** to match the entity, so a root attests without forging a parent; root emission is provably zero-forgery (`null parent_version_id` + `null parent_content_hash`).                                                                                                                                                                                                                                    |
+| **`result_snapshot_hash`**   | DR-085 D4 (Q4, 7-0) | A distinct `result_snapshot_hash` (post-edit output) is added to the predicate; `source_snapshot_hash` now means **pre-edit input** consistently across entity + predicate (name retained, not renamed on both sides — CISO minimize-diff).                                                                                                                                                                                                                  |
+| **`sigstore_staging` label** | DR-085 D4 (Q4, 7-0) | Canonical staging `signing_mode` = **`sigstore_staging`** across all predicates; `ln` is retired with a changelog alias + a canonical-label registry entry.                                                                                                                                                                                                                                                                                                  |
+| **Three-layer enforcement**  | DR-085 D5 (Q5, 7-0) | Every signed cross-field invariant is machine-enforced at all three layers (JSON-Schema `if/then` + Zod `superRefine` + Pydantic `model_validator`) before v0.8.0: `accept ⇒ every named_dimension_delta.non_regressed = true`; `version_kind ∈ {revert,restore} ⇒ parent_version_id ≠ null`; Python optional-not-nullable parity. A standing kernel CI gate ("no unenforced invariant on a signed row," scoped to predicate/entity schemas) is established. |
 
 These amendments are the body-shape corrections; the kernel-side implementation (schema +
 Zod + Pydantic + tests) lands on the same `@intentsolutions/core` v0.8.0 tag per DR-085
@@ -134,7 +134,7 @@ Zod + Pydantic + tests) lands on the same `@intentsolutions/core` v0.8.0 tag per
 - **The in-toto alignment.** Unchanged — mirror `gate-result/v1` exactly (DR-082 Q4, 7-0).
 - **The Q5 evolution rule once production signing unlocks.** Unchanged: add/loosen =
   Class-1 ISEDC, breaking = `/v2`, v1 never mutates in place. The only correction is the
-  *freeze-point* (§ 1): the rule attaches at first production-Rekor signature.
+  _freeze-point_ (§ 1): the rule attaches at first production-Rekor signature.
 
 ## 5. References
 

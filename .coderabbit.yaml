@@ -1,61 +1,70 @@
 # yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
 #
-# CodeRabbit — Intent Eval Platform. The workhorse code reviewer, replacing Gemini
-# Code Assist (consumer Gemini review ceases 2026-07-17). CodeQL still owns security
-# scanning (security-extended) — non-overlapping. The IEP review priorities live in
-# path_instructions below: the failure classes the corrective ISEDC (DR-085) and the
-# qualified-reviewer glance proved deterministic CI structurally cannot catch.
-# NOTE: requires the CodeRabbit GitHub App installed on the account/org. _generated/
-# is intentionally NOT filtered out — three-way schema drift hides there.
+# CodeRabbit — intent-eval-lab (Intent Eval Platform). Semantic AI code review. Three
+# non-overlapping layers: L1 deterministic CI (prettier/markdownlint/yamllint/
+# actionlint/typos/lychee/ruff) owns style; CodeRabbit (here) owns semantic
+# review; CodeQL (security-extended) owns security. CodeRabbit's built-in linters
+# are disabled so it never re-reports what L1 already gates. Terse, assertive,
+# findings-only. gitleaks (CodeRabbit-native secret scan) stays ON.
 language: en-US
+tone_instructions: "Be terse and technical. No preamble, praise, poems, or summaries — findings only: the problem, the file and line, the concrete fix. Flag every real issue; never soft-pedal or skip. Hardcore code review, not a status report."
 reviews:
   profile: assertive
-  request_changes_workflow: false
-  high_level_summary: true
+  request_changes_workflow: true
+  high_level_summary: false
+  changed_files_summary: false
+  sequence_diagrams: false
   poem: false
-  review_status: true
-  collapse_walkthrough: false
+  review_status: false
+  in_progress_fortune: false
+  estimate_code_review_effort: false
+  assess_linked_issues: false
+  related_issues: false
+  related_prs: false
+  suggested_labels: false
+  collapse_walkthrough: true
   auto_review:
     enabled: true
     drafts: false
     base_branches:
       - main
+  tools:
+    eslint:
+      enabled: false
+    ruff:
+      enabled: false
+    markdownlint:
+      enabled: false
+    yamllint:
+      enabled: false
+    actionlint:
+      enabled: false
+    shellcheck:
+      enabled: false
   path_filters:
     - "!**/dist/**"
     - "!**/node_modules/**"
     - "!**/coverage/**"
     - "!**/*.snap"
-    - "!pnpm-lock.yaml"
     - "!**/*.lock"
+    - "!pnpm-lock.yaml"
   path_instructions:
-    - path: "**/{schemas,src,python}/**"
+    - path: "**/{schemas,specs,scripts,src}/**"
       instructions: >-
-        Intent Eval Platform kernel review. These artifacts ship in signed
-        @intentsolutions/core entries that reach a transparency log — a wrong shape is
-        a one-way door whose cheap-fix window closes at the next git tag. Flag, by
-        priority: (1) three-way drift between a JSON Schema, its hand-written Zod
-        validator, and its Pydantic model — required/optional/nullable posture must
-        match EXACTLY in BOTH directions (optional-not-nullable AND required-but-nullable;
-        datamodel-code-generator renders a required-nullable field as `T | None = None`,
-        which wrongly makes the key omittable in Python while AJV/Zod require it). Verify
-        against the schema `required` array, not the generated default. (2) Cross-artifact
-        semantic drift — same-named fields with divergent type or meaning across two
-        schemas (sha256:-prefixed vs bare hex between a reference and its referent;
-        pre-edit vs post-edit), UNLESS it is a documented layer convention (entities use
-        bare sha256, in-toto predicates use sha256:-prefixed). (3) A cross-field invariant
-        stated in prose/$comment/Decision-Record but NOT enforced at all three layers
-        (JSON-Schema if/then + Zod superRefine + Pydantic model_validator) — an unenforced
-        invariant on a signed row is a falsified attestation waiting to be notarized.
-        (4) Lineage that claims tamper-evidence but rests on a reassignable UUID instead
-        of a content-hash chain. (5) A docblock claiming enforcement the code does not
-        implement. (6) A non-additive change to a published shape (removed/retyped field,
-        loosened constraint, widened closed enum) — those need a /v2 + Class-1 ISEDC.
-        Never edit _generated/* to fix Python parity — use a models.py wrapper subclass.
+        intent-eval-lab is the methodology + spec repo. The kernel @intentsolutions/core is
+        the single source of truth for schemas; this repo's schema files are redirect stubs
+        ($ref to the kernel). Flag, by priority: (1) a schema here that RE-DECLARES a
+        kernel-owned shape instead of $ref-ing it (schema-canonicality violation — the
+        schema-drift CI gate exists for exactly this). (2) an Evidence-Bundle or
+        gate-result/v1 contract example/spec that diverges from the kernel's normative
+        shape (field names, required/optional, predicate URI host — predicate URIs live ONLY
+        at evals.intentsolutions.io, NEVER labs.intentsolutions.io). (3) a Python script
+        (codegen, drift-check, sign-evidence) that silently no-ops or fails-open. (4) a
+        normative doc claiming an invariant the schema/code does not enforce. Prose STYLE
+        (wording, grammar) is owned by Vale/markdownlint — do not duplicate those here.
     - path: "**/*.{sh,yml,yaml}"
       instructions: >-
-        Flag detection/CI scripts that silently no-op — e.g. a regex with a leading
-        slash that never matches root-relative `git diff --name-only` paths, or an
-        advisory gate that can never fire. Flag unsafe bash array expansion under
-        `set -u` (use `${ARR[@]+"${ARR[@]}"}`, not `"${ARR[@]:-}"`).
+        Flag drift-watch / schema-drift / sign-evidence CI scripts that silently no-op or
+        fail-open, and unsafe bash array expansion under `set -u`.
 chat:
   auto_reply: true

@@ -28,7 +28,7 @@ state_element_status: PLANNED
 > **State label: NORMATIVE.** Binding cost-governance doctrine. The `cost-attribution/v1`
 > predicate URI it references is `CONDITIONAL` (PREDICATE-TYPES.md) — production-Rekor
 > signing is gated on its own SPEC.md normative section landing. The cost-governance
-> *rules* are in force now for every eval the platform runs; the *signed* cost-attestation
+> _rules_ are in force now for every eval the platform runs; the _signed_ cost-attestation
 > surface activates when the predicate's SPEC section lands. "Document now, build later"
 > per epic iel-E14.
 
@@ -41,7 +41,7 @@ operational doctrine bundle). GitHub: `jeremylongshore/intent-eval-lab#48`. Plan
 
 Running an eval costs money (provider API tokens, judge invocations, replays, cache
 misses) and bandwidth (founder-hours per release). An evaluation platform that cannot say
-*what an eval cost, who incurred it, and whether it was worth running* is not a platform —
+_what an eval cost, who incurred it, and whether it was worth running_ is not a platform —
 it is a way to spend money you cannot account for. This doctrine fixes:
 
 1. **Attribution** — every cost is recorded against the dimensions that let it be analyzed
@@ -72,15 +72,15 @@ not an edit.
 
 A `CostRecord` attributes spend along the dimensions Blueprint B § 2.12 fixes:
 
-| Dimension | What it answers |
-| --- | --- |
-| per `EvalRun` | "what did this one evaluation cost end to end?" |
-| per provider | "how much are we spending against each LLM provider?" |
-| per judge | "is this judge worth its token cost relative to its discriminating power?" |
-| per replay | "what does it cost to re-verify an audit claim?" |
-| per cache decision | "did the cache save or cost us on this call?" |
-| per user | "which consumer is driving spend?" |
-| per day | "what is the burn rate?" |
+| Dimension          | What it answers                                                            |
+| ------------------ | -------------------------------------------------------------------------- |
+| per `EvalRun`      | "what did this one evaluation cost end to end?"                            |
+| per provider       | "how much are we spending against each LLM provider?"                      |
+| per judge          | "is this judge worth its token cost relative to its discriminating power?" |
+| per replay         | "what does it cost to re-verify an audit claim?"                           |
+| per cache decision | "did the cache save or cost us on this call?"                              |
+| per user           | "which consumer is driving spend?"                                         |
+| per day            | "what is the burn rate?"                                                   |
 
 `ToolInvocation` rows (glossary § 2.11) carry leaf-level attribution; the `RuntimeReceipt`
 (§ 2.6) summarizes the run's total cost at terminal-state transition.
@@ -110,7 +110,7 @@ namespace, but production-Rekor signing is gated on the predicate's own SPEC.md 
 section landing first. Until then, cost attestations run in `sigstore_staging` mode
 (DR-010 § 7 Q5; PREDICATE-TYPES.md CONDITIONAL row). This doctrine does **not** author that
 SPEC section — reserving/activating the URI is a Class-1 ISEDC act. It fixes the
-*discipline* the section must honor.
+_discipline_ the section must honor.
 
 ### R5 — Tamper-evidence over confidentiality
 
@@ -156,7 +156,7 @@ re-running anything:
 
 Budget enforcement (Blueprint B § 4.2) happens at the **runtime boundary**, before spend
 is incurred, against a budget the **consuming policy** declares. Like the human-review
-trigger (`072-AT-ARCH` R2), a budget is *policy*, not predicate: a team's budget change
+trigger (`072-AT-ARCH` R2), a budget is _policy_, not predicate: a team's budget change
 must never mint a new predicate URI.
 
 ### R8 — Exactly three breach behaviors
@@ -164,11 +164,11 @@ must never mint a new predicate URI.
 When a projected spend would breach a declared budget, the runtime applies exactly one of
 the following, as the policy specifies. The set is **closed**:
 
-| Behavior | Effect | When a policy chooses it |
-| --- | --- | --- |
-| `hard_stop` | The runtime refuses to incur the spend; the `EvalRun` transitions to a terminal `archived_failed` state with a budget-breach reason. No partial spend leaks past the ceiling. | Production budgets where overspend is never acceptable. |
-| `require_human_ack` | The runtime pauses and emits an HR-5 human-review trigger (`072-AT-ARCH` § 2). A budget owner named in policy must acknowledge before spend resumes. | Budgets where a one-time overage may be acceptable but needs an owner's call. |
-| `advisory` | The runtime proceeds and records a budget-advisory `cost.*` event + a non-blocking advisory row. Useful for soft budgets and trend monitoring. | Internal exploration; soft ceilings used as tripwires, not walls. |
+| Behavior            | Effect                                                                                                                                                                        | When a policy chooses it                                                      |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `hard_stop`         | The runtime refuses to incur the spend; the `EvalRun` transitions to a terminal `archived_failed` state with a budget-breach reason. No partial spend leaks past the ceiling. | Production budgets where overspend is never acceptable.                       |
+| `require_human_ack` | The runtime pauses and emits an HR-5 human-review trigger (`072-AT-ARCH` § 2). A budget owner named in policy must acknowledge before spend resumes.                          | Budgets where a one-time overage may be acceptable but needs an owner's call. |
+| `advisory`          | The runtime proceeds and records a budget-advisory `cost.*` event + a non-blocking advisory row. Useful for soft budgets and trend monitoring.                                | Internal exploration; soft ceilings used as tripwires, not walls.             |
 
 A policy that names no behavior defaults to `hard_stop` — the safe default is to **not
 spend money you did not budget.** There is no fourth behavior; "warn and silently
@@ -177,15 +177,15 @@ continue forever" is `advisory`, and "block" is `hard_stop`.
 ### R9 — A breach is never silently absorbed
 
 Every breach — whatever the behavior — emits a `cost.*` event and is attributable. A
-budget that is breached without a trace is a governance hole. `advisory` is the *quietest*
-behavior, not a *silent* one.
+budget that is breached without a trace is a governance hole. `advisory` is the _quietest_
+behavior, not a _silent_ one.
 
 ## 5. The founder-hour bandwidth ceiling (the platform's own cost)
 
 ### R10 — Bandwidth is the platform's hardest budget
 
 The platform itself is built under a sole-prop bandwidth reality of ~3–5 hrs/wk (DR-010
-§ 4). DR-010 § 7 Q5 fixes the hard outer bound on what *building* the platform may cost:
+§ 4). DR-010 § 7 Q5 fixes the hard outer bound on what _building_ the platform may cost:
 
 - **+50 founder-hr widening cap; +66 founder-hr hard ceiling** over the 6-month journey
   (DR-010 § 7 Q5 CFO non-negotiable).
@@ -198,7 +198,7 @@ The platform itself is built under a sole-prop bandwidth reality of ~3–5 hrs/w
 
 The Skill Refiner bandwidth model (`029-DR-BAND`, FTE-week accounting: 8.8 FTE-weeks ≈ ~3
 calendar months bandwidth-gated) is the worked precedent for how a feature's founder-hour
-cost is estimated *before* it is committed. New platform features estimate their
+cost is estimated _before_ it is committed. New platform features estimate their
 founder-hour cost against the remaining headroom under the +50/+66 cap before claiming a
 build bead.
 

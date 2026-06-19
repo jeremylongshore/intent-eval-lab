@@ -33,6 +33,7 @@ without touching the validator script.
 
 TODO bead candidate: file as repo:ccp / sak / json-emit P1.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -45,14 +46,25 @@ from pathlib import Path
 
 # IS marketplace tier required fields per SCHEMA_CHANGELOG NON-NEGOTIABLES #1
 IS_MARKETPLACE_REQUIRED = {
-    "name", "description", "allowed-tools",
-    "version", "author", "license", "compatibility", "tags",
+    "name",
+    "description",
+    "allowed-tools",
+    "version",
+    "author",
+    "license",
+    "compatibility",
+    "tags",
 }
 
 # IS extras per plan 033 § 14.10 ("extras beyond the 8-field set")
 IS_EXTRAS_FIELDS = {
-    "requires_env", "requires_tools", "fallback_for_env", "fallback_for_tools",
-    "required_environment_variables", "model", "effort",
+    "requires_env",
+    "requires_tools",
+    "fallback_for_env",
+    "fallback_for_tools",
+    "required_environment_variables",
+    "model",
+    "effort",
     "disallowed-tools",  # D4 addition, SCHEMA 3.7.0
 }
 # plus 3 conceptual extras counted separately (metadata.intent-solutions.config,
@@ -92,7 +104,9 @@ def run_validator(validator_path: Path, skill_path: Path, tier_flag: str) -> str
     """Invoke validate-skills-schema.py; return combined stdout+stderr text."""
     result = subprocess.run(
         ["python3", str(validator_path), tier_flag, str(skill_path)],
-        capture_output=True, text=True, check=False,
+        capture_output=True,
+        text=True,
+        check=False,
     )
     return result.stdout + result.stderr
 
@@ -118,20 +132,24 @@ def parse_findings(text: str) -> list[dict]:
         for sev in ("ERROR", "WARN", "INFO"):
             prefix = f"{sev}:"
             if s.startswith(prefix):
-                rest = s[len(prefix):].strip()
+                rest = s[len(prefix) :].strip()
                 section_match = re.match(r"\[([^\]]+)\]\s*(.*)$", rest)
                 if section_match:
-                    findings.append({
-                        "severity": sev,
-                        "section": section_match.group(1),
-                        "message": section_match.group(2),
-                    })
+                    findings.append(
+                        {
+                            "severity": sev,
+                            "section": section_match.group(1),
+                            "message": section_match.group(2),
+                        }
+                    )
                 else:
-                    findings.append({
-                        "severity": sev,
-                        "section": None,
-                        "message": rest,
-                    })
+                    findings.append(
+                        {
+                            "severity": sev,
+                            "section": None,
+                            "message": rest,
+                        }
+                    )
                 break
     return findings
 
@@ -144,10 +162,12 @@ def has_error(text: str) -> bool:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("skill_md", type=Path, help="Path to SKILL.md fixture")
-    ap.add_argument("--validator-path", type=Path,
-                    default=Path("/home/jeremy/000-projects/claude-code-plugins/scripts/validate-skills-schema.py"))
-    ap.add_argument("--commit", default="7b9eb8f",
-                    help="Validator commit SHA pinned in expected.json")
+    ap.add_argument(
+        "--validator-path",
+        type=Path,
+        default=Path("/home/jeremy/000-projects/claude-code-plugins/scripts/validate-skills-schema.py"),
+    )
+    ap.add_argument("--commit", default="7b9eb8f", help="Validator commit SHA pinned in expected.json")
     args = ap.parse_args()
 
     if not args.skill_md.is_file():
@@ -192,9 +212,9 @@ def main() -> int:
         "deprecated_field_count": deprecated_count,
         "is_extras_present": is_extras_count,
         "security_finding_count": sum(
-            1 for f in parse_findings(marketplace_text)
-            if (f.get("section") or "").startswith("security")
-            or "security" in (f.get("message") or "").lower()
+            1
+            for f in parse_findings(marketplace_text)
+            if (f.get("section") or "").startswith("security") or "security" in (f.get("message") or "").lower()
         ),
     }
 

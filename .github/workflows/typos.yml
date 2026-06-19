@@ -1,19 +1,16 @@
 name: Typos
 
-# Advisory spell-check lane for intent-eval-lab.
+# Spell-check lane for intent-eval-lab (REQUIRED gate).
 #
 # Part of iep-typos-rollout (uska) across all 5 IEP repos. This lane runs
 # crate-ci/typos over the tree to surface real spelling mistakes in prose,
-# code comments, and identifiers. It is intentionally ADVISORY (non-blocking):
-# the job is named so it is NOT a required check, and `continue-on-error: true`
-# guarantees a red typos run never blocks a PR or a push to main.
+# code comments, and identifiers.
 #
 # Domain terms that are not typos (iep, isedc, iec, iel, iah, iar, iaj, sops,
-# sigstore, rekor, zod, etc.) are allow-listed in .typos.toml at repo root, as
-# are vendored/generated paths (node_modules, dist, *.lock, .beads, .audit-harness).
-#
-# Tighten-later path: once the corpus is clean, flip `continue-on-error` off in a
-# follow-up PR to make this a hard gate.
+# sigstore, rekor, zod, etc.) plus truncated hash digests, opaque bead handles,
+# citation surnames, and deliberate domain spellings are allow-listed in
+# .typos.toml at repo root, as are vendored/generated/data-snapshot paths
+# (node_modules, dist, _vendor, .beads, .audit-harness, *-data.json).
 
 on:
   pull_request:
@@ -29,10 +26,9 @@ concurrency:
 
 jobs:
   typos:
-    name: typos (advisory spell-check)
+    name: typos
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    continue-on-error: true
     steps:
       - name: Checkout
         uses: actions/checkout@v6

@@ -5,9 +5,7 @@
 **Date:** 2026-05-27
 **Plan version audited:** v4.1 (post-internal-review)
 
-> _"If you're thinking without writing, you only think you're thinking."_
-> _"A specification is not a description of what the system does, but a definition of what it means to be correct."_
-> _"State machines are obvious, and properties are obvious. The bug is always in the assumption you didn't write down."_
+> _"If you're thinking without writing, you only think you're thinking."_ > _"A specification is not a description of what the system does, but a definition of what it means to be correct."_ > _"State machines are obvious, and properties are obvious. The bug is always in the assumption you didn't write down."_
 
 The plan is rich in prose, ASCII diagrams, dependency tables, and ratification choreography. It is poor in _invariants stated precisely enough to falsify._ The central load-bearing nouns — "refined," "accepted," "SkillVersion," "append-only event log," "strict improvement" — are deployed as primitive terms across 50+ occurrences without ever being given a formal predicate definition. The plan will not type-check against itself, and downstream consumers of `skill-refiner-pass/v1` will have no formal anchor for what they are consuming. The three most embarrassing-if-overlooked findings are F-LL-01, F-LL-02, F-LL-03 below.
 
@@ -60,9 +58,7 @@ But "strict improvement" is never given a predicate. The TypeScript fragment in 
 
 § 4 Phase A operationalizes this:
 
-> _"Append-only event log at `.j-rig/refiner/log.jsonl` (each line is a value-record)"_
-> _"Single mutable pointer file: `.j-rig/refiner/pointers/<skill>/best` (just a hash)"_
-> _"Content-addressed store at `.j-rig/refiner/store/<hash>"`_
+> _"Append-only event log at `.j-rig/refiner/log.jsonl` (each line is a value-record)"_ > _"Single mutable pointer file: `.j-rig/refiner/pointers/<skill>/best` (just a hash)"_ > _"Content-addressed store at `.j-rig/refiner/store/<hash>"`_
 
 This is a **three-component distributed-storage system** — log, store, pointer — running on a local filesystem and (per § 4.5 ecosystem fold) eventually emitting through `audit-harness emit-evidence` to _sigstore staging_ (Phase B), to _production Rekor_ (Phase C). And not one consistency property is stated.
 

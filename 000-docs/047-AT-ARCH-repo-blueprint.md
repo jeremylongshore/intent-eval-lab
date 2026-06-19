@@ -24,22 +24,22 @@ filing_standard: Document Filing Standard v4.3
 
 ## § 1 — Repo identity
 
-| Field              | Value                                                                                                                |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------- |
-| **Repo name**      | `intent-eval-lab` (matches `gh repo view` and local working-dir name)                                                |
-| **Type**           | `methodology` (with normative `spec` modules under `specs/`)                                                         |
-| **Owner**          | per `CODEOWNERS` — `@jeremylongshore`                                                                                 |
-| **Maturity**       | `v0.x experimental` (version.txt `0.2.0`; Phase A foundation complete)                                                |
+| Field              | Value                                                                                                                                                                                    |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Repo name**      | `intent-eval-lab` (matches `gh repo view` and local working-dir name)                                                                                                                    |
+| **Type**           | `methodology` (with normative `spec` modules under `specs/`)                                                                                                                             |
+| **Owner**          | per `CODEOWNERS` — `@jeremylongshore`                                                                                                                                                    |
+| **Maturity**       | `v0.x experimental` (version.txt `0.2.0`; Phase A foundation complete)                                                                                                                   |
 | **Ecosystem role** | The methodology + specs umbrella — authors the Blueprints, the Canonical Glossary, the Decision Records, and the per-class normative spec modules every other ecosystem repo references. |
-| **Bead prefix**    | `iel-` (per Blueprint A § 2.1 taxonomy)                                                                               |
-| **Plane module**   | LAB → Intent Eval Platform module (LAB-6 / `IEL-CONV-1`)                                                              |
+| **Bead prefix**    | `iel-` (per Blueprint A § 2.1 taxonomy)                                                                                                                                                  |
+| **Plane module**   | LAB → Intent Eval Platform module (LAB-6 / `IEL-CONV-1`)                                                                                                                                 |
 
 ### 1.1 Dependencies (peer repos consumed)
 
-| Peer repo            | Consumed at | Pinned range        | Cited blueprint                                                  |
-| -------------------- | ----------- | ------------------- | --------------------------------------------------------------- |
-| `intent-eval-core`   | build/test  | `>=0.2.0, <0.3.0`   | `intent-eval-core/000-docs/` (kernel; schema-redirect anchor)   |
-| `audit-harness`      | test (CI)   | vendored snapshot   | `audit-harness/000-docs/` (vendored `.audit-harness/` + wrapper) |
+| Peer repo          | Consumed at | Pinned range      | Cited blueprint                                                  |
+| ------------------ | ----------- | ----------------- | ---------------------------------------------------------------- |
+| `intent-eval-core` | build/test  | `>=0.2.0, <0.3.0` | `intent-eval-core/000-docs/` (kernel; schema-redirect anchor)    |
+| `audit-harness`    | test (CI)   | vendored snapshot | `audit-harness/000-docs/` (vendored `.audit-harness/` + wrapper) |
 
 The lab does NOT consume `j-rig-skill-binary-eval` or `intent-rollout-gate` at
 build/test time — it oversees them methodologically (see § 5). Its lab schema is a
@@ -94,10 +94,10 @@ contracts → `intent-eval-core`; ship/no-ship Action shell → `intent-rollout-
 
 ### 3.3 Deferred (FUTURE flag required)
 
-| Deferred item                                      | Earliest milestone | FUTURE.md reference                       |
-| -------------------------------------------------- | ------------------ | ----------------------------------------- |
-| Phase B research-eval methodology normative content | Phase B kickoff    | `000-docs/FUTURE.md` + CHANGELOG Unreleased |
-| OTel RFC filing (`agent.rollout.gate.*` taxonomy)  | iel-E12            | `000-docs/001-DR-RFC-otel-agent-rollout-gate-signals-draft.md` |
+| Deferred item                                       | Earliest milestone | FUTURE.md reference                                            |
+| --------------------------------------------------- | ------------------ | -------------------------------------------------------------- |
+| Phase B research-eval methodology normative content | Phase B kickoff    | `000-docs/FUTURE.md` + CHANGELOG Unreleased                    |
+| OTel RFC filing (`agent.rollout.gate.*` taxonomy)   | iel-E12            | `000-docs/001-DR-RFC-otel-agent-rollout-gate-signals-draft.md` |
 
 ### 3.4 Anti-goals (binding-scope-control)
 
@@ -133,12 +133,12 @@ watcher-liveness) is the only automated flow: upstream surface registry
 
 ### 4.3 Runtime boundaries
 
-| Concern                          | Specification                                                                  |
-| -------------------------------- | ------------------------------------------------------------------------------ |
+| Concern                          | Specification                                                                     |
+| -------------------------------- | --------------------------------------------------------------------------------- |
 | **Process model**                | no long-running runtime; CI jobs + ad-hoc `scripts/` invocations (Python + shell) |
-| **IPC**                          | N/A — file-based artifacts only                                                |
-| **External services consumed**   | none in normal operation; CI may fetch upstream spec surfaces for drift-watch  |
-| **Process isolation guarantees** | no user-code execution path; the lab emits docs + specs, not evaluated artifacts |
+| **IPC**                          | N/A — file-based artifacts only                                                   |
+| **External services consumed**   | none in normal operation; CI may fetch upstream spec surfaces for drift-watch     |
+| **Process isolation guarantees** | no user-code execution path; the lab emits docs + specs, not evaluated artifacts  |
 
 ### 4.4 Storage needs
 
@@ -148,11 +148,11 @@ this repo at rest; artifacts are git-tracked markdown, JSON spec files, and
 
 ### 4.5 External dependencies (cite by version)
 
-| Dependency               | Range             | Purpose                                   | Notes                                       |
-| ------------------------ | ----------------- | ----------------------------------------- | ------------------------------------------- |
-| `@intentsolutions/core`  | `>=0.2.0, <0.3.0` | schema-redirect anchor (lab schema `$ref`) | Apache-2.0; strict-SemVer pin               |
-| `audit-harness` (vendored) | snapshot         | L0–L2 gates (escape-scan, hash-pin)        | vendored at `.audit-harness/` + `scripts/audit-harness` wrapper |
-| Python                   | `>=3.11`          | spec-drift + watcher-liveness scripts      | per `pyproject.toml`                         |
+| Dependency                 | Range             | Purpose                                    | Notes                                                           |
+| -------------------------- | ----------------- | ------------------------------------------ | --------------------------------------------------------------- |
+| `@intentsolutions/core`    | `>=0.2.0, <0.3.0` | schema-redirect anchor (lab schema `$ref`) | Apache-2.0; strict-SemVer pin                                   |
+| `audit-harness` (vendored) | snapshot          | L0–L2 gates (escape-scan, hash-pin)        | vendored at `.audit-harness/` + `scripts/audit-harness` wrapper |
+| Python                     | `>=3.11`          | spec-drift + watcher-liveness scripts      | per `pyproject.toml`                                            |
 
 ### 4.6 Failure boundaries
 
@@ -169,9 +169,9 @@ The lab AUTHORS the Blueprint B § 2 canonical-entity definitions (it owns the
 glossary + Blueprint B) but does not itself consume or produce entity instances at
 runtime. It references — never redefines — every entity via the canonical glossary.
 
-| Entity            | Direction | Blueprint B Ref | Attributes implemented                                  | Glossary ref                              |
-| ----------------- | --------- | --------------- | ------------------------------------------------------- | ----------------------------------------- |
-| `EvidenceBundle`  | defines (spec) | `Blueprint B § 7` | Authors the `gate-result/v1` predicate contract; emits no instances | `014-DR-GLOS-canonical-glossary.md` § 2 |
+| Entity           | Direction      | Blueprint B Ref   | Attributes implemented                                              | Glossary ref                            |
+| ---------------- | -------------- | ----------------- | ------------------------------------------------------------------- | --------------------------------------- |
+| `EvidenceBundle` | defines (spec) | `Blueprint B § 7` | Authors the `gate-result/v1` predicate contract; emits no instances | `014-DR-GLOS-canonical-glossary.md` § 2 |
 
 **Entities NOT touched by this repo (as instances):** All 13 canonical entities
 (EvalSpec, EvalRun, MatcherMap, EvidenceBundle, JudgeDecision, RuntimeReceipt,
@@ -196,23 +196,23 @@ N/A — no server.
 
 ### 6.3 Config files
 
-| File                          | Schema                                                | Canonical example                          |
-| ----------------------------- | ----------------------------------------------------- | ------------------------------------------ |
-| `specs/upstream-surfaces/registry.v1.json` | upstream-surface registry (spec-drift input) | self (the committed registry)              |
-| `.sops.yaml` + `.env.sops`    | SOPS + age secrets (provider keys for sandboxes)      | `secrets.example.yaml`                      |
+| File                                       | Schema                                           | Canonical example             |
+| ------------------------------------------ | ------------------------------------------------ | ----------------------------- |
+| `specs/upstream-surfaces/registry.v1.json` | upstream-surface registry (spec-drift input)     | self (the committed registry) |
+| `.sops.yaml` + `.env.sops`                 | SOPS + age secrets (provider keys for sandboxes) | `secrets.example.yaml`        |
 
 ### 6.4 Output formats
 
-| Output              | Shape                                                                | Reference         |
-| ------------------- | -------------------------------------------------------------------- | ----------------- |
-| Normative spec module | versioned `SPEC.md` + JSON schema under `specs/<module>/vX.Y.Z-*/`  | `specs/README.md` |
-| Evidence Bundle row | in-toto Statement v1 over DSSE; predicate body per Blueprint B § 7.4 (spec only — the lab defines the shape, peer repos emit it) | `Blueprint B § 7` |
+| Output                | Shape                                                                                                                            | Reference         |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| Normative spec module | versioned `SPEC.md` + JSON schema under `specs/<module>/vX.Y.Z-*/`                                                               | `specs/README.md` |
+| Evidence Bundle row   | in-toto Statement v1 over DSSE; predicate body per Blueprint B § 7.4 (spec only — the lab defines the shape, peer repos emit it) | `Blueprint B § 7` |
 
 ### 6.5 Event schemas
 
-| Event                       | Attributes              | OTel taxonomy                                            |
-| --------------------------- | ----------------------- | ------------------------------------------------------- |
-| `agent.rollout.gate.<event>` | (draft — not locked)   | `agent.rollout.gate.<subkey>` (per iel-E12, forward-ref) |
+| Event                        | Attributes           | OTel taxonomy                                            |
+| ---------------------------- | -------------------- | -------------------------------------------------------- |
+| `agent.rollout.gate.<event>` | (draft — not locked) | `agent.rollout.gate.<subkey>` (per iel-E12, forward-ref) |
 
 The OTel attribute taxonomy is drafted (`001-DR-RFC-otel-agent-rollout-gate-signals-draft.md`)
 but not filed; forward-reference iel-E12 until the RFC lands.
@@ -244,7 +244,7 @@ apply. The 9 CI workflows under `.github/workflows/` enforce the policy floor.
 
 ### 7.3 L3 — unit tests
 
-| Concern                | Target                                                            |
+| Concern                | Target                                                           |
 | ---------------------- | ---------------------------------------------------------------- |
 | **Framework**          | pytest (per `python-tests.yml`) for the `scripts/` drift tooling |
 | **Coverage floor**     | tooling-scoped; advisory (research repo, not a product library)  |
@@ -293,11 +293,11 @@ refuses unsigned policy edits by design.
 
 ### 7.9 Fixtures
 
-| Concern                       | Specification                                                                        |
-| ----------------------------- | ------------------------------------------------------------------------------------ |
-| **Location**                  | per-experiment `sandboxes/<date>-<id>/fixtures/`                                      |
-| **Naming convention**         | `<NNN>-<kind>-<slug>.<ext>`                                                           |
-| **Vendor-generic discipline** | All fixtures scrubbed per DR-004 S1Q2 + DR-010 § 10; partner-name grep runs in CI.   |
+| Concern                       | Specification                                                                      |
+| ----------------------------- | ---------------------------------------------------------------------------------- |
+| **Location**                  | per-experiment `sandboxes/<date>-<id>/fixtures/`                                   |
+| **Naming convention**         | `<NNN>-<kind>-<slug>.<ext>`                                                        |
+| **Vendor-generic discipline** | All fixtures scrubbed per DR-004 S1Q2 + DR-010 § 10; partner-name grep runs in CI. |
 
 ### 7.10 Golden files (if applicable)
 
@@ -310,8 +310,8 @@ reviewed via the projection-diff gate, not mass-regenerated.
 
 ### 8.1 Secrets management
 
-| Secret class        | Storage                          | Broker            | Repo-specific                                |
-| ------------------- | -------------------------------- | ----------------- | -------------------------------------------- |
+| Secret class                    | Storage                          | Broker                     | Repo-specific                                              |
+| ------------------------------- | -------------------------------- | -------------------------- | ---------------------------------------------------------- |
 | provider-api-key (sandbox-only) | SOPS-encrypted `.env.sops` (age) | `scripts/sops-env` wrapper | used only in ephemeral `sandboxes/`, never shipped surface |
 
 **SOPS + age standard**: `.env.sops` committed; `.env` plaintext git-ignored; CI
@@ -334,12 +334,12 @@ committed code has no provider call path.
 
 ### 8.4 Audit logging
 
-| Concern            | Specification                                                                 |
-| ------------------ | ----------------------------------------------------------------------------- |
-| **What is logged** | Decision Records (append-only under `000-docs/`); CI run logs                 |
+| Concern            | Specification                                                                     |
+| ------------------ | --------------------------------------------------------------------------------- |
+| **What is logged** | Decision Records (append-only under `000-docs/`); CI run logs                     |
 | **Append-only**    | yes — Decision Records are never amended in place (Blueprint A § 1.2 principle 3) |
-| **Signing**        | evidence-bundle artifacts signed per `sign-evidence-bundle.yml`               |
-| **Retention**      | git history is the permanent record; no time-windowed expiry                  |
+| **Signing**        | evidence-bundle artifacts signed per `sign-evidence-bundle.yml`                   |
+| **Retention**      | git history is the permanent record; no time-windowed expiry                      |
 
 ### 8.5 Threat model
 
@@ -408,11 +408,11 @@ repos, not here.
 for any breaking change to the Blueprint/Glossary section-ID stability promise
 (§ 6.6) or the `specs/` directory grammar.
 
-| Bump  | When                                                                                              |
-| ----- | ------------------------------------------------------------------------------------------------- |
-| MAJOR | breaking change to § 6.6 stability promise; reshape of a Blueprint required section's contract    |
-| MINOR | additive doc/spec module; new Decision Record; new optional spec field                            |
-| PATCH | doc polish; typo fix; internal script refactor with no public-surface change                      |
+| Bump  | When                                                                                           |
+| ----- | ---------------------------------------------------------------------------------------------- |
+| MAJOR | breaking change to § 6.6 stability promise; reshape of a Blueprint required section's contract |
+| MINOR | additive doc/spec module; new Decision Record; new optional spec field                         |
+| PATCH | doc polish; typo fix; internal script refactor with no public-surface change                   |
 
 ### 11.2 Changelog
 
@@ -422,11 +422,11 @@ commit promotes `[Unreleased]` to the new version + date.
 
 ### 11.3 Migration notes
 
-| Concern                      | Location                                                  |
-| ---------------------------- | -------------------------------------------------------- |
+| Concern                      | Location                                                    |
+| ---------------------------- | ----------------------------------------------------------- |
 | **Migration guide location** | inline in the affected Blueprint's "Drift handling" section |
-| **Migration generator**      | hand-authored                                             |
-| **Required for**             | every MAJOR bump (Blueprint reshape)                      |
+| **Migration generator**      | hand-authored                                               |
+| **Required for**             | every MAJOR bump (Blueprint reshape)                        |
 
 ### 11.4 Compatibility guarantees
 
@@ -438,9 +438,9 @@ commit promotes `[Unreleased]` to the new version + date.
 Per Blueprint A § 4.2 + DR-010 § 7 Q5 CISO non-negotiable: production-Rekor signing
 for any predicate URI is gated on that predicate's SPEC.md normative section landing.
 
-| Predicate URI                            | Status      | SPEC.md ref         | Signing mode      |
-| ---------------------------------------- | ----------- | ------------------- | ----------------- |
-| `evals.intentsolutions.io/gate-result/v1` | conditional | `Blueprint B § 7`   | `sigstore_staging` |
+| Predicate URI                             | Status      | SPEC.md ref       | Signing mode       |
+| ----------------------------------------- | ----------- | ----------------- | ------------------ |
+| `evals.intentsolutions.io/gate-result/v1` | conditional | `Blueprint B § 7` | `sigstore_staging` |
 
 The lab defines predicate shapes; emitting repos own the cutover.
 
@@ -454,14 +454,14 @@ explicit GC waiver.
 
 ## § 12 — Beads / work breakdown
 
-| Concern               | Value                                                       |
-| --------------------- | ----------------------------------------------------------- |
-| **Bead prefix**       | `iel-` (per Blueprint A § 2.1)                              |
-| **bd workspace**      | umbrella `~/000-projects/.beads/`                          |
-| **Epic naming**       | `iel-E<NN>` (e.g., `iel-E05` — this blueprint)             |
-| **Plane project**     | LAB                                                         |
+| Concern               | Value                                                     |
+| --------------------- | --------------------------------------------------------- |
+| **Bead prefix**       | `iel-` (per Blueprint A § 2.1)                            |
+| **bd workspace**      | umbrella `~/000-projects/.beads/`                         |
+| **Epic naming**       | `iel-E<NN>` (e.g., `iel-E05` — this blueprint)            |
+| **Plane project**     | LAB                                                       |
 | **Plane module**      | Intent Eval Platform (LAB-6 / `IEL-CONV-1`)               |
-| **GH ↔ Plane mirror** | via `bd-sync` per global CLAUDE.md three-layer discipline   |
+| **GH ↔ Plane mirror** | via `bd-sync` per global CLAUDE.md three-layer discipline |
 
 ### 12.1 Cross-repo bead dependencies
 
@@ -470,11 +470,11 @@ explicit GC waiver.
 
 ### 12.2 In-repo epic inventory
 
-| Epic      | Status      | Purpose                                                              |
-| --------- | ----------- | ------------------------------------------------------------------- |
-| `iel-E04` | closed      | Blueprint C — repo blueprint template                               |
-| `iel-E05` | in-progress | Repo blueprint — Blueprint C self-application (this document)        |
-| `iel-E12` | open        | OTel RFC filing (`agent.rollout.gate.*` taxonomy lock)              |
+| Epic      | Status      | Purpose                                                       |
+| --------- | ----------- | ------------------------------------------------------------- |
+| `iel-E04` | closed      | Blueprint C — repo blueprint template                         |
+| `iel-E05` | in-progress | Repo blueprint — Blueprint C self-application (this document) |
+| `iel-E12` | open        | OTel RFC filing (`agent.rollout.gate.*` taxonomy lock)        |
 
 ---
 

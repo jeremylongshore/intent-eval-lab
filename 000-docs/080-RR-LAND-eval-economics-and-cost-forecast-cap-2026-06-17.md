@@ -54,11 +54,11 @@ register.
 
 Per-million-token API pricing as surfaced 2026-06 [S1]:
 
-| Model | Input ($/M) | Output ($/M) | Notes |
-| --- | --- | --- | --- |
-| **Opus 4.8** (flagship) | $5.00 | $25.00 | 1M-token context at flat rate, no surcharge |
-| **Sonnet 4.6** | $3.00 | $15.00 | 1M-token context at flat rate |
-| **Haiku 4.5** | $1.00 | $5.00 | the cheap eval/judge tier |
+| Model                   | Input ($/M) | Output ($/M) | Notes                                       |
+| ----------------------- | ----------- | ------------ | ------------------------------------------- |
+| **Opus 4.8** (flagship) | $5.00       | $25.00       | 1M-token context at flat rate, no surcharge |
+| **Sonnet 4.6**          | $3.00       | $15.00       | 1M-token context at flat rate               |
+| **Haiku 4.5**           | $1.00       | $5.00        | the cheap eval/judge tier                   |
 
 Two cost levers materially change the math and are load-bearing for any forecast [S1]:
 
@@ -101,15 +101,15 @@ Anthropic's Agent SDK [S2]:
 eval: ~50k input tokens of fixed context (cached after first call), 5 subagents each doing
 ~20k input / ~5k output of work, a judge pass of ~30k input / ~3k output on Sonnet 4.6:
 
-| Component | Tokens | Rate (Sonnet 4.6, [S1]) | ~Cost |
-| --- | --- | --- | --- |
-| Fixed context, first call (uncached) | 50k in | $3.00/M | $0.15 |
-| Fixed context, re-sent ×5 subagents (cached, 90% off) | 250k in | $0.30/M eff. | $0.075 |
-| Subagent work | 100k in / 25k out | $3 / $15 | $0.675 |
-| Judge pass | 30k in / 3k out | $3 / $15 | $0.135 |
-| **Per-run total (Sonnet, cached, interactive)** | | | **~$1.11** |
-| Same run on **Opus 4.8** (no cache, no batch) | | | **~$3–5** |
-| Same run **batched + cached on Sonnet** (~50% off non-cached) | | | **~$0.60** |
+| Component                                                     | Tokens            | Rate (Sonnet 4.6, [S1]) | ~Cost      |
+| ------------------------------------------------------------- | ----------------- | ----------------------- | ---------- |
+| Fixed context, first call (uncached)                          | 50k in            | $3.00/M                 | $0.15      |
+| Fixed context, re-sent ×5 subagents (cached, 90% off)         | 250k in           | $0.30/M eff.            | $0.075     |
+| Subagent work                                                 | 100k in / 25k out | $3 / $15                | $0.675     |
+| Judge pass                                                    | 30k in / 3k out   | $3 / $15                | $0.135     |
+| **Per-run total (Sonnet, cached, interactive)**               |                   |                         | **~$1.11** |
+| Same run on **Opus 4.8** (no cache, no batch)                 |                   |                         | **~$3–5**  |
+| Same run **batched + cached on Sonnet** (~50% off non-cached) |                   |                         | **~$0.60** |
 
 So a single agentic eval run is **cents to a few dollars**. The cost problem is **not** one run
 — it is **volume × forking**. A regression suite of 200 cases, each forking 5 ways, run on Opus
@@ -127,13 +127,13 @@ The bead asks specifically what this "looks like on the Claude Team plan vs Ente
 key 2026 fact: **plan seats do not meaningfully subsidize API/eval token spend** — eval cost is
 metered token cost either way [S3].
 
-| Dimension | **Team** | **Enterprise** |
-| --- | --- | --- |
-| Seat price | ~$25/seat/mo monthly, ~$20 annual (Standard); Premium ~$125/$100; **min 5 members** [S3] | Custom, ~$20/seat/mo starting, API billed separately [S3] |
-| Context window | 200K [S3] | 500K [S3] |
-| Bundled tokens | minimal/none for programmatic eval | **none** — Anthropic **removed bundled tokens** from Enterprise seat deals (renewals from Nov 2025, default for new agreements by Feb 2026) [S3] |
-| Governance | basic | SSO, SCIM, RBAC, audit logging, HIPAA-readiness, higher limits [S3] |
-| Eval-token billing | standard API rates (separate) | standard API rates (separate) [S3] |
+| Dimension          | **Team**                                                                                 | **Enterprise**                                                                                                                                   |
+| ------------------ | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Seat price         | ~$25/seat/mo monthly, ~$20 annual (Standard); Premium ~$125/$100; **min 5 members** [S3] | Custom, ~$20/seat/mo starting, API billed separately [S3]                                                                                        |
+| Context window     | 200K [S3]                                                                                | 500K [S3]                                                                                                                                        |
+| Bundled tokens     | minimal/none for programmatic eval                                                       | **none** — Anthropic **removed bundled tokens** from Enterprise seat deals (renewals from Nov 2025, default for new agreements by Feb 2026) [S3] |
+| Governance         | basic                                                                                    | SSO, SCIM, RBAC, audit logging, HIPAA-readiness, higher limits [S3]                                                                              |
+| Eval-token billing | standard API rates (separate)                                                            | standard API rates (separate) [S3]                                                                                                               |
 
 **The SMB takeaway.** For a small-to-medium org running an eval _harness_ (programmatic, via
 the API), **the plan tier barely changes the eval bill** — you pay metered API token rates (§ 1)
@@ -148,7 +148,7 @@ IEP's frontier-judge posture does not (yet) match.
 
 ---
 
-## 4. Cost-Forecast-and-Cap — is it possible, and what shape?
+## 4. Cost-Forecast-and-Cap — is it possible, and what shape
 
 **The bead's question: "do we have a budget mechanism that takes a long-shot task and
 calculates the cost up front — is that impossible?"** Short answer: **not impossible, and the
@@ -182,11 +182,11 @@ each subagent's spend is already an attributable leaf row, and the `RuntimeRecei
 **Already specified as doctrine.** Doc 073 R7–R9 + Blueprint B § 4.2 fix budget enforcement at
 the **runtime boundary** with a **closed set of exactly three breach behaviors** [doc 073 R8]:
 
-| Behavior | Effect | For Cost-Forecast-and-Cap |
-| --- | --- | --- |
-| `hard_stop` | runtime refuses the spend; `EvalRun` → terminal `archived_failed` with budget-breach reason | the literal "cap" — the long-shot task cannot exceed its forecast ceiling |
-| `require_human_ack` | pause + HR-5 human-review trigger; a budget owner must ack before resuming | the "this is going long, approve the overage?" path for a genuinely open-ended task |
-| `advisory` | proceed + record a budget-advisory event | tripwire mode for exploration |
+| Behavior            | Effect                                                                                      | For Cost-Forecast-and-Cap                                                           |
+| ------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `hard_stop`         | runtime refuses the spend; `EvalRun` → terminal `archived_failed` with budget-breach reason | the literal "cap" — the long-shot task cannot exceed its forecast ceiling           |
+| `require_human_ack` | pause + HR-5 human-review trigger; a budget owner must ack before resuming                  | the "this is going long, approve the overage?" path for a genuinely open-ended task |
+| `advisory`          | proceed + record a budget-advisory event                                                    | tripwire mode for exploration                                                       |
 
 A policy that names no behavior **defaults to `hard_stop`** (doc 073 R8 — "do not spend money
 you did not budget"). So the **cap half of Cost-Forecast-and-Cap is built doctrine**, enforced

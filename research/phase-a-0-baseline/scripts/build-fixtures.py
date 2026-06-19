@@ -17,6 +17,7 @@ Usage:
     build-fixtures.py --manifest <path> --out <dir> --score-script <path>
                       [--force] [--strata A,B,C,held_out]
 """
+
 from __future__ import annotations
 
 import argparse
@@ -30,15 +31,18 @@ from pathlib import Path
 def run_scorer(score_script: Path, skill_path: Path) -> dict:
     result = subprocess.run(
         ["python3", str(score_script), str(skill_path)],
-        capture_output=True, text=True, check=False,
+        capture_output=True,
+        text=True,
+        check=False,
     )
     if result.returncode != 0:
         raise RuntimeError(f"scorer exit {result.returncode} on {skill_path}: {result.stderr[:200]}")
     return json.loads(result.stdout)
 
 
-def stage_fixture(out_dir: Path, sha8: str, input_path: Path, expected: dict,
-                  label: str, provenance: dict, force: bool) -> bool:
+def stage_fixture(
+    out_dir: Path, sha8: str, input_path: Path, expected: dict, label: str, provenance: dict, force: bool
+) -> bool:
     target = out_dir / sha8
     if target.exists() and not force:
         return False
@@ -67,8 +71,7 @@ def main() -> int:
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--score-script", type=Path, required=True)
     ap.add_argument("--force", action="store_true")
-    ap.add_argument("--strata", default="A,B,C,held_out",
-                    help="Comma-separated subset of strata to materialize.")
+    ap.add_argument("--strata", default="A,B,C,held_out", help="Comma-separated subset of strata to materialize.")
     args = ap.parse_args()
 
     manifest = json.loads(args.manifest.read_text())
@@ -116,8 +119,13 @@ def main() -> int:
                     "held_out": held,
                 }
                 changed = stage_fixture(
-                    args.out, sha8, skill_path, expected,
-                    label_for(letter, expected), provenance, args.force,
+                    args.out,
+                    sha8,
+                    skill_path,
+                    expected,
+                    label_for(letter, expected),
+                    provenance,
+                    args.force,
                 )
                 if changed:
                     staged += 1

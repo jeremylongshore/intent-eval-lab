@@ -6,12 +6,12 @@ The `mcp-config` contract gets the deep capture `skill-frontmatter` already has.
 
 ## The vendored capture (contract-keyed tier-2)
 
-| File | Authority | What |
-|---|---|---|
+| File                         | Authority                      | What                                                                                                                                                                                                                                             |
+| ---------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `mcp-schema-2025-11-25.json` | official-spec-machine-readable | The official MCP schema for the **CURRENT** spec revision — 2025-11-25 per the spec's versioning page, checked at fetch time. Fetched **commit-pinned** (immutable URL); exact source URL + sha256 + bytes + `fetched_at` in `vendor-meta.json`. |
-| `claude-code-mcp.md` | anthropic-doc | `code.claude.com/docs/en/mcp.md` — the authority for the `.mcp.json` per-server config shape (`command`/`args`/`env`/`type`), which the protocol schema deliberately does not define. |
-| `vendor-meta.json` | — | Per-file provenance, 052-AT-SPEC vendor-meta conventions. |
-| `projection.json` | — | The **normative projection** (below). GENERATED — never hand-edit. |
+| `claude-code-mcp.md`         | anthropic-doc                  | `code.claude.com/docs/en/mcp.md` — the authority for the `.mcp.json` per-server config shape (`command`/`args`/`env`/`type`), which the protocol schema deliberately does not define.                                                            |
+| `vendor-meta.json`           | —                              | Per-file provenance, 052-AT-SPEC vendor-meta conventions.                                                                                                                                                                                        |
+| `projection.json`            | —                              | The **normative projection** (below). GENERATED — never hand-edit.                                                                                                                                                                               |
 
 The fetch happened **once** at build time (2026-06-12). CI never refetches — offline determinism; ongoing freshness comes from the watcher's daily run over the registered surfaces (`mcp-schema-ts` / `mcp-spec-docs` / `mcp-releases`). Note: `claude-code-mcp.md` is **not yet a registered surface**; registering it per 050-AT-SPEC change discipline is a tracked follow-up, and its `vendor-meta.json` entry is its provenance record until then.
 

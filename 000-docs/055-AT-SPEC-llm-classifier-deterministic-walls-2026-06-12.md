@@ -14,10 +14,10 @@ The classifier earns exactly **ONE hop**: classify an **already-detected** diff'
 
 ## The two walls
 
-| Wall | Check | On failure |
-|---|---|---|
-| **PRE-WALL** | every entry in `claimed_changed_fields` must appear as a **literal substring of the fetched bytes** — the tier-2 vendored snapshot the diff came from (052-AT-SPEC) | REJECT. A classifier cannot claim a field the upstream page never mentions (hallucination firewall). |
-| **POST-WALL** | if the classification implies a schema-affecting change (`label: material`), the resulting schema must still validate the known-good **fixture corpus** | REJECT. The corpus lives in the kernel repo (`@intentsolutions/core`), so here the post-wall is an **interface**: a hook slot (below). |
+| Wall          | Check                                                                                                                                                               | On failure                                                                                                                             |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **PRE-WALL**  | every entry in `claimed_changed_fields` must appear as a **literal substring of the fetched bytes** — the tier-2 vendored snapshot the diff came from (052-AT-SPEC) | REJECT. A classifier cannot claim a field the upstream page never mentions (hallucination firewall).                                   |
+| **POST-WALL** | if the classification implies a schema-affecting change (`label: material`), the resulting schema must still validate the known-good **fixture corpus**             | REJECT. The corpus lives in the kernel repo (`@intentsolutions/core`), so here the post-wall is an **interface**: a hook slot (below). |
 
 **Post-wall hook contract** (kernel-side invocation deferred): the slot is `scripts/hooks/classifier-post-wall` (override: `--post-wall-hook`). When present it is invoked as `<hook> <row.json> <snapshot>`; exit 0 = corpus still validates, nonzero = REJECT with the hook's output. When absent, the walls script prints an explicit "deferred" note — never a silent pass-as-checked. Wiring the kernel's fixture corpus behind this slot is kernel-repo work.
 
@@ -26,26 +26,28 @@ The classifier earns exactly **ONE hop**: classify an **already-detected** diff'
 A classification is a schema-validated ROW (`specs/drift-classification/v1/row.schema.json`, JSON Schema draft 2020-12), not prose:
 
 ```json
-{ "surface_id": "agentskills-spec",            // or "case_ref" in eval mode (anyOf)
+{
+  "surface_id": "agentskills-spec", // or "case_ref" in eval mode (anyOf)
   "diff_ref": "spec-projection-diff:REQUIRED_CHANGED:allowed-tools",
-  "label": "material",                          // material | immaterial
-  "contract_owner": "skill-frontmatter",        // registry contract name
-  "claimed_changed_fields": ["allowed-tools"],  // pre-wall input; material ⇒ minItems 1
-  "confidence": 0.92,                           // [0,1], advisory — never overrides a wall
-  "model_pin": "example-model-pin-2026-06-01",  // exact pin, no aliases
-  "classified_at": "2026-06-12T00:00:00Z" }
+  "label": "material", // material | immaterial
+  "contract_owner": "skill-frontmatter", // registry contract name
+  "claimed_changed_fields": ["allowed-tools"], // pre-wall input; material ⇒ minItems 1
+  "confidence": 0.92, // [0,1], advisory — never overrides a wall
+  "model_pin": "example-model-pin-2026-06-01", // exact pin, no aliases
+  "classified_at": "2026-06-12T00:00:00Z"
+}
 ```
 
 `additionalProperties: false`; a `material` row with zero claimed fields is schema-invalid by construction (it would dodge the pre-wall). The `$id` is a schema identifier only — **not** an in-toto attestation predicate URI (operational rule 5 stands).
 
 ## The autonomy gradient (`autonomy-policy.json` + `earned-tier.json`)
 
-| Action | Permitted | Notes |
-|---|---|---|
-| `advisory_comment` | **always** | comment carrying the validated row on the existing drift issue — lowest blast radius |
-| `low_blast_pr` | **earned** | snapshot / `.sha` / coverage refresh only, never schema or policy content; requires the eval-set recall floor cleared |
-| `kernel_schema_edit` | **NEVER** | fallback: issue-with-proposed-diff; a human lands the change (tier-3 promotion is HUMAN, 052-AT-SPEC) |
-| `close_drift_signal` | **NEVER** | only a human declares a drift reconciled — the classifier must not silence the signal that audits it |
+| Action               | Permitted  | Notes                                                                                                                 |
+| -------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------- |
+| `advisory_comment`   | **always** | comment carrying the validated row on the existing drift issue — lowest blast radius                                  |
+| `low_blast_pr`       | **earned** | snapshot / `.sha` / coverage refresh only, never schema or policy content; requires the eval-set recall floor cleared |
+| `kernel_schema_edit` | **NEVER**  | fallback: issue-with-proposed-diff; a human lands the change (tier-3 promotion is HUMAN, 052-AT-SPEC)                 |
+| `close_drift_signal` | **NEVER**  | only a human declares a drift reconciled — the classifier must not silence the signal that audits it                  |
 
 Unknown actions are rejected (default-deny). Current tier state lives in `specs/drift-classification/v1/earned-tier.json` (default `advisory_comment`).
 
@@ -53,7 +55,7 @@ Unknown actions are rejected (default-deny). Current tier state lives in `specs/
 
 ## Enforcement
 
-```
+```text
 scripts/classifier-walls.py validate ROW.json --against SNAPSHOT [--policy-action ACTION]
 ```
 
