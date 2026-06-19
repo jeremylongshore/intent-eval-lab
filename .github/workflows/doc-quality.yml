@@ -1,15 +1,13 @@
 name: Doc Quality
 
 on:
+  # Required branch-protection gate: markdownlint, lychee, and prettier run on
+  # EVERY PR to main, not just PRs that touch docs. A path-filtered required
+  # check is SKIPPED on unrelated PRs and never reports, blocking the PR
+  # forever. The push: trigger keeps its path filter (no required-check
+  # semantics on push). Vale stays advisory (continue-on-error in its job).
   pull_request:
-    paths:
-      - "**/*.md"
-      - ".markdownlint-cli2.jsonc"
-      - ".vale.ini"
-      - ".vale/**"
-      - "lychee.toml"
-      - ".prettierrc.json"
-      - ".github/workflows/doc-quality.yml"
+    branches: [main]
   push:
     branches: [main]
     paths:
