@@ -45,20 +45,25 @@ def test_arm_a_dry_run_exits_zero(
             sys.executable,
             str(SCRIPTS / "run-arm-a.py"),
             "--dry-run",
-            "--provider", provider_name,
-            "--manifest", str(MANIFEST),
-            "--out", str(out_dir),
-            "--budget-ceiling-usd", "20",
-            "--k-sweep", "0",  # smallest sweep for smoke
-            "--limit", "1",  # one specimen for smoke
+            "--provider",
+            provider_name,
+            "--manifest",
+            str(MANIFEST),
+            "--out",
+            str(out_dir),
+            "--budget-ceiling-usd",
+            "20",
+            "--k-sweep",
+            "0",  # smallest sweep for smoke
+            "--limit",
+            "1",  # one specimen for smoke
         ],
         capture_output=True,
         text=True,
         timeout=120,
     )
     assert result.returncode == 0, (
-        f"arm-a dry-run failed for {provider_name}: "
-        f"stdout={result.stdout[:500]} stderr={result.stderr[:500]}"
+        f"arm-a dry-run failed for {provider_name}: stdout={result.stdout[:500]} stderr={result.stderr[:500]}"
     )
 
 
@@ -75,40 +80,56 @@ def test_arm_b_dry_run_exits_zero(
             sys.executable,
             str(SCRIPTS / "run-arm-b.py"),
             "--dry-run",
-            "--provider", provider_name,
-            "--manifest", str(MANIFEST),
-            "--out", str(out_dir),
-            "--budget-ceiling-usd", "20",
-            "--max-iterations", "1",
-            "--limit", "1",
+            "--provider",
+            provider_name,
+            "--manifest",
+            str(MANIFEST),
+            "--out",
+            str(out_dir),
+            "--budget-ceiling-usd",
+            "20",
+            "--max-iterations",
+            "1",
+            "--limit",
+            "1",
         ],
         capture_output=True,
         text=True,
         timeout=120,
     )
     assert result.returncode == 0, (
-        f"arm-b dry-run failed for {provider_name}: "
-        f"stdout={result.stdout[:500]} stderr={result.stderr[:500]}"
+        f"arm-b dry-run failed for {provider_name}: stdout={result.stdout[:500]} stderr={result.stderr[:500]}"
     )
 
 
 def test_arm_a_dry_run_persists_response_with_provider_dir(
-    tmp_path: Path, manifest_available: bool,
+    tmp_path: Path,
+    manifest_available: bool,
 ) -> None:
     """After dry-run, response.json must land at out_dir/<provider>/<sha>/."""
     out_dir = tmp_path  # runner creates out_dir/arm-a/<provider>/...
     subprocess.run(
         [
-            sys.executable, str(SCRIPTS / "run-arm-a.py"),
+            sys.executable,
+            str(SCRIPTS / "run-arm-a.py"),
             "--dry-run",
-            "--provider", "nvidia-llama-405b",
-            "--manifest", str(MANIFEST),
-            "--out", str(out_dir),
-            "--budget-ceiling-usd", "0",
-            "--k-sweep", "0",
-            "--limit", "1",
+            "--provider",
+            "nvidia-llama-405b",
+            "--manifest",
+            str(MANIFEST),
+            "--out",
+            str(out_dir),
+            "--budget-ceiling-usd",
+            "0",
+            "--k-sweep",
+            "0",
+            "--limit",
+            "1",
         ],
-        capture_output=True, text=True, timeout=120, check=True,
+        capture_output=True,
+        text=True,
+        timeout=120,
+        check=True,
     )
 
     # Verify provider-scoped subtree was created (the persister contract):
@@ -135,18 +156,26 @@ def test_arm_a_dry_run_persists_response_with_provider_dir(
 
 
 def test_arm_a_unknown_provider_exits_nonzero(
-    tmp_path: Path, manifest_available: bool,
+    tmp_path: Path,
+    manifest_available: bool,
 ) -> None:
     """Bad --provider must surface as a clear non-zero exit."""
     result = subprocess.run(
         [
-            sys.executable, str(SCRIPTS / "run-arm-a.py"),
+            sys.executable,
+            str(SCRIPTS / "run-arm-a.py"),
             "--dry-run",
-            "--provider", "not-a-real-provider",
-            "--manifest", str(MANIFEST),
-            "--out", str(tmp_path),
-            "--budget-ceiling-usd", "0",
+            "--provider",
+            "not-a-real-provider",
+            "--manifest",
+            str(MANIFEST),
+            "--out",
+            str(tmp_path),
+            "--budget-ceiling-usd",
+            "0",
         ],
-        capture_output=True, text=True, timeout=60,
+        capture_output=True,
+        text=True,
+        timeout=60,
     )
     assert result.returncode != 0

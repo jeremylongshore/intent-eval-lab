@@ -35,6 +35,7 @@ Usage:
             scores them. Zero API spend. Validates pipeline end-to-end.
 --limit N:  process only the first N specimens (useful for smoke tests).
 """
+
 from __future__ import annotations
 
 import argparse
@@ -105,9 +106,7 @@ def run_single(
 
     # Sample exemplars (exclude self)
     try:
-        exemplars = load_exemplars(
-            manifest, k=k, seed=manifest.seed, exclude={sha}
-        )
+        exemplars = load_exemplars(manifest, k=k, seed=manifest.seed, exclude={sha})
     except ValueError as exc:
         persister.log_error(sha, f"exemplar sampling failed: {exc}", {"k": k, "sub": sub})
         return None
@@ -168,10 +167,7 @@ def run_single(
     # Assemble candidate SKILL.md: frontmatter from response + original body
     response_fm = completion.text.strip()
     original_body_start = input_text.find("\n---", 4)
-    if original_body_start != -1:
-        original_body = input_text[original_body_start + 4:]
-    else:
-        original_body = ""
+    original_body = input_text[original_body_start + 4 :] if original_body_start != -1 else ""
     candidate_text = response_fm + "\n" + original_body
 
     # Score candidate
@@ -262,15 +258,12 @@ def write_summary(
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(
-        description="Run Arm A (naive provider-in-context) of Phase A.0 baseline experiment."
+    ap = argparse.ArgumentParser(description="Run Arm A (naive provider-in-context) of Phase A.0 baseline experiment.")
+    ap.add_argument("--manifest", type=Path, required=True, help="Path to corpus/manifest.json")
+    ap.add_argument("--out", type=Path, required=True, help="Root output directory (results/raw/)")
+    ap.add_argument(
+        "--k-sweep", default="0,3,8,16", help="Comma-separated K values (exemplar counts). Default: 0,3,8,16"
     )
-    ap.add_argument("--manifest", type=Path, required=True,
-                    help="Path to corpus/manifest.json")
-    ap.add_argument("--out", type=Path, required=True,
-                    help="Root output directory (results/raw/)")
-    ap.add_argument("--k-sweep", default="0,3,8,16",
-                    help="Comma-separated K values (exemplar counts). Default: 0,3,8,16")
     ap.add_argument(
         "--provider",
         default=os.environ.get("PHASE_A0_PROVIDER", DEFAULT_PROVIDER),
@@ -289,14 +282,12 @@ def main() -> int:
             "Override via PHASE_A0_BUDGET_CEILING_USD env var."
         ),
     )
-    ap.add_argument("--dry-run", action="store_true",
-                    help="Simulate pipeline without real API calls. Validates end-to-end.")
-    ap.add_argument("--force", action="store_true",
-                    help="Overwrite existing result files (re-run).")
-    ap.add_argument("--limit", type=int, default=None,
-                    help="Process only first N specimens (smoke test).")
-    ap.add_argument("--validator-path", type=Path, default=None,
-                    help="Override path to validate-skills-schema.py")
+    ap.add_argument(
+        "--dry-run", action="store_true", help="Simulate pipeline without real API calls. Validates end-to-end."
+    )
+    ap.add_argument("--force", action="store_true", help="Overwrite existing result files (re-run).")
+    ap.add_argument("--limit", type=int, default=None, help="Process only first N specimens (smoke test).")
+    ap.add_argument("--validator-path", type=Path, default=None, help="Override path to validate-skills-schema.py")
     args = ap.parse_args()
 
     # Parse K-sweep
@@ -363,20 +354,13 @@ def main() -> int:
                 file=sys.stderr,
             )
             # Still write partial summary so the experiment is auditable
-            summary_path = write_summary(
-                args.out, all_results, k_values, meter, args.dry_run, args.provider
-            )
+            summary_path = write_summary(args.out, all_results, k_values, meter, args.dry_run, args.provider)
             print(f"Partial summary: {summary_path}", file=sys.stderr)
             return 1
 
-    summary_path = write_summary(
-        args.out, all_results, k_values, meter, args.dry_run, args.provider
-    )
+    summary_path = write_summary(args.out, all_results, k_values, meter, args.dry_run, args.provider)
 
-    print(
-        f"\n[arm-a] DONE: {len(all_results)} runs completed, "
-        f"{skipped_count} skipped (idempotent)."
-    )
+    print(f"\n[arm-a] DONE: {len(all_results)} runs completed, {skipped_count} skipped (idempotent).")
     cost_note = "(free tier)" if free else f"of ${meter.ceiling_usd:.2f}"
     print(f"  cost: ${meter.spent_usd:.4f} {cost_note}")
     print(f"  summary: {summary_path}")

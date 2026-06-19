@@ -175,6 +175,7 @@ The platform is **Intent Eval Platform** — single umbrella, single identity in
 1. **Unification thesis = BINDING.** Every validator (the 11-validator inventory + audit-harness + j-rig) emits Evidence Bundle rows as architectural primitive. Authored as `intent-eval-lab/specs/UNIFICATION.md` referenced from every constituent repo's CLAUDE.md within 30 days.
 
 2. **URI namespace widening = INCREMENTAL** with CISO per-predicate gates:
+
    - **v0.1 (Phase A through M1):** `gate-result/v1` only (already bound).
    - **v0.2 (after SPEC.md normative content lands):** add `validation-result/v1` + `eval-verdict/v1` + `cost-attribution/v1`.
    - **v0.3+ (Phase B):** add `harness-experiment/v1` and `cache-decision/v1` after sanitization specs land.
@@ -259,6 +260,7 @@ The platform is **Intent Eval Platform** — single umbrella, single identity in
 **DECISION — Q5: PARALLEL TRACK with EXPERIMENTAL-MODE GATE.**
 
 - **Weeks 1–2 (12–18 founder-hrs total across both tracks):**
+
   - **Track A — Foundation (CTO/CISO/CFO win):** SPEC.md normative content for `gate-result/v1` authored (Uncle Bob #6 pattern first). JSON Schema lands. URI grammar locked in writing. Plane "Tooling Drift Prevention" sub-module created. Uncle Bob #6 + #3 + #4 patterns spec'd.
   - **Track B — M5.1 implementation (CSO/VPDevRel/CMO win):** TS pnpm skeleton + policy parser + bundle loader + decision engine + PR-comment renderer + dist build + CI per the existing M5.1 plan. Marked `v0.1.0-experimental` in README.
   - **Track C — OTel informal email Week 1 (CSO non-negotiable):** sent regardless of pause/no-pause majority. Includes "architectural-widening in flight, follow-up in 2 weeks with revised vocabulary" honest in-flight signal.

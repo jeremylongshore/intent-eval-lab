@@ -24,7 +24,6 @@ Pre-registered tests (locked by DESIGN.md before any data collected):
 from __future__ import annotations
 
 import json
-import statistics
 from collections import defaultdict
 from pathlib import Path
 
@@ -103,7 +102,7 @@ def main() -> int:
 
     # 1. Per-K Arm A stats
     per_k_a = defaultdict(list)
-    for sha8, by_k in arm_a.items():
+    for _sha8, by_k in arm_a.items():
         for k, rec in by_k.items():
             per_k_a[k].append(rec["delta"])
 
@@ -126,15 +125,17 @@ def main() -> int:
         best_k = max(by_k.keys(), key=lambda k: by_k[k]["delta"])
         a_delta = by_k[best_k]["delta"]
         b_delta = arm_b[sha8]["delta"]
-        paired.append({
-            "sha8": sha8,
-            "a_delta_best_k": a_delta,
-            "a_best_k": best_k,
-            "b_delta": b_delta,
-            "b_minus_a": b_delta - a_delta,
-            "stratum": arm_b[sha8]["stratum"],
-            "b_accepted": arm_b[sha8]["accepted"],
-        })
+        paired.append(
+            {
+                "sha8": sha8,
+                "a_delta_best_k": a_delta,
+                "a_best_k": best_k,
+                "b_delta": b_delta,
+                "b_minus_a": b_delta - a_delta,
+                "stratum": arm_b[sha8]["stratum"],
+                "b_accepted": arm_b[sha8]["accepted"],
+            }
+        )
 
     n_paired = len(paired)
     b_minus_a = [p["b_minus_a"] for p in paired]
@@ -145,10 +146,8 @@ def main() -> int:
     if len(b_minus_a) >= 3:
         shapiro = stats.shapiro(b_minus_a)
         shapiro_p = float(shapiro.pvalue)
-        shapiro_stat = float(shapiro.statistic)
     else:
         shapiro_p = 1.0
-        shapiro_stat = 0.0
     normality_pass = shapiro_p > 0.05
 
     # 4. Primary test: one-sided t-test (Welch's), null Refiner ≤ Naive
@@ -181,7 +180,7 @@ def main() -> int:
         if k1 in per_k_a and k2 in per_k_a:
             # paired across specimens
             pair_deltas = []
-            for sha8, by_k in arm_a.items():
+            for _sha8, by_k in arm_a.items():
                 if k1 in by_k and k2 in by_k:
                     pair_deltas.append(by_k[k2]["delta"] - by_k[k1]["delta"])
             if len(pair_deltas) >= 3:
@@ -229,8 +228,8 @@ def main() -> int:
     goodhart_summary = {
         "approach": "v0.1 — uses Arm B per-specimen final accepted flag as proxy",
         "note": "Full 5-dim audit requires reading per-iteration score-N.json files; "
-                "deferred to follow-up bead. Acceptance gate already enforces strict "
-                "improvement on marketplace_score_pct + non-degradation on the 4 other dims.",
+        "deferred to follow-up bead. Acceptance gate already enforces strict "
+        "improvement on marketplace_score_pct + non-degradation on the 4 other dims.",
         "accepted_specimens": sum(1 for p in paired if p["b_accepted"]),
         "accepted_rate": sum(1 for p in paired if p["b_accepted"]) / max(1, len(paired)),
     }
@@ -287,12 +286,8 @@ def main() -> int:
         },
     }
 
-    (OUT_DIR / "statistics.json").write_text(
-        json.dumps(stats_out, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
-    (OUT_DIR / "decision.json").write_text(
-        json.dumps(decision, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
+    (OUT_DIR / "statistics.json").write_text(json.dumps(stats_out, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    (OUT_DIR / "decision.json").write_text(json.dumps(decision, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(f"\n✓ Wrote {OUT_DIR / 'statistics.json'}")
     print(f"✓ Wrote {OUT_DIR / 'decision.json'}")
 

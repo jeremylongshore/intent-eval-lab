@@ -29,7 +29,7 @@ state_element_status: EXPERIMENTAL
 
 > **State label: NORMATIVE.** Binding safety doctrine for any automated optimizer that
 > proposes changes to platform artifacts — concretely, the Skill Refiner. The Refiner
-> *mechanism* is `EXPERIMENTAL` (DR-028 Phase A.0 null-hypothesis baseline gates whether
+> _mechanism_ is `EXPERIMENTAL` (DR-028 Phase A.0 null-hypothesis baseline gates whether
 > the mechanism beats naive-in-context at all; the `skill-refiner-pass/v1` predicate is
 > `RESERVED`). This doctrine binds the optimizer's behavior the moment any line of it
 > runs. "Document now, build later" per epic iel-E14.
@@ -41,18 +41,18 @@ operational doctrine bundle). GitHub: `jeremylongshore/intent-eval-lab#48`. Plan
 
 ## 0. What an "optimizer" is here, and why it needs a safety model
 
-An **optimizer** is any automated process that *proposes a change to a platform artifact
-on the basis of eval evidence.* The canonical instance is the **Skill Refiner** — the
+An **optimizer** is any automated process that _proposes a change to a platform artifact
+on the basis of eval evidence._ The canonical instance is the **Skill Refiner** — the
 eval-guided improvement loop that proposes minimal SKILL.md edits (DR-028; plan
 `027-PP-PLAN`). The third product in the agent-rig stack: **J-Rig Skill Binary Eval**
 (test) → **Skill Refiner** (improve) → **Rollout Gate** (ship).
 
-An optimizer is dangerous in a way a gate is not. A gate *reads* and *verdicts*; an
-optimizer *writes.* An unbounded writer that optimizes against a metric will (a) overfit
+An optimizer is dangerous in a way a gate is not. A gate _reads_ and _verdicts_; an
+optimizer _writes._ An unbounded writer that optimizes against a metric will (a) overfit
 to the eval set, (b) Goodhart the metric, (c) silently regress on dimensions the eval set
 does not cover, and (d) — if it can self-apply — compound those errors across versions
 faster than a human can catch them. This doctrine is the set of bounds that keep an
-optimizer *additive and reversible*: every proposal is gated, every accepted change is a
+optimizer _additive and reversible_: every proposal is gated, every accepted change is a
 new immutable version (never an in-place edit), and rollback is always "switch the pin
 back" (Blueprint A § 1.2 principle 4).
 
@@ -68,8 +68,8 @@ A Refiner proposal is accepted **only** if it satisfies the DR-028 P0-RATIFY-1 p
 **strict improvement on a Pareto-dominant behavioral criterion, with non-regression on
 every other criterion.** Restated:
 
-- At least one behavioral criterion **strictly improves** (the proposal must *do
-  something* — a no-op is not an improvement); AND
+- At least one behavioral criterion **strictly improves** (the proposal must _do
+  something_ — a no-op is not an improvement); AND
 - **No** criterion regresses (not the headline metric, not any other).
 
 A proposal that improves criterion A by regressing criterion B is **rejected**, full stop.
@@ -81,7 +81,7 @@ worse on nothing" is.
 
 The accept predicate is evaluated against the **kernel-pinned eval set.** Per the Evidence
 Bundle composability principle (SPEC § 1), partial coverage is explicitly valid — and the
-eval set is *always* partial. This is the load-bearing limitation: **R1 proves no
+eval set is _always_ partial. This is the load-bearing limitation: **R1 proves no
 regression on what is measured; it cannot prove safety on what is not measured.** That gap
 is exactly where the autonomy ladder (§ 2) and the human gate (§ 3) exist.
 
@@ -100,12 +100,12 @@ An optimizer operates at exactly one of the following autonomy rungs for any giv
 artifact. The rung is a property of **what the proposal touches**, not the optimizer's
 confidence. The ladder is closed.
 
-| Rung | Optimizer may | Without | Applies when the proposal touches |
-| --- | --- | --- | --- |
-| **A-0 PROPOSE-ONLY** | Generate a proposal + run the accept predicate + emit the result as evidence. | Never applies anything. | The default for any new optimizer or strategy until A-1 is earned. |
-| **A-1 AUTO-STAGE** | Stage an accepted proposal as a new `SkillVersion` (a candidate `SkillSnapshot`), pending a `RolloutGate`. | Never promotes a pin. | A `SkillSnapshot` that is **not** referenced by any production rollout pin. |
-| **A-2 GATED-AUTO-APPLY** | Submit a staged version through the `RolloutGate` and, on a passing ship verdict, advance the pin. | Never bypasses the gate; never touches a one-way-door surface. | A `SkillSnapshot` whose `RolloutGate` policy explicitly opts into auto-apply for this strategy. |
-| **HR-2 HUMAN-GATED** | Nothing automatically. Escalates to a human (`072-AT-ARCH` § 2). | — | A `SkillSnapshot` **referenced by a production rollout pin**, OR an edit that also touches a one-way-door surface (predicate URI, signing identity, brand commitment). |
+| Rung                     | Optimizer may                                                                                              | Without                                                        | Applies when the proposal touches                                                                                                                                      |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **A-0 PROPOSE-ONLY**     | Generate a proposal + run the accept predicate + emit the result as evidence.                              | Never applies anything.                                        | The default for any new optimizer or strategy until A-1 is earned.                                                                                                     |
+| **A-1 AUTO-STAGE**       | Stage an accepted proposal as a new `SkillVersion` (a candidate `SkillSnapshot`), pending a `RolloutGate`. | Never promotes a pin.                                          | A `SkillSnapshot` that is **not** referenced by any production rollout pin.                                                                                            |
+| **A-2 GATED-AUTO-APPLY** | Submit a staged version through the `RolloutGate` and, on a passing ship verdict, advance the pin.         | Never bypasses the gate; never touches a one-way-door surface. | A `SkillSnapshot` whose `RolloutGate` policy explicitly opts into auto-apply for this strategy.                                                                        |
+| **HR-2 HUMAN-GATED**     | Nothing automatically. Escalates to a human (`072-AT-ARCH` § 2).                                           | —                                                              | A `SkillSnapshot` **referenced by a production rollout pin**, OR an edit that also touches a one-way-door surface (predicate URI, signing identity, brand commitment). |
 
 The optimizer **starts at A-0** and earns higher rungs per strategy, per artifact class —
 never globally. Earning a rung is itself an evidence-backed decision (a strategy
@@ -114,10 +114,10 @@ demonstrating an acceptance-vs-regression track record), not a flag a developer 
 ### R4 — A production-pinned artifact is always at least HR-2
 
 No optimizer rung above HR-2 exists for an artifact a production rollout depends on. The
-accept predicate (R1) proves no regression *on the eval set*; a production pin's blast
+accept predicate (R1) proves no regression _on the eval set_; a production pin's blast
 radius extends to behavior the eval set does not cover (R2). That residual risk is a
 **human judgment** — HR-2 in the human-review governance doctrine. The optimizer never
-auto-applies across that line; the human gate *is* the line.
+auto-applies across that line; the human gate _is_ the line.
 
 ## 3. Blast-radius bounds — every change is additive and reversible
 
@@ -137,7 +137,7 @@ mutation.
 Each proposal changes **one variable** (Blueprint A § 1.2 principle 6). A proposal that
 bundles three edits is rejected for un-attributability: if it passes, you cannot tell which
 edit earned the win; if it fails, you cannot tell which edit caused the regression.
-Comparing `RegressionPack` N to N+1 (glossary § 2.7) must reveal *exactly* which variable
+Comparing `RegressionPack` N to N+1 (glossary § 2.7) must reveal _exactly_ which variable
 changed and what outcomes shifted. The optimizer proposes atomically or not at all.
 
 ### R7 — The optimizer cannot move its own gate
@@ -155,9 +155,10 @@ Per DR-028 T2 (12 of 14 voices), **Phase D — self-generation of eval targets /
 signal by the optimizer — is an ANTI-GOAL and stays killed.** The optimizer improves
 artifacts against a **human-and-evidence-curated** eval set; it does not generate the eval
 set it is scored against (that is R7's reward-hacking, at the dataset level). The Karpathy
-+ Gregg minority binding fixes the *only* re-open trigger: self-generation lift `> +8pp` on
-the kernel-pinned eval set on any frontier release, OR internal acceptance-rate parity.
-Absent that signal, the optimizer does not author its own training data.
+
+- Gregg minority binding fixes the _only_ re-open trigger: self-generation lift `> +8pp` on
+  the kernel-pinned eval set on any frontier release, OR internal acceptance-rate parity.
+  Absent that signal, the optimizer does not author its own training data.
 
 ## 4. The null-hypothesis discipline
 
@@ -166,8 +167,8 @@ Absent that signal, the optimizer does not author its own training data.
 Before the Refiner mechanism is trusted, it must clear the **Phase A.0 null-hypothesis
 baseline** (DR-028 P0-RATIFY-3; amended provider choice DR-034; result DR-036): if
 naive-Opus-in-context beats the proposed Refiner mechanism by `> 70%` of projected lift,
-Phase B descopes. An optimizer is justified only by the lift it produces *over the trivial
-baseline.* A mechanism that wraps complexity around a result a one-shot prompt already
+Phase B descopes. An optimizer is justified only by the lift it produces _over the trivial
+baseline._ A mechanism that wraps complexity around a result a one-shot prompt already
 achieves is negative value — it adds maintenance cost (the founder-hour gate, `073-AT-STND`
 § 5) and a new blast-radius surface for no behavioral gain. The result publishes as a blog
 post regardless of outcome (VP DevRel binding) — a negative result is a legitimate,
@@ -180,7 +181,7 @@ publishable finding, not a failure to hide.
 - **Economics governance** (`073-AT-STND`) — each new optimizer strategy (especially any
   that introduces a Python package) is bounded by the founder-hour cap and the 15-hr/
   release Python gate (`073-AT-STND` § 5). The optimizer's own run cost is a `CostRecord`.
-- **Priority governance** (`075-AT-STND`) — optimizer-proposed work sits *below* the
+- **Priority governance** (`075-AT-STND`) — optimizer-proposed work sits _below_ the
   primary client engagement and below human-authored roadmap items in the priority lattice;
   the optimizer does not get to reorder the queue toward its own proposals.
 - **Rollout Gate** — the A-2 rung's promotion path; the gate is the machine that decides

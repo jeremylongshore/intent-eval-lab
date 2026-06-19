@@ -22,13 +22,12 @@ concurrency:
 
 jobs:
   # ---------------------------------------------------------------------------
-  # L2 lint + format + type-check (advisory first run per Tidy First; tighten
-  # by dropping continue-on-error in a follow-up PR once corpus is clean.)
+  # L2 lint + format (REQUIRED) and type-check (mypy stays advisory — gradual
+  # typing; the runners import third-party SDKs without stubs in all envs).
   # ---------------------------------------------------------------------------
   lint:
-    name: ruff lint + format (advisory)
+    name: ruff lint + format
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6

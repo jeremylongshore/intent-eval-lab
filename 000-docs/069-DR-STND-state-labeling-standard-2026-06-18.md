@@ -56,15 +56,15 @@ standard cites them and does not redefine them.
 Exactly seven labels exist. The set is closed: a document MUST carry exactly one of
 them, and no document may invent a new label without amending this standard.
 
-| Label | Meaning | In force? | Amendment path |
-| --- | --- | --- | --- |
-| `DRAFT` | Work in progress. Content is not yet ready to bind anything; tables and decisions may still change materially. | No | Edit freely until promoted. |
-| `NORMATIVE` | Binding specification or standard. Downstream documents, code, and CI inherit from it. Conflicts are resolved in this document's favor until amended. | Yes | Decision Record per Blueprint A § 2.3 routing. |
-| `RATIFIED` | A decision that has been adjudicated and locked by a governance body (an ISEDC session, an acting-CTO ruling, or a pair Decision Record). Verbatim positions, if any, are frozen. | Yes | A subsequent ratifying Decision Record (re-ratification or revision). |
-| `INFORMATIVE` | Reference, landscape, research, or after-action content. Carries no binding force; cited for context, not inherited from. | No (non-binding) | Edit or supersede; no governance gate. |
-| `SUPERSEDED` | Replaced by a later document. Retained for the audit trail. MUST name its successor. | No | None — terminal. The successor carries the live content. |
-| `DEPRECATED` | Still technically in force but scheduled for removal; consumers should migrate. Distinct from `SUPERSEDED` (which is already replaced). | Yes, with sunset | A removal Decision Record at end of the deprecation window. |
-| `WITHDRAWN` | Pulled before it ever bound anything (a proposal that was rejected at intake, or a draft abandoned). Distinct from `SUPERSEDED` (which was once in force). | No | None — terminal. |
+| Label         | Meaning                                                                                                                                                                           | In force?        | Amendment path                                                        |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- | --------------------------------------------------------------------- |
+| `DRAFT`       | Work in progress. Content is not yet ready to bind anything; tables and decisions may still change materially.                                                                    | No               | Edit freely until promoted.                                           |
+| `NORMATIVE`   | Binding specification or standard. Downstream documents, code, and CI inherit from it. Conflicts are resolved in this document's favor until amended.                             | Yes              | Decision Record per Blueprint A § 2.3 routing.                        |
+| `RATIFIED`    | A decision that has been adjudicated and locked by a governance body (an ISEDC session, an acting-CTO ruling, or a pair Decision Record). Verbatim positions, if any, are frozen. | Yes              | A subsequent ratifying Decision Record (re-ratification or revision). |
+| `INFORMATIVE` | Reference, landscape, research, or after-action content. Carries no binding force; cited for context, not inherited from.                                                         | No (non-binding) | Edit or supersede; no governance gate.                                |
+| `SUPERSEDED`  | Replaced by a later document. Retained for the audit trail. MUST name its successor.                                                                                              | No               | None — terminal. The successor carries the live content.              |
+| `DEPRECATED`  | Still technically in force but scheduled for removal; consumers should migrate. Distinct from `SUPERSEDED` (which is already replaced).                                           | Yes, with sunset | A removal Decision Record at end of the deprecation window.           |
+| `WITHDRAWN`   | Pulled before it ever bound anything (a proposal that was rejected at intake, or a draft abandoned). Distinct from `SUPERSEDED` (which was once in force).                        | No               | None — terminal.                                                      |
 
 ### 2.1 Why these seven and not more
 
@@ -86,15 +86,15 @@ The Document Filing Standard v4.3 category code (the `CC-ABCD` segment of the fi
 correlates with, but does not determine, the lifecycle label. The label is authoritative;
 the filename category is a filing aid. Typical pairings:
 
-| Category code | Typical lifecycle label(s) |
-| --- | --- |
-| `AT-ARCH`, `AT-SPEC`, `AT-STND` | `NORMATIVE` (or `DRAFT` while authoring) |
-| `AT-DECR` | `RATIFIED` (or `DRAFT` pre-session) |
-| `DR-STND`, `DR-GLOS` | `NORMATIVE` |
-| `DR-RFC`, `DR-BRIEF`, `DR-GAPS`, `DR-BAND` | `INFORMATIVE` or `DRAFT` |
-| `RR-LAND`, `RR-INTL`, `RR-LITS` | `INFORMATIVE` |
-| `AA-AACR`, `AA-AUDT` | `INFORMATIVE` |
-| `PP-PLAN` | `INFORMATIVE` (planning), or `SUPERSEDED` when a later plan version replaces it |
+| Category code                              | Typical lifecycle label(s)                                                      |
+| ------------------------------------------ | ------------------------------------------------------------------------------- |
+| `AT-ARCH`, `AT-SPEC`, `AT-STND`            | `NORMATIVE` (or `DRAFT` while authoring)                                        |
+| `AT-DECR`                                  | `RATIFIED` (or `DRAFT` pre-session)                                             |
+| `DR-STND`, `DR-GLOS`                       | `NORMATIVE`                                                                     |
+| `DR-RFC`, `DR-BRIEF`, `DR-GAPS`, `DR-BAND` | `INFORMATIVE` or `DRAFT`                                                        |
+| `RR-LAND`, `RR-INTL`, `RR-LITS`            | `INFORMATIVE`                                                                   |
+| `AA-AACR`, `AA-AUDT`                       | `INFORMATIVE`                                                                   |
+| `PP-PLAN`                                  | `INFORMATIVE` (planning), or `SUPERSEDED` when a later plan version replaces it |
 
 A document whose category code and lifecycle label imply different weights (e.g., an
 `AT-ARCH` marked `INFORMATIVE`) MUST state why in its purpose section.
@@ -125,15 +125,15 @@ for `SUPERSEDED`, or a sunset date for `DEPRECATED`). Example banners:
 
 Lifecycle transitions are not free-form. The permitted transitions are:
 
-| From | To | Trigger |
-| --- | --- | --- |
-| `DRAFT` | `NORMATIVE` | Author promotes; for an `AT-*` doc this is a Class-2 or Class-1 act per Blueprint A § 2.3 depending on the surface touched. |
-| `DRAFT` | `RATIFIED` | A governance session adjudicates and locks the decision. |
-| `DRAFT` | `WITHDRAWN` | The proposal is abandoned or rejected at intake. |
-| `NORMATIVE` | `DEPRECATED` | A successor is in flight; consumers are put on a migration clock. |
-| `NORMATIVE` / `RATIFIED` | `SUPERSEDED` | A successor document lands and takes over the live content. |
-| `DEPRECATED` | `SUPERSEDED` | The successor lands and the deprecation window closes. |
-| `RATIFIED` | `RATIFIED` | Re-ratification by a later session (the later session's record carries the live decision). |
+| From                     | To           | Trigger                                                                                                                     |
+| ------------------------ | ------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| `DRAFT`                  | `NORMATIVE`  | Author promotes; for an `AT-*` doc this is a Class-2 or Class-1 act per Blueprint A § 2.3 depending on the surface touched. |
+| `DRAFT`                  | `RATIFIED`   | A governance session adjudicates and locks the decision.                                                                    |
+| `DRAFT`                  | `WITHDRAWN`  | The proposal is abandoned or rejected at intake.                                                                            |
+| `NORMATIVE`              | `DEPRECATED` | A successor is in flight; consumers are put on a migration clock.                                                           |
+| `NORMATIVE` / `RATIFIED` | `SUPERSEDED` | A successor document lands and takes over the live content.                                                                 |
+| `DEPRECATED`             | `SUPERSEDED` | The successor lands and the deprecation window closes.                                                                      |
+| `RATIFIED`               | `RATIFIED`   | Re-ratification by a later session (the later session's record carries the live decision).                                  |
 
 Forbidden: re-promoting a `SUPERSEDED` or `WITHDRAWN` document back to `NORMATIVE`. To
 re-introduce withdrawn content, author a **new** document — the audit trail of the
@@ -158,12 +158,12 @@ Per bead `bd_000-projects-skrs` (iel-E13d), the four Phase A foundation document
 labeled retroactively under this standard. All four were authored as binding artifacts
 under ISEDC Session 4 (DR-010) and are in force; each receives the `NORMATIVE` label:
 
-| Document | Lifecycle label |
-| --- | --- |
-| `011-AT-ARCH-ecosystem-master-blueprint.md` (Blueprint A) | `NORMATIVE` |
-| `012-AT-ARCH-platform-runtime-blueprint.md` (Blueprint B) | `NORMATIVE` |
-| `013-AT-SPEC-repo-blueprint-template.md` (Blueprint C) | `NORMATIVE` |
-| `014-DR-GLOS-canonical-glossary.md` (Canonical Glossary) | `NORMATIVE` |
+| Document                                                  | Lifecycle label |
+| --------------------------------------------------------- | --------------- |
+| `011-AT-ARCH-ecosystem-master-blueprint.md` (Blueprint A) | `NORMATIVE`     |
+| `012-AT-ARCH-platform-runtime-blueprint.md` (Blueprint B) | `NORMATIVE`     |
+| `013-AT-SPEC-repo-blueprint-template.md` (Blueprint C)    | `NORMATIVE`     |
+| `014-DR-GLOS-canonical-glossary.md` (Canonical Glossary)  | `NORMATIVE`     |
 
 The retroactive application adds the `state_label:` frontmatter key and the visible
 banner to each; no body content of those documents changes. This is a Class-3 solo

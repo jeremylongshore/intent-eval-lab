@@ -3,9 +3,10 @@
 **Repo class:** HYBRID — primarily a spec / methodology / research repo, with a
 contained Python research surface (`research/phase-a-0-baseline/`).
 **SOP authority:** Intent Solutions Testing SOP (`/audit-tests` + `/implement-tests`
-+ `@intentsolutions/audit-harness`). This file is the per-repo policy instance.
-**Last audit:** `/audit-tests` v7.2.0 → `TEST_AUDIT.md` (repo root). Grade at audit:
-C+ (72/100); P0-clean, P1 cleanup tracked.
+
+- `@intentsolutions/audit-harness`). This file is the per-repo policy instance.
+  **Last audit:** `/audit-tests` v7.2.0 → `TEST_AUDIT.md` (repo root). Grade at audit:
+  C+ (72/100); P0-clean, P1 cleanup tracked.
 
 This is the spec-repo-_light_ flavor of the SOP. The full 7-layer taxonomy
 (git hooks → static → unit → integration → system → E2E → acceptance) is scoped
@@ -17,15 +18,15 @@ hot path, so L5–L7 are waived. What remains is enforced for real.
 
 ## 1. Layer applicability (the 7-layer taxonomy, scoped to this repo)
 
-| Layer | Concern | Applies here? | How it is satisfied |
-| --- | --- | --- | --- |
-| **L1** | Git hooks + CI | ✅ required | `.pre-commit-config.yaml` (local) + 11 GitHub Actions workflows (CI). `.harness-hash` pins the enforcement surface. |
-| **L2** | Static analysis + lint | ✅ required | **Code:** ruff lint/format + mypy (`python-tests.yml`, advisory-tightening). **Docs:** markdownlint-cli2 + Vale + lychee + Prettier-MD (`doc-quality.yml`). **Workflow YAML:** yamllint + actionlint (`lint.yml`). |
-| **L3** | Unit + coverage | ✅ required for the Python research code | pytest (62 tests) + subprocess-aware coverage + Codecov (`python-tests.yml`). |
-| **L4** | Integration | ⏸ deferred until arms fire real API calls | Phase A.0 arms run dry-run/self-test offline today; live-API integration tests land when the arms actually call NVIDIA/Groq/etc. |
-| **L5** | System | ⛔ waived | No deployed system surface — this is a spec + research repo. |
-| **L6** | E2E | ⛔ waived | No UI / no end-user flow. The "E2E" of a spec repo is the deterministic CI self-test suite (see § 4). |
-| **L7** | Acceptance / UAT | ⛔ waived | Requirements traceability is carried by the Decision Records + bead slate, not a UAT harness (see § 6). |
+| Layer  | Concern                | Applies here?                             | How it is satisfied                                                                                                                                                                                                |
+| ------ | ---------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **L1** | Git hooks + CI         | ✅ required                               | `.pre-commit-config.yaml` (local) + 11 GitHub Actions workflows (CI). `.harness-hash` pins the enforcement surface.                                                                                                |
+| **L2** | Static analysis + lint | ✅ required                               | **Code:** ruff lint/format + mypy (`python-tests.yml`, advisory-tightening). **Docs:** markdownlint-cli2 + Vale + lychee + Prettier-MD (`doc-quality.yml`). **Workflow YAML:** yamllint + actionlint (`lint.yml`). |
+| **L3** | Unit + coverage        | ✅ required for the Python research code  | pytest (62 tests) + subprocess-aware coverage + Codecov (`python-tests.yml`).                                                                                                                                      |
+| **L4** | Integration            | ⏸ deferred until arms fire real API calls | Phase A.0 arms run dry-run/self-test offline today; live-API integration tests land when the arms actually call NVIDIA/Groq/etc.                                                                                   |
+| **L5** | System                 | ⛔ waived                                 | No deployed system surface — this is a spec + research repo.                                                                                                                                                       |
+| **L6** | E2E                    | ⛔ waived                                 | No UI / no end-user flow. The "E2E" of a spec repo is the deterministic CI self-test suite (see § 4).                                                                                                              |
+| **L7** | Acceptance / UAT       | ⛔ waived                                 | Requirements traceability is carried by the Decision Records + bead slate, not a UAT harness (see § 6).                                                                                                            |
 
 **Rule of thumb for this repo:** every _normative artifact_ (schema, drift-class
 row, projection.json, predicate spec) must have a deterministic, offline CI
@@ -74,18 +75,18 @@ Per the Testing SOP propagation path (`/sync-testing-harness`): replace
 
 ## 3. Gates and their enforcement posture
 
-| Gate | Workflow | Posture | Required? |
-| --- | --- | --- | --- |
-| Spec/doc validation (JSON-schema syntax, YAML syntax, drift-eval, surface registry, fetch-capture, lineage, classifier-walls, 6 deep-capture projections, leading-indicator self-test) | `ci.yml` | **hard-fail** | ✅ candidate required check |
-| Harness-hash verify | `harness-hash-verify.yml` | **hard-fail** (exit 2 blocks) | ✅ candidate required check |
-| Partner-name guard (CISO binding, case-insensitive) | `partner-name-guard.yml` | **hard-fail** | ✅ candidate required check |
-| Schema drift (redirect-stub shape) | `schema-drift.yml` | **hard-fail** | ✅ candidate required check |
-| Workflow-YAML lint (yamllint + actionlint) | `lint.yml` | **hard-fail** | candidate required check after 3 green days |
-| Python tests (pytest) | `python-tests.yml` | pytest runs; lint/typecheck/coverage **advisory** (`continue-on-error`) | advisory → tighten |
-| Doc quality (markdownlint, Vale, lychee, Prettier-MD) | `doc-quality.yml` | **advisory** (`continue-on-error`) | advisory → tighten |
-| Sign evidence bundle | `sign-evidence-bundle.yml` | hard-fail on signing surface | as applicable |
-| Release | `release.yml` | tag-gated | n/a |
-| Leading-indicator watch / spec-drift watch | `*-watch.yml` | scheduled cron (not PR gate) | n/a |
+| Gate                                                                                                                                                                                   | Workflow                   | Posture                                                                 | Required?                                   |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- | ----------------------------------------------------------------------- | ------------------------------------------- |
+| Spec/doc validation (JSON-schema syntax, YAML syntax, drift-eval, surface registry, fetch-capture, lineage, classifier-walls, 6 deep-capture projections, leading-indicator self-test) | `ci.yml`                   | **hard-fail**                                                           | ✅ candidate required check                 |
+| Harness-hash verify                                                                                                                                                                    | `harness-hash-verify.yml`  | **hard-fail** (exit 2 blocks)                                           | ✅ candidate required check                 |
+| Partner-name guard (CISO binding, case-insensitive)                                                                                                                                    | `partner-name-guard.yml`   | **hard-fail**                                                           | ✅ candidate required check                 |
+| Schema drift (redirect-stub shape)                                                                                                                                                     | `schema-drift.yml`         | **hard-fail**                                                           | ✅ candidate required check                 |
+| Workflow-YAML lint (yamllint + actionlint)                                                                                                                                             | `lint.yml`                 | **hard-fail**                                                           | candidate required check after 3 green days |
+| Python tests (pytest)                                                                                                                                                                  | `python-tests.yml`         | pytest runs; lint/typecheck/coverage **advisory** (`continue-on-error`) | advisory → tighten                          |
+| Doc quality (markdownlint, Vale, lychee, Prettier-MD)                                                                                                                                  | `doc-quality.yml`          | **advisory** (`continue-on-error`)                                      | advisory → tighten                          |
+| Sign evidence bundle                                                                                                                                                                   | `sign-evidence-bundle.yml` | hard-fail on signing surface                                            | as applicable                               |
+| Release                                                                                                                                                                                | `release.yml`              | tag-gated                                                               | n/a                                         |
+| Leading-indicator watch / spec-drift watch                                                                                                                                             | `*-watch.yml`              | scheduled cron (not PR gate)                                            | n/a                                         |
 
 **Tidy-First posture (per Kent Beck bd memory):** newly installed lint lanes
 start advisory (`continue-on-error: true`) so "install the tool" is separated

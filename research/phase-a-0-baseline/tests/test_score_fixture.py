@@ -48,10 +48,13 @@ def _run_scorer(target: Path) -> dict:
 
 def test_score_minimal_skill_md_returns_expected_shape(tmp_path: Path, validator_available: bool) -> None:
     """Validator output JSON must have the canonical expected.json schema."""
-    skill = _make_skill_md(tmp_path, [
-        'name: test-skill',
-        'description: A test skill for the unit-test suite.',
-    ])
+    skill = _make_skill_md(
+        tmp_path,
+        [
+            "name: test-skill",
+            "description: A test skill for the unit-test suite.",
+        ],
+    )
     result = _run_scorer(skill)
 
     # Top-level required fields per DESIGN.md § 5.1 expected.json schema
@@ -65,13 +68,17 @@ def test_score_minimal_skill_md_returns_expected_shape(tmp_path: Path, validator
 
 
 def test_score_marketplace_tier_detects_missing_required_fields(
-    tmp_path: Path, validator_available: bool,
+    tmp_path: Path,
+    validator_available: bool,
 ) -> None:
     """Marketplace tier requires 8 IS-required fields; a minimal skill should fail it."""
-    skill = _make_skill_md(tmp_path, [
-        'name: incomplete-skill',
-        'description: Missing most required fields.',
-    ])
+    skill = _make_skill_md(
+        tmp_path,
+        [
+            "name: incomplete-skill",
+            "description: Missing most required fields.",
+        ],
+    )
     result = _run_scorer(skill)
     # Marketplace tier should fail (missing 6 of 8 required fields)
     assert result["tiers"]["marketplace"]["pass"] is False
@@ -80,34 +87,42 @@ def test_score_marketplace_tier_detects_missing_required_fields(
 
 
 def test_score_full_marketplace_skill_passes(
-    tmp_path: Path, validator_available: bool,
+    tmp_path: Path,
+    validator_available: bool,
 ) -> None:
     """A SKILL.md with all 8 IS-required fields should pass marketplace tier (modulo deprecations)."""
-    skill = _make_skill_md(tmp_path, [
-        'name: complete-skill',
-        'description: A skill that satisfies the IS marketplace tier requirements.',
-        'allowed-tools: Read, Edit',
-        'version: 1.0.0',
-        'author: test@example.com',
-        'license: Apache-2.0',
-        'compatibility: Claude Code',
-        'tags:',
-        '  - test',
-        '  - smoke',
-    ])
+    skill = _make_skill_md(
+        tmp_path,
+        [
+            "name: complete-skill",
+            "description: A skill that satisfies the IS marketplace tier requirements.",
+            "allowed-tools: Read, Edit",
+            "version: 1.0.0",
+            "author: test@example.com",
+            "license: Apache-2.0",
+            "compatibility: Claude Code",
+            "tags:",
+            "  - test",
+            "  - smoke",
+        ],
+    )
     result = _run_scorer(skill)
     # All 8 required fields present
     assert result["field_completeness"] == 8
 
 
 def test_score_detects_deprecated_compatible_with_field(
-    tmp_path: Path, validator_available: bool,
+    tmp_path: Path,
+    validator_available: bool,
 ) -> None:
     """The deprecated 'compatible-with' field should be flagged."""
-    skill = _make_skill_md(tmp_path, [
-        'name: legacy-skill',
-        'description: Uses the deprecated compatible-with field.',
-        'compatible-with: Claude Code',
-    ])
+    skill = _make_skill_md(
+        tmp_path,
+        [
+            "name: legacy-skill",
+            "description: Uses the deprecated compatible-with field.",
+            "compatible-with: Claude Code",
+        ],
+    )
     result = _run_scorer(skill)
     assert result["deprecated_field_count"] >= 1

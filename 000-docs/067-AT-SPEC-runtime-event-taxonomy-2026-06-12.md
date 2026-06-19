@@ -37,12 +37,12 @@ Execution events mark EvalRun lifecycle transitions and criterion evaluation. `r
 is the kernel-pinned anchor (kernel YAML, `category: runtime`); the rest extend the category
 under the same dotted-lowercase convention.
 
-| Event | When emitted | Payload (attributes beyond the shared metadata of § 4) |
-| --- | --- | --- |
-| `runtime.run.started` | a worker leases an EvalRun and transitions it to `running` | `runtime.run.spec_content_hash` (string), `runtime.run.skill_snapshot_sha` (string) |
-| `runtime.run.finished` | the EvalRun reaches a terminal state | `runtime.run.terminal_state` (enum `judged`/`archived_success`/`archived_failed`), `runtime.run.duration_ms` (int) |
-| `runtime.criterion.evaluated` | one matcher/criterion is scored within a SessionTrace | `runtime.criterion.matcher_class` (string), `runtime.criterion.outcome` (enum `pass`/`fail`/`skip`) |
-| `runtime.dedup` | **(kernel-pinned)** a worker skips a duplicate EvalRun whose idempotency key is already terminal-or-later | `runtime.dedup.cache_hit` (bool), `runtime.dedup.terminal_state` (string) — names per kernel YAML |
+| Event                         | When emitted                                                                                              | Payload (attributes beyond the shared metadata of § 4)                                                             |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `runtime.run.started`         | a worker leases an EvalRun and transitions it to `running`                                                | `runtime.run.spec_content_hash` (string), `runtime.run.skill_snapshot_sha` (string)                                |
+| `runtime.run.finished`        | the EvalRun reaches a terminal state                                                                      | `runtime.run.terminal_state` (enum `judged`/`archived_success`/`archived_failed`), `runtime.run.duration_ms` (int) |
+| `runtime.criterion.evaluated` | one matcher/criterion is scored within a SessionTrace                                                     | `runtime.criterion.matcher_class` (string), `runtime.criterion.outcome` (enum `pass`/`fail`/`skip`)                |
+| `runtime.dedup`               | **(kernel-pinned)** a worker skips a duplicate EvalRun whose idempotency key is already terminal-or-later | `runtime.dedup.cache_hit` (bool), `runtime.dedup.terminal_state` (string) — names per kernel YAML                  |
 
 `runtime.dedup` attribute names are owned by the kernel YAML and reproduced here for category
 completeness only; the others are minted by this doc per § 4.
@@ -53,11 +53,11 @@ Judge events capture LLM-judge invocation, disagreement, and verdict. Blueprint 
 names `judge.disagreement.count` and `judge.disagreement.verdict_set` as **attributes** on the
 parent JudgeDecision span; this doc promotes them to a coherent event+attribute taxonomy.
 
-| Event | When emitted | Payload |
-| --- | --- | --- |
-| `judge.invoked` | an LLM judge is dialed for a matching event | `judge.id` (string), `judge.model_id` (string), `judge.model_version` (string) |
-| `judge.disagreement` | multiple judges scoring the same matching event return different verdicts | `judge.disagreement.count` (int), `judge.disagreement.verdict_set` (string[]) — names per Blueprint B § 4.3 |
-| `judge.verdict` | a JudgeDecision is finalized for a matching event | `judge.verdict` (string), `judge.verdict_source` (enum `llm_with_seed`/`llm_no_seed`/`deterministic`), `judge.seed` (int / null) |
+| Event                | When emitted                                                              | Payload                                                                                                                          |
+| -------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `judge.invoked`      | an LLM judge is dialed for a matching event                               | `judge.id` (string), `judge.model_id` (string), `judge.model_version` (string)                                                   |
+| `judge.disagreement` | multiple judges scoring the same matching event return different verdicts | `judge.disagreement.count` (int), `judge.disagreement.verdict_set` (string[]) — names per Blueprint B § 4.3                      |
+| `judge.verdict`      | a JudgeDecision is finalized for a matching event                         | `judge.verdict` (string), `judge.verdict_source` (enum `llm_with_seed`/`llm_no_seed`/`deterministic`), `judge.seed` (int / null) |
 
 `judge.verdict_source` aligns with the kernel RuntimeReceipt `verdict_source` contract (iec-E06)
 and is the discriminator the replay spec uses to bound RF level (`066-AT-SPEC` § 1: an
@@ -71,11 +71,11 @@ Two replay events are kernel-pinned; their attribute names are OWNED by the kern
 MUST NOT be redefined here. This doc places them in the taxonomy and adds the replay events
 `066-AT-SPEC` implies.
 
-| Event | Authority for attribute names | Payload |
-| --- | --- | --- |
-| `replay.verdict` | **kernel YAML** (deferred from this doc) | `replay.verdict` (enum `match`/`semantic_match`/`drift`/`failed`), `replay.is_replay` (bool), `replay.original_trace_id` (string), `replay.fidelity_level` (enum `RF-0..RF-4`) |
-| `replay.input.drift` | **kernel YAML** (deferred from this doc) | `replay.original_trace_id` (string), `replay.input.drifted_field` (enum over the five frozen-input dimensions) |
-| `replay.started` | this doc | `replay.original_trace_id` (string), `replay.fidelity_level` (enum `RF-0..RF-4`) — marks the re-execution span before a verdict exists |
+| Event                | Authority for attribute names            | Payload                                                                                                                                                                        |
+| -------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `replay.verdict`     | **kernel YAML** (deferred from this doc) | `replay.verdict` (enum `match`/`semantic_match`/`drift`/`failed`), `replay.is_replay` (bool), `replay.original_trace_id` (string), `replay.fidelity_level` (enum `RF-0..RF-4`) |
+| `replay.input.drift` | **kernel YAML** (deferred from this doc) | `replay.original_trace_id` (string), `replay.input.drifted_field` (enum over the five frozen-input dimensions)                                                                 |
+| `replay.started`     | this doc                                 | `replay.original_trace_id` (string), `replay.fidelity_level` (enum `RF-0..RF-4`) — marks the re-execution span before a verdict exists                                         |
 
 Two distinct authorities apply here. The kernel `schemas/v1/otel-attributes.yaml` pins the
 ATTRIBUTE NAMES and their enum VALUES — `replay.verdict` (closed enum
@@ -91,12 +91,12 @@ Governance events capture gate decisions, rollback/superseding, and ratification
 `gate.decision.drift` event is already named in Blueprint B (§ 2 RolloutGate replayability) and
 `gate.decision.emitted` in the § 6.2 mermaid; this doc registers the category coherently.
 
-| Event | When emitted | Payload |
-| --- | --- | --- |
-| `gate.decision.emitted` | a RolloutGate decision row is emitted under `gate-result/v1` | `gate.name` (string), `gate.decision` (enum `pass`/`fail`/`advisory`/`error`), `gate.policy_ref` (string) |
-| `gate.decision.drift` | re-execution of gate logic against the same bundle+policy+version yields a different decision | `gate.decision.expected` (string), `gate.decision.observed` (string) |
-| `gate.superseded` | a superseding event marks a production-Rekor-anchored row advisory-not-binding (`065-AT-SPEC` § 5) | `gate.superseded.subject_digest` (string), `gate.superseded.signing_mode` (const `rolled-back-superseded`), `gate.superseded.rollback_decision_ref` (string) |
-| `gate.ratification.recorded` | an ISEDC/acting-head ratification of a one-way-door gate is logged | `gate.ratification.decision_record` (string AT-DECR ref), `gate.ratification.class` (string) |
+| Event                        | When emitted                                                                                       | Payload                                                                                                                                                      |
+| ---------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `gate.decision.emitted`      | a RolloutGate decision row is emitted under `gate-result/v1`                                       | `gate.name` (string), `gate.decision` (enum `pass`/`fail`/`advisory`/`error`), `gate.policy_ref` (string)                                                    |
+| `gate.decision.drift`        | re-execution of gate logic against the same bundle+policy+version yields a different decision      | `gate.decision.expected` (string), `gate.decision.observed` (string)                                                                                         |
+| `gate.superseded`            | a superseding event marks a production-Rekor-anchored row advisory-not-binding (`065-AT-SPEC` § 5) | `gate.superseded.subject_digest` (string), `gate.superseded.signing_mode` (const `rolled-back-superseded`), `gate.superseded.rollback_decision_ref` (string) |
+| `gate.ratification.recorded` | an ISEDC/acting-head ratification of a one-way-door gate is logged                                 | `gate.ratification.decision_record` (string AT-DECR ref), `gate.ratification.class` (string)                                                                 |
 
 `gate.superseded` carries the `rolled-back-superseded` marker on the superseding event's
 reference per `065-AT-SPEC` § 4 — never as a mutation of the original anchored row.
@@ -107,11 +107,11 @@ reference per `065-AT-SPEC` § 4 — never as a mutation of the original anchore
 
 `bundle.emission.refused` is kernel-pinned; the persistence events extend the category.
 
-| Event | Authority | Payload |
-| --- | --- | --- |
-| `bundle.emission.refused` | **kernel YAML** | `bundle.predicate_uri` (string), `bundle.emission.refused_contract` (enum `subject`/`predicate_type`/`predicate_body`/`signature`), `bundle.emission.refused_reason` (string) |
-| `bundle.signed` | an Evidence Bundle row is signed and pushed to a transparency log (Blueprint B § 6.2 mermaid) | `bundle.predicate_uri` (string), `bundle.signing_mode` (enum `sigstore_staging`/`rekor_production`/`unsigned_experimental`) |
-| `bundle.persisted` | the content-addressed bundle blob lands in object storage with its index row written | `bundle.blob_digest` (`sha256:`), `bundle.lifecycle_class` (enum `hot`/`cold`/`archive`) |
+| Event                     | Authority                                                                                     | Payload                                                                                                                                                                       |
+| ------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bundle.emission.refused` | **kernel YAML**                                                                               | `bundle.predicate_uri` (string), `bundle.emission.refused_contract` (enum `subject`/`predicate_type`/`predicate_body`/`signature`), `bundle.emission.refused_reason` (string) |
+| `bundle.signed`           | an Evidence Bundle row is signed and pushed to a transparency log (Blueprint B § 6.2 mermaid) | `bundle.predicate_uri` (string), `bundle.signing_mode` (enum `sigstore_staging`/`rekor_production`/`unsigned_experimental`)                                                   |
+| `bundle.persisted`        | the content-addressed bundle blob lands in object storage with its index row written          | `bundle.blob_digest` (`sha256:`), `bundle.lifecycle_class` (enum `hot`/`cold`/`archive`)                                                                                      |
 
 `bundle.emission.refused` attribute names are owned by the kernel YAML and reproduced for
 category completeness; `bundle.signing_mode` aligns with the kernel SigningMode space
@@ -123,10 +123,10 @@ references, never on an emission row (`065-AT-SPEC` § 4).
 Observability covers the first-class metrics Blueprint B § 4.3 names. These are OTel **metrics**,
 not discrete events; their names are fixed by Blueprint B § 4.3 and registered here.
 
-| Metric / attribute | Kind | Authority | Brief |
-| --- | --- | --- | --- |
-| `agent.eval.judge_disagreement_rate` | metric (gauge) | Blueprint B § 4.3 | aggregate judge-disagreement rate per matcher class |
-| `agent.loop.depth` | span attribute | Blueprint B § 4.3 | tool-call recursion depth on every ToolInvocation span (bounded agentic recursion, Blueprint A § 3.5) |
+| Metric / attribute                   | Kind           | Authority         | Brief                                                                                                 |
+| ------------------------------------ | -------------- | ----------------- | ----------------------------------------------------------------------------------------------------- |
+| `agent.eval.judge_disagreement_rate` | metric (gauge) | Blueprint B § 4.3 | aggregate judge-disagreement rate per matcher class                                                   |
+| `agent.loop.depth`                   | span attribute | Blueprint B § 4.3 | tool-call recursion depth on every ToolInvocation span (bounded agentic recursion, Blueprint A § 3.5) |
 
 Per DR-010 Q3, loop depth is observable but the `agent-loop-trace/v1` predicate URI is REJECTED
 for v1 — these surfaces capture observability WITHOUT committing to an attestation predicate.
@@ -138,11 +138,11 @@ Phase A.0 null-hypothesis baseline gates the mechanism); this doc RESERVES the c
 names the events at the boundary, aligned with the `skill-refiner-pass/v1` predicate, but does
 **not** front-run refiner-internal payload shape.
 
-| Event | When emitted | Payload (boundary-only, refiner-internal fields deferred) |
-| --- | --- | --- |
-| `optimization.refiner.attempted` | the Refiner proposes a SKILL.md edit | `optimization.skill_version_id` (string), `optimization.strategy` (string) |
-| `optimization.refiner.accepted` | a proposal passes the strict-improvement-on-Pareto-dominant predicate | `optimization.predicate_uri` (const `skill-refiner-pass/v1`), `optimization.parent_version_id` (string) |
-| `optimization.refiner.rejected` | a proposal fails the acceptance predicate (regression on any behavioral) | `optimization.reject_reason` (string) |
+| Event                            | When emitted                                                             | Payload (boundary-only, refiner-internal fields deferred)                                               |
+| -------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| `optimization.refiner.attempted` | the Refiner proposes a SKILL.md edit                                     | `optimization.skill_version_id` (string), `optimization.strategy` (string)                              |
+| `optimization.refiner.accepted`  | a proposal passes the strict-improvement-on-Pareto-dominant predicate    | `optimization.predicate_uri` (const `skill-refiner-pass/v1`), `optimization.parent_version_id` (string) |
+| `optimization.refiner.rejected`  | a proposal fails the acceptance predicate (regression on any behavioral) | `optimization.reject_reason` (string)                                                                   |
 
 These names are provisional registrations; the refiner spec (forthcoming, `@j-rig/refiner-core`)
 is the authority for the refiner-internal payload once built. This doc reserves the names so two
@@ -172,12 +172,12 @@ emitters cannot diverge on spelling before the refiner lands (the Gregg finding 
 Every event in every category MUST carry the shared correlation metadata, so any event pivots
 back to its EvalRun and its lineage chain:
 
-| Field | Authority | Requirement |
-| --- | --- | --- |
-| `eval.run_id` | kernel YAML (shared) | **required** — UUIDv7 (RFC 9562) of the owning EvalRun; the idempotency key |
-| `eval.session_trace_id` | kernel YAML (shared) | recommended — UUIDv7 of the SessionTrace span the event hangs under |
-| `trace.id` | kernel YAML (shared) | recommended — W3C Trace Context trace-id propagated from API ingress |
-| timestamp | OTel span/event time | **required** — RFC 3339 UTC; the OTel event timestamp, never a wall-clock re-read |
+| Field                   | Authority            | Requirement                                                                       |
+| ----------------------- | -------------------- | --------------------------------------------------------------------------------- |
+| `eval.run_id`           | kernel YAML (shared) | **required** — UUIDv7 (RFC 9562) of the owning EvalRun; the idempotency key       |
+| `eval.session_trace_id` | kernel YAML (shared) | recommended — UUIDv7 of the SessionTrace span the event hangs under               |
+| `trace.id`              | kernel YAML (shared) | recommended — W3C Trace Context trace-id propagated from API ingress              |
+| timestamp               | OTel span/event time | **required** — RFC 3339 UTC; the OTel event timestamp, never a wall-clock re-read |
 
 An event missing `eval.run_id` is malformed and is rejected at the emission boundary the same
 way Blueprint B § 3.3 rejects a predicate-contract violation — there is no "anonymous" event.

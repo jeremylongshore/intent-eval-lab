@@ -23,22 +23,31 @@ concurrency:
   group: doc-quality-${{ github.ref }}
   cancel-in-progress: true
 
-# Tidy-first posture (per Kent Beck bd memory): all 4 doc-quality gates ADVISORY
-# on first install. Tighten to hard-fail in a follow-up PR once the corpus
-# is cleaned up. Separates "install the tool" from "fix the violations".
+# Posture: markdownlint, lychee, and prettier are REQUIRED gates — the corpus is
+# clean and the configs (.markdownlint-cli2.jsonc, lychee.toml, .prettierignore)
+# scope each gate to authored docs (vendored upstream + frozen audit snapshots +
+# the gitignored projects/ symlinks are excluded). Vale stays ADVISORY: prose
+# style should never block a code merge.
 jobs:
   markdownlint:
-    name: markdownlint-cli2 (advisory)
+    name: markdownlint-cli2
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v6
+      # Globs mirror the ignores in .markdownlint-cli2.jsonc so the CI surface
+      # equals the local one: vendored upstream snapshots, the gitignored
+      # projects/ symlinks, the frozen self-test fixture corpus, and raw research
+      # output are not authored prose to lint.
       - uses: DavidAnson/markdownlint-cli2-action@v23
         with:
           globs: |
             **/*.md
             !.audit-harness
             !node_modules
+            !projects
+            !_vendor
+            !specs/_vendor
+            !specs/drift-classification/v1/examples
             !research/phase-a-0-baseline/results/raw
             !research/**/results/**
 
@@ -56,24 +65,24 @@ jobs:
           reporter: github-pr-check
 
   link-check:
-    name: lychee (link integrity, offline, advisory)
+    name: lychee
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v6
       - uses: lycheeverse/lychee-action@v2
         with:
           args: --offline --config lychee.toml "**/*.md"
-          fail: false
+          fail: true
 
   prettier-md:
-    name: Prettier (markdown formatting, advisory)
+    name: prettier
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
           node-version: "20"
-      - run: npm install -g prettier@^3.4.0
+      # Pinned exact so local `prettier --check` matches CI byte-for-byte —
+      # prettier's markdown formatting drifts slightly between minor versions.
+      - run: npm install -g prettier@3.8.4
       - run: prettier --check "**/*.md" --ignore-path .gitignore --ignore-path .prettierignore

@@ -6,12 +6,12 @@ The `plugin-manifest` contract gets the deep capture `skill-frontmatter` and `mc
 
 ## The vendored capture (contract-keyed tier-2)
 
-| File | Authority | What |
-|---|---|---|
+| File                               | Authority                                          | What                                                                                                                                                                                                                                                                    |
+| ---------------------------------- | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `claude-code-plugins-reference.md` | reference (registered surface `plugins-reference`) | The plugins-reference page, `.md` form — the same URL/form the registry's `fetch_plugins_reference` extractor monitors. § "Plugin manifest schema" carries the Required / Metadata / Component-path field tables, the Complete-schema example, and the tolerance prose. |
-| `sample-*.plugin.json` (5) | sample-corroboration | Commit-pinned (`eb1510e1`) manifests from the official plugins repo, chosen for structural diversity (per-file `selection_basis` in `vendor-meta.json`). Ground-truth negative: NO official manifest uses any component-path field. |
-| `vendor-meta.json` | — | Per-file provenance (source URL + ref SHA + sha256 + bytes + `fetched_at`), 052-AT-SPEC conventions. |
-| `projection.json` | — | The **normative projection** (below). GENERATED — never hand-edit. |
+| `sample-*.plugin.json` (5)         | sample-corroboration                               | Commit-pinned (`eb1510e1`) manifests from the official plugins repo, chosen for structural diversity (per-file `selection_basis` in `vendor-meta.json`). Ground-truth negative: NO official manifest uses any component-path field.                                     |
+| `vendor-meta.json`                 | —                                                  | Per-file provenance (source URL + ref SHA + sha256 + bytes + `fetched_at`), 052-AT-SPEC conventions.                                                                                                                                                                    |
+| `projection.json`                  | —                                                  | The **normative projection** (below). GENERATED — never hand-edit.                                                                                                                                                                                                      |
 
 The fetch happened **once** at build time (2026-06-12). CI never refetches — offline determinism; ongoing freshness comes from the watcher's daily run over the registered `plugins-reference` surface. `claude-plugins-official` is an `unmonitored_candidates` registry row, not a registered surface; the samples' `vendor-meta.json` entries are their provenance records until one is registered per 050-AT-SPEC change discipline.
 

@@ -28,8 +28,10 @@ Pricing (standard pricing, 2026-05-29):
 Default provider: nvidia-llama-405b (zero cost, $20 Anthropic ceiling reserved
 for paid spot-checks per DR-028 P0-RATIFY-3 amendment).
 """
+
 from __future__ import annotations
 
+import contextlib
 import dataclasses
 import hashlib
 import json
@@ -62,6 +64,7 @@ DEFAULT_BUDGET_CEILING_USD: float = 20.0
 # Exceptions
 # ---------------------------------------------------------------------------
 
+
 class BudgetExceeded(RuntimeError):
     """Raised when cumulative spend reaches the configured ceiling."""
 
@@ -78,9 +81,11 @@ class BudgetExceeded(RuntimeError):
 # Value objects
 # ---------------------------------------------------------------------------
 
+
 @dataclasses.dataclass(frozen=True)
 class UsageRecord:
     """Token usage + cost from a single completion (any provider)."""
+
     input_tokens: int
     output_tokens: int
     cost_usd: float
@@ -93,16 +98,14 @@ class UsageRecord:
         input_usd_per_mtok: float = OPUS_INPUT_USD_PER_MTOK,
         output_usd_per_mtok: float = OPUS_OUTPUT_USD_PER_MTOK,
     ) -> UsageRecord:
-        cost = (
-            input_tokens / 1_000_000 * input_usd_per_mtok
-            + output_tokens / 1_000_000 * output_usd_per_mtok
-        )
+        cost = input_tokens / 1_000_000 * input_usd_per_mtok + output_tokens / 1_000_000 * output_usd_per_mtok
         return cls(input_tokens=input_tokens, output_tokens=output_tokens, cost_usd=cost)
 
 
 @dataclasses.dataclass(frozen=True)
 class CompletionResult:
     """Unified output shape from any provider completion."""
+
     text: str
     usage: UsageRecord
     model: str
@@ -113,9 +116,10 @@ class CompletionResult:
 @dataclasses.dataclass(frozen=True)
 class SpecimenMeta:
     """One entry from the manifest corpus."""
+
     path: Path
     sha256: str
-    stratum: str          # "A", "B", "C", or "held_out_A/B/C"
+    stratum: str  # "A", "B", "C", or "held_out_A/B/C"
     marketplace_pass: bool
     marketplace_score: int
     held_out: bool
@@ -128,6 +132,7 @@ class SpecimenMeta:
 @dataclasses.dataclass(frozen=True)
 class ScoreRecord:
     """Parsed output of score-fixture.py (DESIGN.md § 4 dimensions)."""
+
     fixture_sha: str
     validator_version: str
     validator_commit: str
@@ -189,6 +194,7 @@ class ScoreRecord:
 # Provider Protocol + implementations
 # ---------------------------------------------------------------------------
 
+
 class LLMProvider(Protocol):
     """Protocol that all provider classes implement.
 
@@ -224,16 +230,19 @@ def _make_synthetic_response(
     est_input = max(1, len(prompt) // 4)
     if "arm-b-proposal/v1" in prompt:
         est_output = 120
-        synthetic_text = json.dumps({
-            "schema_version": "arm-b-proposal/v1",
-            "rationale": (
-                f"Dry-run synthetic proposal ({provider_name}/{model}): "
-                "adds version field if missing to satisfy IS marketplace required set."
-            ),
-            "ops": [
-                {"op": "add", "field": "version", "value": "1.0.0"},
-            ],
-        }, indent=2)
+        synthetic_text = json.dumps(
+            {
+                "schema_version": "arm-b-proposal/v1",
+                "rationale": (
+                    f"Dry-run synthetic proposal ({provider_name}/{model}): "
+                    "adds version field if missing to satisfy IS marketplace required set."
+                ),
+                "ops": [
+                    {"op": "add", "field": "version", "value": "1.0.0"},
+                ],
+            },
+            indent=2,
+        )
     else:
         est_output = 180
         synthetic_text = (
@@ -252,7 +261,8 @@ def _make_synthetic_response(
             "---\n"
         )
     usage = UsageRecord.from_tokens(
-        est_input, est_output,
+        est_input,
+        est_output,
         input_usd_per_mtok=input_usd_per_mtok,
         output_usd_per_mtok=output_usd_per_mtok,
     )
@@ -285,9 +295,9 @@ class AnthropicProvider:
     name: str = "anthropic"
 
     _PRICING: dict[str, tuple[float, float]] = {
-        "claude-opus-4-7":   (OPUS_INPUT_USD_PER_MTOK,   OPUS_OUTPUT_USD_PER_MTOK),
+        "claude-opus-4-7": (OPUS_INPUT_USD_PER_MTOK, OPUS_OUTPUT_USD_PER_MTOK),
         "claude-sonnet-4-6": (SONNET_INPUT_USD_PER_MTOK, SONNET_OUTPUT_USD_PER_MTOK),
-        "claude-haiku-4-5":  (HAIKU_INPUT_USD_PER_MTOK,  HAIKU_OUTPUT_USD_PER_MTOK),
+        "claude-haiku-4-5": (HAIKU_INPUT_USD_PER_MTOK, HAIKU_OUTPUT_USD_PER_MTOK),
     }
 
     def __init__(
@@ -311,14 +321,10 @@ class AnthropicProvider:
         try:
             import anthropic  # type: ignore[import]
         except ImportError as exc:
-            raise ImportError(
-                "anthropic SDK not installed. Run: pip install anthropic"
-            ) from exc
+            raise ImportError("anthropic SDK not installed. Run: pip install anthropic") from exc
         api_key = os.environ.get("ANTHROPIC_API_KEY", "")
         if not api_key:
-            raise OSError(
-                "ANTHROPIC_API_KEY is not set. Export the key before running arm scripts."
-            )
+            raise OSError("ANTHROPIC_API_KEY is not set. Export the key before running arm scripts.")
         self._client = anthropic.Anthropic(api_key=api_key)
         return self._client
 
@@ -335,7 +341,9 @@ class AnthropicProvider:
 
         if self.dry_run:
             return _make_synthetic_response(
-                prompt, self.model, self.name,
+                prompt,
+                self.model,
+                self.name,
                 input_usd_per_mtok=in_rate,
                 output_usd_per_mtok=out_rate,
             )
@@ -347,11 +355,7 @@ class AnthropicProvider:
             temperature=effective_temp,
             messages=[{"role": "user", "content": prompt}],
         )
-        text = "".join(
-            block.text
-            for block in message.content
-            if hasattr(block, "text")
-        )
+        text = "".join(block.text for block in message.content if hasattr(block, "text"))
         usage = UsageRecord.from_tokens(
             input_tokens=message.usage.input_tokens,
             output_tokens=message.usage.output_tokens,
@@ -384,9 +388,9 @@ class NVIDIAProvider:
 
     _BASE_URL: str = "https://integrate.api.nvidia.com/v1"
     _MODELS: dict[str, str] = {
-        "nvidia-llama-405b":  "meta/llama-3.1-405b-instruct",
-        "nvidia-llama-70b":   "meta/llama-3.1-70b-instruct",
-        "nvidia-nemotron":    "nvidia/nemotron-4-340b-instruct",
+        "nvidia-llama-405b": "meta/llama-3.1-405b-instruct",
+        "nvidia-llama-70b": "meta/llama-3.1-70b-instruct",
+        "nvidia-nemotron": "nvidia/nemotron-4-340b-instruct",
     }
 
     def __init__(
@@ -407,14 +411,10 @@ class NVIDIAProvider:
         try:
             from openai import OpenAI  # type: ignore[import]
         except ImportError as exc:
-            raise ImportError(
-                "openai SDK not installed. Run: pip install 'openai>=1.0'"
-            ) from exc
+            raise ImportError("openai SDK not installed. Run: pip install 'openai>=1.0'") from exc
         api_key = os.environ.get("NVIDIA_API_KEY", "")
         if not api_key:
-            raise OSError(
-                "NVIDIA_API_KEY is not set. Export the key before running arm scripts."
-            )
+            raise OSError("NVIDIA_API_KEY is not set. Export the key before running arm scripts.")
         self._client = OpenAI(base_url=self._BASE_URL, api_key=api_key)
         return self._client
 
@@ -430,7 +430,9 @@ class NVIDIAProvider:
 
         if self.dry_run:
             return _make_synthetic_response(
-                prompt, self.model, self.name,
+                prompt,
+                self.model,
+                self.name,
                 input_usd_per_mtok=0.0,
                 output_usd_per_mtok=0.0,
             )
@@ -474,9 +476,9 @@ class GroqProvider:
 
     _BASE_URL: str = "https://api.groq.com/openai/v1"
     _MODELS: dict[str, str] = {
-        "groq-llama-70b":          "llama-3.1-70b-versatile",
-        "groq-llama-70b-specdec":  "llama-3.3-70b-specdec",
-        "groq-mixtral":            "mixtral-8x7b-32768",
+        "groq-llama-70b": "llama-3.1-70b-versatile",
+        "groq-llama-70b-specdec": "llama-3.3-70b-specdec",
+        "groq-mixtral": "mixtral-8x7b-32768",
     }
 
     def __init__(
@@ -497,14 +499,10 @@ class GroqProvider:
         try:
             from openai import OpenAI  # type: ignore[import]
         except ImportError as exc:
-            raise ImportError(
-                "openai SDK not installed. Run: pip install 'openai>=1.0'"
-            ) from exc
+            raise ImportError("openai SDK not installed. Run: pip install 'openai>=1.0'") from exc
         api_key = os.environ.get("GROQ_API_KEY", "")
         if not api_key:
-            raise OSError(
-                "GROQ_API_KEY is not set. Export the key before running arm scripts."
-            )
+            raise OSError("GROQ_API_KEY is not set. Export the key before running arm scripts.")
         self._client = OpenAI(base_url=self._BASE_URL, api_key=api_key)
         return self._client
 
@@ -520,7 +518,9 @@ class GroqProvider:
 
         if self.dry_run:
             return _make_synthetic_response(
-                prompt, self.model, self.name,
+                prompt,
+                self.model,
+                self.name,
                 input_usd_per_mtok=0.0,
                 output_usd_per_mtok=0.0,
             )
@@ -552,20 +552,30 @@ class GroqProvider:
 # ---------------------------------------------------------------------------
 
 _ANTHROPIC_ALIASES: dict[str, str] = {
-    "anthropic-opus":   "claude-opus-4-7",
+    "anthropic-opus": "claude-opus-4-7",
     "anthropic-sonnet": "claude-sonnet-4-6",
-    "anthropic-haiku":  "claude-haiku-4-5",
+    "anthropic-haiku": "claude-haiku-4-5",
 }
 
 _FREE_PROVIDERS: set[str] = {
-    "nvidia-llama-405b", "nvidia-llama-70b", "nvidia-nemotron",
-    "groq-llama-70b", "groq-llama-70b-specdec", "groq-mixtral",
+    "nvidia-llama-405b",
+    "nvidia-llama-70b",
+    "nvidia-nemotron",
+    "groq-llama-70b",
+    "groq-llama-70b-specdec",
+    "groq-mixtral",
 }
 
 ALL_PROVIDER_NAMES: list[str] = [
-    "anthropic-opus", "anthropic-sonnet", "anthropic-haiku",
-    "nvidia-llama-405b", "nvidia-llama-70b", "nvidia-nemotron",
-    "groq-llama-70b", "groq-llama-70b-specdec", "groq-mixtral",
+    "anthropic-opus",
+    "anthropic-sonnet",
+    "anthropic-haiku",
+    "nvidia-llama-405b",
+    "nvidia-llama-70b",
+    "nvidia-nemotron",
+    "groq-llama-70b",
+    "groq-llama-70b-specdec",
+    "groq-mixtral",
 ]
 
 
@@ -606,15 +616,13 @@ def get_provider(
             temperature=temperature,
             dry_run=dry_run,
         )
-    raise ValueError(
-        f"Unknown provider name {name!r}. "
-        f"Valid names: {ALL_PROVIDER_NAMES}"
-    )
+    raise ValueError(f"Unknown provider name {name!r}. Valid names: {ALL_PROVIDER_NAMES}")
 
 
 # ---------------------------------------------------------------------------
 # Backward-compat alias: AnthropicClient -> AnthropicProvider
 # ---------------------------------------------------------------------------
+
 
 class AnthropicClient(AnthropicProvider):
     """Deprecated alias for AnthropicProvider. Use get_provider() instead.
@@ -645,6 +653,7 @@ class AnthropicClient(AnthropicProvider):
 # ---------------------------------------------------------------------------
 # CostMeter
 # ---------------------------------------------------------------------------
+
 
 class CostMeter:
     """Track cumulative spend and enforce the budget ceiling.
@@ -688,9 +697,12 @@ class CostMeter:
         self._spent_usd += usage.cost_usd
         self._calls += 1
         is_paid_call = usage.cost_usd > 0.0
-        if self.ceiling_usd > 0.0 and self._spent_usd >= self.ceiling_usd:
-            if not self.enforce_paid_only or is_paid_call:
-                raise BudgetExceeded(spent=self._spent_usd, ceiling=self.ceiling_usd)
+        if (
+            self.ceiling_usd > 0.0
+            and self._spent_usd >= self.ceiling_usd
+            and (not self.enforce_paid_only or is_paid_call)
+        ):
+            raise BudgetExceeded(spent=self._spent_usd, ceiling=self.ceiling_usd)
 
     def remaining_usd(self) -> float:
         return max(0.0, self.ceiling_usd - self._spent_usd)
@@ -707,6 +719,7 @@ class CostMeter:
 # ---------------------------------------------------------------------------
 # ManifestReader
 # ---------------------------------------------------------------------------
+
 
 class ManifestReader:
     """Load corpus/manifest.json; yield SpecimenMeta for requested strata.
@@ -766,6 +779,7 @@ class ManifestReader:
 # ---------------------------------------------------------------------------
 # ResultPersister
 # ---------------------------------------------------------------------------
+
 
 class ResultPersister:
     """Write content-addressed result files under results/raw/<arm>/<provider>/<sha8>/.
@@ -839,6 +853,7 @@ class ResultPersister:
     def log_error(self, sha: str, error: str, context: dict | None = None) -> None:
         """Append an error record to the provider-scoped errors.jsonl file."""
         import datetime as dt
+
         error_file = self.out_dir / self.arm / self.provider / "errors.jsonl"
         record = {
             "sha8": sha[:8],
@@ -853,6 +868,7 @@ class ResultPersister:
 # ---------------------------------------------------------------------------
 # Scorer
 # ---------------------------------------------------------------------------
+
 
 class Scorer:
     """Call score-fixture.py subprocess on a SKILL.md path.
@@ -886,23 +902,17 @@ class Scorer:
 
         Raises RuntimeError if the subprocess exits non-zero.
         """
-        cmd = ["python3", str(self.score_script), str(skill_md_path),
-               "--commit", self.validator_commit]
+        cmd = ["python3", str(self.score_script), str(skill_md_path), "--commit", self.validator_commit]
         if self.validator_path:
             cmd += ["--validator-path", str(self.validator_path)]
 
         result = subprocess.run(cmd, capture_output=True, text=True, check=False)
         if result.returncode != 0:
-            raise RuntimeError(
-                f"score-fixture.py exited {result.returncode} on {skill_md_path}: "
-                f"{result.stderr[:300]}"
-            )
+            raise RuntimeError(f"score-fixture.py exited {result.returncode} on {skill_md_path}: {result.stderr[:300]}")
         try:
             raw = json.loads(result.stdout)
         except json.JSONDecodeError as exc:
-            raise RuntimeError(
-                f"score-fixture.py produced invalid JSON for {skill_md_path}: {exc}"
-            ) from exc
+            raise RuntimeError(f"score-fixture.py produced invalid JSON for {skill_md_path}: {exc}") from exc
         return ScoreRecord.from_dict(raw)
 
     def score_text(self, skill_md_text: str, tmp_dir: Path) -> ScoreRecord:
@@ -925,15 +935,15 @@ class Scorer:
             return self.score_file(tmp_path)
         finally:
             tmp_path.unlink(missing_ok=True)
-            try:
+            # non-empty (parallel call still using it); safe to leave
+            with contextlib.suppress(OSError):
                 slot.rmdir()
-            except OSError:
-                pass  # non-empty (parallel call still using it); safe to leave
 
 
 # ---------------------------------------------------------------------------
 # load_exemplars
 # ---------------------------------------------------------------------------
+
 
 def load_exemplars(
     manifest: ManifestReader,
@@ -961,10 +971,7 @@ def load_exemplars(
         return []
 
     exclude = exclude or set()
-    eligible = [
-        s for s in manifest.specimens()
-        if s.marketplace_pass and s.sha256 not in exclude
-    ]
+    eligible = [s for s in manifest.specimens() if s.marketplace_pass and s.sha256 not in exclude]
     if len(eligible) < k:
         raise ValueError(
             f"load_exemplars: requested k={k} but only {len(eligible)} eligible "
@@ -977,6 +984,7 @@ def load_exemplars(
 # ---------------------------------------------------------------------------
 # Prompt helpers
 # ---------------------------------------------------------------------------
+
 
 def extract_frontmatter(skill_md_text: str) -> str:
     """Return only the YAML frontmatter block (with delimiters) or full text."""

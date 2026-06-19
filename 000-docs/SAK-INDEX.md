@@ -35,18 +35,18 @@ Status line is the manual pointer.
 
 ## Where things live
 
-| Concern         | Path                                                                                    |
-| --------------- | --------------------------------------------------------------------------------------- |
-| Plan amendment  | `031-PP-PLAN-skill-refiner-sak-amendment-v6-2026-05-28.md` (v6 intro) + `033-PP-PLAN-skill-refiner-sak-amendment-v7-2026-05-28.md` (v7 audit-closure) |
-| Charter         | `032-AT-DECR-isedc-class-1-charter-spec-authority-kernel-draft-2026-05-28.md` (DRAFT) → ratified `044-AT-DECR-isedc-council-session-8-sak-charter-2026-06-09.md` |
-| Audit synthesis | `audit/2026-05-28-sak-incremental-audit/synthesis.md`                                   |
-| SSoT declaration | `045-RR-LAND-single-source-of-truth-and-continuous-spec-compliance-2026-06-09.md`       |
-| Governance      | `046-AT-STND-sak-governance-owners.md`                                                   |
-| Dashboard       | `SAK-DASHBOARD.md` (auto-generated; planned — bead `iel-sak-dashboard`)                  |
-| Kernel schemas  | `../../intent-eval-core/schemas/authoring/v1/`                                           |
-| Coverage map    | `intent-eval-core` `schemas/authoring/v1/6767h-coverage-map.json` (planned — bead `iec-E11-coverage-map`) |
-| 6767-h prose    | `claude-code-plugins` `000-docs/6767-h-*.md` (planned — coupling to the 6767 standard series) |
-| Beads (filter)  | `bd list --label sak --label refiner`                                                   |
+| Concern          | Path                                                                                                                                                             |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Plan amendment   | `031-PP-PLAN-skill-refiner-sak-amendment-v6-2026-05-28.md` (v6 intro) + `033-PP-PLAN-skill-refiner-sak-amendment-v7-2026-05-28.md` (v7 audit-closure)            |
+| Charter          | `032-AT-DECR-isedc-class-1-charter-spec-authority-kernel-draft-2026-05-28.md` (DRAFT) → ratified `044-AT-DECR-isedc-council-session-8-sak-charter-2026-06-09.md` |
+| Audit synthesis  | `audit/2026-05-28-sak-incremental-audit/synthesis.md`                                                                                                            |
+| SSoT declaration | `045-RR-LAND-single-source-of-truth-and-continuous-spec-compliance-2026-06-09.md`                                                                                |
+| Governance       | `046-AT-STND-sak-governance-owners.md`                                                                                                                           |
+| Dashboard        | `SAK-DASHBOARD.md` (auto-generated; planned — bead `iel-sak-dashboard`)                                                                                          |
+| Kernel schemas   | `../../intent-eval-core/schemas/authoring/v1/`                                                                                                                   |
+| Coverage map     | `intent-eval-core` `schemas/authoring/v1/6767h-coverage-map.json` (planned — bead `iec-E11-coverage-map`)                                                        |
+| 6767-h prose     | `claude-code-plugins` `000-docs/6767-h-*.md` (planned — coupling to the 6767 standard series)                                                                    |
+| Beads (filter)   | `bd list --label sak --label refiner`                                                                                                                            |
 
 ## Read order (for engineers)
 

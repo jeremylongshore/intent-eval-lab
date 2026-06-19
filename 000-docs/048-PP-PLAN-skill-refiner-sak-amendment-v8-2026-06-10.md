@@ -27,12 +27,12 @@ GitHub: jeremylongshore/intent-eval-lab#<TBA>
 
 The 2026-06-10 incremental re-audit confirmed v7 closes 11 of the 13 P0 sub-findings, but found 4 blockers — all **specification gaps, not design rejections**:
 
-| # | Finding | Defect in v7 |
-|---|---|---|
-| 1 | **F-MK-002** still open (Kleppmann, "most costly to recover from") | § 14.4 header *claims* it closed, but the earmarked bead was retargeted to F-MK-005 (a different rollback-window concern); the 3 concrete migration-concurrency rules appear nowhere. |
-| 2 | **F-AK-002** still open (Karpathy, "schemas are prompts; we don't ship prompts without evals") | The schema-POLICY eval (does isMarketplace correlate with downstream *quality*?) is unspecified; its bead is the only P0 bead naming no § section. § 14.21 measures schema-vs-fixture self-consistency, a different thing. |
-| 3 | **NEW-P0-1** (v7-introduced) | § 14.4c's 30-day calendar ceiling forces the advisory→blocking flip while staying silent on preconditions (c) zero-open-P0 and (d) governance sign-off — permitting the highest-blast-radius flip with open P0s and no human in the loop. |
-| 4 | **NEW-P0-2** (v7-introduced) | § 14.18 (decompose-then-test: restructure the v1 schemas after they "ship") directly contradicts § 14.27 (read-only-immutable: never mutate authoring/v1 after publication). |
+| #   | Finding                                                                                        | Defect in v7                                                                                                                                                                                                                              |
+| --- | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **F-MK-002** still open (Kleppmann, "most costly to recover from")                             | § 14.4 header _claims_ it closed, but the earmarked bead was retargeted to F-MK-005 (a different rollback-window concern); the 3 concrete migration-concurrency rules appear nowhere.                                                     |
+| 2   | **F-AK-002** still open (Karpathy, "schemas are prompts; we don't ship prompts without evals") | The schema-POLICY eval (does isMarketplace correlate with downstream _quality_?) is unspecified; its bead is the only P0 bead naming no § section. § 14.21 measures schema-vs-fixture self-consistency, a different thing.                |
+| 3   | **NEW-P0-1** (v7-introduced)                                                                   | § 14.4c's 30-day calendar ceiling forces the advisory→blocking flip while staying silent on preconditions (c) zero-open-P0 and (d) governance sign-off — permitting the highest-blast-radius flip with open P0s and no human in the loop. |
+| 4   | **NEW-P0-2** (v7-introduced)                                                                   | § 14.18 (decompose-then-test: restructure the v1 schemas after they "ship") directly contradicts § 14.27 (read-only-immutable: never mutate authoring/v1 after publication).                                                              |
 
 The 4 deltas below close them. Each is an acting-CTO resolution under CEO-mode delegation.
 
@@ -40,7 +40,7 @@ The 4 deltas below close them. Each is an acting-CTO resolution under CEO-mode d
 
 The Phase-4 corpus migration runs over a multi-week window against a **live, concurrently-edited** corpus (~3,543 files that are themselves being authored/PR'd during the migration). Three binding concurrency rules:
 
-1. **Pinned target version.** SKILL.md authored *during* the migration window target `LATEST_PHASE_4_VERSION` — a single kernel `authoring/v1` version frozen at migration start and recorded in `migration-manifest.json`. Authors never chase a moving schema; the manifest is the one source of "what do I target right now."
+1. **Pinned target version.** SKILL.md authored _during_ the migration window target `LATEST_PHASE_4_VERSION` — a single kernel `authoring/v1` version frozen at migration start and recorded in `migration-manifest.json`. Authors never chase a moving schema; the manifest is the one source of "what do I target right now."
 2. **Wave A precedes in-flight-PR merge.** Wave A (mechanical `batch-remediate`) for a file runs **before** any in-flight contributor PR touching that file is merged. On conflict, **wave-A-wins**; the contributor rebases onto the post-wave-A state. The reconciliation queue (**§ 14.17.3**, extended with the real-time enforcement capabilities specified in Delta 1.1 below) enforces the ordering: a file with a queued wave-A op blocks its own PR merge until wave A lands.
 3. **Wave B never on open-PR files.** Wave B (Refiner) **never** runs on a file with an OPEN PR. The reconciliation queue (§ 14.17.3 / Delta 1.1) checks per-file open-PR state; open-PR files are **parked** and re-enqueued only after the PR merges or closes (composes with § 14.17 wave-B durability — parked ≠ failed).
 
@@ -82,7 +82,7 @@ The advisory→blocking flip is the highest-blast-radius event in SAK. Its four 
 `authoring/v1` schemas have three explicit lifecycle states:
 
 1. **DRAFT** — pre-ship; freely mutable.
-2. **SHIPPED-INTERNAL** — passes lint + exists in the repo, but **read-only to CONSUMERS** (no consumer has cut over) and **not yet "published."** Still mutable by the kernel team. This is the **decompose-via-failure working state**: § 14.18 Phase 1.5 restructures the single-`$defs.isMarketplace` schema into the 4-fold composition (§ 14.10) in response to test failures *while in SHIPPED-INTERNAL*.
+2. **SHIPPED-INTERNAL** — passes lint + exists in the repo, but **read-only to CONSUMERS** (no consumer has cut over) and **not yet "published."** Still mutable by the kernel team. This is the **decompose-via-failure working state**: § 14.18 Phase 1.5 restructures the single-`$defs.isMarketplace` schema into the 4-fold composition (§ 14.10) in response to test failures _while in SHIPPED-INTERNAL_.
 3. **PUBLISHED** — first npm release of `authoring/v1` OR first consumer cutover, whichever comes first. **§ 14.27 read-only-immutable binds here, and only here:** after PUBLISHED, `authoring/v1` is NEVER mutated; bumps create `authoring/v2/`.
 
 § 14.18 (decompose-then-test) operates exclusively in DRAFT → SHIPPED-INTERNAL. § 14.27's "never mutated after publication" is scoped to PUBLISHED. The `LATEST_PHASE_4_VERSION` pin (Delta 1) names the first PUBLISHED version. No contradiction: structural mutation happens **before** publication; immutability binds **at and after** it.

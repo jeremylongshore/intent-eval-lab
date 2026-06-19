@@ -45,15 +45,15 @@ The Intent Eval Platform is **agent-native**: most of what it produces — gate 
 judge decisions, rollout decisions — is machine-generated and machine-verifiable. A
 human is **not** in the default path. This is deliberate: a verdict that requires a
 human to be trustworthy is not an attestation, it is an opinion. Per Blueprint A § 1.2,
-the platform's value proposition is *independent verifiability* — anyone with the public
+the platform's value proposition is _independent verifiability_ — anyone with the public
 signing component or a Rekor entry confirms a verdict without trusting Intent Solutions
-*or* any reviewer.
+_or_ any reviewer.
 
 This doctrine governs the **bounded exceptions**: the specific, enumerated moments at
 which a human must adjudicate before the machine result becomes binding, what that human
 is shown, and — critically — how the human's verdict re-enters the evidence chain
-**without becoming an unverifiable trust root.** It is *not* a workflow tool spec, *not*
-a UI design, and *not* a license to insert human approval as a general-purpose safety
+**without becoming an unverifiable trust root.** It is _not_ a workflow tool spec, _not_
+a UI design, and _not_ a license to insert human approval as a general-purpose safety
 blanket. Inserting a human where the machine result is already verifiable is an
 anti-pattern this doctrine names and forbids (§ 7).
 
@@ -70,10 +70,10 @@ review.** A `RolloutGate` (canonical glossary § 2.8) ship/no-ship/advisory deci
 consumed from a verified bundle against a `tests/TESTING.md` policy is **binding without
 human review.** No reviewer signature is part of the verification chain for either.
 
-This is the load-bearing inversion: the platform does not *add* trust by adding a human;
-it *preserves* verifiability by keeping the human out of the cryptographic path. A human
-review verdict is therefore never a *substitute* for a machine verdict — it is a
-**separate, additionally-attested act** (§ 4) that a *policy* may require, the same way a
+This is the load-bearing inversion: the platform does not _add_ trust by adding a human;
+it _preserves_ verifiability by keeping the human out of the cryptographic path. A human
+review verdict is therefore never a _substitute_ for a machine verdict — it is a
+**separate, additionally-attested act** (§ 4) that a _policy_ may require, the same way a
 policy may require a coverage floor.
 
 ### R2 — The human-review trigger lives in policy, never in the predicate
@@ -94,13 +94,13 @@ following cases. The set is **closed**: a new trigger is a Class-1 ISEDC act (DR
 Q6) because it changes the attestation surface (it admits a new authorized-reviewer
 identity into a signed chain).
 
-| # | Trigger | Why a machine cannot self-adjudicate | Routing class |
-| --- | --- | --- | --- |
-| HR-1 | **One-way-door governance acts** — reserving a predicate URI, a DNS zone change at a predicate subdomain, a Fulcio identity issuance, a DSSE envelope schema change, a standards-body submission, a new brand commitment, a new partner-engagement public reference. | The artifact is immutable in Rekor / the trademark register / a SIG's institutional memory. No replay un-signs a Rekor entry. | Class 1 (full 7-seat ISEDC) |
-| HR-2 | **Optimizer-proposed SKILL.md edits** that pass the Skill Refiner accept predicate (DR-028 P0-RATIFY-1: strict-improvement-on-Pareto-dominant-behavioral-with-non-regressing-others) but touch a `SkillSnapshot` that is referenced by a production rollout pin. | The accept predicate proves *no behavioral regression on the eval set*; it cannot prove the edit is *safe against criteria the eval set does not cover.* See `074-AT-STND-optimizer-safety-model`. | Class 2 (CTO + VP DevRel pair) by default; Class 1 if the edit also touches a one-way-door surface |
-| HR-3 | **A judge-disagreement event** (`judge.disagreement`, runtime-event taxonomy § 1.2) where the disagreeing judges include at least one `llm_no_seed` source AND the disagreement straddles a ship/no-ship boundary. | An `llm_no_seed` verdict cannot be replayed beyond statistical reconstruction (glossary § 3, "judge"); the machine cannot deterministically break the tie. | Class 3 (solo maintainer) — adjudication is recorded, not the disagreement re-run |
-| HR-4 | **A FailureTaxonomy admission** (a candidate MM-7+ per `CONTRIBUTING-failure-shape.md`). | Admission criteria C1/C2/C3 (≥2 engagements, type-distinct, OTel vocabulary) require human judgment that a shape recurs and does not type-fit an existing category. Adding a category is irreversible (glossary § 4). | Class 1 (vocabulary change) |
-| HR-5 | **A budget-ceiling breach** that a policy marks `require_human_ack` rather than `hard_stop` (see `073-AT-STND-economics-and-cost-governance` § 4). | The machine *can* hard-stop; whether a one-time overage is acceptable is an economic judgment the budget owner makes, not the runtime. | Class 3 (or the budget owner named in policy) |
+| #    | Trigger                                                                                                                                                                                                                                                              | Why a machine cannot self-adjudicate                                                                                                                                                                                  | Routing class                                                                                      |
+| ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| HR-1 | **One-way-door governance acts** — reserving a predicate URI, a DNS zone change at a predicate subdomain, a Fulcio identity issuance, a DSSE envelope schema change, a standards-body submission, a new brand commitment, a new partner-engagement public reference. | The artifact is immutable in Rekor / the trademark register / a SIG's institutional memory. No replay un-signs a Rekor entry.                                                                                         | Class 1 (full 7-seat ISEDC)                                                                        |
+| HR-2 | **Optimizer-proposed SKILL.md edits** that pass the Skill Refiner accept predicate (DR-028 P0-RATIFY-1: strict-improvement-on-Pareto-dominant-behavioral-with-non-regressing-others) but touch a `SkillSnapshot` that is referenced by a production rollout pin.     | The accept predicate proves _no behavioral regression on the eval set_; it cannot prove the edit is _safe against criteria the eval set does not cover._ See `074-AT-STND-optimizer-safety-model`.                    | Class 2 (CTO + VP DevRel pair) by default; Class 1 if the edit also touches a one-way-door surface |
+| HR-3 | **A judge-disagreement event** (`judge.disagreement`, runtime-event taxonomy § 1.2) where the disagreeing judges include at least one `llm_no_seed` source AND the disagreement straddles a ship/no-ship boundary.                                                   | An `llm_no_seed` verdict cannot be replayed beyond statistical reconstruction (glossary § 3, "judge"); the machine cannot deterministically break the tie.                                                            | Class 3 (solo maintainer) — adjudication is recorded, not the disagreement re-run                  |
+| HR-4 | **A FailureTaxonomy admission** (a candidate MM-7+ per `CONTRIBUTING-failure-shape.md`).                                                                                                                                                                             | Admission criteria C1/C2/C3 (≥2 engagements, type-distinct, OTel vocabulary) require human judgment that a shape recurs and does not type-fit an existing category. Adding a category is irreversible (glossary § 4). | Class 1 (vocabulary change)                                                                        |
+| HR-5 | **A budget-ceiling breach** that a policy marks `require_human_ack` rather than `hard_stop` (see `073-AT-STND-economics-and-cost-governance` § 4).                                                                                                                   | The machine _can_ hard-stop; whether a one-time overage is acceptable is an economic judgment the budget owner makes, not the runtime.                                                                                | Class 3 (or the budget owner named in policy)                                                      |
 
 Anything not on this list is **not** a human-review trigger. A reviewer who wishes a new
 trigger existed files a Class-1 ISEDC request; they do not insert ad-hoc approval steps.
@@ -137,7 +137,7 @@ is rejected over.
 
 The review surface is **read-only over the evidence chain.** A reviewer cannot edit a
 trace, re-score a judge decision, or alter a gate row. Their adjudication is an
-*additional* attested act (§ 4), appended — never a mutation. This mirrors the
+_additional_ attested act (§ 4), appended — never a mutation. This mirrors the
 append-only discipline every entity in the domain model obeys: retries are new rows, not
 edits (glossary § 2.11); regression evidence is a new pack referencing its ancestor
 (§ 2.7); superseding is a new event, not a rewrite (`065-AT-SPEC`).
@@ -154,11 +154,11 @@ SPEC § 4), with:
   HR-N trigger class, the subject digest(s) of the evidence reviewed, the verdict
   (`approve` / `reject` / `escalate`), and a free-text rationale field.
 - The reviewer's signature, the same DSSE-wrapped, optionally-Rekor-anchored way every
-  other row is signed (SPEC § 7). A human verdict that is *not* signed is **not** part of
+  other row is signed (SPEC § 7). A human verdict that is _not_ signed is **not** part of
   the evidence chain — it is a comment.
 
 The predicate URI for human-review rows is **not reserved by this document.** Reserving it
-is a Class-1 ISEDC act (DR-010 § 7 Q6). This doctrine specifies the *shape and discipline*
+is a Class-1 ISEDC act (DR-010 § 7 Q6). This doctrine specifies the _shape and discipline_
 of human-review attestation so that when the URI is reserved (candidate name
 `human-review/v1`, host `evals.intentsolutions.io` only, never `labs.`), it has a
 governing contract. Until reserved, human adjudications are recorded as Class-N Decision
@@ -166,14 +166,14 @@ Records (§ 5) and are not yet emitted as signed predicate rows.
 
 ### R6 — The human verdict never becomes a trust root
 
-A human-review row is *evidence that a human reviewed*, not *proof that the thing reviewed
-is correct.* A consumer that verifies a `human-review/v1` row learns "reviewer R, whose
+A human-review row is _evidence that a human reviewed_, not _proof that the thing reviewed
+is correct._ A consumer that verifies a `human-review/v1` row learns "reviewer R, whose
 identity is cryptographically established, approved evidence with digest D at time T" — it
 does **not** learn that D is good. The machine verdicts D contains remain independently
 verifiable on their own merits. This is the firewall against the platform's worst failure
 mode: a reviewer signature becoming a substitute for verifiable evidence, such that
-disagreeing with the reviewer requires trusting or distrusting a *person* rather than
-re-checking *math.* Per R1, the human is additive, never substitutive.
+disagreeing with the reviewer requires trusting or distrusting a _person_ rather than
+re-checking _math._ Per R1, the human is additive, never substitutive.
 
 ## 5. Governance routing for human-review acts
 
@@ -210,12 +210,12 @@ Human review is the **escalation tier** of two sibling doctrines:
 ## 7. Anti-patterns — refuse on sight
 
 - **Human-as-trust-root.** Treating a reviewer signature as evidence that the reviewed
-  thing is *correct* rather than evidence that a *review occurred* (violates R6). The
+  thing is _correct_ rather than evidence that a _review occurred_ (violates R6). The
   machine verdicts stand or fall on their own verification.
 - **Review where the machine already verifies.** Inserting a mandatory human approval on a
   gate result that is already signed, schema-valid, and digest-matched. The human adds
   latency and a fallible trust dependency, and removes nothing. If a policy wants a second
-  opinion, it requires a second *machine* judge (a `JudgeDecision`), not a human.
+  opinion, it requires a second _machine_ judge (a `JudgeDecision`), not a human.
 - **Unsigned human verdict in the chain.** Recording a human "approval" as a comment, a
   PR review, or a Slack thumbs-up and treating it as part of the evidence. A human verdict
   that matters is a signed row (R5) or it is not in the chain.

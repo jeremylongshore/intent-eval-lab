@@ -16,6 +16,11 @@ exclude = [
   "^https://twitter\\.com",
   "^https://x\\.com",
   "^https://linkedin\\.com",
+  # Local-filesystem URLs referenced in prose as commands/paths (e.g. the
+  # `bd backup sync` target file:///home/jeremy/000-projects/beads-backups/).
+  # These are operator paths on a dev box, never resolvable in a CI checkout —
+  # include_verbatim extracts them even from code spans, so exclude the scheme.
+  "^file://",
 ]
 
 # Skip linkbacks to GitHub anchors that change frequently
@@ -23,9 +28,16 @@ exclude_path = [
   ".audit-harness",
   "node_modules",
   "research/phase-a-0-baseline/results/raw",
+  # Vendored upstream snapshots are commit-pinned verbatim copies — their
+  # root-relative doc links (/en/…) resolve against the upstream site, not this
+  # repo, and they must stay byte-identical, so they are not ours to fix.
+  "_vendor",
+  "specs/_vendor",
+  # Constituent-project symlinks (gitignored; not part of this repo's CI checkout).
+  "projects",
+  # Frozen brief-pack — verbatim point-in-time copies of live docs captured for the
+  # 2026-05-26 plan audit. Their internal relative links are valid in the originals'
+  # 000-docs/ location; editing the copies would falsify the snapshot, so they are
+  # excluded the same way as vendored content.
+  "000-docs/audit/2026-05-26-plan-audit/brief-pack",
 ]
-
-# Cache to avoid hammering external hosts in CI
-[cache]
-enabled = true
-max_cache_age = "7d"

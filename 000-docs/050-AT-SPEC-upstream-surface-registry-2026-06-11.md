@@ -12,31 +12,31 @@ Machine-readable copy: [`specs/upstream-surface-registry.v1.json`](../specs/upst
 
 1. **official-spec-machine-readable** — e.g. the MCP `schema.ts`. Exact field-level diffing possible (the FF#2 proving ground).
 2. **official-spec** — the normative source (`agentskills.io` for skills; `modelcontextprotocol.io` for MCP).
-3. **anthropic-doc** — a Claude/Anthropic page *about* a spec; beaten by the official spec it describes.
+3. **anthropic-doc** — a Claude/Anthropic page _about_ a spec; beaten by the official spec it describes.
 4. **reference** — a Claude Code reference page; the spec itself for Claude-Code-only contracts (hooks, settings, slash-commands, sub-agents, plugin-manifest, marketplace) that have no separate open standard.
 5. **release-feed** — a GH `releases.atom`; the earliest material-change signal, ahead of any page edit.
-6. **changelog** — a CHANGELOG / npm version; detects *that* change happened, while the reference page is the spec.
+6. **changelog** — a CHANGELOG / npm version; detects _that_ change happened, while the reference page is the spec.
 
 ## The 16 monitored surfaces
 
-| Surface | Contract | Wave | Authority tier | Machine-readable |
-|---|---|---|---|---|
-| `agentskills-spec` | skill-frontmatter | 0 | official-spec | — |
-| `platform-skills-overview` | skill-frontmatter | 0 | anthropic-doc | — |
-| `skills-releases` | skill-frontmatter | 0 | release-feed | — |
-| `mcp-schema-ts` | mcp-config | 1 | **official-spec-machine-readable** | ✅ |
-| `mcp-spec-docs` | mcp-config | 1 | official-spec | — |
-| `mcp-releases` | mcp-config | 2 | release-feed | — |
-| `claude-hooks` | hook-config | 1 | reference | — |
-| `claude-settings` | hook-config | 1 | reference | — |
-| `claude-slash-commands` | slash-commands | 1 | reference | — |
-| `plugins-reference` | plugin-manifest | 2 | reference | — |
-| `sub-agents` | agent-definition | 2 | reference | — |
-| `plugin-marketplaces` | marketplace-catalog | 2 | reference | — |
-| `claude-code-changelog` | version-signal | 0 | changelog | — |
-| `claude-code-npm` | version-signal | 0 | changelog | ✅ |
-| `claude-code-releases` | version-signal | 2 | release-feed | — |
-| `anthropic-engineering` | cross-cutting-signal | 0 | release-feed | — |
+| Surface                    | Contract             | Wave | Authority tier                     | Machine-readable |
+| -------------------------- | -------------------- | ---- | ---------------------------------- | ---------------- |
+| `agentskills-spec`         | skill-frontmatter    | 0    | official-spec                      | —                |
+| `platform-skills-overview` | skill-frontmatter    | 0    | anthropic-doc                      | —                |
+| `skills-releases`          | skill-frontmatter    | 0    | release-feed                       | —                |
+| `mcp-schema-ts`            | mcp-config           | 1    | **official-spec-machine-readable** | ✅               |
+| `mcp-spec-docs`            | mcp-config           | 1    | official-spec                      | —                |
+| `mcp-releases`             | mcp-config           | 2    | release-feed                       | —                |
+| `claude-hooks`             | hook-config          | 1    | reference                          | —                |
+| `claude-settings`          | hook-config          | 1    | reference                          | —                |
+| `claude-slash-commands`    | slash-commands       | 1    | reference                          | —                |
+| `plugins-reference`        | plugin-manifest      | 2    | reference                          | —                |
+| `sub-agents`               | agent-definition     | 2    | reference                          | —                |
+| `plugin-marketplaces`      | marketplace-catalog  | 2    | reference                          | —                |
+| `claude-code-changelog`    | version-signal       | 0    | changelog                          | —                |
+| `claude-code-npm`          | version-signal       | 0    | changelog                          | ✅               |
+| `claude-code-releases`     | version-signal       | 2    | release-feed                       | —                |
+| `anthropic-engineering`    | cross-cutting-signal | 0    | release-feed                       | —                |
 
 Every one of the 6 kernel authoring contracts (skill-frontmatter, plugin-manifest, agent-definition, mcp-config, hook-config, marketplace-catalog) has its primary upstream surface covered, plus slash-commands/settings and the version/release signals.
 

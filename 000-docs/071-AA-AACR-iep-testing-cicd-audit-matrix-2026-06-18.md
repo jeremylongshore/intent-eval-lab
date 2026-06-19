@@ -36,26 +36,26 @@
 
 **P1 — Missing top-of-taxonomy coverage on the eval engines:**
 
-6. **[j-rig-binary-eval · HIGH · L6]** **No e2e/acceptance test drives the `j-rig` CLI against a real fixture SKILL.md** and asserts a binary pass/fail verdict (`cli/index.test.ts` is export-existence; smoke is `1+1`). The tool that evaluates skills has no test proving it evaluates a skill — highest-value missing layer for the product.
-7. **[j-rig-binary-eval · HIGH · L7]** **No `TEST_AUDIT.md` exists** despite the 2026-05-01 baseline doc explicitly committing to produce one via `/audit-tests`. The mandated diagnostic artifact was never generated (this very bead was created to do so).
+1. **[j-rig-binary-eval · HIGH · L6]** **No e2e/acceptance test drives the `j-rig` CLI against a real fixture SKILL.md** and asserts a binary pass/fail verdict (`cli/index.test.ts` is export-existence; smoke is `1+1`). The tool that evaluates skills has no test proving it evaluates a skill — highest-value missing layer for the product.
+2. **[j-rig-binary-eval · HIGH · L7]** **No `TEST_AUDIT.md` exists** despite the 2026-05-01 baseline doc explicitly committing to produce one via `/audit-tests`. The mandated diagnostic artifact was never generated (this very bead was created to do so).
 
 **P2 — Dark/unwired gates + supply-chain breadth:**
 
-8. **[j-rig-binary-eval · MEDIUM · L2]** Vendored `arch`/`crap`/`bias`/`gherkin` harness scripts are installed but **never invoked** by any CI/hook/script — present-but-dark, catching nothing. Wire them into CI.
-9. **[intent-eval-core · MEDIUM · L1]** Four PR-triggering workflows (changelog-observance, coverage-map-gates, doc-quality, prose-anchor-validity) are **non-required** — a red result doesn't block merge. Add the load-bearing ones (coverage-map-gates, prose-anchor-validity, changelog-observance) to required checks.
-10. **[intent-eval-core · MEDIUM · documentation]** Committed `TEST_AUDIT.md` is **two versions stale** (claims v0.1.0/8 files/154 tests vs actual v0.6.0/37 files/1040 tests). Re-run `/audit-tests`, refresh TEST_AUDIT.md + tests/TESTING.md.
-11. **[audit-harness · MEDIUM · L2]** `dependabot.yml` covers only github-actions + npm; the **python/ (PyPI) + rust/ (crates) polyglot wrappers get no dep-update/vuln coverage**. Add pip + cargo ecosystems. _(Same root cause as P0 #1.)_
-12. **[intent-rollout-gate · MEDIUM · L2]** **No dependabot.yml and no CodeQL** — despite SECURITY.md promising weekly dependabot once a runtime locked (now locked), and this repo sitting at the highest-leverage supply-chain position (every adopter's deployment-decision tier). Add both.
-13. **[audit-harness · MEDIUM · L7]** **No self-coverage instrumentation and no self `tests/TESTING.md`** — the tool enforces a coverage floor + TESTING.md on every consumer but holds itself to neither. Dogfooding gap.
+1. **[j-rig-binary-eval · MEDIUM · L2]** Vendored `arch`/`crap`/`bias`/`gherkin` harness scripts are installed but **never invoked** by any CI/hook/script — present-but-dark, catching nothing. Wire them into CI.
+2. **[intent-eval-core · MEDIUM · L1]** Four PR-triggering workflows (changelog-observance, coverage-map-gates, doc-quality, prose-anchor-validity) are **non-required** — a red result doesn't block merge. Add the load-bearing ones (coverage-map-gates, prose-anchor-validity, changelog-observance) to required checks.
+3. **[intent-eval-core · MEDIUM · documentation]** Committed `TEST_AUDIT.md` is **two versions stale** (claims v0.1.0/8 files/154 tests vs actual v0.6.0/37 files/1040 tests). Re-run `/audit-tests`, refresh TEST_AUDIT.md + tests/TESTING.md.
+4. **[audit-harness · MEDIUM · L2]** `dependabot.yml` covers only github-actions + npm; the **python/ (PyPI) + rust/ (crates) polyglot wrappers get no dep-update/vuln coverage**. Add pip + cargo ecosystems. _(Same root cause as P0 #1.)_
+5. **[intent-rollout-gate · MEDIUM · L2]** **No dependabot.yml and no CodeQL** — despite SECURITY.md promising weekly dependabot once a runtime locked (now locked), and this repo sitting at the highest-leverage supply-chain position (every adopter's deployment-decision tier). Add both.
+6. **[audit-harness · MEDIUM · L7]** **No self-coverage instrumentation and no self `tests/TESTING.md`** — the tool enforces a coverage floor + TESTING.md on every consumer but holds itself to neither. Dogfooding gap.
 
 **P3 — Hardening + DX polish (low severity):**
 
-14. **[j-rig-binary-eval · MEDIUM · L3]** **No mutation testing** (no Stryker) — coverage proves lines execute, not that assertions catch faults; for a binary-verdict engine, mutation is the natural next gate.
-15. **[audit-harness · MEDIUM · L2]** **No bash version-floor guard** — scripts use bash-4+ features (`mapfile`/assoc arrays) but no `BASH_VERSINFO` check; macOS bash-3.2 users get cryptic failures. _(Same root cause as P0 #1.)_
-16. **[intent-rollout-gate · MEDIUM · L2]** **No coverage tooling/floor** on a ~2-file fully-testable surface — cheap, high-value gate to add (`vitest --coverage` v8 + TESTING.md floor).
-17. **[intent-eval-lab · MEDIUM · L3/L1]** 15 load-bearing `scripts/*.py` spec-projection tools have **no pytest** (only embedded `--self-test` mixing test logic into prod code); vendored harness is **3 patches behind** (v1.1.5 vs npm 1.1.8). Extract tests to a real suite; re-vendor + re-pin.
-18. **[intent-eval-core · LOW · L4/L1]** SemVer api-extractor gate relies on a fragile two-step `continue-on-error`+re-fail pattern; escape-scan is **pre-commit-only (bypassable via `--no-verify`)**, never CI-enforced. Make `api:check` blocking; add a CI escape-scan range step.
-19. **[cross-repo · LOW · docs]** Pervasive **CLAUDE.md / doc drift** — j-rig CLAUDE.md still says MIT (actually Apache-2.0) + version.txt-canonical + auto-bump-releases (all wrong); intent-rollout-gate has `v0.2.0` code comments on a v0.1.0 release. Reconcile in each repo's next touch.
+1. **[j-rig-binary-eval · MEDIUM · L3]** **No mutation testing** (no Stryker) — coverage proves lines execute, not that assertions catch faults; for a binary-verdict engine, mutation is the natural next gate.
+2. **[audit-harness · MEDIUM · L2]** **No bash version-floor guard** — scripts use bash-4+ features (`mapfile`/assoc arrays) but no `BASH_VERSINFO` check; macOS bash-3.2 users get cryptic failures. _(Same root cause as P0 #1.)_
+3. **[intent-rollout-gate · MEDIUM · L2]** **No coverage tooling/floor** on a ~2-file fully-testable surface — cheap, high-value gate to add (`vitest --coverage` v8 + TESTING.md floor).
+4. **[intent-eval-lab · MEDIUM · L3/L1]** 15 load-bearing `scripts/*.py` spec-projection tools have **no pytest** (only embedded `--self-test` mixing test logic into prod code); vendored harness is **3 patches behind** (v1.1.5 vs npm 1.1.8). Extract tests to a real suite; re-vendor + re-pin.
+5. **[intent-eval-core · LOW · L4/L1]** SemVer api-extractor gate relies on a fragile two-step `continue-on-error`+re-fail pattern; escape-scan is **pre-commit-only (bypassable via `--no-verify`)**, never CI-enforced. Make `api:check` blocking; add a CI escape-scan range step.
+6. **[cross-repo · LOW · docs]** Pervasive **CLAUDE.md / doc drift** — j-rig CLAUDE.md still says MIT (actually Apache-2.0) + version.txt-canonical + auto-bump-releases (all wrong); intent-rollout-gate has `v0.2.0` code comments on a v0.1.0 release. Reconcile in each repo's next touch.
 
 ## What to Fix First
 

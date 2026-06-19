@@ -31,21 +31,21 @@ expresses fidelity per predicate (`gate-result/v1` = RF-strict; `eval-verdict/v1
 resolve to. A higher level is a strict superset of the guarantees below it and a strict superset
 of the metadata they require (§ 2).
 
-| Level | Name | GUARANTEE — re-execution reproduces | Does NOT guarantee | Cost |
-| --- | --- | --- | --- | --- |
-| **RF-0** | record-only | nothing is re-executed; the record is preserved for inspection but cannot be replayed | any reproduction at all | metadata only; no frozen inputs |
-| **RF-1** | deterministic-output | the recorded outputs are returned for the recorded inputs **without re-invoking the model** — a faithful playback of what was captured | that re-running the model today would still produce those outputs | recorded input/output pairs + their hashes |
-| **RF-2** | model+seed re-execution | re-invoking the **pinned model id+version with the pinned seed** against the pinned, tokenized inputs reproduces the verdict | environment/feature-flag invariance — only model+seed are frozen | RF-1 + model id/version + tokenizer + seed |
-| **RF-3** | environment-pinned re-execution | RF-2 **plus** pinned runtime/OS versions and a frozen feature-flag snapshot reproduce the verdict; the full execution context is specifiable | bit-exact transport/floating-point identity across hardware | RF-2 + environment block + feature-flags snapshot |
-| **RF-4** | bit-exact / full-provenance | byte-identical re-execution: same bytes in, same bytes out, with a complete signed provenance chain to the original | (this is the ceiling — it guarantees identity, at the cost of pinning everything) | RF-3 + full provenance chain + deterministic transport |
+| Level    | Name                            | GUARANTEE — re-execution reproduces                                                                                                          | Does NOT guarantee                                                                | Cost                                                   |
+| -------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| **RF-0** | record-only                     | nothing is re-executed; the record is preserved for inspection but cannot be replayed                                                        | any reproduction at all                                                           | metadata only; no frozen inputs                        |
+| **RF-1** | deterministic-output            | the recorded outputs are returned for the recorded inputs **without re-invoking the model** — a faithful playback of what was captured       | that re-running the model today would still produce those outputs                 | recorded input/output pairs + their hashes             |
+| **RF-2** | model+seed re-execution         | re-invoking the **pinned model id+version with the pinned seed** against the pinned, tokenized inputs reproduces the verdict                 | environment/feature-flag invariance — only model+seed are frozen                  | RF-1 + model id/version + tokenizer + seed             |
+| **RF-3** | environment-pinned re-execution | RF-2 **plus** pinned runtime/OS versions and a frozen feature-flag snapshot reproduce the verdict; the full execution context is specifiable | bit-exact transport/floating-point identity across hardware                       | RF-2 + environment block + feature-flags snapshot      |
+| **RF-4** | bit-exact / full-provenance     | byte-identical re-execution: same bytes in, same bytes out, with a complete signed provenance chain to the original                          | (this is the ceiling — it guarantees identity, at the cost of pinning everything) | RF-3 + full provenance chain + deterministic transport |
 
 **When a consumer needs each.**
 
-- **RF-0** — telemetry, ephemeral diagnostics, or any record whose value is the *fact that it
-  happened*, not its re-runnability (e.g. a `cost-attribution/v1` row, which Blueprint B § 3.2
+- **RF-0** — telemetry, ephemeral diagnostics, or any record whose value is the _fact that it
+  happened_, not its re-runnability (e.g. a `cost-attribution/v1` row, which Blueprint B § 3.2
   flags RF-N/A because cost is not replay-deterministic by nature).
-- **RF-1** — dashboards, side-by-side diff views, and incident forensics that need *what was
-  observed* without paying to re-invoke a provider. RF-1 answers "what did the system record?"
+- **RF-1** — dashboards, side-by-side diff views, and incident forensics that need _what was
+  observed_ without paying to re-invoke a provider. RF-1 answers "what did the system record?"
 - **RF-2** — regression analysis and one-variable-change discipline (Blueprint A § 1.2
   principle 6): change exactly the model or the seed and observe the verdict shift, everything
   else held.
@@ -70,26 +70,26 @@ MUST NOT contradict a pinned name. Where a field overlaps RuntimeReceipt, the re
 canonical carrier and the replay record references it by `eval_run_id`; fields below that do not
 already live on the receipt are the replay-specific additions.
 
-| Field | Type | Required at RF level | Brief |
-| --- | --- | --- | --- |
-| `rf_level` | enum `RF-0..RF-4` | all | the level achieved (not merely targeted); a verifier checks the level against the metadata actually present |
-| `eval_run_id` | UUIDv7 | all | FK to the originating EvalRun; the lineage anchor (§ 3) |
-| `recorded_at` | RFC 3339 UTC | all | when the original execution was captured (mirrors RuntimeReceipt `created_at`) |
-| `model_id` | string | RF-2+ | provider+model identifier (e.g. an Anthropic/OpenAI model slug) |
-| `model_version` | string | RF-2+ | the pinned model version/snapshot; "latest" is NEVER acceptable at RF-2+ |
-| `seed` | integer / null | RF-2+ | the seed frozen at original execution; `verdict_source=llm_no_seed` rows cannot reach RF-2 |
-| `tokenizer_id` | string | RF-2+ | the tokenizer used to freeze inputs (input freeze is tokenized per Blueprint B § 3.2.1) |
-| `tokenizer_version` | string | RF-2+ | tokenizer version; a tokenizer bump that changes token boundaries is `replay.input.drift` |
-| `clock_basis` | RFC 3339 UTC / null | RF-2+ | any clock value injected into the run (frozen "now"); null when the run is clock-independent |
-| `environment` | object | RF-3+ | `{runtime_versions: {tool_id: version}, os: string, arch: string}` — mirrors RuntimeReceipt `tool_versions` + adds OS/arch |
-| `feature_flags_snapshot` | object | RF-3+ | the exact flag→value map in effect at execution; a content-addressed snapshot, never a live read |
-| `provider_adapter_versions` | object | RF-3+ | `{provider_id: version_string}` — mirrors RuntimeReceipt `provider_adapter_versions` |
-| `retry_attempt` | integer | RF-1+ | which attempt produced this record (retries are new rows per Blueprint B ToolInvocation rule, not mutations) |
-| `attempt_count` | integer | RF-1+ | total attempts observed for the logical step (lets a verifier detect a missing intermediate attempt) |
-| `cost_basis_version` | string | RF-1+ | the cost-basis in effect (mirrors CostRecord `cost_basis_version`); a replay declares original-vs-replay basis |
-| `input_digest` | `sha256:` | RF-1+ | content hash of the frozen, tokenized inputs |
-| `output_digest` | `sha256:` | RF-1+ | content hash of the recorded outputs (the RF-1 playback target) |
-| `provenance_chain` | array of `sha256:` | RF-4 | the full ordered digest chain from this record to the original signed attestation |
+| Field                       | Type                | Required at RF level | Brief                                                                                                                      |
+| --------------------------- | ------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `rf_level`                  | enum `RF-0..RF-4`   | all                  | the level achieved (not merely targeted); a verifier checks the level against the metadata actually present                |
+| `eval_run_id`               | UUIDv7              | all                  | FK to the originating EvalRun; the lineage anchor (§ 3)                                                                    |
+| `recorded_at`               | RFC 3339 UTC        | all                  | when the original execution was captured (mirrors RuntimeReceipt `created_at`)                                             |
+| `model_id`                  | string              | RF-2+                | provider+model identifier (e.g. an Anthropic/OpenAI model slug)                                                            |
+| `model_version`             | string              | RF-2+                | the pinned model version/snapshot; "latest" is NEVER acceptable at RF-2+                                                   |
+| `seed`                      | integer / null      | RF-2+                | the seed frozen at original execution; `verdict_source=llm_no_seed` rows cannot reach RF-2                                 |
+| `tokenizer_id`              | string              | RF-2+                | the tokenizer used to freeze inputs (input freeze is tokenized per Blueprint B § 3.2.1)                                    |
+| `tokenizer_version`         | string              | RF-2+                | tokenizer version; a tokenizer bump that changes token boundaries is `replay.input.drift`                                  |
+| `clock_basis`               | RFC 3339 UTC / null | RF-2+                | any clock value injected into the run (frozen "now"); null when the run is clock-independent                               |
+| `environment`               | object              | RF-3+                | `{runtime_versions: {tool_id: version}, os: string, arch: string}` — mirrors RuntimeReceipt `tool_versions` + adds OS/arch |
+| `feature_flags_snapshot`    | object              | RF-3+                | the exact flag→value map in effect at execution; a content-addressed snapshot, never a live read                           |
+| `provider_adapter_versions` | object              | RF-3+                | `{provider_id: version_string}` — mirrors RuntimeReceipt `provider_adapter_versions`                                       |
+| `retry_attempt`             | integer             | RF-1+                | which attempt produced this record (retries are new rows per Blueprint B ToolInvocation rule, not mutations)               |
+| `attempt_count`             | integer             | RF-1+                | total attempts observed for the logical step (lets a verifier detect a missing intermediate attempt)                       |
+| `cost_basis_version`        | string              | RF-1+                | the cost-basis in effect (mirrors CostRecord `cost_basis_version`); a replay declares original-vs-replay basis             |
+| `input_digest`              | `sha256:`           | RF-1+                | content hash of the frozen, tokenized inputs                                                                               |
+| `output_digest`             | `sha256:`           | RF-1+                | content hash of the recorded outputs (the RF-1 playback target)                                                            |
+| `provenance_chain`          | array of `sha256:`  | RF-4                 | the full ordered digest chain from this record to the original signed attestation                                          |
 
 A record claiming RF-N but missing any field marked required at RF-N is **malformed**, not
 "degraded RF" — it is rejected at the emission boundary the same way Blueprint B § 3.3 rejects a
@@ -108,7 +108,7 @@ is faithful only if every check applicable at its level passes; the verdict is e
    predicate body (verdict + reasons), since transport-level byte identity is not guaranteed
    below RF-4.
 2. **Lineage chain.** Walk the lineage per Blueprint B § 3.2.2: `EvalRun → SessionTrace →
-   ToolInvocation` chain hashes must match, and the replay record's `eval_run_id` must resolve to
+ToolInvocation` chain hashes must match, and the replay record's `eval_run_id` must resolve to
    the original through the append-only lineage log (`054-AT-SPEC`). The replay is keyed to the
    original by `eval_run_id` + the originating record's content digest — never by mutable position.
 3. **Integrity checks.** Verify the RuntimeReceipt signature (RF-2+) and, at RF-3+, that the
@@ -118,12 +118,12 @@ is faithful only if every check applicable at its level passes; the verdict is e
 4. **Divergence handling.** A divergence is any discrepancy that survives checks 1–3 at the
    claimed level. What counts as divergence is level-dependent:
 
-   | Level | `match` | `semantic_match` | `drift` |
-   | --- | --- | --- | --- |
-   | RF-1 | output bytes identical to recorded | n/a (playback, no re-execution) | recorded output absent or hash mismatch |
-   | RF-2 | verdict + reasons identical | verdict identical, reasons differ in non-load-bearing text | verdict differs under pinned model+seed |
-   | RF-3 | RF-2 `match` under pinned environment | RF-2 `semantic_match` under pinned environment | RF-2 result diverges, or a frozen-input mismatch fired |
-   | RF-4 | full output bytes identical | (RF-4 admits no `semantic_match` — bit-exact or it is `drift`) | any byte difference |
+   | Level | `match`                               | `semantic_match`                                               | `drift`                                                |
+   | ----- | ------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------ |
+   | RF-1  | output bytes identical to recorded    | n/a (playback, no re-execution)                                | recorded output absent or hash mismatch                |
+   | RF-2  | verdict + reasons identical           | verdict identical, reasons differ in non-load-bearing text     | verdict differs under pinned model+seed                |
+   | RF-3  | RF-2 `match` under pinned environment | RF-2 `semantic_match` under pinned environment                 | RF-2 result diverges, or a frozen-input mismatch fired |
+   | RF-4  | full output bytes identical           | (RF-4 admits no `semantic_match` — bit-exact or it is `drift`) | any byte difference                                    |
 
    `failed` is reserved for a verification that could not complete (the original record is
    unreadable, the lineage chain is broken, or a required signature is invalid) — distinct from
@@ -160,13 +160,13 @@ resolution rules). This is the same append-only discipline the lineage log enfor
 
 **Storage implications — what MUST be persisted per level.**
 
-| Level | Persist |
-| --- | --- |
-| RF-0 | the record + its metadata only; no frozen inputs/outputs |
-| RF-1 | RF-0 + recorded input/output blobs + `input_digest`/`output_digest` |
-| RF-2 | RF-1 + model id/version + tokenizer id/version + seed + clock basis |
-| RF-3 | RF-2 + the `environment` block + the content-addressed `feature_flags_snapshot` + provider-adapter versions |
-| RF-4 | RF-3 + the full `provenance_chain` + transport-deterministic output bytes |
+| Level | Persist                                                                                                     |
+| ----- | ----------------------------------------------------------------------------------------------------------- |
+| RF-0  | the record + its metadata only; no frozen inputs/outputs                                                    |
+| RF-1  | RF-0 + recorded input/output blobs + `input_digest`/`output_digest`                                         |
+| RF-2  | RF-1 + model id/version + tokenizer id/version + seed + clock basis                                         |
+| RF-3  | RF-2 + the `environment` block + the content-addressed `feature_flags_snapshot` + provider-adapter versions |
+| RF-4  | RF-3 + the full `provenance_chain` + transport-deterministic output bytes                                   |
 
 The frozen inputs/outputs are content-addressed blobs in object storage (Blueprint B § 5.1); the
 record row carries only the digests. A `feature_flags_snapshot` at RF-3+ is itself
