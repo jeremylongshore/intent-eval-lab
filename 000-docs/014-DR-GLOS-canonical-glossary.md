@@ -47,9 +47,9 @@ When in doubt about which section a term belongs in, prefer the section that cap
 
 ---
 
-## 2. The 13 canonical entities
+## 2. The 14 canonical entities
 
-The canonical domain model is the 13-entity directed-acyclic reference graph defined in Blueprint B § 2. Each entity below carries a one-paragraph definition for glossary purposes; the **complete 10-attribute schema** (Purpose · Required fields · UUID strategy · Mutability rules · Retention policy · Replayability guarantees · Provenance requirements · Lifecycle states · Storage recommendations · Audit requirements) lives in Blueprint B § 2.N for each entity N. Cross-references in any normative doc that need the full schema **MUST** link to Blueprint B § 2.N — not redefine the schema here.
+The canonical domain model is the 13-entity directed-acyclic reference graph defined in Blueprint B § 2, plus `SkillVersion` — the **14th** entity, added post-Blueprint-B by DR-028 T1 (the DISCRIMINATOR resolution, ISEDC Session 7). Each entity below carries a one-paragraph definition for glossary purposes; the **complete 10-attribute schema** (Purpose · Required fields · UUID strategy · Mutability rules · Retention policy · Replayability guarantees · Provenance requirements · Lifecycle states · Storage recommendations · Audit requirements) lives in Blueprint B § 2.N for each entity N (SkillVersion's shape is defined by the kernel `schemas/v1/skill-version.schema.json` per DR-028 T1, not Blueprint B). Cross-references in any normative doc that need the full schema **MUST** link to Blueprint B § 2.N — not redefine the schema here.
 
 The order below matches Blueprint B's dependency order. A downstream entity may reference an upstream entity; never the reverse. Reference data (EvalSpec, MatcherMap, SkillSnapshot, FailureTaxonomy) never depends on a runtime entity.
 
@@ -145,6 +145,13 @@ Canonical failure-shape registry. The FailureTaxonomy table holds the MM-1..MM-6
 - **See Blueprint B § 2.13** for the full attribute schema.
 - **Common cross-references:** § 4 of this glossary for the canonical MM-1..MM-6 definitions; `JudgeDecision` (every FAIL verdict references an MM class); `MatcherMap` (also categorized by `mm_class`); `CONTRIBUTING-failure-shape.md` (the MM-7+ extension path).
 
+### 2.14 SkillVersion
+
+The kernel's refinement-lineage record for a skill — the entity the Skill Refiner appends to each time it accepts an edit. Added as the **14th canonical entity** by DR-028 T1 (the DISCRIMINATOR resolution, ISEDC Session 7), so it sits outside Blueprint B § 2's original 13. **Distinct from `SkillSnapshot`** (§ 2.9): a SkillSnapshot content-addressed-pins a skill's _source state_; a SkillVersion captures the _refinement lineage_ — `version_kind` (`edit` | `revert` | `restore`, the closed signable discriminator), `parent_version_id` (SkillVersion → SkillVersion lineage, nullable for a root version), and `source_snapshot_hash` (a READ-ONLY content-hash **reference** to a SkillSnapshot, **not** a relational foreign key). It carries `refiner_strategy_id` for signed-manifest mechanism-traceability. Ships minimal per the DR-028 T1 binding-minority constraint: no lifecycle state machine and no status/signing fields (deferred to a v0.4.0 follow-up DR). Shipped in `@intentsolutions/core@0.8.0`.
+
+- **See** the kernel `schemas/v1/skill-version.schema.json` + `src/entities/SkillVersion.ts` for the full shape (defined by DR-028 T1, not Blueprint B § 2); **Plan 027** (Skill Refiner, v5; supersedes 025) for design context.
+- **Common cross-references:** `SkillSnapshot` (§ 2.9, the source state a SkillVersion references by hash); **Skill Refiner** (§ 3, the subsystem that produces SkillVersions); `EditProposal` (§ 3, the candidate change a SkillVersion records once accepted); `skill-refiner-pass/v1` (the predicate whose provenance triple references the SkillVersion id).
+
 ---
 
 ## 3. Operational terms
@@ -172,6 +179,16 @@ These are the verbs and execution-level nouns the platform's documentation uses 
 **gate.** A deterministic check function that emits a `gate-result/v1` predicate row. Gates are the bread-and-butter of `audit-harness` (escape-scan, CRAP, architecture, harness-hash, bias-count, gherkin-lint, etc.) and are also emitted by the user-facing `RolloutGate` (the promotion decision engine). The verdict grammar is `PASS` / `FAIL` / `ADVISORY` (advisory = informational, does not block). Citation: Blueprint A § 1.2 principle 10; Blueprint B § 7.
 
 **judge.** An LLM-as-judge or deterministic-validator function that emits a `JudgeDecision`. Judges that are deterministic produce verdicts mechanically; LLM-judges produce verdicts probabilistically with a confidence and (usually) a seed. The `verdict_source` field on a JudgeDecision declares which kind — `deterministic`, `llm_with_seed`, `llm_no_seed`, or `hybrid`. The platform discourages `llm_no_seed` because it cannot be replayed beyond statistical reconstruction. Citation: Blueprint B § 2.5.
+
+**Skill Refiner.** The eval-guided SKILL.md improvement loop — the second product in the IS agent-rig stack (_J-Rig Skill Binary Eval_ tests, _Skill Refiner_ improves, _Rollout Gate_ ships). It proposes safe, minimal SKILL.md edits and accepts one only on a strict-improvement-on-Pareto-dominant-behavioral-with-non-regressing-others predicate (DR-028 P0-RATIFY-1), recording each accepted edit as a `SkillVersion` (§ 2.14) and emitting a signed evidence report. Ratified at ISEDC Session 7 (DR-028); delivered as a Claude Code plugin with the 3-layer hook architecture. An IS-native concept — prior art in eval-driven optimization is cited for design context only, not borrowed (DR-010 § 13.6). Citation: Plan 027 (v5); DR-028; Blueprint B § 7.
+
+**3-layer hooks (sinker / line / hook).** The Skill Refiner plugin's hook architecture — three coordinated Claude Code hooks named, in the fishing metaphor, **sinker** (deepest / setup), **line** (mid), and **hook** (the catch). L3 is a `PreToolUse:Bash` hook (not `PostToolUse:Bash`, per the v4.1 mechanism fix), so the Refiner intercepts before the tool runs. Citation: Plan 027 § 4; DR-028.
+
+**EditProposal.** The Skill Refiner's term for a single candidate SKILL.md edit, generated by a RefinerStrategy before acceptance. An EditProposal is the _input_ to the acceptance gate; it becomes durable only if it clears the acceptance predicate, at which point a `SkillVersion` (§ 2.14) records the accepted change. Citation: Plan 027; DR-028 AC-13 (RefinerStrategy interface).
+
+**ScoreRecord.** The Skill Refiner's per-attempt behavioral-score record — the measured behavioral delta plus per-named-dimension deltas a candidate `EditProposal` produces on the eval set, i.e., the data the acceptance predicate reads to decide ACCEPT / REJECT. The signed determinants of an accepted record surface in the `skill-refiner-pass/v1` predicate body (Blueprint B § 7). Citation: Plan 027; DR-028 P0-RATIFY-1.
+
+**Skill Refiner evidence reports.** The signed, human-readable reports (Markdown + HTML) the Skill Refiner emits for each refinement run — showing the proposed edit, the behavioral deltas, the accept / reject verdict, and the `SkillVersion` lineage. They are the Refiner's analogue to the platform's other signed evidence (the unification thesis — every validator emits Evidence Bundle, DR-010 Q3). Citation: Plan 027; DR-028; Blueprint B § 7.
 
 ---
 
