@@ -268,3 +268,20 @@ jobs:
       # prose sources hold 7 days (§ 14.11.3).
       - name: Leading-indicator watcher self-test
         run: python3 scripts/leading-indicator-watch.py --self-test
+
+      # Offline + deterministic (033 § 14.13.1): the SAK dashboard machine
+      # renderer. The dashboard is a DERIVED VIEW — SAK-DASHBOARD.md +
+      # specs/sak-dashboard.json are rendered from committed state ONLY
+      # (SAK-STATE.json hand-maintained slow-moving facts + the leading-indicator
+      # registry + the lineage coverage-map projection), never hand-edited.
+      # --self-test proves the disposition matrix (CONTINUE|NOTE|RETRO|PAUSE|STOP)
+      # on fixtures, the coverage-map derivation, determinism, and the freshness
+      # failure modes; --check fails when a committed output is stale vs its
+      # sources (re-derived at the committed generated_at — the detector-health /
+      # lineage project-coverage --check pattern). If this fails after editing
+      # SAK-STATE.json / the indicator registry / the coverage map, regenerate:
+      # python3 scripts/render-sak-dashboard.py
+      - name: SAK dashboard renderer self-test + freshness
+        run: |
+          python3 scripts/render-sak-dashboard.py --self-test
+          python3 scripts/render-sak-dashboard.py --check
