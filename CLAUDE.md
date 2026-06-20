@@ -10,12 +10,10 @@ A research umbrella for vendor-neutral evaluation methodology around AI plugins,
 - Productizable harnesses → contributions to `j-rig-skill-binary-eval` (sister project)
 - Public reference content → this repo's `000-docs/` (Apache 2.0)
 
-## Four-repo convergence (Phase A complete 2026-05-10; intent-rollout-gate added 2026-05-12)
+## Five-repo convergence (Phase A complete 2026-05-10; intent-rollout-gate added 2026-05-12)
 
-This repo is the **methodology + specs umbrella** in the four-repo convergence vision (`intent-eval-lab` + `audit-harness` + `j-rig-skill-binary-eval` + `intent-rollout-gate`). The architectural insight: the four repos compose via a shared schema (the **Evidence Bundle**), not via package consolidation. Convergence happens at the schema layer.
+This repo is the **methodology + specs umbrella** in the five-repo convergence vision: the canonical contracts kernel (`intent-eval-core`) + `intent-eval-lab` + `audit-harness` + `j-rig-skill-binary-eval` + `intent-rollout-gate`. The architectural insight: the repos compose via a shared schema (the **Evidence Bundle**), not via package consolidation. Convergence happens at the schema layer. (`intent-eval-dashboard` is the 6th platform repo — the reports hub at `labs.intentsolutions.io` — separate from the 5-repo convergence taxonomy.) See the umbrella `~/000-projects/intent-eval-platform/CLAUDE.md` § "5-repo target" for the full taxonomy.
 
-**Master plan (local-only):** `~/.claude/plans/please-take-your-time-glimmering-stardust.md`
-**ID mapping artifact:** `~/.claude/plans/please-take-your-time-glimmering-stardust-id-map.md` (29 issues × 4 layers each — beads + GH + Plane + bd-sync link)
 **Convergence umbrella epic:** [`#4`](https://github.com/jeremylongshore/intent-eval-lab/issues/4) (`IEL-CONV-1`) — 8 umbrella + 10 work issues filed in this repo, plus 8 in `audit-harness`, plus 3 in `j-rig-skill-binary-eval`
 
 ### Phase A landed (this repo)
@@ -27,7 +25,7 @@ This repo is the **methodology + specs umbrella** in the four-repo convergence v
 
 ### Phase B/C gate
 
-Phase A is documentation + skeleton ONLY. **No feature code commits to this repo's spec modules until first paying-customer signal** per master plan § Risks. When that signal arrives, next-session entry point: `bd-sync status` across the three repos → re-read mapping artifact → update meta-bead `OPS-nfx` (in home `~/.beads/`) with Phase B kickoff note → begin `IEL-3` SPEC.md normative content.
+Phase A is documentation + skeleton ONLY. **Phase B is bandwidth-gated, not customer-signal-gated** — the customer-signal gate was REMOVED per DR-010 § 13.5 (acting-head-of-board override; see `000-docs/010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md`). When Phase B work is scheduled, next-session entry point: `bd-sync status` across the convergence repos → begin `IEL-3` SPEC.md normative content.
 
 ### Brand-name policy (partner-consent discipline)
 
