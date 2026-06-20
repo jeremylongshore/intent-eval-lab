@@ -33,7 +33,7 @@ This is itself a **NORMATIVE** document binding on the ecosystem under DR-010 §
 
 **Reading guide:**
 
-- **§ 2 — The 13 canonical entities.** Entity-level concepts from the canonical domain model. One paragraph each; the full 10-attribute schema for each entity lives in Blueprint B § 2.
+- **§ 2 — The 14 canonical entities.** Entity-level concepts from the canonical domain model. One paragraph each; the full 10-attribute schema for each entity lives in Blueprint B § 2.
 - **§ 3 — Operational terms.** The verbs and execution-level nouns: matcher, mapping, routing, intent resolution, replay, eval, harness, trace, receipt, gate, judge.
 - **§ 4 — Intentional Mapping vocabulary (MM-1..MM-6).** The canonical failure-shape vocabulary from DR-005 (rename) anchored to DR-004 (binding). MM-7+ deferred per DR-004 S1Q3 community-contribution path.
 - **§ 5 — Governance + lifecycle terms.** ISEDC, three-class routing, Decision Records, override, ratification.
@@ -47,9 +47,9 @@ When in doubt about which section a term belongs in, prefer the section that cap
 
 ---
 
-## 2. The 13 canonical entities
+## 2. The 14 canonical entities
 
-The canonical domain model is the 13-entity directed-acyclic reference graph defined in Blueprint B § 2. Each entity below carries a one-paragraph definition for glossary purposes; the **complete 10-attribute schema** (Purpose · Required fields · UUID strategy · Mutability rules · Retention policy · Replayability guarantees · Provenance requirements · Lifecycle states · Storage recommendations · Audit requirements) lives in Blueprint B § 2.N for each entity N. Cross-references in any normative doc that need the full schema **MUST** link to Blueprint B § 2.N — not redefine the schema here.
+The canonical domain model is the 13-entity directed-acyclic reference graph defined in Blueprint B § 2, plus `SkillVersion` — the **14th** entity, added post-Blueprint-B by DR-028 T1 (the DISCRIMINATOR resolution, ISEDC Session 7). Each entity below carries a one-paragraph definition for glossary purposes; the **complete 10-attribute schema** (Purpose · Required fields · UUID strategy · Mutability rules · Retention policy · Replayability guarantees · Provenance requirements · Lifecycle states · Storage recommendations · Audit requirements) lives in Blueprint B § 2.N for each entity N (SkillVersion's shape is defined by the kernel `schemas/v1/skill-version.schema.json` per DR-028 T1, not Blueprint B). Cross-references in any normative doc that need the full schema **MUST** link to Blueprint B § 2.N — not redefine the schema here.
 
 The order below matches Blueprint B's dependency order. A downstream entity may reference an upstream entity; never the reverse. Reference data (EvalSpec, MatcherMap, SkillSnapshot, FailureTaxonomy) never depends on a runtime entity.
 
@@ -145,6 +145,13 @@ Canonical failure-shape registry. The FailureTaxonomy table holds the MM-1..MM-6
 - **See Blueprint B § 2.13** for the full attribute schema.
 - **Common cross-references:** § 4 of this glossary for the canonical MM-1..MM-6 definitions; `JudgeDecision` (every FAIL verdict references an MM class); `MatcherMap` (also categorized by `mm_class`); `CONTRIBUTING-failure-shape.md` (the MM-7+ extension path).
 
+### 2.14 SkillVersion
+
+The kernel's refinement-lineage record for a skill — the entity the Skill Refiner appends to each time it accepts an edit. Added as the **14th canonical entity** by DR-028 T1 (the DISCRIMINATOR resolution, ISEDC Session 7), so it sits outside Blueprint B § 2's original 13. **Distinct from `SkillSnapshot`** (§ 2.9): a SkillSnapshot content-addressed-pins a skill's _source state_; a SkillVersion captures the _refinement lineage_ — `version_kind` (`edit` | `revert` | `restore`, the closed signable discriminator), `parent_version_id` (SkillVersion → SkillVersion lineage, can be null for a root version), and `source_snapshot_hash` (a READ-ONLY content-hash **reference** to a SkillSnapshot, **not** a relational foreign key). It carries `refiner_strategy_id` for signed-manifest mechanism-traceability. Ships minimal per the DR-028 T1 binding-minority constraint: no lifecycle state machine and no status/signing fields (deferred to a v0.4.0 follow-up DR). Shipped in `@intentsolutions/core@0.8.0`.
+
+- **See** the kernel `schemas/v1/skill-version.schema.json` + `src/entities/SkillVersion.ts` for the full shape (defined by DR-028 T1, not Blueprint B § 2); **Plan 027** (Skill Refiner, v5; supersedes 025) for design context.
+- **Common cross-references:** `SkillSnapshot` (§ 2.9, the source state a SkillVersion references by hash); **Skill Refiner** (§ 3, the subsystem that produces SkillVersions); `EditProposal` (§ 3, the candidate change a SkillVersion records once accepted); `skill-refiner-pass/v1` (the predicate whose provenance triple references the SkillVersion id).
+
 ---
 
 ## 3. Operational terms
@@ -172,6 +179,20 @@ These are the verbs and execution-level nouns the platform's documentation uses 
 **gate.** A deterministic check function that emits a `gate-result/v1` predicate row. Gates are the bread-and-butter of `audit-harness` (escape-scan, CRAP, architecture, harness-hash, bias-count, gherkin-lint, etc.) and are also emitted by the user-facing `RolloutGate` (the promotion decision engine). The verdict grammar is `PASS` / `FAIL` / `ADVISORY` (advisory = informational, does not block). Citation: Blueprint A § 1.2 principle 10; Blueprint B § 7.
 
 **judge.** An LLM-as-judge or deterministic-validator function that emits a `JudgeDecision`. Judges that are deterministic produce verdicts mechanically; LLM-judges produce verdicts probabilistically with a confidence and (usually) a seed. The `verdict_source` field on a JudgeDecision declares which kind — `deterministic`, `llm_with_seed`, `llm_no_seed`, or `hybrid`. The platform discourages `llm_no_seed` because it cannot be replayed beyond statistical reconstruction. Citation: Blueprint B § 2.5.
+
+### Skill Refiner subsystem terms
+
+The named-product vocabulary of the Skill Refiner (DR-028; Plan 027). Unlike the common-noun operational verbs above, these are product / type proper nouns and are capitalized accordingly (`Skill Refiner` is a named product per DR-028 T4 KEEP-NAMED-PRODUCT).
+
+**Skill Refiner.** The eval-guided SKILL.md improvement loop — the second product in the IS agent-rig stack (_J-Rig Skill Binary Eval_ tests, _Skill Refiner_ improves, _Rollout Gate_ ships). It proposes safe, minimal SKILL.md edits and accepts one only on a strict-improvement-on-Pareto-dominant-behavioral-with-non-regressing-others predicate (DR-028 P0-RATIFY-1), recording each accepted edit as a `SkillVersion` (§ 2.14) and emitting a signed evidence report. Ratified at ISEDC Session 7 (DR-028); delivered as a Claude Code plugin with the 3-layer hook architecture. An IS-native concept — prior art in eval-driven optimization is cited for design context only, not borrowed (DR-010 § 13.6). Citation: Plan 027 (v5); DR-028; Blueprint B § 7.
+
+**3-layer hooks (sinker / line / hook).** The Skill Refiner plugin's hook architecture — three coordinated Claude Code hooks named, in the fishing metaphor, **sinker** (deepest / setup), **line** (mid), and **hook** (the catch). L3 is a `PreToolUse:Bash` hook (not `PostToolUse:Bash`, per the v4.1 mechanism fix), so the Refiner intercepts before the tool runs. Citation: Plan 027 § 4; DR-028.
+
+**EditProposal.** The Skill Refiner's term for a single candidate SKILL.md edit, generated by a RefinerStrategy before acceptance. An EditProposal is the _input_ to the acceptance gate; it becomes durable only if it clears the acceptance predicate, at which point a `SkillVersion` (§ 2.14) records the accepted change. Citation: Plan 027; DR-028 AC-13 (RefinerStrategy interface).
+
+**ScoreRecord.** The Skill Refiner's per-attempt behavioral-score record — the measured behavioral delta plus per-named-dimension deltas a candidate `EditProposal` produces on the eval set, i.e., the data the acceptance predicate reads to decide ACCEPT / REJECT. The signed determinants of an accepted record surface in the `skill-refiner-pass/v1` predicate body (Blueprint B § 7). Citation: Plan 027; DR-028 P0-RATIFY-1.
+
+**Skill Refiner evidence reports.** The signed, human-readable reports (Markdown + HTML) the Skill Refiner emits for each refinement run — showing the proposed edit, the behavioral deltas, the accept / reject verdict, and the `SkillVersion` lineage. They are the Refiner's analogue to the platform's other signed evidence (the unification thesis — every validator emits Evidence Bundle, DR-010 Q3). Citation: Plan 027; DR-028; Blueprint B § 7.
 
 ---
 
@@ -251,6 +272,8 @@ MM-7 admission is gated. Per DR-004 S1Q3 binding (reaffirmed at DR-010 § 10 reo
 
 **Phase A-conditional predicate types (per DR-010 Q3).** `validation-result/v1`, `eval-verdict/v1`, `cost-attribution/v1` are **conditionally approved** — they enter the predicate URI namespace as legitimate types but production-Rekor signing for each is gated on that predicate's SPEC.md normative section landing first. Until then, attestations carrying these URIs run in `sigstore_staging` mode. Citation: DR-010 § 7 Q3.
 
+**Refiner predicate types (DR-082, staging).** `skill-refiner-pass/v1` — the Skill Refiner's accept attestation (§ 3) — was minted staging-first by Class-1 ADR DR-082. It is in the predicate URI namespace and runs in `sigstore_staging`; production-Rekor signing is gated on its SPEC.md normative section landing **plus** the four DR-082 Q3 triggers (SPEC.md; DNSSEC + CAA on `evals.intentsolutions.io`; the authoring chamber's separate signing trust root; and ≥ 1 real `SkillVersion` clearing a frozen, signed eval-set). Host is `evals.intentsolutions.io` only — never `labs.` (CISO binding, § 8). Citation: DR-082; Blueprint B § 7.
+
 **Deferred predicate types (Phase B+).** `harness-experiment/v1` and `cache-decision/v1` are deferred for future Phase B+ admission. Their use cases are recognized but not yet ready for namespace reservation. Citation: DR-010 § 7 Q3.
 
 **Research-stage proposed predicate types (NOT reserved, NOT declared).** `prompt-eval/v1` and `context-eval/v1` are **proposed** by the prompt+context-eval landscape RFC (`043-DR-RFC-intent-eval-target-generalization-2026-06-06.md`) as the eventual signed-evidence surface for the proposed `prompt` / `context-template` eval targets (see § 10). They are in the same "recognized but not yet reserved" status as the Deferred entries above — but a step earlier: their use case is _proposed_, not yet accepted. **Reservation itself is a Class-1 ISEDC act** ("new predicate URI subtype reservation," DR-010 § 7 Q6), so naming them here does **not** reserve them, declare a normative SPEC, or emit any `predicateType`. Host, if ever admitted, is `evals.intentsolutions.io` only — never `labs.` (CISO binding, § 8). Citation: 043-DR-RFC § 6; DR-010 § 7 Q3 + Q6.
@@ -307,6 +330,7 @@ This index points each term to its primary section in this glossary and to the 2
 
 | Term                                           | Section here | Used in                                                        |
 | ---------------------------------------------- | ------------ | -------------------------------------------------------------- |
+| 3-layer hooks (sinker / line / hook)           | § 3          | Plan 027 § 4; DR-028                                           |
 | Acting head of board                           | § 5          | Blueprint A § 1.1; DR-010 § 13.5 + § 13.6; ISEDC skill         |
 | Active predicate types                         | § 6          | Blueprint A § 4.2; Blueprint B § 7.2; DR-010 § 7 Q3            |
 | Anti-goals (binding scope control)             | § 8          | Blueprint A § 3; DR-010 § 7 Q1                                 |
@@ -322,6 +346,7 @@ This index points each term to its primary section in this glossary and to the 2
 | Deferred predicate types                       | § 6          | DR-010 § 7 Q3                                                  |
 | DNSSEC + CAA                                   | § 6          | DR-004 Q1; DR-010 § 7 Q5; Blueprint A § 4.2                    |
 | DSSE                                           | § 6          | Blueprint A § 4.2; Blueprint B § 7.1 + § 7.5                   |
+| EditProposal                                   | § 3          | Plan 027; DR-028 AC-13                                         |
 | EvalRun                                        | § 2.2        | Blueprint B § 2.2; Blueprint B § 1.2 + § 3.1                   |
 | EvalSpec                                       | § 2.1        | Blueprint B § 2.1                                              |
 | EvidenceBundle                                 | § 2.4        | Blueprint A § 1.2 principle 10; Blueprint B § 2.4 + § 7        |
@@ -364,9 +389,13 @@ This index points each term to its primary section in this glossary and to the 2
 | RolloutGate                                    | § 2.8        | Blueprint A § 4.1; Blueprint B § 2.8 + § 7                     |
 | Routing                                        | § 3          | Blueprint A § 2.3; DR-010 § 7 Q6                               |
 | RuntimeReceipt                                 | § 2.6        | Blueprint B § 2.6                                              |
+| ScoreRecord                                    | § 3          | Plan 027; DR-028 P0-RATIFY-1; Blueprint B § 7                  |
 | SessionTrace                                   | § 2.10       | Blueprint B § 2.10                                             |
 | sigstore staging                               | § 7          | Blueprint A § 4.2; DR-010 § 7 Q5                               |
+| Skill Refiner                                  | § 3          | Plan 027 (v5); DR-028; Blueprint B § 7                         |
+| Skill Refiner evidence reports                 | § 3          | Plan 027; DR-028; Blueprint B § 7                              |
 | SkillSnapshot                                  | § 2.9        | Blueprint A § 4.1; Blueprint B § 2.9                           |
+| SkillVersion                                   | § 2.14       | DR-028 T1; kernel `schemas/v1/skill-version.schema.json`       |
 | Subject naming                                 | § 6          | Blueprint B § 7.3                                              |
 | ToolInvocation                                 | § 2.11       | Blueprint B § 2.11                                             |
 | trace                                          | § 3          | Blueprint A § 4.2; iel-E12 (forward-ref)                       |
