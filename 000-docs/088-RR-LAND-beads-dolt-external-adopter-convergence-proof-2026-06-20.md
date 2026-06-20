@@ -11,7 +11,7 @@ We took a real, independently-useful Claude Code plugin — [`beads-dolt`](https
 
 > **audit-harness** (deterministic gates) → **j-rig** (behavioral eval, real model) → **kernel** (`gate-result/v1` Evidence Bundle validation) → **intent-rollout-gate** (ship / no-ship).
 
-This is the first time both the deterministic *and* behavioral halves of the platform emitted Evidence Bundles that a single rollout gate consumed, on one shared external artifact. It worked — and, more usefully, **the eval found a real bug in the platform itself**: the deterministic gate's CLI evidence emitter produced predicate bodies that were *not* valid against the platform's own kernel schema, so the rollout gate (correctly) refused the bundle. We fixed it, the rollout gate flipped from `block` to `allow`, and the fix is merged.
+This is the first time both the deterministic _and_ behavioral halves of the platform emitted Evidence Bundles that a single rollout gate consumed, on one shared external artifact. It worked — and, more usefully, **the eval found a real bug in the platform itself**: the deterministic gate's CLI evidence emitter produced predicate bodies that were _not_ valid against the platform's own kernel schema, so the rollout gate (correctly) refused the bundle. We fixed it, the rollout gate flipped from `block` to `allow`, and the fix is merged.
 
 A platform that can only validate things it was built to bless is a rubber stamp. A platform that runs on a real external artifact and catches a flaw in its own seams is doing its job.
 
@@ -27,12 +27,12 @@ It builds on, and credits, two open-source projects: **beads** (the `bd` task tr
 
 The platform is four repositories that converge on a shared **Evidence Bundle** schema — every validator, deterministic or behavioral, emits a kernel-defined `gate-result/v1` row, and a thin rollout gate turns the accumulated rows plus a policy into a ship/no-ship decision.
 
-| Stage | Tool | Role |
-|---|---|---|
-| 1 | `audit-harness` | Deterministic gates: classify the artifact, conform it against bundled schemas, scan for secrets/hygiene. Emits `gate-result/v1` rows. |
-| 2 | `j-rig` | Behavioral eval: run the skill against a spec of binary criteria with a **real model provider**, judge each criterion, emit a rollout decision row. |
-| 3 | kernel (`@intentsolutions/core`) | The single source of truth for what a valid `gate-result/v1` predicate body *is*. Every emitted row must validate against `GateResultV1Schema`. |
-| 4 | `intent-rollout-gate` | Consume the combined bundle + a policy (`required_gates`, `forbid_decisions`) → **ship / no-ship**. |
+| Stage | Tool                             | Role                                                                                                                                                |
+| ----- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | `audit-harness`                  | Deterministic gates: classify the artifact, conform it against bundled schemas, scan for secrets/hygiene. Emits `gate-result/v1` rows.              |
+| 2     | `j-rig`                          | Behavioral eval: run the skill against a spec of binary criteria with a **real model provider**, judge each criterion, emit a rollout decision row. |
+| 3     | kernel (`@intentsolutions/core`) | The single source of truth for what a valid `gate-result/v1` predicate body _is_. Every emitted row must validate against `GateResultV1Schema`.     |
+| 4     | `intent-rollout-gate`            | Consume the combined bundle + a policy (`required_gates`, `forbid_decisions`) → **ship / no-ship**.                                                 |
 
 The convergence claim is only real if a bundle emitted by stage 1 and stage 2 actually validates at stage 3 and is consumable at stage 4. Nobody had run that full loop on a real external artifact before.
 
@@ -40,7 +40,7 @@ The convergence claim is only real if a bundle emitted by stage 1 and stage 2 ac
 
 **Stage 1 — deterministic gates.** `audit-harness classify` detected the plugin's composite nature (agent + marketplace + mcp + skill). `conform` validated the skill frontmatter, the five agents, the MCP config, and the plugin manifest against bundled schemas — **8 PASS / 1 ADVISORY**, zero failures. `scan` confirmed **no secrets** (gitleaks) and clean links/readme.
 
-**Stage 2 — behavioral eval (real model).** We authored an `eval.yaml` for the skill — binary criteria like *"does the response identify a missing Dolt remote as the no-visibility root cause"*, *"does it recommend the `bd dolt remote add` + push fix"*, *"does it correct the rapid-write-race misconception rather than confirm it"*, and an adversarial prompt-injection case. `j-rig eval` ran it against a real provider (DeepSeek), not a stub — genuine behavioral ground truth.
+**Stage 2 — behavioral eval (real model).** We authored an `eval.yaml` for the skill — binary criteria like _"does the response identify a missing Dolt remote as the no-visibility root cause"_, _"does it recommend the `bd dolt remote add` + push fix"_, _"does it correct the rapid-write-race misconception rather than confirm it"_, and an adversarial prompt-injection case. `j-rig eval` ran it against a real provider (DeepSeek), not a stub — genuine behavioral ground truth.
 
 **Stage 3 — kernel validation.** Every emitted row was checked against the kernel's `GateResultV1Schema`.
 
@@ -54,13 +54,13 @@ The run produced three findings. Reporting all three honestly — including the 
 
 When we assembled the deterministic Evidence Bundle and handed it to the rollout gate, the gate returned **`block`** — and the reason was not the plugin. It was that **every row in the bundle failed the kernel's `gate-result/v1` schema.**
 
-The deterministic gate's CLI evidence emitter wrapped each gate row in an in-toto Statement whose `predicateType` declared `gate-result/v1` — but the predicate *body* was an older, partial shape (`result`, `timestamp`, …) rather than the kernel's canonical body (`gate_decision`, `gate_name`, `gate_version`, `gate_reasons`, `coverage`, `policy_ref`, `evaluated_at`, …). The kernel schema forbids extra keys, so it rejected the legacy fields outright. The two ends of the convergence were not speaking the same row shape.
+The deterministic gate's CLI evidence emitter wrapped each gate row in an in-toto Statement whose `predicateType` declared `gate-result/v1` — but the predicate _body_ was an older, partial shape (`result`, `timestamp`, …) rather than the kernel's canonical body (`gate_decision`, `gate_name`, `gate_version`, `gate_reasons`, `coverage`, `policy_ref`, `evaluated_at`, …). The kernel schema forbids extra keys, so it rejected the legacy fields outright. The two ends of the convergence were not speaking the same row shape.
 
-This had stayed invisible because the gate's own regression suite validated its post-emit output against a *stale local fixture* that matched the legacy shape — a fixture that had drifted from the kernel schema it claimed to mirror. The suite was green against the wrong oracle. Only an end-to-end run against the *real* kernel surfaced it.
+This had stayed invisible because the gate's own regression suite validated its post-emit output against a _stale local fixture_ that matched the legacy shape — a fixture that had drifted from the kernel schema it claimed to mirror. The suite was green against the wrong oracle. Only an end-to-end run against the _real_ kernel surfaced it.
 
 ### Finding 2 — a fixable gap in the plugin
 
-The behavioral eval caught the skill front-loading *diagnosis* without delivering the *fix*: for the canonical "my beads aren't showing in DoltHub" prompt, a one-shot response ran the diagnostic commands and stopped before recommending the remote-add + push. We fixed the skill to lead with the root cause **and** the two-command fix.
+The behavioral eval caught the skill front-loading _diagnosis_ without delivering the _fix_: for the canonical "my beads aren't showing in DoltHub" prompt, a one-shot response ran the diagnostic commands and stopped before recommending the remote-add + push. We fixed the skill to lead with the root cause **and** the two-command fix.
 
 ### Finding 3 — an eval-authoring lesson
 
@@ -68,15 +68,15 @@ The behavioral eval caught the skill front-loading *diagnosis* without deliverin
 
 ## 5. The platform bug, fixed — the seam closed
 
-The fix brought the deterministic gate's CLI emitter to parity with the platform's *internal* self-gate emitter, which already produced kernel-valid rows: map the legacy verdict to `gate_decision`, the timestamp to `evaluated_at`, and synthesize the remaining canonical fields. Crucially, we also split the test fixtures — a partial input-envelope schema for the gate emitters' raw rows (which are partial by design, before augmentation) and a full-kernel schema for the *post-emit* predicate — and repointed the regression so it now validates against the real kernel shape. The suite went from masking the drift to gating against it.
+The fix brought the deterministic gate's CLI emitter to parity with the platform's _internal_ self-gate emitter, which already produced kernel-valid rows: map the legacy verdict to `gate_decision`, the timestamp to `evaluated_at`, and synthesize the remaining canonical fields. Crucially, we also split the test fixtures — a partial input-envelope schema for the gate emitters' raw rows (which are partial by design, before augmentation) and a full-kernel schema for the _post-emit_ predicate — and repointed the regression so it now validates against the real kernel shape. The suite went from masking the drift to gating against it.
 
 **The result, on the exact same chain that returned `block`:**
 
-| | Before | After |
-|---|---|---|
-| Emitted rows valid against `GateResultV1Schema` | 0 / 9 | **9 / 9** |
-| `intent-rollout-gate` decision | `block` | **`allow`** |
-| Deterministic gate suites | green against a stale fixture | green against the kernel schema |
+|                                                 | Before                        | After                           |
+| ----------------------------------------------- | ----------------------------- | ------------------------------- |
+| Emitted rows valid against `GateResultV1Schema` | 0 / 9                         | **9 / 9**                       |
+| `intent-rollout-gate` decision                  | `block`                       | **`allow`**                     |
+| Deterministic gate suites                       | green against a stale fixture | green against the kernel schema |
 
 The fix is merged ([`intent-audit-harness#103`](https://github.com/jeremylongshore/intent-audit-harness/pull/103)) with full CI green and independent AI review addressed.
 
@@ -84,11 +84,11 @@ The fix is merged ([`intent-audit-harness#103`](https://github.com/jeremylongsho
 
 - The deterministic gates, the **real-provider** behavioral eval, kernel validation, and the rollout decision all run today, locally.
 - The behavioral stage used a real model (DeepSeek), not a stub. Stub mode exists for first-plumbing; the numbers here are genuine.
-- The **signed-to-production-transparency-log** path is intentionally *not* exercised here. It is gated on a DNS pre-condition and is irrelevant to a local quality gate. Evidence here is unsigned; the decision logic is identical.
+- The **signed-to-production-transparency-log** path is intentionally _not_ exercised here. It is gated on a DNS pre-condition and is irrelevant to a local quality gate. Evidence here is unsigned; the decision logic is identical.
 
 ## 7. What this proves
 
-1. **The convergence is real, not aspirational.** Deterministic *and* behavioral validators emitted Evidence Bundles that the same rollout gate consumed, on one shared external artifact, end to end.
+1. **The convergence is real, not aspirational.** Deterministic _and_ behavioral validators emitted Evidence Bundles that the same rollout gate consumed, on one shared external artifact, end to end.
 2. **The kernel is load-bearing.** It is the thing that caught the seam — the rollout gate refused a bundle precisely because the rows did not match the canonical contract. A weaker design would have shipped the drift.
 3. **The platform survives contact with a real artifact.** It found a flaw in its own plumbing and a gap in the subject, and the fixes were concrete and verifiable.
 
