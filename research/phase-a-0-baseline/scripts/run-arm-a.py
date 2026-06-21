@@ -30,7 +30,8 @@ Usage:
 
 --provider: one of nvidia-llama-405b (default), nvidia-llama-70b,
             nvidia-nemotron, groq-llama-70b, groq-llama-70b-specdec,
-            groq-mixtral, anthropic-opus, anthropic-sonnet, anthropic-haiku.
+            groq-mixtral, deepseek-v4-flash, anthropic-opus, anthropic-sonnet,
+            anthropic-haiku.
 --dry-run:  builds prompts, prints estimated costs and synthetic responses,
             scores them. Zero API spend. Validates pipeline end-to-end.
 --limit N:  process only the first N specimens (useful for smoke tests).
