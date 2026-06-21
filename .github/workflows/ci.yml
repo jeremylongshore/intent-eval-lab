@@ -339,3 +339,25 @@ jobs:
         run: |
           python3 scripts/sak-reconciliation-queue.py --self-test
           python3 scripts/sak-reconciliation-queue.py --validate
+
+      # The SAK Wave-B durability protocol (plan 033 v7 § 14.17.1 + § 14.17.2 +
+      # plan 048 v8 Delta 1 / § 14.17): the "side-branch + atomic + 3-retry +
+      # parked-queue" durability half of the Wave-B (Refiner) wave. Models the
+      # durability DECISIONS as state — the deterministic per-file branch
+      # `refiner/wave-b/<hash>`, the atomic-commit lifecycle (COMMITTED ⇔ exactly
+      # one commit; every other state ⇔ zero — no partial state), the 3-retry
+      # ladder (sonnet-default / sonnet-adjusted-prompt / opus) that ESCALATES on
+      # the 3rd failure (never silently dropped), and the open-PR park (Wave B
+      # never runs on a file with an open PR). Parked files (open-PR + escalated)
+      # are routed into the SINGLE reconciliation queue (above) — it REUSES that
+      # module's FileState/QueueItem/predicates, it does NOT build a second queue
+      # (parked ≠ failed: re-enqueued, not lost). --self-test proves the branch
+      # determinism, the atomic invariant, the retry/escalation ladder, the
+      # open-PR park, the parked-queue routing, and the JSON round-trip on
+      # fixtures; --validate asserts the committed SAK-WAVE-B-DURABILITY.json
+      # satisfies the schema at
+      # specs/state-machines/schema/sak-wave-b-durability.schema.json.
+      - name: SAK Wave-B durability protocol self-test + schema validation
+        run: |
+          python3 scripts/sak-wave-b-durability.py --self-test
+          python3 scripts/sak-wave-b-durability.py --validate
