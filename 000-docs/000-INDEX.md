@@ -50,6 +50,7 @@ sequence:
 | [`SAK-INDEX.md`](./SAK-INDEX.md)                           | Canonical entry point for the Spec Authority Kernel (SAK) — read first for the SAK.                                                                                                                                                                                                                                                                                               |
 | [`../SAK-DASHBOARD.md`](../SAK-DASHBOARD.md)               | Machine-rendered SAK dashboard (root-level): phase status · Phase-4 state machine · 12 leading indicators · FTE-week cost ledger · SAK bead state · coverage-map state. DERIVED — never hand-edit; regenerate with `scripts/render-sak-dashboard.py` from `../SAK-STATE.json` + the committed indicator registry + the lineage coverage map. Spec: `033-PP-PLAN-...md` § 14.13.1. |
 | [`../docs/detector-health.md`](../docs/detector-health.md) | Machine-rendered detector-health composite dashboard. DERIVED — regenerate with `scripts/detector-health.py`. Spec: `057-AT-SPEC-...md`.                                                                                                                                                                                                                                          |
+
 ## Filing convention
 
 ```text
