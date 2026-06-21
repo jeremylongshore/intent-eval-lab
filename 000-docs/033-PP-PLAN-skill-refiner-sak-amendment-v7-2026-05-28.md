@@ -1,6 +1,6 @@
 ---
 date: 2026-05-28
-status: PROPOSED-FOR-REAUDIT — pending incremental Plan Audit on v7 deltas + ISEDC Class-1 charter ratification (032 deferred until v7 RATIFIED-WITH-DELTAS or RATIFIED)
+status: SUPERSEDED BY v8 (doc 048) and CLOSED. The v7 re-audit ran (workflow sak-v7-incremental-reaudit, verdict NEEDS-AMENDMENT-V8); v8 closed the 4 residual findings and merged via PR #116 on 2026-06-11 with 0 residual P0. ISEDC Class-1 SAK charter RATIFIED via DR-049 (2026-06-10), re-ratified DR-081 (2026-06-17). Hard gate LIFTED; SAK-labeled beads claimable. Original v7 status was PROPOSED-FOR-REAUDIT pending the incremental Plan Audit on v7 deltas plus charter ratification.
 supersedes_relationship: REVISES + EXTENDS plan 031 v6 (the v6 amendment to plan 027 v5). v7 does NOT supersede v6; it lands the audit remediations as deltas. § 14 sub-section numbers from v6 are preserved; v7 introduces new sections (§ 14.A, § 14.B, § 14.12-14.28) and REVISES existing ones (§ 14.2, § 14.4, § 14.10, § 14.11, § 14.20).
 author: Jeremy Longshore (executor: Claude as drafting acting-CTO under CTO-mode delegation 2026-05-28)
 parent_audit: intent-eval-lab/000-docs/audit/2026-05-28-sak-incremental-audit/synthesis.md
@@ -27,7 +27,7 @@ GitHub: jeremylongshore/intent-eval-lab#<TBA>
 
 ## Status
 
-**State:** PROPOSED-FOR-REAUDIT. This amendment exists to close the 12 P0 cluster surfaced by the 2026-05-28 incremental Plan Audit. The proper next step is a re-audit on v7's deltas only (not a full re-audit of §§ 1-13 or all of v6 — only what v7 changed).
+**State:** SUPERSEDED BY v8 (doc 048) and CLOSED. The v7 re-audit ran (workflow `sak-v7-incremental-reaudit`, verdict NEEDS-AMENDMENT-V8); v8 closed the 4 residual findings and merged via PR #116 (2026-06-11, 0 residual P0). The ISEDC Class-1 SAK charter is RATIFIED (DR-049 2026-06-10, re-ratified DR-081 2026-06-17); the hard gate is LIFTED and SAK-labeled beads are claimable. _Original v7 status (for history):_ PROPOSED-FOR-REAUDIT — this amendment existed to close the 12 P0 cluster surfaced by the 2026-05-28 incremental Plan Audit; the next step was a re-audit on v7's deltas only.
 
 **Hard gate state** (per `bd-claim-precheck.sh` logic): SAK-labeled beads (`sak` + `iec-E11*`) REMAIN not-claimable under NEEDS-AMENDMENT carry-over. v7 amendment work itself proceeds via Refiner-labeled discipline (RATIFIED per DR-028) since it's plan-edit work, not SAK-implementation work. When v7 re-audit closes the P0 cluster, STATUS flips and SAK beads become claimable per the audit's STATUS-flip protocol.
 
