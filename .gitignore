@@ -52,6 +52,7 @@ node_modules/
 .eslintcache
 coverage/
 *.lcov
+.lycheecache
 
 # Build outputs
 dist/

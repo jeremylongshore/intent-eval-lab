@@ -14,7 +14,7 @@ Per SPEC § 7 R13, the suite ships two fixture classes:
   emission; the final escape scan over the result MUST find **zero** matches. A row emitted
   containing the planted secret is a suite **FAIL**.
 - **MUST-PRESERVE** (`fixtures/must-preserve/`) — secret-free traces with credential-adjacent
-  *benign* content. The pipeline MUST retain forensic semantics (structural fields intact,
+  _benign_ content. The pipeline MUST retain forensic semantics (structural fields intact,
   reasoning summary keeps decision content, benign content not over-redacted into uselessness).
   A row that destroys all forensic value is a suite **FAIL** (over-redaction defeats the
   purpose of emitting the trace).
@@ -32,17 +32,21 @@ Each fixture is a JSON document:
 
 ```jsonc
 {
-  "fixture_id": "MR-001",                  // MR- = must-redact, MP- = must-preserve
-  "class": "must-redact",                  // or "must-preserve"
+  "fixture_id": "MR-001", // MR- = must-redact, MP- = must-preserve
+  "class": "must-redact", // or "must-preserve"
   "description": "<what this fixture exercises>",
-  "spec_rules": ["R4", "R12"],             // the SPEC rules under test
-  "input_trace": { /* a SessionTrace-shaped fragment, pre-sanitization */ },
+  "spec_rules": ["R4", "R12"], // the SPEC rules under test
+  "input_trace": {
+    /* a SessionTrace-shaped fragment, pre-sanitization */
+  },
   "planted_secret": "<the exact secret string, MUST-REDACT only>",
   "expected": {
-    "escape_scan_matches": 0,              // MUST be 0 for a pass
-    "outcome": "redacted | refused",       // MUST-REDACT: one of these
-    "preserved_assertions": [ /* MUST-PRESERVE: forensic content that MUST survive */ ]
-  }
+    "escape_scan_matches": 0, // MUST be 0 for a pass
+    "outcome": "redacted | refused", // MUST-REDACT: one of these
+    "preserved_assertions": [
+      /* MUST-PRESERVE: forensic content that MUST survive */
+    ],
+  },
 }
 ```
 

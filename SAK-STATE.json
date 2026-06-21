@@ -1,0 +1,56 @@
+{
+  "_comment": "HAND-MAINTAINED INPUT (NOT generated) — the slow-moving SAK facts that the dashboard renderer (scripts/render-sak-dashboard.py) cannot derive from other committed in-repo files. The renderer pulls the leading-indicator registry (specs/leading-indicators.v1.json) and the coverage-map projection (specs/lineage/coverage-map.json) live from their committed specs; everything THOSE files cannot answer — current phase status, the SAK Phase-4 advisory->blocking state-machine position, the cost ledger (029-DR-BAND is prose, not machine-readable), and the SAK bead-subtree counts (the canonical bead store is the gitignored umbrella ~/000-projects/.beads/, unreadable from this repo / CI) — is captured here. Refresh this file (then regenerate the dashboard) from the SAK cron action or by hand when phase / state / cost / bead facts change. The dashboard is DERIVED: never hand-edit SAK-DASHBOARD.md; edit this file and run `python3 scripts/render-sak-dashboard.py`. Authority: 000-docs/033-PP-PLAN-skill-refiner-sak-amendment-v7-2026-05-28.md § 14.13.1.",
+  "state_version": "sak-state/v1",
+  "as_of": "2026-06-20",
+  "phases": [
+    {
+      "phase": "Phase 0 — D4 wedge",
+      "status": "COMPLETE",
+      "detail": "skill-frontmatter walking skeleton (base + overlay + composition) landed; deep-capture -> base/overlay schema -> drift-watch -> classify -> reconcile pattern exists end-to-end"
+    },
+    {
+      "phase": "Phase 1 — six contracts + P0 safety spine",
+      "status": "IN PROGRESS",
+      "detail": "P0 safety spine COMPLETE (8/8 backbone children closed 2026-06-12): typed fetch-failure taxonomy + 3 append-only tiers (doc 052), frozen drift-classification/v1 eval set with recall-floor write gate (doc 053), append-only lineage log + derived coverage map (doc 054), deterministic classifier walls (doc 055), 6767-h prose-anchor validity gate, watcher waves 1+2 + FF#2. P1 siblings (.9-.13) remain"
+    },
+    {
+      "phase": "Phase 2 — internal-validator canary cutover",
+      "status": "BLOCKED",
+      "detail": "first of three staged consumer cutovers (.14 internal validators -> .15 j-rig -> .17 CCP, blast-radius ascending); gated behind the Phase 1 P1 siblings"
+    },
+    {
+      "phase": "Phase 4 — advisory -> blocking flip",
+      "status": "BLOCKED",
+      "detail": "CCP authority-flip soak window NO-GO as of 2026-06-18 (1.16% deviation); matures ~2026-07-11; requires CTO+CISO+VP-DevRel triple sign-off + ISEDC Class-1 charter (044-AT-DECR)"
+    }
+  ],
+  "state_machine": {
+    "machine": "SAK advisory -> blocking flip (Phase 4)",
+    "current_state": "ADVISORY",
+    "entered_at": "2026-06-09",
+    "next_gate": "CCP authority-flip soak >= 99.5% / >= 30d / zero-P0 / rollback-rehearsed / triple sign-off / 14d notice (DR-049); soak matures ~2026-07-11",
+    "states": ["ADVISORY", "ADVISORY-W-A", "ADVISORY-W-B", "BLOCKING-CANARY", "BLOCKING"]
+  },
+  "cost_ledger": {
+    "_comment": "Bandwidth model is FTE-week, not dollars (Intent Solutions is a sole-prop; 029-DR-BAND replaced plan 027's dollar/calendar budgets with an FTE-day model). Figures mirror 029-DR-BAND § 2 + § 3 aggregate.",
+    "unit": "FTE-week",
+    "total_budget_fte_weeks": 8.8,
+    "total_calendar_floor": "~3 calendar months (with phase-gating + sync overhead)",
+    "phases": [
+      {"phase": "Phase A.0 null-hypothesis baseline", "budget_fte_days": 3.5, "spent_fte_days": 0.0, "gated_on": "bandwidth-only"},
+      {"phase": "Phase A", "budget_fte_days": 11.5, "spent_fte_days": 0.0, "gated_on": "bandwidth-only"},
+      {"phase": "Phase B", "budget_fte_days": 9.5, "spent_fte_days": 0.0, "gated_on": "bandwidth-only"},
+      {"phase": "Phase C", "budget_fte_days": 15.0, "spent_fte_days": 0.0, "gated_on": "external blockers uprg + 9pi3"},
+      {"phase": "Phase E", "budget_fte_days": 4.5, "spent_fte_days": 0.0, "gated_on": "bandwidth-only"}
+    ]
+  },
+  "bead_state": {
+    "_comment": "Counts of the SAK / Skill-Refiner bead subtree under epic bd_000-projects-9k5h, captured from the canonical umbrella bd workspace (~/000-projects/.beads/) which is gitignored and unreadable from this repo / CI. Refresh via: bd list --label <label> --json --limit 500 from /home/jeremy/000-projects. Captured 2026-06-20.",
+    "captured_at": "2026-06-20",
+    "groups": [
+      {"label": "sak", "open": 23, "in_progress": 0, "deferred": 1, "closed": 0},
+      {"label": "refiner", "open": 62, "in_progress": 0, "deferred": 1, "closed": 0},
+      {"label": "repo:iel", "open": 15, "in_progress": 0, "deferred": 1, "closed": 0}
+    ]
+  }
+}

@@ -27,7 +27,7 @@ forward_refs:
 # Platform Runtime Blueprint — Intent Eval Platform
 
 > **State label: NORMATIVE.** Applied retroactively per the State-Labeling Standard (`069-DR-STND-state-labeling-standard-2026-06-18.md`, bead iel-E13d). In force; amendments route per Blueprint A § 2.3.
-
+>
 > **This document is the kernel specification.** Blueprint A (`011-AT-ARCH-ecosystem-master-blueprint.md`) is the constitution; Blueprint B is the kernel. Where Blueprint A locks the shape of the ecosystem — mission, principles, anti-goals, governance routing, shared terminology — Blueprint B locks the shape of the runtime: how a single execution flows from queued to archived, which 13 entities the platform manipulates and what their schemas are, how state machines transition, how replay reconstructs evidence, how runtime isolation enforces the credential and execution boundaries, how cost governance enforces the bandwidth and budget ceilings, how observability emits the trace fabric that makes the whole thing legible to an external reviewer, and which deployment philosophy carries all of the above to production.
 >
 > **What Blueprint B explicitly is NOT.** It is not a per-repo implementation guide — that is Blueprint C, applied per-repo. It is not a glossary — that is `014-DR-GLOS-canonical-glossary.md`. It is not the runtime event taxonomy normative spec — that is `020-AT-ARCH-runtime-event-taxonomy.md` (iel-E12); Blueprint B references the taxonomy and locks the OBSERVABILITY-LAYER decision that the platform IS OpenTelemetry-native, without locking the specific event names. It is not the replay-fidelity levels normative spec — that is `016-AT-STND-replay-fidelity-levels.md` (iel-E11); Blueprint B references RF-0..RF-4 as forward-locks without enumerating them in this document.
@@ -380,6 +380,7 @@ Every Evidence Bundle row emitted by any tool in the platform MUST carry:
 1. **Subject** — the artifact being attested. The subject identifies what the row is making a claim ABOUT. For a `gate-result/v1` row, the subject is the input artifact the gate evaluated (a Skill SHA, a test-corpus SHA, a file SHA). The subject naming convention is specified in § 7.3.
 
 2. **Predicate type URI** — the typed identifier for the row's predicate body schema. Format: `evals.intentsolutions.io/<predicate-type>/v<version>` per DR-004 Q1 namespace lock + DR-010 Q3 grammar lock. Currently approved predicate types:
+
    - `gate-result/v1` — SPEC.md normative landing in § 7 of THIS blueprint (production-Rekor unlocked once Blueprint B merges).
    - `validation-result/v1`, `eval-verdict/v1`, `cost-attribution/v1` — conditionally approved per DR-010 Q3; remain `sigstore_staging` until their respective SPEC.md normative sections land.
    - `harness-experiment/v1` — deferred to Phase B+ per DR-010 Q3 (experimental output is the LAST thing to anchor in Rekor permanently; defer until experimental-output stability demonstrated).
@@ -750,7 +751,7 @@ The discipline binds as three ordered phases:
 
 3. **Contract (promote to required).** A field becomes **required** only after (a) it has aged at least one consumer release as optional, AND (b) the deprecation-warning window against the still-optional shape has fired, AND (c) the kernel package bumps **MINOR** at the promotion. Promoting an already-shipped optional field to required is treated as a backward-compatible tightening at the kernel-package level provided every producing consumer has had a release in which to begin emitting the field; it MUST NOT be done as a MAJOR-free surprise on a shape that consumers have not yet had a release to adopt. If a field must become required faster than the aging window permits, that is a **breaking change** and MUST follow the § 7.2 URI-versioning policy (mint `gate-result/v2`) — not a same-URI tightening.
 
-**Relationship to the URI versioning policy.** § 7.2 governs the EXTERNAL contract of the predicate URI: removing a required field, narrowing an enum, or changing the semantics of an existing field mints a new major URI. This § 7.0.1 governs the INTERNAL discipline by which a field travels from new-and-optional to required *without* breaking that external contract. The two are complementary: § 7.2 is what consumers may rely on; § 7.0.1 is the path the kernel walks so that what § 7.2 promises stays honorable. A field addition that completes all three Parallel Change phases never trips the § 7.2 breaking-change clause, because at no single release did any consumer break.
+**Relationship to the URI versioning policy.** § 7.2 governs the EXTERNAL contract of the predicate URI: removing a required field, narrowing an enum, or changing the semantics of an existing field mints a new major URI. This § 7.0.1 governs the INTERNAL discipline by which a field travels from new-and-optional to required _without_ breaking that external contract. The two are complementary: § 7.2 is what consumers may rely on; § 7.0.1 is the path the kernel walks so that what § 7.2 promises stays honorable. A field addition that completes all three Parallel Change phases never trips the § 7.2 breaking-change clause, because at no single release did any consumer break.
 
 **Why this is binding.** Without an explicit expand-contract discipline, every kernel field addition degrades into a coordinated cross-repo deploy event — the exact failure mode that independent package versioning exists to prevent. Parallel Change makes additive schema evolution a sequence of independently-shippable steps, so a kernel MINOR never forces a same-day deploy of `audit-harness`, `j-rig-skill-binary-eval`, `intent-rollout-gate`, and the lab simultaneously.
 
@@ -807,12 +808,12 @@ The URI is **effectively immutable** once any row referencing it is signed and p
 
 The `must emit` requirement, stated per predicate kind (attribute names resolve to the kernel YAML keyed by predicate kind):
 
-| Predicate kind | Span that MUST emit | What the `must emit` set covers (names per kernel YAML) |
-| --- | --- | --- |
-| `gate-result/v1` | the gate-evaluation span | gate identity + decision + the lineage IDs that pivot a trace back to the EvalRun, matching the predicate body's required fields (§ 7.4) |
-| `eval-verdict/v1` | the JudgeDecision span | judge identity + verdict + the disagreement attributes (§ 4.3) |
-| `runtime-receipt/v1` | the ToolInvocation span | tool identity + loop-depth + the cost-record back-reference (§ 4.3) |
-| `cost-attribution/v1` | the cost-record span | the per-evaluation cost attributes back-referenced by `cost_record_ref` (§ 7.4) |
+| Predicate kind        | Span that MUST emit      | What the `must emit` set covers (names per kernel YAML)                                                                                  |
+| --------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `gate-result/v1`      | the gate-evaluation span | gate identity + decision + the lineage IDs that pivot a trace back to the EvalRun, matching the predicate body's required fields (§ 7.4) |
+| `eval-verdict/v1`     | the JudgeDecision span   | judge identity + verdict + the disagreement attributes (§ 4.3)                                                                           |
+| `runtime-receipt/v1`  | the ToolInvocation span  | tool identity + loop-depth + the cost-record back-reference (§ 4.3)                                                                      |
+| `cost-attribution/v1` | the cost-record span     | the per-evaluation cost attributes back-referenced by `cost_record_ref` (§ 7.4)                                                          |
 
 The kernel YAML is the single place where each predicate kind's required attribute names, types, and stability level are enumerated; this table fixes only the **binding** (which span emits which predicate kind's set) and defers every name to the kernel. New predicate kinds add their `must emit` set to the kernel YAML first, then add a binding row here. This pairs with the kernel OTel semantic-convention pin landing in `intent-eval-core` (`schemas/v1/otel-attributes.yaml` + `@intentsolutions/core/otel/v1`); the category lock (`runtime.*`, `gate.*`, `judge.*`, `cost.*`, etc.) remains per § 4.3, and the per-event names remain deferred to iel-E12 (`020-AT-ARCH-runtime-event-taxonomy.md`).
 

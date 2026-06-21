@@ -80,11 +80,12 @@ Usage:
                  [--dry-run] [--force] [--limit N]
 
 --provider: one of nvidia-llama-405b (default, free), groq-llama-70b,
-            anthropic-haiku, anthropic-sonnet, anthropic-opus.
+            deepseek-v4-flash, anthropic-haiku, anthropic-sonnet, anthropic-opus.
 --dry-run:  simulates propose/apply/score/accept on each specimen with
             synthetic provider responses. Zero API spend. Validates pipeline.
 --limit N:  process only the first N specimens (smoke test).
 """
+
 from __future__ import annotations
 
 import argparse
@@ -130,8 +131,8 @@ MIN_OPS = 1
 
 @dataclass
 class EditOp:
-    op: str          # "add" | "del" | "replace"
-    field: str       # top-level YAML key
+    op: str  # "add" | "del" | "replace"
+    field: str  # top-level YAML key
     value: str = ""  # for "add" / "replace"; unused for "del"
 
 
@@ -194,6 +195,7 @@ def _validate_proposal(raw: dict) -> tuple[EditProposal, str | None]:
 # Frontmatter apply() — pure function
 # ---------------------------------------------------------------------------
 
+
 def _parse_frontmatter_lines(skill_md_text: str) -> tuple[list[str], str]:
     """Split a SKILL.md into (frontmatter_lines, body_text).
 
@@ -207,7 +209,7 @@ def _parse_frontmatter_lines(skill_md_text: str) -> tuple[list[str], str]:
     if end_idx == -1:
         return rest.splitlines(), ""
     fm_block = rest[:end_idx]
-    body = rest[end_idx + 4:]  # skip \n---
+    body = rest[end_idx + 4 :]  # skip \n---
     return fm_block.splitlines(), body
 
 
@@ -286,6 +288,7 @@ def _format_value(value: str) -> str:
 # Prompt builders
 # ---------------------------------------------------------------------------
 
+
 def build_propose_prompt(
     input_text: str,
     iteration: int,
@@ -353,6 +356,7 @@ Rules:
 # Core Refiner loop
 # ---------------------------------------------------------------------------
 
+
 def run_refiner(
     specimen: SpecimenMeta,
     input_text: str,
@@ -394,10 +398,7 @@ def run_refiner(
 
         if dry_run and iteration == 0:
             prompt_preview = prompt[:400].replace("\n", " ")
-            print(
-                f"  [dry-run] propose iteration={iteration} "
-                f"specimen={specimen.sha8}"
-            )
+            print(f"  [dry-run] propose iteration={iteration} specimen={specimen.sha8}")
             print(f"    prompt[:400]: {prompt_preview!r}")
 
         # Call Opus for a proposal
@@ -407,9 +408,7 @@ def run_refiner(
         except BudgetExceeded:
             raise
         except Exception as exc:
-            persister.log_error(
-                sha, f"API call failed at iteration {iteration}: {exc}", {"iteration": iteration}
-            )
+            persister.log_error(sha, f"API call failed at iteration {iteration}: {exc}", {"iteration": iteration})
             break
 
         # Parse the JSON proposal from the response
@@ -433,10 +432,7 @@ def run_refiner(
             if parse_error:
                 print(f"    proposal parse error: {parse_error}")
             else:
-                print(
-                    f"    proposal: {len(proposal_obj.ops)} ops — "
-                    f"{[o.op + ':' + o.field for o in proposal_obj.ops]}"
-                )
+                print(f"    proposal: {len(proposal_obj.ops)} ops — {[o.op + ':' + o.field for o in proposal_obj.ops]}")
 
         # Persist proposal
         proposal_data = {
@@ -456,18 +452,19 @@ def run_refiner(
 
         if proposal_obj is None:
             rejection_reason = f"Invalid proposal: {parse_error}"
-            rejection_history.append({
-                "proposal_rationale": "(unparseable)",
-                "rejection_reason": rejection_reason,
-            })
+            rejection_history.append(
+                {
+                    "proposal_rationale": "(unparseable)",
+                    "rejection_reason": rejection_reason,
+                }
+            )
             accept_data = {
                 "iteration": iteration,
                 "accepted": False,
                 "rejection_reason": rejection_reason,
             }
             persister.write_json(sha, f"accept-{iteration}.json", accept_data)
-            trajectory.append({"iteration": iteration, "accepted": False,
-                                "reason": rejection_reason})
+            trajectory.append({"iteration": iteration, "accepted": False, "reason": rejection_reason})
             continue
 
         # Apply proposal
@@ -475,13 +472,17 @@ def run_refiner(
             candidate_text = apply_proposal(input_text, proposal_obj)
         except Exception as exc:
             rejection_reason = f"apply() raised: {exc}"
-            rejection_history.append({
-                "proposal_rationale": proposal_obj.rationale,
-                "rejection_reason": rejection_reason,
-            })
-            persister.write_json(sha, f"accept-{iteration}.json",
-                                 {"iteration": iteration, "accepted": False,
-                                  "rejection_reason": rejection_reason})
+            rejection_history.append(
+                {
+                    "proposal_rationale": proposal_obj.rationale,
+                    "rejection_reason": rejection_reason,
+                }
+            )
+            persister.write_json(
+                sha,
+                f"accept-{iteration}.json",
+                {"iteration": iteration, "accepted": False, "rejection_reason": rejection_reason},
+            )
             trajectory.append({"iteration": iteration, "accepted": False, "reason": rejection_reason})
             continue
 
@@ -492,22 +493,24 @@ def run_refiner(
             score_v2 = scorer.score_text(candidate_text, tmp_dir)
         except Exception as exc:
             rejection_reason = f"score() raised: {exc}"
-            rejection_history.append({
-                "proposal_rationale": proposal_obj.rationale,
-                "rejection_reason": rejection_reason,
-            })
+            rejection_history.append(
+                {
+                    "proposal_rationale": proposal_obj.rationale,
+                    "rejection_reason": rejection_reason,
+                }
+            )
             persister.write_json(sha, f"score-{iteration}.json", {"error": str(exc)})
-            persister.write_json(sha, f"accept-{iteration}.json",
-                                 {"iteration": iteration, "accepted": False,
-                                  "rejection_reason": rejection_reason})
+            persister.write_json(
+                sha,
+                f"accept-{iteration}.json",
+                {"iteration": iteration, "accepted": False, "rejection_reason": rejection_reason},
+            )
             trajectory.append({"iteration": iteration, "accepted": False, "reason": rejection_reason})
             continue
 
         score_data = score_v2.to_dict()
         score_data["baseline_marketplace_score_pct"] = score_v1.marketplace_score_pct
-        score_data["delta_marketplace_score_pct"] = (
-            score_v2.marketplace_score_pct - score_v1.marketplace_score_pct
-        )
+        score_data["delta_marketplace_score_pct"] = score_v2.marketplace_score_pct - score_v1.marketplace_score_pct
         persister.write_json(sha, f"score-{iteration}.json", score_data)
 
         if dry_run:
@@ -544,12 +547,14 @@ def run_refiner(
             "delta": score_data["delta_marketplace_score_pct"],
         }
         persister.write_json(sha, f"accept-{iteration}.json", accept_data)
-        trajectory.append({
-            "iteration": iteration,
-            "accepted": is_accepted,
-            "delta": score_data["delta_marketplace_score_pct"],
-            "reason": rejection_reason if not is_accepted else "accepted",
-        })
+        trajectory.append(
+            {
+                "iteration": iteration,
+                "accepted": is_accepted,
+                "delta": score_data["delta_marketplace_score_pct"],
+                "reason": rejection_reason if not is_accepted else "accepted",
+            }
+        )
 
         if dry_run:
             print(f"    accept: {is_accepted}" + (f" — {rejection_reason}" if not is_accepted else ""))
@@ -561,10 +566,12 @@ def run_refiner(
             iterations_to_accept = iteration
             break
         else:
-            rejection_history.append({
-                "proposal_rationale": proposal_obj.rationale,
-                "rejection_reason": rejection_reason,
-            })
+            rejection_history.append(
+                {
+                    "proposal_rationale": proposal_obj.rationale,
+                    "rejection_reason": rejection_reason,
+                }
+            )
 
     # Write final.md (best accepted or original if all rejected)
     persister.write_text(sha, "final.md", best_text)
@@ -578,9 +585,7 @@ def run_refiner(
         "iterations_to_accept": iterations_to_accept,
         "baseline_marketplace_score_pct": score_v1.marketplace_score_pct,
         "final_marketplace_score_pct": best_score.marketplace_score_pct,
-        "delta_marketplace_score_pct": (
-            best_score.marketplace_score_pct - score_v1.marketplace_score_pct
-        ),
+        "delta_marketplace_score_pct": (best_score.marketplace_score_pct - score_v1.marketplace_score_pct),
         "trajectory": trajectory,
     }
     persister.write_json(sha, "trajectory.json", result)
@@ -590,6 +595,7 @@ def run_refiner(
 # ---------------------------------------------------------------------------
 # Summary
 # ---------------------------------------------------------------------------
+
 
 def write_summary(
     out_dir: Path,
@@ -605,10 +611,8 @@ def write_summary(
     rejected_results = [r for r in all_results if not r.get("accepted") and "error" not in r]
     error_results = [r for r in all_results if "error" in r]
 
-    deltas = [r["delta_marketplace_score_pct"] for r in all_results
-              if "delta_marketplace_score_pct" in r]
-    iters_list = [r["iterations_to_accept"] for r in accepted_results
-                  if r.get("iterations_to_accept") is not None]
+    deltas = [r["delta_marketplace_score_pct"] for r in all_results if "delta_marketplace_score_pct" in r]
+    iters_list = [r["iterations_to_accept"] for r in accepted_results if r.get("iterations_to_accept") is not None]
 
     def safe_mean(lst: list) -> float | None:
         return round(_stats.mean(lst), 3) if lst else None
@@ -626,10 +630,7 @@ def write_summary(
         "accepted_count": len(accepted_results),
         "rejected_all_iterations_count": len(rejected_results),
         "error_count": len(error_results),
-        "accept_rate": (
-            round(len(accepted_results) / len(all_results), 3)
-            if all_results else None
-        ),
+        "accept_rate": (round(len(accepted_results) / len(all_results), 3) if all_results else None),
         "mean_delta_marketplace_score_pct": safe_mean(deltas),
         "std_delta_marketplace_score_pct": safe_std(deltas),
         "mean_iterations_to_accept": safe_mean(iters_list),
@@ -650,14 +651,11 @@ def write_summary(
 # Main
 # ---------------------------------------------------------------------------
 
+
 def main() -> int:
-    ap = argparse.ArgumentParser(
-        description="Run Arm B (proposed Refiner mechanism) of Phase A.0 baseline experiment."
-    )
-    ap.add_argument("--manifest", type=Path, required=True,
-                    help="Path to corpus/manifest.json")
-    ap.add_argument("--out", type=Path, required=True,
-                    help="Root output directory (results/raw/)")
+    ap = argparse.ArgumentParser(description="Run Arm B (proposed Refiner mechanism) of Phase A.0 baseline experiment.")
+    ap.add_argument("--manifest", type=Path, required=True, help="Path to corpus/manifest.json")
+    ap.add_argument("--out", type=Path, required=True, help="Root output directory (results/raw/)")
     ap.add_argument(
         "--provider",
         default=os.environ.get("PHASE_A0_PROVIDER", DEFAULT_PROVIDER),
@@ -676,16 +674,18 @@ def main() -> int:
             "Override via PHASE_A0_BUDGET_CEILING_USD env var."
         ),
     )
-    ap.add_argument("--max-iterations", type=int, default=3,
-                    help="Maximum Refiner propose/reject iterations per specimen. Default: 3")
-    ap.add_argument("--dry-run", action="store_true",
-                    help="Simulate pipeline without real API calls. Validates end-to-end.")
-    ap.add_argument("--force", action="store_true",
-                    help="Overwrite existing result files.")
-    ap.add_argument("--limit", type=int, default=None,
-                    help="Process only first N specimens (smoke test).")
-    ap.add_argument("--validator-path", type=Path, default=None,
-                    help="Override path to validate-skills-schema.py")
+    ap.add_argument(
+        "--max-iterations",
+        type=int,
+        default=3,
+        help="Maximum Refiner propose/reject iterations per specimen. Default: 3",
+    )
+    ap.add_argument(
+        "--dry-run", action="store_true", help="Simulate pipeline without real API calls. Validates end-to-end."
+    )
+    ap.add_argument("--force", action="store_true", help="Overwrite existing result files.")
+    ap.add_argument("--limit", type=int, default=None, help="Process only first N specimens (smoke test).")
+    ap.add_argument("--validator-path", type=Path, default=None, help="Override path to validate-skills-schema.py")
     args = ap.parse_args()
 
     if not args.manifest.is_file():
@@ -720,15 +720,10 @@ def main() -> int:
         try:
             for specimen in specimens:
                 # Check idempotency: if trajectory.json exists, skip
-                if (
-                    persister.exists(specimen.sha256, "trajectory.json")
-                    and not args.force
-                ):
+                if persister.exists(specimen.sha256, "trajectory.json") and not args.force:
                     print(f"  skip (idempotent): {specimen.sha8}")
                     # Load and include in results for summary
-                    traj_path = (
-                        args.out / ARM_NAME / specimen.sha8 / "trajectory.json"
-                    )
+                    traj_path = args.out / ARM_NAME / specimen.sha8 / "trajectory.json"
                     try:
                         traj = json.loads(traj_path.read_text())
                         all_results.append(traj)
@@ -744,8 +739,10 @@ def main() -> int:
                     continue
 
                 if args.dry_run:
-                    print(f"\n[dry-run] specimen={specimen.sha8} stratum={specimen.stratum} "
-                          f"baseline={specimen.marketplace_score}")
+                    print(
+                        f"\n[dry-run] specimen={specimen.sha8} stratum={specimen.stratum} "
+                        f"baseline={specimen.marketplace_score}"
+                    )
 
                 result = run_refiner(
                     specimen=specimen,
@@ -763,9 +760,7 @@ def main() -> int:
 
         except BudgetExceeded as exc:
             print(f"\nSTOP: {exc}", file=sys.stderr)
-            summary_path = write_summary(
-                args.out, all_results, meter, args.dry_run, args.provider
-            )
+            summary_path = write_summary(args.out, all_results, meter, args.dry_run, args.provider)
             print(f"Partial summary: {summary_path}", file=sys.stderr)
             return 1
 

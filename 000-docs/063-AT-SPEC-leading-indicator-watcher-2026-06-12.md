@@ -10,32 +10,32 @@ Rich Sutton's bitter lesson: general methods that scale with compute eventually 
 
 ## The 12 indicators (§ 14.11.1)
 
-| # | Indicator | Source kind | Severity |
-|---|---|---|---|
-| 1 | Anthropic publishes public roadmap including machine-readable spec | prose | High |
-| 2 | `claude` CLI begins ingesting `.claude/schema/` directory | rss (changelog) | High |
-| 3 | `claude doctor` adds plugin-format validation | rss (changelog) | High |
-| 4 | agentskills.io v2 RFC published | rss (spec) | High |
-| 5 | Anthropic publishes machine-readable agentskills.io v2 schemas | github-release | **CRITICAL** |
-| 6 | Anthropic ships skill-author-onboarding doc citing field validation | prose | Medium |
-| 7 | `claude-codemod` or equivalent field-migration tool ships | github-release | Medium |
-| 8 | Anthropic ships skill-shell-validation | rss (changelog) | Medium |
-| 9 | Anthropic ships skill-security-audit | rss (changelog) | Medium |
-| 10 | agentskills.io spec adds vendor-namespacing section | rss (spec) | Low |
-| 11 | Vercel skills.sh adopts kernel-schema-compatible format | github-release | Low |
-| 12 | Frontier model demonstrates schema-validator equivalence from prose+examples | github-release | **CRITICAL** — bitter-lesson triggered |
+| #   | Indicator                                                                    | Source kind     | Severity                               |
+| --- | ---------------------------------------------------------------------------- | --------------- | -------------------------------------- |
+| 1   | Anthropic publishes public roadmap including machine-readable spec           | prose           | High                                   |
+| 2   | `claude` CLI begins ingesting `.claude/schema/` directory                    | rss (changelog) | High                                   |
+| 3   | `claude doctor` adds plugin-format validation                                | rss (changelog) | High                                   |
+| 4   | agentskills.io v2 RFC published                                              | rss (spec)      | High                                   |
+| 5   | Anthropic publishes machine-readable agentskills.io v2 schemas               | github-release  | **CRITICAL**                           |
+| 6   | Anthropic ships skill-author-onboarding doc citing field validation          | prose           | Medium                                 |
+| 7   | `claude-codemod` or equivalent field-migration tool ships                    | github-release  | Medium                                 |
+| 8   | Anthropic ships skill-shell-validation                                       | rss (changelog) | Medium                                 |
+| 9   | Anthropic ships skill-security-audit                                         | rss (changelog) | Medium                                 |
+| 10  | agentskills.io spec adds vendor-namespacing section                          | rss (spec)      | Low                                    |
+| 11  | Vercel skills.sh adopts kernel-schema-compatible format                      | github-release  | Low                                    |
+| 12  | Frontier model demonstrates schema-validator equivalence from prose+examples | github-release  | **CRITICAL** — bitter-lesson triggered |
 
 ## Disposition matrix (§ 14.11.2)
 
 The watcher counts FIRING indicators by severity → one verdict:
 
-| Indicators firing | Verdict | Action |
-|---|---|---|
-| 0-2 Low-severity | `CONTINUE` | Continue per plan |
-| 1 Medium | `NOTE` | Note in next AAR; no plan change |
-| 2-3 Medium OR 1 High | `RETRO` | ISEDC Class-2 retrospective; consider pausing Phase >= 3 |
-| 1 CRITICAL | `PAUSE` | PAUSE all SAK phases; ISEDC Class-1 re-charter to evaluate upstream cutover |
-| 2 CRITICAL | `STOP` | STOP SAK; archive as historical contribution; cut over to upstream |
+| Indicators firing    | Verdict    | Action                                                                      |
+| -------------------- | ---------- | --------------------------------------------------------------------------- |
+| 0-2 Low-severity     | `CONTINUE` | Continue per plan                                                           |
+| 1 Medium             | `NOTE`     | Note in next AAR; no plan change                                            |
+| 2-3 Medium OR 1 High | `RETRO`    | ISEDC Class-2 retrospective; consider pausing Phase >= 3                    |
+| 1 CRITICAL           | `PAUSE`    | PAUSE all SAK phases; ISEDC Class-1 re-charter to evaluate upstream cutover |
+| 2 CRITICAL           | `STOP`     | STOP SAK; archive as historical contribution; cut over to upstream          |
 
 ## Deterministic detection + typed-fetch-failure posture (reused from 052-AT-SPEC)
 

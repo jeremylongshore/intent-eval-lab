@@ -1,12 +1,14 @@
 name: Python Tests
 
 on:
+  # Required branch-protection gate: the `ruff lint + format` job runs on EVERY
+  # PR to main, not just PRs that touch Python paths. A path-filtered required
+  # check is SKIPPED on unrelated PRs and never reports, blocking the PR
+  # forever. The push: trigger keeps its path filter (no required-check
+  # semantics on push). mypy + pytest stay advisory (continue-on-error in their
+  # jobs) — they may run on every PR but never block.
   pull_request:
-    paths:
-      - "research/phase-a-0-baseline/**/*.py"
-      - "pyproject.toml"
-      - "sitecustomize.py"
-      - ".github/workflows/python-tests.yml"
+    branches: [main]
   push:
     branches: [main]
     paths:
@@ -22,13 +24,12 @@ concurrency:
 
 jobs:
   # ---------------------------------------------------------------------------
-  # L2 lint + format + type-check (advisory first run per Tidy First; tighten
-  # by dropping continue-on-error in a follow-up PR once corpus is clean.)
+  # L2 lint + format (REQUIRED) and type-check (mypy stays advisory — gradual
+  # typing; the runners import third-party SDKs without stubs in all envs).
   # ---------------------------------------------------------------------------
   lint:
-    name: ruff lint + format (advisory)
+    name: ruff lint + format
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6

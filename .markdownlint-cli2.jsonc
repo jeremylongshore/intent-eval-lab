@@ -6,7 +6,10 @@
   "config": {
     "default": true,
     "MD013": false, // line-length — specs use long lines for cross-references
+    "MD060": false, // table-column-style — the spec corpus mixes compact + aligned table styles deliberately; pure cosmetics, same class as MD013
     "MD024": { "siblings_only": true }, // allow duplicate headings in different sections
+    "MD025": { "front_matter_title": "" }, // docs carry a YAML `title:` AND a matching body H1 by template — don't double-count the frontmatter title
+    "MD036": false, // no-emphasis-as-heading — formal records use bold lead-ins (e.g. "**Vote: 7–0 …**") under a real heading; not a heading substitute
     "MD033": false, // inline HTML allowed (badges, details/summary)
     "MD041": false, // first line need not be H1 (frontmatter or banner first)
     "MD007": { "indent": 2 }, // unordered list indent
@@ -17,6 +20,16 @@
     ".audit-harness/**",
     "node_modules/**",
     "research/phase-a-0-baseline/results/raw/**",
-    "research/**/results/**"
+    "research/**/results/**",
+    // Constituent-project symlinks (gitignored; not part of this repo's CI checkout).
+    "projects/**",
+    // Vendored upstream snapshots are commit-pinned verbatim copies that the
+    // deep-capture CI gates extract from — they MUST stay byte-identical to
+    // upstream, so they are not authored prose to format.
+    "_vendor/**",
+    "specs/_vendor/**",
+    // Offline self-test corpus parsed literally by scripts/classifier-walls.py
+    // (substring pre-wall) — fixture shape, not authored prose.
+    "specs/drift-classification/v1/examples/**"
   ]
 }

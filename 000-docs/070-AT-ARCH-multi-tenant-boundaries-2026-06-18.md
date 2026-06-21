@@ -44,12 +44,12 @@ that justifies building the model below.
 
 Scope-element labels (per `069-DR-STND` § 1) used throughout:
 
-| Concern | Label | Meaning |
-| --- | --- | --- |
-| Single-tenant operation | `CURRENT` | What runs today. |
-| Tenant identity + quota model | `PLANNED` | Designed here; reserved; not yet built. |
-| Per-tenant deployment / worker pods | `DEFERRED` | Built only when the § 5.3 trigger fires. |
-| Cross-tenant data sharing without consent | `REJECTED` | An anti-goal — never. |
+| Concern                                   | Label      | Meaning                                  |
+| ----------------------------------------- | ---------- | ---------------------------------------- |
+| Single-tenant operation                   | `CURRENT`  | What runs today.                         |
+| Tenant identity + quota model             | `PLANNED`  | Designed here; reserved; not yet built.  |
+| Per-tenant deployment / worker pods       | `DEFERRED` | Built only when the § 5.3 trigger fires. |
+| Cross-tenant data sharing without consent | `REJECTED` | An anti-goal — never.                    |
 
 Nothing in this document authorizes building tenancy now. Per Blueprint B § 5.3, the build
 is a **Class-1 ISEDC governance event**; this spec is the design the council evaluates when
@@ -135,11 +135,11 @@ names ("per-tenant deployment") and is the right tier for a regulated-industry t
 hardware-isolated runtimes or strict data-residency partitioning (Blueprint B § 5.3 fourth
 trigger). It is the most expensive tier and is justified only by a posture that Tier 1 cannot meet.
 
-| Tier | Process | Store | Worker exec | Broker | Justifying posture |
-| --- | --- | --- | --- | --- | --- |
-| 0 (`CURRENT`) | Shared | Shared, row-scoped | Shared sandbox | Shared | Single tenant, or all-trust-shared. |
-| 1 (`DEFERRED`) | Shared API | Shared, row-scoped | Per-tenant pods | Per-tenant | Execution isolation needed; shared storage tolerated. |
-| 2 (`DEFERRED`) | Per tenant | Per tenant | Per tenant | Per tenant | Hardware isolation / data-residency / regulated vertical. |
+| Tier           | Process    | Store              | Worker exec     | Broker     | Justifying posture                                        |
+| -------------- | ---------- | ------------------ | --------------- | ---------- | --------------------------------------------------------- |
+| 0 (`CURRENT`)  | Shared     | Shared, row-scoped | Shared sandbox  | Shared     | Single tenant, or all-trust-shared.                       |
+| 1 (`DEFERRED`) | Shared API | Shared, row-scoped | Per-tenant pods | Per-tenant | Execution isolation needed; shared storage tolerated.     |
+| 2 (`DEFERRED`) | Per tenant | Per tenant         | Per tenant      | Per tenant | Hardware isolation / data-residency / regulated vertical. |
 
 ## 4. Invariants that hold at every tier
 

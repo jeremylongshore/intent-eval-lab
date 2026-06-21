@@ -56,13 +56,13 @@ are defined in the Canonical Glossary (`014-DR-GLOS`). This standard does not re
 Per the State-Labeling Standard (`069-DR-STND`) § 1, the per-capability labels used in
 this document are a closed set, distinct from document-lifecycle labels:
 
-| Label | Meaning for a repo responsibility / capability |
-| --- | --- |
-| `CURRENT` | Owned and shipping today in the named repo. |
-| `PLANNED` | Committed for a named repo but not yet built; the boundary is reserved now. |
-| `EXPERIMENTAL` | Present but behind a `v0.x` / staging gate; the boundary may still move. |
-| `DEFERRED` | Recognized as belonging to a repo but explicitly not yet scheduled. |
-| `REJECTED` | Explicitly disclaimed — the repo MUST NOT take this on (an anti-goal). |
+| Label          | Meaning for a repo responsibility / capability                              |
+| -------------- | --------------------------------------------------------------------------- |
+| `CURRENT`      | Owned and shipping today in the named repo.                                 |
+| `PLANNED`      | Committed for a named repo but not yet built; the boundary is reserved now. |
+| `EXPERIMENTAL` | Present but behind a `v0.x` / staging gate; the boundary may still move.    |
+| `DEFERRED`     | Recognized as belonging to a repo but explicitly not yet scheduled.         |
+| `REJECTED`     | Explicitly disclaimed — the repo MUST NOT take this on (an anti-goal).      |
 
 A capability's label is orthogonal to its document's lifecycle label. A `NORMATIVE`
 document (this one) can mark a capability `PLANNED`.
@@ -105,11 +105,11 @@ Role (Blueprint A § 2.1): _Canonical contracts kernel — types, schemas, lifec
 machines, replay semantics, evidence semantics, failure taxonomy, UUID/event standards.
 **No execution, no judges, no deployment logic.** Pure types._
 
-| | |
-| --- | --- |
-| **OWNS** (`CURRENT`) | The 13-entity domain model (Blueprint B § 2); JSON Schemas + codegen'd Zod/Pydantic bindings; the `gate-result/v1` predicate body schema; lifecycle state machines; replay-fidelity (RF-N) declarations; UUIDv7 + OTel-attribute naming authority; the cross-field invariants for Evidence Bundle rows. `PLANNED`: `EvidenceBundlePayload` + `evidence-bundle-payload/v1` (kernel v0.2.0, iec-E12). |
-| **MUST NOT OWN** (`REJECTED`) | Any execution of an evaluation, any judge logic, any deployment/Action code, any provider adapter, any CLI that _runs_ a gate. The kernel is imported by everything and depends on no ecosystem repo. |
-| **CROSSES THE SEAM** | The kernel _defines_ the seam. It exports the schemas every other repo validates against. It emits no rows itself. |
+|                               |                                                                                                                                                                                                                                                                                                                                                                                                     |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **OWNS** (`CURRENT`)          | The 13-entity domain model (Blueprint B § 2); JSON Schemas + codegen'd Zod/Pydantic bindings; the `gate-result/v1` predicate body schema; lifecycle state machines; replay-fidelity (RF-N) declarations; UUIDv7 + OTel-attribute naming authority; the cross-field invariants for Evidence Bundle rows. `PLANNED`: `EvidenceBundlePayload` + `evidence-bundle-payload/v1` (kernel v0.2.0, iec-E12). |
+| **MUST NOT OWN** (`REJECTED`) | Any execution of an evaluation, any judge logic, any deployment/Action code, any provider adapter, any CLI that _runs_ a gate. The kernel is imported by everything and depends on no ecosystem repo.                                                                                                                                                                                               |
+| **CROSSES THE SEAM**          | The kernel _defines_ the seam. It exports the schemas every other repo validates against. It emits no rows itself.                                                                                                                                                                                                                                                                                  |
 
 ### 3.2 `intent-eval-lab` (methodology) — prefix `iel-`
 
@@ -117,11 +117,11 @@ Role (Blueprint A § 2.1): _Methodology + specification authoring — Blueprints
 here, canonical glossary lives here, normative SPEC.md modules live here under `specs/`.
 Sandbox for experiments. Public Decision Record archive._
 
-| | |
-| --- | --- |
-| **OWNS** (`CURRENT`) | Blueprints A/B/C; the Canonical Glossary; Decision Records; the predicate-type registry (`specs/PREDICATE-TYPES.md`, Blueprint B § 7.2); normative SPEC.md prose; standards-track RFCs; this boundary standard. `PLANNED`/`EXPERIMENTAL`: per-class spec modules under `specs/` (mcp-plugin-observability, prompt-evaluation, etc.). |
-| **MUST NOT OWN** (`REJECTED`) | Normative machine-readable schema content for any predicate body — that is the kernel's (Blueprint B § 7.0; lab `specs/.../schema/` holds only `$ref` redirect stubs, enforced by `schema-drift.yml`). The lab also does not ship executable platform code; it is the only repo that depends on no other ecosystem repo. |
-| **CROSSES THE SEAM** | The lab feeds **normative specifications** into the kernel as JSON Schema additions (Blueprint A § 2.2). It emits no Evidence Bundle rows in production; its own test surface MAY emit rows for self-application (Blueprint C § "self-application," iel-E05). |
+|                               |                                                                                                                                                                                                                                                                                                                                      |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **OWNS** (`CURRENT`)          | Blueprints A/B/C; the Canonical Glossary; Decision Records; the predicate-type registry (`specs/PREDICATE-TYPES.md`, Blueprint B § 7.2); normative SPEC.md prose; standards-track RFCs; this boundary standard. `PLANNED`/`EXPERIMENTAL`: per-class spec modules under `specs/` (mcp-plugin-observability, prompt-evaluation, etc.). |
+| **MUST NOT OWN** (`REJECTED`) | Normative machine-readable schema content for any predicate body — that is the kernel's (Blueprint B § 7.0; lab `specs/.../schema/` holds only `$ref` redirect stubs, enforced by `schema-drift.yml`). The lab also does not ship executable platform code; it is the only repo that depends on no other ecosystem repo.             |
+| **CROSSES THE SEAM**          | The lab feeds **normative specifications** into the kernel as JSON Schema additions (Blueprint A § 2.2). It emits no Evidence Bundle rows in production; its own test surface MAY emit rows for self-application (Blueprint C § "self-application," iel-E05).                                                                        |
 
 ### 3.3 `audit-harness` — prefix `iah-`
 
@@ -129,11 +129,11 @@ Role (Blueprint A § 2.1): _Deterministic gates — escape-scan, CRAP, architect
 harness-hash, bias-count, gherkin-lint. Already polyglot (Node CLI + shell + Python).
 Emits Evidence Bundle gate-result rows._
 
-| | |
-| --- | --- |
-| **OWNS** (`CURRENT`) | The deterministic gate implementations; the polyglot CLI dispatcher; hash-pinning (`.harness-hash`); the gate logic that decides PASS/FAIL/ADVISORY for each deterministic check. `PLANNED`: the `emit-evidence` subcommand (iah-E04) — the second prospective Evidence Bundle emitter named in DR-018 § 6.4 binding precondition #1. `DEFERRED`: production-Rekor signing (iah-E06, gated on DNSSEC + CAA + compatibility policy). |
-| **MUST NOT OWN** (`REJECTED`) | The Evidence Bundle schema (kernel owns it); behavioral / LLM-as-judge evaluation (j-rig owns it); ship/no-ship promotion decisions (the Rollout Gate owns those). audit-harness produces deterministic gate-result rows; it does not decide rollouts. |
-| **CROSSES THE SEAM** | **Emits** `gate-result/v1` rows against the kernel schema. Each row's subject `name` matches its predicate `gate_id` per Blueprint B § 7.3. |
+|                               |                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **OWNS** (`CURRENT`)          | The deterministic gate implementations; the polyglot CLI dispatcher; hash-pinning (`.harness-hash`); the gate logic that decides PASS/FAIL/ADVISORY for each deterministic check. `PLANNED`: the `emit-evidence` subcommand (iah-E04) — the second prospective Evidence Bundle emitter named in DR-018 § 6.4 binding precondition #1. `DEFERRED`: production-Rekor signing (iah-E06, gated on DNSSEC + CAA + compatibility policy). |
+| **MUST NOT OWN** (`REJECTED`) | The Evidence Bundle schema (kernel owns it); behavioral / LLM-as-judge evaluation (j-rig owns it); ship/no-ship promotion decisions (the Rollout Gate owns those). audit-harness produces deterministic gate-result rows; it does not decide rollouts.                                                                                                                                                                              |
+| **CROSSES THE SEAM**          | **Emits** `gate-result/v1` rows against the kernel schema. Each row's subject `name` matches its predicate `gate_id` per Blueprint B § 7.3.                                                                                                                                                                                                                                                                                         |
 
 ### 3.4 `j-rig-skill-binary-eval` — prefix `iaj-`
 
@@ -142,22 +142,22 @@ provider adapters + regression packs. TS pnpm monorepo. Emits + consumes Evidenc
 rows. The decision engine lives here._
 (GH-canonical name `j-rig-skill-binary-eval`; local FS dir `j-rig-binary-eval`.)
 
-| | |
-| --- | --- |
-| **OWNS** (`CURRENT`) | Behavioral / binary skill evaluation; provider adapters; regression packs; the **Rollout Gate decision logic** as the workspace package `@j-rig/rollout-gate`; the eval-verdict / runtime-receipt emission. `CURRENT` per DR-018: re-exports kernel `GateResultV1` (j-rig `@2.0.0+`); retains a behavioral secondary cross-field check for one major version cycle. `PLANNED`: `@j-rig/refiner-core` + `@j-rig/refiner` (Skill Refiner, DR-028). |
-| **MUST NOT OWN** (`REJECTED`) | The canonical predicate-body schema (kernel owns it; j-rig re-exports, never re-specifies — DR-018 Q2). The GitHub Action _shell_ (that is intent-rollout-gate). Deterministic static gates (those are audit-harness). |
-| **CROSSES THE SEAM** | **Emits** Evidence Bundle rows (`eval-verdict/v1`, `runtime-receipt/v1`, and conformant `gate-result/v1`) and **consumes** rows to drive the Rollout Gate decision. The decision logic is the seam's primary _consumer_. |
+|                               |                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **OWNS** (`CURRENT`)          | Behavioral / binary skill evaluation; provider adapters; regression packs; the **Rollout Gate decision logic** as the workspace package `@j-rig/rollout-gate`; the eval-verdict / runtime-receipt emission. `CURRENT` per DR-018: re-exports kernel `GateResultV1` (j-rig `@2.0.0+`); retains a behavioral secondary cross-field check for one major version cycle. `PLANNED`: `@j-rig/refiner-core` + `@j-rig/refiner` (Skill Refiner, DR-028). |
+| **MUST NOT OWN** (`REJECTED`) | The canonical predicate-body schema (kernel owns it; j-rig re-exports, never re-specifies — DR-018 Q2). The GitHub Action _shell_ (that is intent-rollout-gate). Deterministic static gates (those are audit-harness).                                                                                                                                                                                                                           |
+| **CROSSES THE SEAM**          | **Emits** Evidence Bundle rows (`eval-verdict/v1`, `runtime-receipt/v1`, and conformant `gate-result/v1`) and **consumes** rows to drive the Rollout Gate decision. The decision logic is the seam's primary _consumer_.                                                                                                                                                                                                                         |
 
 ### 3.5 `intent-rollout-gate` — prefix `iar-`
 
 Role (Blueprint A § 2.1): _**Thin GitHub Action shell** that delegates all decision logic
 to `@j-rig/rollout-gate`._
 
-| | |
-| --- | --- |
-| **OWNS** (`CURRENT`/`EXPERIMENTAL`) | The Action surface only: `action.yml` + `dist/index.js` + the npm-publishable Action variant. The shell parses inputs, calls `@j-rig/rollout-gate`, and surfaces the verdict as Action outputs / exit codes. The M5.1 TS runtime is `EXPERIMENTAL` (`v0.x`). |
-| **MUST NOT OWN** (`REJECTED`) | **Any decision logic.** All ship/no-ship reasoning lives in `@j-rig/rollout-gate`. If a behavior change requires editing decision logic, the change belongs in j-rig, not here. This anti-goal is the repo's entire reason to exist as a separate thin shell (Blueprint A § 2.1). |
-| **CROSSES THE SEAM** | **Consumes** an Evidence Bundle + a `tests/TESTING.md`-shaped policy via `@j-rig/rollout-gate` and surfaces the decision. It does not emit rows of its own; the decision it surfaces was computed by j-rig logic against kernel-defined rows. |
+|                                     |                                                                                                                                                                                                                                                                                   |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **OWNS** (`CURRENT`/`EXPERIMENTAL`) | The Action surface only: `action.yml` + `dist/index.js` + the npm-publishable Action variant. The shell parses inputs, calls `@j-rig/rollout-gate`, and surfaces the verdict as Action outputs / exit codes. The M5.1 TS runtime is `EXPERIMENTAL` (`v0.x`).                      |
+| **MUST NOT OWN** (`REJECTED`)       | **Any decision logic.** All ship/no-ship reasoning lives in `@j-rig/rollout-gate`. If a behavior change requires editing decision logic, the change belongs in j-rig, not here. This anti-goal is the repo's entire reason to exist as a separate thin shell (Blueprint A § 2.1). |
+| **CROSSES THE SEAM**                | **Consumes** an Evidence Bundle + a `tests/TESTING.md`-shaped policy via `@j-rig/rollout-gate` and surfaces the decision. It does not emit rows of its own; the decision it surfaces was computed by j-rig logic against kernel-defined rows.                                     |
 
 ## 4. Boundary decision procedure
 
@@ -179,13 +179,13 @@ drift failure, not a design choice.
 
 ## 5. Anti-goals summary (the `REJECTED` rows, consolidated)
 
-| Repo | Must NOT own |
-| --- | --- |
-| `intent-eval-core` | Execution, judges, deployment/Action code, provider adapters, gate-running CLIs. |
-| `intent-eval-lab` | Normative machine-readable predicate schemas; executable platform code. |
-| `audit-harness` | The Evidence Bundle schema; behavioral/LLM-as-judge eval; rollout decisions. |
-| `j-rig-skill-binary-eval` | The canonical predicate schema; the Action shell; deterministic static gates. |
-| `intent-rollout-gate` | Any decision logic whatsoever. |
+| Repo                      | Must NOT own                                                                     |
+| ------------------------- | -------------------------------------------------------------------------------- |
+| `intent-eval-core`        | Execution, judges, deployment/Action code, provider adapters, gate-running CLIs. |
+| `intent-eval-lab`         | Normative machine-readable predicate schemas; executable platform code.          |
+| `audit-harness`           | The Evidence Bundle schema; behavioral/LLM-as-judge eval; rollout decisions.     |
+| `j-rig-skill-binary-eval` | The canonical predicate schema; the Action shell; deterministic static gates.    |
+| `intent-rollout-gate`     | Any decision logic whatsoever.                                                   |
 
 These anti-goals are binding under Blueprint A § 2.1 and the "schema is canon" principle
 (Blueprint A § 1.2 principle 10). A pull request that crosses one of these lines is out of

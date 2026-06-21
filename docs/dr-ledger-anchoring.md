@@ -2,7 +2,7 @@
 
 This procedure anchors the [`specs/DECISION-RECORDS.md`](../specs/DECISION-RECORDS.md)
 ledger **HEAD** in Sigstore's **STAGING** transparency log, giving the hash chain
-an external, time-stamped, third-party witness. With the ledger committed *and*
+an external, time-stamped, third-party witness. With the ledger committed _and_
 its HEAD anchored, silently mutating a verbatim 7-seat Decision Record requires
 forging both the in-repo chain (caught by `--verify` in CI) **and** a staging
 Rekor inclusion proof (cryptographically infeasible).
@@ -80,7 +80,7 @@ on:
 
 permissions:
   contents: read
-  id-token: write   # REQUIRED: Fulcio keyless signing via GitHub OIDC
+  id-token: write # REQUIRED: Fulcio keyless signing via GitHub OIDC
 
 jobs:
   anchor:
@@ -151,7 +151,7 @@ cosign verify-blob \
 
 A successful verify proves the ledger bytes (and therefore the HEAD and the whole
 chain) match what was witnessed in staging Rekor at signing time. A staging-log
-wipe makes the *inclusion proof* unverifiable, but the in-repo chain
+wipe makes the _inclusion proof_ unverifiable, but the in-repo chain
 (`--verify`) remains the always-available tamper signal; the staging anchor is the
 external corroborating witness, not the sole line of defense.
 

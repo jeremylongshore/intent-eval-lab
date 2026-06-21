@@ -6,19 +6,19 @@ This is the normative reference for the watcher's fetch pipeline. Wave B (lineag
 
 ## Why (bead intent — Armstrong / Kleppmann corrections)
 
-- **Armstrong:** a failed fetch is a *typed, isolated* failure, never a boolean and never something to limp past. The watcher previously collapsed every failure into one `fetch_error` bucket; a restructured page could masquerade as drift (or as silence). Each fetch now classifies into exactly one status, and nothing but `FETCH_OK` propagates.
+- **Armstrong:** a failed fetch is a _typed, isolated_ failure, never a boolean and never something to limp past. The watcher previously collapsed every failure into one `fetch_error` bucket; a restructured page could masquerade as drift (or as silence). Each fetch now classifies into exactly one status, and nothing but `FETCH_OK` propagates.
 - **Kleppmann:** the raw fetch log is the immutable source of record; everything downstream is a derived view. Tier 1 is append-only; tiers 2 and 3 are projections of it, promoted one direction only. **The differ never writes its own reference** — `spec-projection-diff.py` reads tier 2 and writes nothing into it.
 
 ## The taxonomy (exactly one status per fetch attempt)
 
-| Status | Detection heuristic | Downstream effect |
-|---|---|---|
-| `FETCH_OK` | none of the below | archives; may update tier 2; may feed the differ/classifier |
-| `UNREACHABLE` | HTTP 5xx / non-404/429 4xx, timeout, DNS/connection error | archive meta only |
-| `MOVED` | 404, or a 301/302 redirect to a **different host** (same-host redirects are fine) | archive meta only |
-| `RATELIMITED` | HTTP 429 | archive meta only |
-| `TRUNCATED` | body shorter than the surface's `min_bytes` floor (truncated-mid-structure proxy) | archive meta only |
-| `SHAPE_CHANGED` | body does not match the surface's `expect_regex` (the expected extractor pattern, e.g. markdown headings, `<id>tag:github.com,`, `export interface`) | archive meta only |
+| Status          | Detection heuristic                                                                                                                                  | Downstream effect                                           |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `FETCH_OK`      | none of the below                                                                                                                                    | archives; may update tier 2; may feed the differ/classifier |
+| `UNREACHABLE`   | HTTP 5xx / non-404/429 4xx, timeout, DNS/connection error                                                                                            | archive meta only                                           |
+| `MOVED`         | 404, or a 301/302 redirect to a **different host** (same-host redirects are fine)                                                                    | archive meta only                                           |
+| `RATELIMITED`   | HTTP 429                                                                                                                                             | archive meta only                                           |
+| `TRUNCATED`     | body shorter than the surface's `min_bytes` floor (truncated-mid-structure proxy)                                                                    | archive meta only                                           |
+| `SHAPE_CHANGED` | body does not match the surface's `expect_regex` (the expected extractor pattern, e.g. markdown headings, `<id>tag:github.com,`, `export interface`) | archive meta only                                           |
 
 Precedence when several could apply: `RATELIMITED` > `MOVED` > `UNREACHABLE` > `TRUNCATED` > `SHAPE_CHANGED` > `FETCH_OK` (first match wins; classification is conservative).
 
@@ -26,11 +26,11 @@ Precedence when several could apply: `RATELIMITED` > `MOVED` > `UNREACHABLE` > `
 
 ## The three tiers (promotion is one-directional)
 
-| Tier | Location | Written by | Mutability |
-|---|---|---|---|
-| 1 — raw-fetch archive | `archive/raw/<surface-id>/<UTC-stamp>.{body,meta.json}` | `fetch-capture.py` (every attempt) | **immutable, append-only** — no deletions/rewrites, in CI or by hand |
-| 2 — vendored snapshot | `specs/_vendor/<surface-id>/snapshot<ext>` + `vendor-meta.json` | `fetch-capture.py`, **only** from a `FETCH_OK` raw record | replace-in-place, lineage recorded |
-| 3 — the kernel | `@intentsolutions/core` `schemas/authoring/v1` (intent-eval-core) | a **human** | governed by SAK change discipline (DR-044/046) |
+| Tier                  | Location                                                          | Written by                                                | Mutability                                                           |
+| --------------------- | ----------------------------------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------- |
+| 1 — raw-fetch archive | `archive/raw/<surface-id>/<UTC-stamp>.{body,meta.json}`           | `fetch-capture.py` (every attempt)                        | **immutable, append-only** — no deletions/rewrites, in CI or by hand |
+| 2 — vendored snapshot | `specs/_vendor/<surface-id>/snapshot<ext>` + `vendor-meta.json`   | `fetch-capture.py`, **only** from a `FETCH_OK` raw record | replace-in-place, lineage recorded                                   |
+| 3 — the kernel        | `@intentsolutions/core` `schemas/authoring/v1` (intent-eval-core) | a **human**                                               | governed by SAK change discipline (DR-044/046)                       |
 
 - **Tier-1 meta** carries `{surface_id, url, fetched_at, status, http_code, sha256, bytes, body_stored, body_ref}`. Growth control: bodies are sha256-deduplicated — a body identical to the previous record's is not rewritten; the meta still appends, with `body_ref` naming the record that stores those bytes.
 - **Tier-2 promotion (automatic, gated):** only a `FETCH_OK` raw record updates the snapshot; `vendor-meta.json.source_raw_record` records exactly which raw record it came from. `update_vendored()` refuses any other status outright.

@@ -25,7 +25,7 @@ The verify wave was load-bearing: it both confirmed the 9 real P0/P1 findings ag
 
 ## 2. Findings funnel
 
-```
+```text
 35 raw findings  →  12 P0/P1 escalated to adversarial verify  →  9 confirmed / 3 refuted
                     23 P2/P3 retained as advisory backlog
 ```

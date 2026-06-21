@@ -18,12 +18,12 @@ name: Lint
 # markdownlint is intentionally NOT duplicated here — doc-quality.yml owns it.
 
 on:
+  # Required branch-protection gate: run on EVERY PR to main, not just PRs that
+  # touch workflow/config paths. A path-filtered required check is SKIPPED on
+  # unrelated PRs and never reports, blocking the PR forever. The push: trigger
+  # keeps its path filter (no required-check semantics on push).
   pull_request:
-    paths:
-      - ".github/workflows/**"
-      - ".yamllint.yml"
-      - ".pre-commit-config.yaml"
-      - ".github/workflows/lint.yml"
+    branches: [main]
   push:
     branches: [main]
     paths:
@@ -54,7 +54,7 @@ jobs:
 
       - name: Run yamllint
         run: |
-          yamllint -c .yamllint.yml \
+          yamllint --strict -c .yamllint.yml \
             .github/ \
             .yamllint.yml \
             .pre-commit-config.yaml \

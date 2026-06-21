@@ -10,6 +10,7 @@ import pytest
 
 # --- get_provider factory ----------------------------------------------------
 
+
 @pytest.mark.parametrize("name", ac.ALL_PROVIDER_NAMES)
 def test_get_provider_returns_instance_for_every_name(name: str) -> None:
     p = ac.get_provider(name, dry_run=True)
@@ -24,14 +25,18 @@ def test_get_provider_rejects_unknown_name() -> None:
         ac.get_provider("not-a-real-provider", dry_run=True)
 
 
-@pytest.mark.parametrize("name,expected_class_substring", [
-    ("anthropic-opus", "Anthropic"),
-    ("anthropic-haiku", "Anthropic"),
-    ("nvidia-llama-405b", "NVIDIA"),
-    ("nvidia-nemotron", "NVIDIA"),
-    ("groq-llama-70b", "Groq"),
-    ("groq-mixtral", "Groq"),
-])
+@pytest.mark.parametrize(
+    "name,expected_class_substring",
+    [
+        ("anthropic-opus", "Anthropic"),
+        ("anthropic-haiku", "Anthropic"),
+        ("nvidia-llama-405b", "NVIDIA"),
+        ("nvidia-nemotron", "NVIDIA"),
+        ("groq-llama-70b", "Groq"),
+        ("groq-mixtral", "Groq"),
+        ("deepseek-v4-flash", "DeepSeek"),
+    ],
+)
 def test_get_provider_routes_to_correct_class(name: str, expected_class_substring: str) -> None:
     p = ac.get_provider(name, dry_run=True)
     assert expected_class_substring in type(p).__name__
@@ -39,26 +44,34 @@ def test_get_provider_routes_to_correct_class(name: str, expected_class_substrin
 
 # --- is_free_provider --------------------------------------------------------
 
-@pytest.mark.parametrize("name,expected_free", [
-    ("anthropic-opus", False),
-    ("anthropic-sonnet", False),
-    ("anthropic-haiku", False),
-    ("nvidia-llama-405b", True),
-    ("nvidia-llama-70b", True),
-    ("nvidia-nemotron", True),
-    ("groq-llama-70b", True),
-    ("groq-llama-70b-specdec", True),
-    ("groq-mixtral", True),
-])
+
+@pytest.mark.parametrize(
+    "name,expected_free",
+    [
+        ("anthropic-opus", False),
+        ("anthropic-sonnet", False),
+        ("anthropic-haiku", False),
+        ("nvidia-llama-405b", True),
+        ("nvidia-llama-70b", True),
+        ("nvidia-nemotron", True),
+        ("groq-llama-70b", True),
+        ("groq-llama-70b-specdec", True),
+        ("groq-mixtral", True),
+        ("deepseek-v4-flash", False),
+    ],
+)
 def test_is_free_provider(name: str, expected_free: bool) -> None:
     assert ac.is_free_provider(name) is expected_free
 
 
 # --- CostMeter (uses UsageRecord) --------------------------------------------
 
+
 def _usage(cost_usd: float, input_tokens: int = 100, output_tokens: int = 50) -> ac.UsageRecord:
     return ac.UsageRecord(
-        input_tokens=input_tokens, output_tokens=output_tokens, cost_usd=cost_usd,
+        input_tokens=input_tokens,
+        output_tokens=output_tokens,
+        cost_usd=cost_usd,
     )
 
 
@@ -88,9 +101,12 @@ def test_cost_meter_zero_cost_does_not_raise_at_zero_ceiling() -> None:
 
 # --- ResultPersister idempotency --------------------------------------------
 
+
 def test_result_persister_creates_provider_scoped_subtree(tmp_path: Path) -> None:
     ac.ResultPersister(
-        out_dir=tmp_path, arm="arm-a", provider="nvidia-llama-405b",
+        out_dir=tmp_path,
+        arm="arm-a",
+        provider="nvidia-llama-405b",
     )
     expected = tmp_path / "arm-a" / "nvidia-llama-405b"
     assert expected.is_dir()
@@ -98,7 +114,9 @@ def test_result_persister_creates_provider_scoped_subtree(tmp_path: Path) -> Non
 
 def test_result_persister_writes_then_skips_on_rerun(tmp_path: Path) -> None:
     rp = ac.ResultPersister(
-        out_dir=tmp_path, arm="arm-a", provider="nvidia-llama-405b",
+        out_dir=tmp_path,
+        arm="arm-a",
+        provider="nvidia-llama-405b",
     )
     payload = {"hello": "world", "n": 42}
     sha = "abc12345deadbeef"
@@ -115,7 +133,10 @@ def test_result_persister_writes_then_skips_on_rerun(tmp_path: Path) -> None:
 
 def test_result_persister_force_overwrites(tmp_path: Path) -> None:
     rp = ac.ResultPersister(
-        out_dir=tmp_path, arm="arm-a", provider="nvidia-llama-405b", force=True,
+        out_dir=tmp_path,
+        arm="arm-a",
+        provider="nvidia-llama-405b",
+        force=True,
     )
     sha = "abc12345"
     rp.write_json(sha, "response.json", {"original": True})
@@ -125,6 +146,7 @@ def test_result_persister_force_overwrites(tmp_path: Path) -> None:
 
 
 # --- frontmatter extraction --------------------------------------------------
+
 
 def test_extract_frontmatter_normal_case() -> None:
     md = """---
@@ -157,6 +179,7 @@ def test_extract_frontmatter_unclosed_returns_full_text() -> None:
 
 
 # --- _make_synthetic_response (dry-run shape) -------------------------------
+
 
 def test_synthetic_response_returns_completion_result() -> None:
     result = ac._make_synthetic_response(
@@ -206,12 +229,16 @@ def test_synthetic_response_nonzero_cost_for_paid_provider_inputs() -> None:
 
 # --- Known CostMeter bug (filed as follow-up) -------------------------------
 
-@pytest.mark.xfail(reason=(
-    "CostMeter.record() raises BudgetExceeded when cumulative reaches ceiling "
-    "even if the NEW UsageRecord has cost_usd=0.0. Free-tier calls should "
-    "always be allowed when enforce_paid_only=True. Filed as follow-up; "
-    "fix: check usage.cost_usd > 0 before raising."
-), strict=True)
+
+@pytest.mark.xfail(
+    reason=(
+        "CostMeter.record() raises BudgetExceeded when cumulative reaches ceiling "
+        "even if the NEW UsageRecord has cost_usd=0.0. Free-tier calls should "
+        "always be allowed when enforce_paid_only=True. Filed as follow-up; "
+        "fix: check usage.cost_usd > 0 before raising."
+    ),
+    strict=True,
+)
 def test_cost_meter_enforce_paid_only_lets_free_calls_through_paid_ceiling() -> None:
     cm = ac.CostMeter(ceiling_usd=5.0, enforce_paid_only=True)
     cm.record(_usage(5.0))  # at ceiling exactly

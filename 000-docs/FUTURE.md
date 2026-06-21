@@ -49,6 +49,7 @@ ALL THREE REQUIRED before first commit merges. Non-negotiable.
    cross-namespace attestation signing surface.
 
 2. **PASS/FAIL test gates** in the reference implementation's test suite:
+
    - Credential-redaction test: gateway must NOT leak API keys into OTel spans, log events, or
      Evidence Bundle rows. Test: run at debug verbosity, grep emitted telemetry for any substring
      of the API key. Pass = zero substring matches.
@@ -313,13 +314,13 @@ already-sanitized evidence (per `072-AT-ARCH` R3) for an authorized reviewer and
 
 ### Why it is not being built now
 
-- Human review is the *bounded exception*, not the default path (`072-AT-ARCH` § 1). Today's
+- Human review is the _bounded exception_, not the default path (`072-AT-ARCH` § 1). Today's
   HR-N adjudications are handled as Class-N Decision Records, not through a console — and that
   is sufficient at current volume.
 - The `human-review/v1` predicate URI is **not reserved** — reserving it is a Class-1 ISEDC act
   (`072-AT-ARCH` R5). A console that emits an unreserved predicate would be premature.
 - The console MUST NOT become a second uncontrolled egress for credential-shaped substrings
-  (`072-AT-ARCH` R3 anti-pattern). It can only show `agent-loop-trace` evidence *after* the
+  (`072-AT-ARCH` R3 anti-pattern). It can only show `agent-loop-trace` evidence _after_ the
   sanitization SPEC's PASS/FAIL fixtures are green — so the sanitization spec is a hard
   prerequisite.
 - Sole-prop bandwidth is committed elsewhere (`073-AT-STND` § 5 cap; `075-AT-STND` lattice puts
@@ -334,7 +335,7 @@ already-sanitized evidence (per `072-AT-ARCH` R3) for an authorized reviewer and
 - Whether it is a new repo vs a module inside an existing repo is itself a Class-1/Class-2
   routing call (5-repo taxonomy discipline, Blueprint A § 2.1) decided at trigger time — the
   default-honest answer follows the Gateway precedent (FUTURE.md § Gateway: a demonstration
-  surface lives *inside* an existing repo, not a new release lifecycle, unless it is a
+  surface lives _inside_ an existing repo, not a new release lifecycle, unless it is a
   distributable tool).
 
 ### Trigger condition
@@ -371,11 +372,11 @@ track record before it is ever allowed to stage (A-1) or gated-auto-apply (A-2).
 
 - The Refiner mechanism is `EXPERIMENTAL`: the Phase A.0 null-hypothesis baseline (DR-028
   P0-RATIFY-3; DR-036 proceed result) is the gate on whether the mechanism beats
-  naive-Opus-in-context *at all* (`074-AT-STND` R9). An optimizer that loses to naive must not
+  naive-Opus-in-context _at all_ (`074-AT-STND` R9). An optimizer that loses to naive must not
   ship.
 - Phase D (optimizer self-generation of eval targets) is a **killed anti-goal** (DR-028 T2;
-  `074-AT-STND` R8) absent the Karpathy+Gregg re-open trigger. The sandbox is for *proposing
-  edits against a curated eval set*, never for self-generating the eval set.
+  `074-AT-STND` R8) absent the Karpathy+Gregg re-open trigger. The sandbox is for _proposing
+  edits against a curated eval set_, never for self-generating the eval set.
 - An optimizer that can move its own gate is the reward-hacking failure (`074-AT-STND` R7); the
   sandbox enforces that the strategy under test cannot touch the predicate, eval set, or rollout
   policy that scores it.

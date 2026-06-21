@@ -28,7 +28,7 @@ state_element_status: CURRENT
 
 > **State label: NORMATIVE.** Binding priority doctrine. Unlike its three sibling
 > doctrines, the mechanism here is `CURRENT`, not `PLANNED`: priority governance is
-> *already* how work is ordered today (via beads + the three-layer mirror). This document
+> _already_ how work is ordered today (via beads + the three-layer mirror). This document
 > writes down the lattice that the bead workspace already enforces in practice, so the
 > ordering is legible and not re-derived per session.
 
@@ -42,36 +42,36 @@ operational doctrine bundle). GitHub: `jeremylongshore/intent-eval-lab#48`. Plan
 The Intent Eval Platform is built under a fixed, small bandwidth budget — ~3–5 hrs/wk
 sole-prop, capped at +50/+66 founder-hours of widening over the 6-month journey (DR-010
 § 4, § 7 Q5; the cost side is `073-AT-STND` § 5). When the budget is fixed and the backlog
-is not, *priority is the only lever that matters.* Every "yes" to one item is a "no,
+is not, _priority is the only lever that matters._ Every "yes" to one item is a "no,
 later" to another. This doctrine fixes the **lattice** — the partial order — that decides
 which "yes" comes first, so that the decision is principled and auditable rather than
 driven by recency, by whoever asked last, or by which feature is most fun to build.
 
-This is **not** a project-management tool spec. It is the *ordering policy* that the bead
+This is **not** a project-management tool spec. It is the _ordering policy_ that the bead
 workspace (the canonical source of truth, `~/000-projects/.beads/`) and its GitHub/Plane
-mirrors enforce. It binds *how* priorities are assigned and *who* may reorder them.
+mirrors enforce. It binds _how_ priorities are assigned and _who_ may reorder them.
 
 This document **derives from and does not override** DR-010 or Blueprint A.
 
 ## 1. The priority lattice (top to bottom)
 
-Work is ordered by the following lattice. Higher tiers are *absolutely* prior to lower
+Work is ordered by the following lattice. Higher tiers are _absolutely_ prior to lower
 tiers — a lower-tier item never preempts a higher-tier item, no matter how loud, how
 nearly-done, or how cheap.
 
-| Tier | Class of work | Authority |
-| --- | --- | --- |
-| **P-TOP** | **The primary client engagement.** Off-the-top, on its own track, never drawn from the platform budget, never displaced by platform work. | DR-010 § 7 Q5 ("primary client engagement first priority preserved — runs on its own track, not displaced"); § 13.5 |
-| **P0** | **Irreversible-surface unblockers + active revenue-client commitments.** One-way-door governance acts whose absence blocks signed evidence (predicate-URI/SPEC normative landings, kernel releases that gate consumers), plus the active revenue client's committed deliverables. | DR-010 § 7 Q3/Q5; Blueprint A § 2.1 (Evidence Bundle is the invariant everything federates around) |
-| **P1** | **Foundation + cross-repo unblockers.** Work that multiple downstream beads depend on (kernel entities, the SAK schema pipeline, normative SPEC sections, the audit-harness supply-chain hardening that gates emission). | DR-010 § 7 Q5 sequencing; the dependency DAG in the bead workspace |
-| **P2** | **Standalone deliverables + doctrine.** Self-contained docs, single-repo features, this doctrine bundle (iel-E14) — valuable but not blocking other work. | epic-level priority in the bead workspace |
-| **P3** | **Deferred-until-signal work.** Items correctly waiting on a trigger condition (FUTURE.md entries, governance-scaling work deferred until a contributor-growth signal, Phase C deliverables). | FUTURE.md trigger conditions; DR-010 phase lifecycle |
-| **P-LOW** | **Optimizer-proposed work.** Skill Refiner proposals (`074-AT-STND`) — admitted to the queue only after passing the accept predicate, and never above human-authored roadmap items. | DR-028; `074-AT-STND` § 5 |
+| Tier      | Class of work                                                                                                                                                                                                                                                                     | Authority                                                                                                           |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **P-TOP** | **The primary client engagement.** Off-the-top, on its own track, never drawn from the platform budget, never displaced by platform work.                                                                                                                                         | DR-010 § 7 Q5 ("primary client engagement first priority preserved — runs on its own track, not displaced"); § 13.5 |
+| **P0**    | **Irreversible-surface unblockers + active revenue-client commitments.** One-way-door governance acts whose absence blocks signed evidence (predicate-URI/SPEC normative landings, kernel releases that gate consumers), plus the active revenue client's committed deliverables. | DR-010 § 7 Q3/Q5; Blueprint A § 2.1 (Evidence Bundle is the invariant everything federates around)                  |
+| **P1**    | **Foundation + cross-repo unblockers.** Work that multiple downstream beads depend on (kernel entities, the SAK schema pipeline, normative SPEC sections, the audit-harness supply-chain hardening that gates emission).                                                          | DR-010 § 7 Q5 sequencing; the dependency DAG in the bead workspace                                                  |
+| **P2**    | **Standalone deliverables + doctrine.** Self-contained docs, single-repo features, this doctrine bundle (iel-E14) — valuable but not blocking other work.                                                                                                                         | epic-level priority in the bead workspace                                                                           |
+| **P3**    | **Deferred-until-signal work.** Items correctly waiting on a trigger condition (FUTURE.md entries, governance-scaling work deferred until a contributor-growth signal, Phase C deliverables).                                                                                     | FUTURE.md trigger conditions; DR-010 phase lifecycle                                                                |
+| **P-LOW** | **Optimizer-proposed work.** Skill Refiner proposals (`074-AT-STND`) — admitted to the queue only after passing the accept predicate, and never above human-authored roadmap items.                                                                                               | DR-028; `074-AT-STND` § 5                                                                                           |
 
 ### R1 — P-TOP is sacrosanct
 
 The primary client engagement is **off-the-top.** Its founder-hours are never counted
-against the +50/+66 platform-build cap (`073-AT-STND` R10), and platform work *never*
+against the +50/+66 platform-build cap (`073-AT-STND` R10), and platform work _never_
 preempts it. This is the single hardest rule in the lattice: a P0 platform unblocker waits
 behind a P-TOP engagement commitment, never the reverse. Per DR-010 § 13.5, this is true
 regardless of customer-vs-internal framing — the engagement's priority is structural.
@@ -84,7 +84,7 @@ done." Sunk effort is not a priority input — that is the sunk-cost trap the CF
 flagged in DR-010 § 8. Within a tier, the dependency DAG and the trigger conditions order
 items (§ 2).
 
-## 2. Ordering *within* a tier
+## 2. Ordering _within_ a tier
 
 ### R3 — Within a tier, dependencies and triggers decide
 
@@ -93,9 +93,9 @@ Inside a single tier, two rules order work:
 1. **Dependency order** — a bead is not "ready" until its blockers close (the bead
    workspace's `bd ready` is the mechanical expression of this). An item whose dependencies
    are unmet is **not** preemptively prioritized just because it is desirable; it is
-   *blocked*, which is a distinct state from *deprioritized.*
+   _blocked_, which is a distinct state from _deprioritized._
 2. **Trigger satisfaction** — a P3 item whose FUTURE.md trigger has fired graduates into a
-   tracked bead at its true tier; an item whose trigger has *not* fired stays in P3 no
+   tracked bead at its true tier; an item whose trigger has _not_ fired stays in P3 no
    matter how interesting it is. Naming a deferred item does not reserve, prioritize, or
    schedule it (the same discipline PREDICATE-TYPES.md applies to DEFERRED/PROPOSED URIs).
 
@@ -103,7 +103,7 @@ Inside a single tier, two rules order work:
 
 Per the State-Labeling Standard (`069-DR-STND`) and core-repo-boundaries
 (`068-AT-STND`), an item carries a scope-element label — `CURRENT` / `PLANNED` /
-`EXPERIMENTAL` / `DEFERRED` / `REJECTED`. These describe *maturity*, not *priority*: a
+`EXPERIMENTAL` / `DEFERRED` / `REJECTED`. These describe _maturity_, not _priority_: a
 `PLANNED` item can be P1 (high priority, not yet built) and a `CURRENT` item can be P3 (in
 production, low remaining work). The two vocabularies never collide (they label different
 things — `069-DR-STND` § 1). A reader resolves "how important" from the lattice tier and
@@ -113,11 +113,11 @@ things — `069-DR-STND` § 1). A reader resolves "how important" from the latti
 
 ### R5 — Priority assignment routes through governance class
 
-Changing the *lattice itself* (adding a tier, redefining P-TOP, changing the absolute-
+Changing the _lattice itself_ (adding a tier, redefining P-TOP, changing the absolute-
 ordering rule) is a **Class-1 ISEDC act** — it changes how the platform allocates its
-scarcest resource. Assigning an *individual bead's* priority within the existing lattice is
+scarcest resource. Assigning an _individual bead's_ priority within the existing lattice is
 a **Class-3 solo-maintainer act** (the acting head of board), recorded as the bead's
-priority field and mirrored via `bd-sync`. Re-sequencing a *cross-repo wave* (deciding P1
+priority field and mirrored via `bd-sync`. Re-sequencing a _cross-repo wave_ (deciding P1
 foundation work order across repos) is a **Class-2 pair act** when it changes a published
 roadmap commitment. Routing follows DR-010 § 7 Q6 and Blueprint A § 2.3.
 
@@ -134,13 +134,13 @@ because it is loud but because DR-010 made it structurally off-the-top.
 ### R7 — Priority spends bandwidth, and the gate is bandwidth
 
 Per the DR-010 § 13.5 acting-head-of-board override, platform feature work is
-**bandwidth-gated, not customer-signal-gated.** A P1/P2 platform item is sequenced by *do
-we have the founder-hours under the cap* (`073-AT-STND` § 5), not by *will a customer pay
-for it.* The platform is an internal tool built for the Intent Solutions practice and
+**bandwidth-gated, not customer-signal-gated.** A P1/P2 platform item is sequenced by _do
+we have the founder-hours under the cap_ (`073-AT-STND` § 5), not by _will a customer pay
+for it._ The platform is an internal tool built for the Intent Solutions practice and
 shared as OSS by default; the 45k+ NPM following on `claude-code-plugins` is natural
 distribution, not a priority input. The only paying-work tiers are P-TOP (the primary
 engagement) and the active-revenue-client portion of P0 — and those are prioritized because
-they are *commitments*, not because customer-signal gates the platform.
+they are _commitments_, not because customer-signal gates the platform.
 
 ## 5. Relationship to the sibling doctrines
 

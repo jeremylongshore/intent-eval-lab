@@ -24,7 +24,7 @@ are rejected, not silently combined — a conformant implementation MUST NOT pro
 
 ## Layout
 
-```
+```text
 conformance-test-suite/
 ├── README.md                     # this file
 ├── run.py                        # stdlib-only runner: re-implements the § 6 algebra and
