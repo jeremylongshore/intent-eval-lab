@@ -121,9 +121,9 @@ Each box is decided with verbatim seat positions preserved per the ISEDC adversa
 - **054-AT-SPEC** (`054-AT-SPEC-lineage-log-and-derived-coverage-map-2026-06-12.md`) — the append-only lineage log the 6767-h coverage map (inventory row 2) is a derived projection of.
 - **045-RR-LAND** (`045-RR-LAND-single-source-of-truth-and-continuous-spec-compliance-2026-06-09.md`) — the SSoT declaration; the base + 3-fold + is-overlay composition idiom (inventory row 3) lives here.
 - **046-AT-STND** (`046-AT-STND-sak-governance-owners.md`) — the seat-bound port owners (CTO / CISO / VP DevRel) referenced in the inventory and the re-charter checklist.
-- **044-AT-DECR / 081-AT-DECR** — the ISEDC Class-1 SAK charter the re-charter (step 1) routes through.
-- **082-AT-DECR / 086-AT-DECR** — the `skill-refiner-pass/v1` predicate URI mint + freeze-point doctrine (§ 4).
+- **044-AT-DECR / 081-AT-DECR** (`044-AT-DECR-isedc-council-session-8-sak-charter-2026-06-09.md` / `081-AT-DECR-isedc-sak-class-1-charter-ratification-2026-06-17.md`) — the ISEDC Class-1 SAK charter the re-charter (step 1) routes through.
+- **082-AT-DECR / 086-AT-DECR** (`082-AT-DECR-isedc-skill-refiner-pass-v1-predicate-uri-2026-06-17.md` / `086-AT-DECR-dr-082-erratum-skill-refiner-pass-v1-freeze-and-amend-2026-06-18.md`) — the `skill-refiner-pass/v1` predicate URI mint + freeze-point doctrine (§ 4).
 - **065-AT-SPEC** (`065-AT-SPEC-rekor-superseding-event-protocol-2026-06-12.md`) — the supersession protocol used for predicate-production wind-down (§ 4, step 5).
-- **085-AT-DECR / 087-AT-STND** — the one-way-door correction + ratified-clause-conflict halt gate that forbid any predicate-URI teardown (§ 4, § 6).
+- **085-AT-DECR / 087-AT-STND** (`085-AT-DECR-isedc-kernel-onewaydoor-correction-2026-06-17.md` / `087-AT-STND-ratified-clause-conflict-halt-gate-2026-06-18.md`) — the one-way-door correction + ratified-clause-conflict halt gate that forbid any predicate-URI teardown (§ 4, § 6).
 - **069-DR-STND** (`069-DR-STND-state-labeling-standard-2026-06-18.md`) — the `ARCHIVED` state label applied at wind-down (step 6).
 - **014-DR-GLOS** (`014-DR-GLOS-canonical-glossary.md`) — terminology source of truth; this spec does not redefine glossary terms.
