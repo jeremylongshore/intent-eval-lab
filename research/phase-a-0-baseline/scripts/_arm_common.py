@@ -682,7 +682,7 @@ def get_provider(
     name: str,
     temperature: float = DEFAULT_TEMPERATURE,
     dry_run: bool = False,
-) -> AnthropicProvider | NVIDIAProvider | GroqProvider | DeepSeekProvider:
+) -> LLMProvider:
     """Factory: provider-name string -> provider instance.
 
     Names:
