@@ -318,3 +318,24 @@ jobs:
         run: |
           python3 scripts/sak-kernel-gate-revert.py --self-test
           python3 scripts/sak-kernel-gate-revert.py --check-retrospective
+
+      # The SAK reconciliation queue (plan 033 v7 § 14.17.3 — the monthly-review
+      # four-disposition queue: keep-as-is / manual-migrate / deprecate-skill /
+      # schema-revision-candidate; EXTENDED by plan 048 v8 Delta 1.1 with the
+      # real-time enforcement capability). The SINGLE queue shared between Wave A
+      # residue + the Wave B parked queue. --self-test proves shared-queue
+      # enqueue/dequeue from both sources, all four dispositions assignable +
+      # queryable, the `sak-wave-a-precedence` merge-gate predicate (RED iff
+      # wave_a_pending — a file blocks its own PR merge) + the wave-B-park
+      # predicate (an open-PR file is skipped, never run concurrently), the
+      # open-PR refresh lifecycle (park-set + park-clear via the stubbed
+      # GitHub-state seam), the pending-vs-dispositioned filtering, and the JSON
+      # round-trip on fixtures; --validate asserts the committed
+      # SAK-RECONCILIATION-QUEUE.json satisfies the schema at
+      # specs/state-machines/schema/sak-reconciliation-queue.schema.json.
+      # DISTINCT from scripts/reconciliation-liveness.py — that is the advisory
+      # ≤5-business-day liveness SLA timer (090-AT-SPEC § 5), not the queue.
+      - name: SAK reconciliation queue self-test + schema validation
+        run: |
+          python3 scripts/sak-reconciliation-queue.py --self-test
+          python3 scripts/sak-reconciliation-queue.py --validate

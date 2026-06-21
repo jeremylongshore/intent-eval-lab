@@ -1,0 +1,91 @@
+{
+  "_comment": "SAK reconciliation queue — the SINGLE queue shared between Wave A residue (WARN-level open issues after batch-remediate) and the Wave B parked queue (files the Refiner could not migrate after the 3-retry ladder). Composes plan 033 v7 § 14.17.3 (the monthly-review four-disposition queue: keep-as-is / manual-migrate / deprecate-skill / schema-revision-candidate) with plan 048 v8 Delta 1.1 (the per-file real-time state record + the sak-wave-a-precedence merge-gate + the wave-B park). Consumed by scripts/sak-reconciliation-queue.py (read + reason; never mutated by it). Validated against specs/state-machines/schema/sak-reconciliation-queue.schema.json. The rows below are illustrative seed entries demonstrating each shared-queue source, each per-file state combination (open-PR park, wave_a_pending merge-block, cleared), and a representative disposition from each of the four — NOT a live migration backlog.",
+  "state_version": "sak-reconciliation-queue/v1",
+  "as_of": "2026-06-20",
+  "items": [
+    {
+      "path": "examples/seed/wave-a-residue-pending/SKILL.md",
+      "source": "wave-a-residue",
+      "file_state": {
+        "open_pr_state": "none",
+        "wave_a_pending": false,
+        "wave_b_parked": false,
+        "target_version": "authoring/v1@LATEST_PHASE_4_VERSION"
+      },
+      "disposition": "pending",
+      "enqueued_at": "2026-06-20",
+      "dispositioned_at": null,
+      "note": "WARN-level open issue after batch-remediate; awaiting monthly-review disposition (§ 14.17.3)."
+    },
+    {
+      "path": "examples/seed/wave-a-pending-merge-blocked/SKILL.md",
+      "source": "wave-a-residue",
+      "file_state": {
+        "open_pr_state": "open",
+        "wave_a_pending": true,
+        "wave_b_parked": false,
+        "target_version": "authoring/v1@LATEST_PHASE_4_VERSION"
+      },
+      "disposition": "manual-migrate",
+      "enqueued_at": "2026-06-20",
+      "dispositioned_at": "2026-06-20",
+      "note": "wave_a_pending=true → the sak-wave-a-precedence gate is RED → this file's contributor PR cannot merge until wave A lands (plan 048 v8 Delta 1.1 rule-2)."
+    },
+    {
+      "path": "examples/seed/wave-b-parked-open-pr/SKILL.md",
+      "source": "wave-b-parked",
+      "file_state": {
+        "open_pr_state": "open",
+        "wave_a_pending": false,
+        "wave_b_parked": true,
+        "target_version": "authoring/v1@LATEST_PHASE_4_VERSION"
+      },
+      "disposition": "pending",
+      "enqueued_at": "2026-06-20",
+      "dispositioned_at": null,
+      "note": "open PR → wave-B dispatcher SKIPPED + parked (plan 048 v8 Delta 1.1 rule-3). pull_request:closed will clear the park flag + re-enqueue. Parked != failed."
+    },
+    {
+      "path": "examples/seed/wave-b-parked-keep-as-is/SKILL.md",
+      "source": "wave-b-parked",
+      "file_state": {
+        "open_pr_state": "none",
+        "wave_a_pending": false,
+        "wave_b_parked": false,
+        "target_version": "authoring/v1@LATEST_PHASE_4_VERSION"
+      },
+      "disposition": "keep-as-is",
+      "enqueued_at": "2026-06-20",
+      "dispositioned_at": "2026-06-20",
+      "note": "Refiner could not migrate after the 3-retry ladder; disposition keep-as-is — file stays valid at a lower tier, recorded in the coverage map (§ 14.17.3)."
+    },
+    {
+      "path": "examples/seed/wave-b-parked-deprecate/SKILL.md",
+      "source": "wave-b-parked",
+      "file_state": {
+        "open_pr_state": "none",
+        "wave_a_pending": false,
+        "wave_b_parked": false,
+        "target_version": "authoring/v1@LATEST_PHASE_4_VERSION"
+      },
+      "disposition": "deprecate-skill",
+      "enqueued_at": "2026-06-20",
+      "dispositioned_at": "2026-06-20",
+      "note": "disposition deprecate-skill — marked for removal in the next CCP minor; consumers warned (§ 14.17.3)."
+    },
+    {
+      "path": "examples/seed/wave-a-residue-schema-revision/SKILL.md",
+      "source": "wave-a-residue",
+      "file_state": {
+        "open_pr_state": "none",
+        "wave_a_pending": false,
+        "wave_b_parked": false,
+        "target_version": "authoring/v1@LATEST_PHASE_4_VERSION"
+      },
+      "disposition": "schema-revision-candidate",
+      "enqueued_at": "2026-06-20",
+      "dispositioned_at": "2026-06-20",
+      "note": "disposition schema-revision-candidate — routed to the § 14.A.3 schema-revision-candidates queue; the contract may need a revision."
+    }
+  ]
+}
