@@ -1,0 +1,283 @@
+{
+  "_generated": "GENERATED-DO-NOT-EDIT \u2014 SAK dashboard derived from committed state (SAK-STATE.json + leading-indicators registry + lineage coverage map). Regenerate: python3 scripts/render-sak-dashboard.py. Normative spec: 000-docs/033-PP-PLAN-skill-refiner-sak-amendment-v7-2026-05-28.md \u00a7 14.13.1",
+  "as_of": "2026-06-20",
+  "bead_state": {
+    "_comment": "Counts of the SAK / Skill-Refiner bead subtree under epic bd_000-projects-9k5h, captured from the canonical umbrella bd workspace (~/000-projects/.beads/) which is gitignored and unreadable from this repo / CI. Refresh via: bd list --label <label> --json --limit 500 from /home/jeremy/000-projects. Captured 2026-06-20.",
+    "captured_at": "2026-06-20",
+    "groups": [
+      {
+        "closed": 0,
+        "deferred": 1,
+        "in_progress": 0,
+        "label": "sak",
+        "open": 23
+      },
+      {
+        "closed": 0,
+        "deferred": 1,
+        "in_progress": 0,
+        "label": "refiner",
+        "open": 62
+      },
+      {
+        "closed": 0,
+        "deferred": 1,
+        "in_progress": 0,
+        "label": "repo:iel",
+        "open": 15
+      }
+    ]
+  },
+  "cost_ledger": {
+    "_comment": "Bandwidth model is FTE-week, not dollars (Intent Solutions is a sole-prop; 029-DR-BAND replaced plan 027's dollar/calendar budgets with an FTE-day model). Figures mirror 029-DR-BAND \u00a7 2 + \u00a7 3 aggregate.",
+    "phases": [
+      {
+        "budget_fte_days": 3.5,
+        "gated_on": "bandwidth-only",
+        "phase": "Phase A.0 null-hypothesis baseline",
+        "spent_fte_days": 0.0
+      },
+      {
+        "budget_fte_days": 11.5,
+        "gated_on": "bandwidth-only",
+        "phase": "Phase A",
+        "spent_fte_days": 0.0
+      },
+      {
+        "budget_fte_days": 9.5,
+        "gated_on": "bandwidth-only",
+        "phase": "Phase B",
+        "spent_fte_days": 0.0
+      },
+      {
+        "budget_fte_days": 15.0,
+        "gated_on": "external blockers uprg + 9pi3",
+        "phase": "Phase C",
+        "spent_fte_days": 0.0
+      },
+      {
+        "budget_fte_days": 4.5,
+        "gated_on": "bandwidth-only",
+        "phase": "Phase E",
+        "spent_fte_days": 0.0
+      }
+    ],
+    "total_budget_fte_weeks": 8.8,
+    "total_calendar_floor": "~3 calendar months (with phase-gating + sync overhead)",
+    "unit": "FTE-week"
+  },
+  "coverage_map": {
+    "convergence_fired": 0,
+    "convergence_triggers_outstanding": 12,
+    "divergences_outstanding": 12,
+    "rows": [
+      {
+        "adopted": true,
+        "contract": "skill-frontmatter",
+        "convergence_triggers_outstanding": 7,
+        "divergences_outstanding": 7,
+        "surface": "agentskills-spec"
+      },
+      {
+        "adopted": true,
+        "contract": "hook-config",
+        "convergence_triggers_outstanding": 1,
+        "divergences_outstanding": 1,
+        "surface": "claude-hooks"
+      },
+      {
+        "adopted": true,
+        "contract": "hook-config",
+        "convergence_triggers_outstanding": 0,
+        "divergences_outstanding": 0,
+        "surface": "claude-settings"
+      },
+      {
+        "adopted": true,
+        "contract": "mcp-config",
+        "convergence_triggers_outstanding": 0,
+        "divergences_outstanding": 0,
+        "surface": "mcp-releases"
+      },
+      {
+        "adopted": true,
+        "contract": "mcp-config",
+        "convergence_triggers_outstanding": 1,
+        "divergences_outstanding": 1,
+        "surface": "mcp-schema-ts"
+      },
+      {
+        "adopted": true,
+        "contract": "mcp-config",
+        "convergence_triggers_outstanding": 0,
+        "divergences_outstanding": 0,
+        "surface": "mcp-spec-docs"
+      },
+      {
+        "adopted": true,
+        "contract": "skill-frontmatter",
+        "convergence_triggers_outstanding": 0,
+        "divergences_outstanding": 0,
+        "surface": "platform-skills-overview"
+      },
+      {
+        "adopted": true,
+        "contract": "marketplace-catalog",
+        "convergence_triggers_outstanding": 1,
+        "divergences_outstanding": 1,
+        "surface": "plugin-marketplaces"
+      },
+      {
+        "adopted": true,
+        "contract": "plugin-manifest",
+        "convergence_triggers_outstanding": 1,
+        "divergences_outstanding": 1,
+        "surface": "plugins-reference"
+      },
+      {
+        "adopted": true,
+        "contract": "skill-frontmatter",
+        "convergence_triggers_outstanding": 0,
+        "divergences_outstanding": 0,
+        "surface": "skills-releases"
+      },
+      {
+        "adopted": true,
+        "contract": "agent-definition",
+        "convergence_triggers_outstanding": 1,
+        "divergences_outstanding": 1,
+        "surface": "sub-agents"
+      }
+    ],
+    "surfaces_adopted": 11,
+    "surfaces_total": 11
+  },
+  "dashboard_version": "sak-dashboard/v1",
+  "generated_at": "2026-06-20T00:00:00Z",
+  "inputs": {
+    "SAK-STATE.json": "e400521b32084714cad2629d579838348c430b54b6ee6249c733cde618145737",
+    "specs/leading-indicators.v1.json": "4bcb1549ded6bf02d043a81d122c02d36538221e508340bdc1d061994cef4f67",
+    "specs/lineage/coverage-map.json": "c5e0bfe353a5df27c92e6ef1b144bd65ecf506620fec214e5146804ab9269b82"
+  },
+  "leading_indicators": {
+    "action": "Continue per plan",
+    "firing_by_severity": {
+      "CRITICAL": 0,
+      "High": 0,
+      "Low": 0,
+      "Medium": 0
+    },
+    "firing_total": 0,
+    "monitored": 12,
+    "rows": [
+      {
+        "firing": false,
+        "id": 1,
+        "indicator": "Anthropic publishes public roadmap including machine-readable spec",
+        "severity": "High"
+      },
+      {
+        "firing": false,
+        "id": 2,
+        "indicator": "claude CLI begins ingesting .claude/schema/ directory",
+        "severity": "High"
+      },
+      {
+        "firing": false,
+        "id": 3,
+        "indicator": "claude doctor adds plugin-format validation",
+        "severity": "High"
+      },
+      {
+        "firing": false,
+        "id": 4,
+        "indicator": "agentskills.io v2 RFC published",
+        "severity": "High"
+      },
+      {
+        "firing": false,
+        "id": 5,
+        "indicator": "Anthropic publishes machine-readable agentskills.io v2 schemas",
+        "severity": "CRITICAL"
+      },
+      {
+        "firing": false,
+        "id": 6,
+        "indicator": "Anthropic ships skill-author-onboarding doc citing field validation",
+        "severity": "Medium"
+      },
+      {
+        "firing": false,
+        "id": 7,
+        "indicator": "claude-codemod or equivalent field-migration tool ships",
+        "severity": "Medium"
+      },
+      {
+        "firing": false,
+        "id": 8,
+        "indicator": "Anthropic ships skill-shell-validation",
+        "severity": "Medium"
+      },
+      {
+        "firing": false,
+        "id": 9,
+        "indicator": "Anthropic ships skill-security-audit",
+        "severity": "Medium"
+      },
+      {
+        "firing": false,
+        "id": 10,
+        "indicator": "agentskills.io spec adds vendor-namespacing section",
+        "severity": "Low"
+      },
+      {
+        "firing": false,
+        "id": 11,
+        "indicator": "Vercel skills.sh adopts kernel-schema-compatible format",
+        "severity": "Low"
+      },
+      {
+        "firing": false,
+        "id": 12,
+        "indicator": "Frontier model demonstrates schema-validator equivalence from prose+examples",
+        "severity": "CRITICAL"
+      }
+    ],
+    "verdict": "CONTINUE"
+  },
+  "phases": [
+    {
+      "detail": "skill-frontmatter walking skeleton (base + overlay + composition) landed; deep-capture -> base/overlay schema -> drift-watch -> classify -> reconcile pattern exists end-to-end",
+      "phase": "Phase 0 \u2014 D4 wedge",
+      "status": "COMPLETE"
+    },
+    {
+      "detail": "P0 safety spine COMPLETE (8/8 backbone children closed 2026-06-12): typed fetch-failure taxonomy + 3 append-only tiers (doc 052), frozen drift-classification/v1 eval set with recall-floor write gate (doc 053), append-only lineage log + derived coverage map (doc 054), deterministic classifier walls (doc 055), 6767-h prose-anchor validity gate, watcher waves 1+2 + FF#2. P1 siblings (.9-.13) remain",
+      "phase": "Phase 1 \u2014 six contracts + P0 safety spine",
+      "status": "IN PROGRESS"
+    },
+    {
+      "detail": "first of three staged consumer cutovers (.14 internal validators -> .15 j-rig -> .17 CCP, blast-radius ascending); gated behind the Phase 1 P1 siblings",
+      "phase": "Phase 2 \u2014 internal-validator canary cutover",
+      "status": "BLOCKED"
+    },
+    {
+      "detail": "CCP authority-flip soak window NO-GO as of 2026-06-18 (1.16% deviation); matures ~2026-07-11; requires CTO+CISO+VP-DevRel triple sign-off + ISEDC Class-1 charter (044-AT-DECR)",
+      "phase": "Phase 4 \u2014 advisory -> blocking flip",
+      "status": "BLOCKED"
+    }
+  ],
+  "state_machine": {
+    "current_state": "ADVISORY",
+    "entered_at": "2026-06-09",
+    "machine": "SAK advisory -> blocking flip (Phase 4)",
+    "next_gate": "CCP authority-flip soak >= 99.5% / >= 30d / zero-P0 / rollback-rehearsed / triple sign-off / 14d notice (DR-049); soak matures ~2026-07-11",
+    "states": [
+      "ADVISORY",
+      "ADVISORY-W-A",
+      "ADVISORY-W-B",
+      "BLOCKING-CANARY",
+      "BLOCKING"
+    ]
+  }
+}
