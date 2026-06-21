@@ -34,3 +34,9 @@ def _load_by_path(filename: str, module_name: str) -> ModuleType:
 def ssm() -> ModuleType:
     """The sak-state-machine module (loaded by path)."""
     return _load_by_path("sak-state-machine.py", "sak_state_machine")
+
+
+@pytest.fixture(scope="session")
+def gate_revert() -> ModuleType:
+    """The sak-kernel-gate-revert module (loaded by path)."""
+    return _load_by_path("sak-kernel-gate-revert.py", "sak_kernel_gate_revert")

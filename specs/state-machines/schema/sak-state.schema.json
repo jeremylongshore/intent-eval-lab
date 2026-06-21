@@ -165,6 +165,82 @@
           "type": "array",
           "description": "Append-only record of transitions taken to reach current_state.",
           "items": { "$ref": "#/$defs/transition" }
+        },
+        "rollback": { "$ref": "#/$defs/rollbackRecord" }
+      }
+    },
+    "rollbackRecord": {
+      "type": "object",
+      "description": "The SAK Phase-4c rollback record stamped by scripts/sak-kernel-gate-revert.py when a gate is reverted to ROLLED-BACK (plan 033 v7 § 14.4.rollback class 3 + plan 048 v8 § 14.4c). Present only after a kernel-gate-revert. Carries the governance-triple authorization, the revert reason/target, and the ISEDC Class-2 retrospective deadline (revert_at + 7 calendar days). The kernel-side Evidence Bundle 'rolled-back-superseded' superseding event is owned by the kernel emitter (F-MK-005); this record only carries the intent (affected_window + superseding_signing_mode), never a Rekor write.",
+      "additionalProperties": false,
+      "required": [
+        "reverted_at",
+        "reason",
+        "reverted_gate",
+        "from_state",
+        "to_state",
+        "governance_signoff",
+        "retrospective_due_at"
+      ],
+      "properties": {
+        "reverted_at": {
+          "type": "string",
+          "description": "ISO date or date-time the revert fired.",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "description": "Free-text rationale for the revert (required — plan 033 § 14.4.rollback records the reason).",
+          "minLength": 1
+        },
+        "reverted_gate": {
+          "type": "string",
+          "description": "The gate that was reverted (e.g. 'validate-plugins.yml' flipped back to advisory mode).",
+          "minLength": 1
+        },
+        "reverted_version": {
+          "type": ["string", "null"],
+          "description": "The gate/schema version reverted (e.g. 'authoring/v1')."
+        },
+        "from_state": { "$ref": "#/$defs/lifecycleState" },
+        "to_state": { "$ref": "#/$defs/lifecycleState" },
+        "decision_record_ref": {
+          "type": ["string", "null"],
+          "description": "Pointer to the AT-DECR-phase-4c-rollback-NNN Decision Record (plan 033 § 14.4.rollback class 3 (b))."
+        },
+        "governance_signoff": {
+          "type": "object",
+          "description": "The CTO + CISO + VP-DevRel triple that authorized this revert (all three true; the revert is refused otherwise).",
+          "additionalProperties": false,
+          "required": ["cto", "ciso", "vp_devrel"],
+          "properties": {
+            "cto": { "type": "boolean" },
+            "ciso": { "type": "boolean" },
+            "vp_devrel": { "type": "boolean" }
+          }
+        },
+        "retrospective_due_at": {
+          "type": "string",
+          "description": "ISO date the ISEDC Class-2 retrospective must be opened by = reverted_at + 7 calendar days (plan 033 § 14.4.rollback class 3 (d)).",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "retrospective_window_days": {
+          "type": "integer",
+          "description": "The retrospective window in calendar days (7 per § 14.4.rollback class 3 (d)).",
+          "minimum": 0
+        },
+        "retrospective_class": {
+          "type": "string",
+          "description": "The ISEDC retrospective class triggered by the rollback (Class-2 per § 14.4.rollback class 3 (d))."
+        },
+        "affected_window": {
+          "type": "object",
+          "description": "The BLOCKING-window the kernel-side emitter must mark 'rolled-back-superseded' (recorded intent only — NOT a Rekor write; the superseding envelope event is owned by the kernel emitter per F-MK-005).",
+          "additionalProperties": true
+        },
+        "superseding_signing_mode": {
+          "type": "string",
+          "description": "The signing_mode the kernel emitter applies to affected_window attestations ('rolled-back-superseded'). Present only when affected_window is set."
         }
       }
     }
