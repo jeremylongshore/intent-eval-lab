@@ -1,6 +1,6 @@
 ---
 date: 2026-06-10
-status: PROPOSED-FOR-REAUDIT (v8) — closes the 4 blocking findings from the 2026-06-10 incremental re-audit of v7 (2 still-open original P0s F-MK-002 + F-AK-002; 2 v7-introduced P0s NEW-P0-1 flip-gate contradiction + NEW-P0-2 immutability/decompose conflict). Gates ISEDC Class-1 charter (032).
+status: RATIFIED-WITH-DELTAS and CLOSED. Re-audit closure merged via PR #116 on 2026-06-11 with 0 residual P0. ISEDC Class-1 SAK charter RATIFIED via DR-049 (2026-06-10), re-ratified DR-081 (2026-06-17). Hard gate LIFTED; SAK-labeled beads claimable. Original v8 status was PROPOSED-FOR-REAUDIT (v8), closing the 4 blocking findings from the 2026-06-10 incremental re-audit of v7 and gating the ISEDC Class-1 charter.
 class: plan amendment (audit-closure deltas)
 supersedes_relationship: REVISES + EXTENDS plan 033 v7. Lands 4 re-audit-closure deltas. Does NOT supersede v7 — preserves all v7 section numbers; REVISES § 14.4c, § 14.18, § 14.27 and ADDS § 14.4.migration-concurrency, § 14.A.policy-eval, § 14.31 lifecycle-states.
 parent_audit: 2026-06-10 incremental re-audit (workflow sak-v7-incremental-reaudit; 11 P0 closed, 2 still-open, 2 new = NEEDS-AMENDMENT-V8 by § 14.30 new-P0 count).
@@ -21,7 +21,7 @@ GitHub: jeremylongshore/intent-eval-lab#<TBA>
 
 ## Status
 
-**State: PROPOSED-FOR-REAUDIT.** v8 exists solely to close the 4 blocking findings the 2026-06-10 incremental re-audit surfaced in v7. The proper next step is a re-audit of v8's 4 deltas only. **Gate (§ 14.30): 0 new P0 → RATIFIED-WITH-DELTAS → the ISEDC Class-1 charter (032) convenes.**
+**State: RATIFIED-WITH-DELTAS and CLOSED.** The re-audit of v8's deltas closed with 0 new P0 and merged via PR #116 (2026-06-11). The ISEDC Class-1 SAK charter is RATIFIED (DR-049 2026-06-10, re-ratified DR-081 2026-06-17); the hard gate is LIFTED and SAK-labeled beads are claimable. _Original v8 status (for history):_ PROPOSED-FOR-REAUDIT — v8 existed solely to close the 4 blocking findings the 2026-06-10 incremental re-audit surfaced in v7; the gate (§ 14.30) was 0 new P0 → RATIFIED-WITH-DELTAS → the ISEDC Class-1 charter (032) convenes.
 
 ## Why v8 (the re-audit finding)
 

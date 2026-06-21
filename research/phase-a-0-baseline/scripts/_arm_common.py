@@ -9,6 +9,7 @@ Provides:
     AnthropicProvider   Anthropic SDK wrapper (opus/sonnet/haiku)
     NVIDIAProvider      NVIDIA NIM via openai-compatible SDK (free tier)
     GroqProvider        Groq via openai-compatible SDK (free tier)
+    DeepSeekProvider    DeepSeek V4 via openai-compatible SDK (paid)
     get_provider        factory: provider-name -> LLMProvider instance
     BudgetExceeded      raised when cumulative spend exceeds ceiling
     CostMeter           tracks cumulative spend, enforces ceiling
@@ -24,6 +25,7 @@ Pricing (standard pricing, 2026-05-29):
     Anthropic Haiku 4.5:  Input  $1.00 / Output  $5.00 per MTok
     NVIDIA NIM (free):    $0.00 within free-tier credits
     Groq (free):          $0.00 within free tier (30 req/min limit)
+    DeepSeek V4 Flash:    Input  $0.14 / Output  $0.28 per MTok (1M context)
 
 Default provider: nvidia-llama-405b (zero cost, $20 Anthropic ceiling reserved
 for paid spot-checks per DR-028 P0-RATIFY-3 amendment).
@@ -51,6 +53,8 @@ SONNET_INPUT_USD_PER_MTOK: float = 3.00
 SONNET_OUTPUT_USD_PER_MTOK: float = 15.00
 HAIKU_INPUT_USD_PER_MTOK: float = 1.00
 HAIKU_OUTPUT_USD_PER_MTOK: float = 5.00
+DEEPSEEK_FLASH_INPUT_USD_PER_MTOK: float = 0.14
+DEEPSEEK_FLASH_OUTPUT_USD_PER_MTOK: float = 0.28
 
 DEFAULT_MODEL: str = "claude-opus-4-7"
 DEFAULT_TEMPERATURE: float = 0.0
@@ -547,6 +551,95 @@ class GroqProvider:
         )
 
 
+class DeepSeekProvider:
+    """DeepSeek V4 inference via openai-compatible SDK.
+
+    Base URL: https://api.deepseek.com/v1
+    Auth env var: DEEPSEEK_API_KEY
+    Cost: $0.14 input / $0.28 output per MTok (deepseek-v4-flash standard pricing).
+
+    Supported model aliases:
+        deepseek-v4-flash         deepseek-v4-flash (1M context, efficiency-optimized MoE)
+    """
+
+    name: str = "deepseek"
+
+    _BASE_URL: str = "https://api.deepseek.com/v1"
+    _MODELS: dict[str, str] = {
+        "deepseek-v4-flash": "deepseek-v4-flash",
+    }
+
+    def __init__(
+        self,
+        model_alias: str = "deepseek-v4-flash",
+        temperature: float = DEFAULT_TEMPERATURE,
+        dry_run: bool = False,
+    ) -> None:
+        self.model = self._MODELS.get(model_alias, self._MODELS["deepseek-v4-flash"])
+        self.model_alias = model_alias
+        self.temperature = temperature
+        self.dry_run = dry_run
+        self._client = None
+
+    def _get_client(self):  # type: ignore[return]
+        if self._client is not None:
+            return self._client
+        try:
+            from openai import OpenAI  # type: ignore[import]
+        except ImportError as exc:
+            raise ImportError("openai SDK not installed. Run: pip install 'openai>=1.0'") from exc
+        api_key = os.environ.get("DEEPSEEK_API_KEY", "")
+        if not api_key:
+            raise OSError("DEEPSEEK_API_KEY is not set. Export the key before running arm scripts.")
+        self._client = OpenAI(base_url=self._BASE_URL, api_key=api_key)
+        return self._client
+
+    def complete(
+        self,
+        prompt: str,
+        *,
+        max_tokens: int = 4096,
+        temperature: float | None = None,
+    ) -> CompletionResult:
+        """Call DeepSeek API; return CompletionResult priced at flash rates."""
+        effective_temp = temperature if temperature is not None else self.temperature
+
+        if self.dry_run:
+            return _make_synthetic_response(
+                prompt,
+                self.model,
+                self.name,
+                input_usd_per_mtok=DEEPSEEK_FLASH_INPUT_USD_PER_MTOK,
+                output_usd_per_mtok=DEEPSEEK_FLASH_OUTPUT_USD_PER_MTOK,
+            )
+
+        client = self._get_client()
+        response = client.chat.completions.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=max_tokens,
+            temperature=effective_temp,
+        )
+        text = response.choices[0].message.content or ""
+        stop_reason = str(response.choices[0].finish_reason or "stop")
+        usage_obj = response.usage
+        in_toks = usage_obj.prompt_tokens if usage_obj else max(1, len(prompt) // 4)
+        out_toks = usage_obj.completion_tokens if usage_obj else 150
+        usage = UsageRecord.from_tokens(
+            in_toks,
+            out_toks,
+            DEEPSEEK_FLASH_INPUT_USD_PER_MTOK,
+            DEEPSEEK_FLASH_OUTPUT_USD_PER_MTOK,
+        )
+        return CompletionResult(
+            text=text,
+            usage=usage,
+            model=self.model,
+            stop_reason=stop_reason,
+            provider=self.name,
+        )
+
+
 # ---------------------------------------------------------------------------
 # Provider factory
 # ---------------------------------------------------------------------------
@@ -576,6 +669,7 @@ ALL_PROVIDER_NAMES: list[str] = [
     "groq-llama-70b",
     "groq-llama-70b-specdec",
     "groq-mixtral",
+    "deepseek-v4-flash",
 ]
 
 
@@ -588,13 +682,14 @@ def get_provider(
     name: str,
     temperature: float = DEFAULT_TEMPERATURE,
     dry_run: bool = False,
-) -> AnthropicProvider | NVIDIAProvider | GroqProvider:
+) -> LLMProvider:
     """Factory: provider-name string -> provider instance.
 
     Names:
         anthropic-opus, anthropic-sonnet, anthropic-haiku
         nvidia-llama-405b, nvidia-llama-70b, nvidia-nemotron
         groq-llama-70b, groq-llama-70b-specdec, groq-mixtral
+        deepseek-v4-flash
 
     Raises ValueError for unknown names.
     """
@@ -612,6 +707,12 @@ def get_provider(
         )
     if name in GroqProvider._MODELS:
         return GroqProvider(
+            model_alias=name,
+            temperature=temperature,
+            dry_run=dry_run,
+        )
+    if name in DeepSeekProvider._MODELS:
+        return DeepSeekProvider(
             model_alias=name,
             temperature=temperature,
             dry_run=dry_run,

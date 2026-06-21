@@ -34,6 +34,7 @@ def test_get_provider_rejects_unknown_name() -> None:
         ("nvidia-nemotron", "NVIDIA"),
         ("groq-llama-70b", "Groq"),
         ("groq-mixtral", "Groq"),
+        ("deepseek-v4-flash", "DeepSeek"),
     ],
 )
 def test_get_provider_routes_to_correct_class(name: str, expected_class_substring: str) -> None:
@@ -56,6 +57,7 @@ def test_get_provider_routes_to_correct_class(name: str, expected_class_substrin
         ("groq-llama-70b", True),
         ("groq-llama-70b-specdec", True),
         ("groq-mixtral", True),
+        ("deepseek-v4-flash", False),
     ],
 )
 def test_is_free_provider(name: str, expected_free: bool) -> None:
