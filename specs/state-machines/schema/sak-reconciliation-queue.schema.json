@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://evals.intentsolutions.io/state-machines/sak-reconciliation-queue/v1",
+  "title": "SAK reconciliation queue (sak-reconciliation-queue/v1)",
+  "description": "Validates the committed SAK-RECONCILIATION-QUEUE.json. The reconciliation queue is the SINGLE queue shared between Wave A residue (files with WARN-level open issues after mechanical batch-remediate) and the Wave B parked queue (files the Refiner could not migrate after 3 retries). Two normative authorities are composed here: (1) plan 033 v7 § 14.17.3 — the original MONTHLY-REVIEW disposition queue with the four dispositions keep-as-is / manual-migrate / deprecate-skill / schema-revision-candidate; and (2) plan 048 v8 Delta 1.1 — which EXTENDS (does not replace) § 14.17.3 with a REAL-TIME ENFORCEMENT capability: a per-file state record { open_pr_state, wave_a_pending, wave_b_parked, target_version }, the `sak-wave-a-precedence` merge-gate (rule 2 mechanism), and the wave-B park (rule 3 mechanism). The monthly-review disposition function runs ALONGSIDE the real-time enforcement. This schema is consumed by scripts/sak-reconciliation-queue.py. DISTINCT from the SAK Phase-4 flip state (sak-state/v1) and the 13-entity runtime state machine (transition-table.v1.json, Blueprint B).",
+  "type": "object",
+  "required": ["state_version", "items"],
+  "additionalProperties": false,
+  "properties": {
+    "_comment": {
+      "type": "string"
+    },
+    "state_version": {
+      "type": "string",
+      "const": "sak-reconciliation-queue/v1"
+    },
+    "as_of": {
+      "type": "string",
+      "description": "ISO date (YYYY-MM-DD) the queue contents were last refreshed.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "items": {
+      "type": "array",
+      "description": "The reconciliation-queue items. Each item is keyed (by convention) on `path`; the queue holds at most one item per path. Order is preservation order (enqueue order), not significance.",
+      "items": { "$ref": "#/$defs/queueItem" }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "string",
+      "description": "Where the item entered the reconciliation queue from (plan 033 § 14.17.3 — Wave A residue + Wave B parked share ONE queue). `wave-a-residue` = a file with WARN-level open issues after mechanical batch-remediate; `wave-b-parked` = a file the Refiner could not migrate after the § 14.17.2 3-retry ladder.",
+      "enum": ["wave-a-residue", "wave-b-parked"]
+    },
+    "disposition": {
+      "type": "string",
+      "description": "The monthly-review disposition (plan 033 § 14.17.3), reviewed at SAK AAR cadence (§ 14.13.2). `pending` = not yet dispositioned. The four real dispositions: `keep-as-is` (file stays valid at a lower tier; recorded in coverage map), `manual-migrate` (engineer manually edits; file lands in next batch), `deprecate-skill` (skill marked for removal in next CCP minor; consumers warned), `schema-revision-candidate` (routed to the § 14.A.3 schema-revision-candidates queue; schema may need revision).",
+      "enum": ["pending", "keep-as-is", "manual-migrate", "deprecate-skill", "schema-revision-candidate"]
+    },
+    "openPrState": {
+      "type": "string",
+      "description": "The per-file open-PR state (plan 048 v8 Delta 1.1). `open` = at least one contributor PR currently touches this file (refreshed from `gh pr list --search \"<path>\"` on each queue tick / pull_request webhook — the GitHub-state source is a STUB SEAM in the implementation). `none` = no open PR touches the file.",
+      "enum": ["open", "none"]
+    },
+    "fileState": {
+      "type": "object",
+      "description": "The per-file real-time state record (plan 048 v8 Delta 1.1). Carries the inputs the merge-gate (`wave_a_pending`) and the wave-B park (`open_pr_state` -> `wave_b_parked`) decide over. These are PURE inputs; the predicates that read them (merge-gate, wave-B-park-eligibility) live in scripts/sak-reconciliation-queue.py, and the GitHub/CI wiring is downstream.",
+      "additionalProperties": false,
+      "required": ["open_pr_state", "wave_a_pending", "wave_b_parked", "target_version"],
+      "properties": {
+        "open_pr_state": { "$ref": "#/$defs/openPrState" },
+        "wave_a_pending": {
+          "type": "boolean",
+          "description": "True iff a mechanical wave-A op is queued for this file but has not yet landed. While true, the `sak-wave-a-precedence` required CI check is RED for the file, so a contributor PR touching it CANNOT merge until wave A lands and clears the flag (plan 048 v8 Delta 1.1 rule-2 mechanism)."
+        },
+        "wave_b_parked": {
+          "type": "boolean",
+          "description": "True iff the wave-B (Refiner) dispatcher SKIPPED this file because it had an open PR (open_pr_state == open) and set the park flag (plan 048 v8 Delta 1.1 rule-3 mechanism). The pull_request:closed webhook (merged OR closed) clears this and re-enqueues the file on the next tick. Parked != failed (composes with § 14.17 durability)."
+        },
+        "target_version": {
+          "type": "string",
+          "description": "The pinned kernel authoring contract version this file targets during the migration window = LATEST_PHASE_4_VERSION (plan 048 v8 Delta 1, recorded in migration-manifest.json). Authors never chase a moving schema.",
+          "minLength": 1
+        }
+      }
+    },
+    "queueItem": {
+      "type": "object",
+      "description": "One reconciliation-queue item: a tracked SKILL.md path, where it entered from (source), its per-file real-time state record (file_state), and its monthly-review disposition (defaults to `pending`).",
+      "additionalProperties": false,
+      "required": ["path", "source", "file_state", "disposition"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "The SKILL.md path tracked by the migration. The queue holds at most one item per path.",
+          "minLength": 1
+        },
+        "source": { "$ref": "#/$defs/source" },
+        "file_state": { "$ref": "#/$defs/fileState" },
+        "disposition": { "$ref": "#/$defs/disposition" },
+        "enqueued_at": {
+          "type": ["string", "null"],
+          "description": "ISO-8601 timestamp (date or date-time) the item was enqueued. Advisory; the queue's preservation order is the source of truth for ordering."
+        },
+        "dispositioned_at": {
+          "type": ["string", "null"],
+          "description": "ISO-8601 timestamp the disposition was assigned (set when disposition moves off `pending`)."
+        },
+        "note": {
+          "type": ["string", "null"],
+          "description": "Free-text rationale for the disposition or park (e.g. the WARN issue, the Refiner failure mode)."
+        }
+      }
+    }
+  }
+}

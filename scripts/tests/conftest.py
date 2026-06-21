@@ -40,3 +40,9 @@ def ssm() -> ModuleType:
 def gate_revert() -> ModuleType:
     """The sak-kernel-gate-revert module (loaded by path)."""
     return _load_by_path("sak-kernel-gate-revert.py", "sak_kernel_gate_revert")
+
+
+@pytest.fixture(scope="session")
+def srq() -> ModuleType:
+    """The sak-reconciliation-queue module (loaded by path)."""
+    return _load_by_path("sak-reconciliation-queue.py", "sak_reconciliation_queue")
