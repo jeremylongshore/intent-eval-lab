@@ -33,7 +33,7 @@ forward_refs:
 > does **not** by itself unlock production-Rekor signing; production is gated on
 > the **conjunction of all four** DR-082 Q3 triggers (§ 6). Until all four hold,
 > `skill-refiner-pass/v1` runs in `sigstore_staging`.
-
+>
 > **What this section is.** The normative prose specification of the
 > `skill-refiner-pass/v1` in-toto predicate — the signed attestation the Skill
 > Refiner emits when a real `SkillVersion` clears the `@j-rig/refiner-core`
@@ -45,7 +45,7 @@ forward_refs:
 > are below the wire: a different signing trust root (DR-081 Q3 / § 6 trigger 3)
 > and an independent `$schemaVersion` lane. The chamber boundary is NEVER
 > expressed in the URL string or the envelope shape (DR-082 Q1, Q4).
-
+>
 > **What this section is NOT.** It is not the kernel schema — the canonical
 > machine-readable authority is the kernel JSON Schema at
 > `@intentsolutions/core/schemas/v1/skill-refiner-pass.schema.json` (DR-082
@@ -55,7 +55,7 @@ forward_refs:
 > `@j-rig/refiner-core` and is ratified by DR-028. It is not the SkillVersion
 > entity spec — SkillVersion is the kernel's 14th canonical entity (DR-028 T1),
 > referenced here by id/hash, never redefined.
-
+>
 > **Authority precedence on conflict.** Where this section's prose tables, the
 > kernel JSON Schema at `@intentsolutions/core/schemas/v1/skill-refiner-pass.schema.json`,
 > and the kernel TypeScript surface (`@intentsolutions/core/predicates/skill-refiner-pass-v1`)
@@ -78,7 +78,7 @@ A `skill-refiner-pass/v1` row is the signed, third-party-verifiable claim that:
 > named, traceable RefinerStrategy.
 
 This is the platform thesis applied to authoring: signed, third-party-verifiable
-evidence that a skill provably *got better* — not a score in a dashboard, not a
+evidence that a skill provably _got better_ — not a score in a dashboard, not a
 "trust me, it passed" assertion, but an in-toto attestation a verifier can
 re-derive from immutable inputs without trusting Intent Solutions.
 
@@ -207,11 +207,11 @@ The recommended authoring-chamber idiom (mirroring `gate-result/v1`'s
 skill-refiner:<side>:<skill-version-id>
 ```
 
-| Segment | Meaning | Examples |
-| --- | --- | --- |
-| **Tool** | The runner that produced the row. Lowercase, kebab-case. | `skill-refiner`, `j-rig` |
-| **Side** | Which side of the pipeline emitted the row. Closed enum: `client`, `server`, `ci`, `sandbox`, `local`. | `ci` (post-merge refiner run), `local` (developer workstation) |
-| **Gate ID segment** | The accepted SkillVersion identity discriminator — the row's `skill_version_id`. | a UUIDv7 |
+| Segment             | Meaning                                                                                                | Examples                                                       |
+| ------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| **Tool**            | The runner that produced the row. Lowercase, kebab-case.                                               | `skill-refiner`, `j-rig`                                       |
+| **Side**            | Which side of the pipeline emitted the row. Closed enum: `client`, `server`, `ci`, `sandbox`, `local`. | `ci` (post-merge refiner run), `local` (developer workstation) |
+| **Gate ID segment** | The accepted SkillVersion identity discriminator — the row's `skill_version_id`.                       | a UUIDv7                                                       |
 
 **Subject digest — the load-bearing tamper-evidence binding (DR-082 Q4).** The
 in-toto `subject[].digest` map MUST include the `sha256` key, and its value MUST
@@ -240,35 +240,35 @@ validation failure, not silently tolerated.
 
 The body carries exactly the **accept determinants** (DR-082 Q2): the fields a
 verifier needs to independently re-derive the accept decision from immutable
-inputs. Provenance *bulk* (raw per-eval-item transcripts, human-readable diff
+inputs. Provenance _bulk_ (raw per-eval-item transcripts, human-readable diff
 prose, dashboard-render metadata) is OUT of the signed body — referenced by hash
 via the EvidenceBundle side-channel, never inlined. This is the
 minimal-signed-surface / complete-provenance reconciliation DR-082 Q2 ratified.
 
 ### 5.1 Required fields (the accept determinants)
 
-| Field | Type | Normative semantics |
-| --- | --- | --- |
-| `verdict` | enum `accept \| reject` | Decision verdict — the accept-record discriminator. CLOSED enum; a row is emitted on a real verdict. Widening this enum is a **/v2** trigger (DR-082 Q5 CISO binding: a consumer that hard-codes the closed set must never silently encounter a third verdict on an immutable row). |
-| `reason` | array of strings, `minItems: 1` | Structured reason entries — non-empty always. Reasons SHOULD be **structured codes, not free prose**, to avoid leaking skill content onto a public transparency log (DR-082 Q2 CISO + GC binding). |
-| `refiner_strategy_id` | string, `minLength: 1` | Identifier of the `RefinerStrategy` that produced the verdict. **REQUIRED in the signed body** per the DR-028 CISO Session-7 binding: mechanism-swappable must not become mechanism-untraceable. Strategy ids are **append-only-registered** — a retired id is burned forever, never reused for a different mechanism (DR-082 Q5). |
-| `skill_version_id` | UUIDv7 (kernel `$defs/uuidv7`) | UUIDv7 of the accepted `SkillVersion` (the 14th kernel entity, DR-028 T1). Referenced by the kernel's EXISTING UUIDv7 primitive — this predicate does NOT define a SkillVersion entity (DR-028 one-way door). |
-| `parent_version_id` | UUIDv7 (kernel `$defs/uuidv7`) | UUIDv7 of the parent `SkillVersion` the accepted version was refined from. Binds **parent → child** so a refiner cannot launder an unrelated skill through a forged lineage (DR-082 Q2 CISO binding). |
-| `source_snapshot_hash` | sha256-prefixed (kernel `$defs/sha256Prefixed`) | sha256-prefixed content hash of the **post-edit** SkillVersion source snapshot. The in-toto `subject[].digest.sha256` MUST equal this value **without** the `sha256:` prefix (§ 4 — the tamper-evidence binding, DR-082 Q4). References the SkillSnapshot content by the kernel's EXISTING sha256-prefixed primitive (reference, not FK — DR-028 T1). |
-| `eval_set_ref` | object `{ hash, version, lineage_id }` | Reference to the **FROZEN** eval-set the verdict was derived against — the entire epistemic basis of the claim. `hash` (sha256-prefixed) pins exact content; `version` (string, `minLength: 1`) pins which published eval-set; `lineage_id` (UUIDv7) pins the eval-set lineage. A production PASS over a *mutable* eval-set is unverifiable by definition (DR-082 Q3 frozen-eval lock). `additionalProperties: false`. |
-| `edit_proposal_hash` | sha256-prefixed (kernel `$defs/sha256Prefixed`) | sha256-prefixed hash of the `EditProposal` (the bounded edit-ops) that earned the pass — binds **WHAT changed**. |
-| `behavioral_delta` | number | Observed delta on the behavioral dimension the accept gate requires significant Pareto-dominance on. A determinant of the accept decision. |
-| `named_dimension_deltas` | array of `{ id, delta, non_regressed }` | Per-named-dimension observed deltas — the **non-regression surface** of the accept gate. Each entry is independently re-checkable: a verifier re-runs the one-sided z-test on these deltas at the stated `alpha`. `id` is a kebab-slug dimension identifier; `delta` is a number; `non_regressed` is a boolean. For an `accept` verdict every entry's `non_regressed` MUST be `true`. MAY be empty when the skill declares no named dimensions beyond the behavioral one. Each item is `additionalProperties: false`. |
-| `alpha` | number, `(0, 1)` exclusive | The significance level (α) the one-sided z-test was evaluated at — the **falsifiability anchor**. A PASS with no published `alpha` is an unfalsifiable assertion (DR-082 Q2). |
-| `test_statistic_kind` | const `one-sided-z` | Statistical-test family identifier. CONST for v1 — the acceptance gate is a one-sided z-test (DR-028 + DR-082 Q2). Changing the test family is a SEMANTIC change that mints **/v2** (the same deltas/alpha would no longer mean the same verdict). |
+| Field                    | Type                                            | Normative semantics                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ------------------------ | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `verdict`                | enum `accept \| reject`                         | Decision verdict — the accept-record discriminator. CLOSED enum; a row is emitted on a real verdict. Widening this enum is a **/v2** trigger (DR-082 Q5 CISO binding: a consumer that hard-codes the closed set must never silently encounter a third verdict on an immutable row).                                                                                                                                                                                                                                   |
+| `reason`                 | array of strings, `minItems: 1`                 | Structured reason entries — non-empty always. Reasons SHOULD be **structured codes, not free prose**, to avoid leaking skill content onto a public transparency log (DR-082 Q2 CISO + GC binding).                                                                                                                                                                                                                                                                                                                    |
+| `refiner_strategy_id`    | string, `minLength: 1`                          | Identifier of the `RefinerStrategy` that produced the verdict. **REQUIRED in the signed body** per the DR-028 CISO Session-7 binding: mechanism-swappable must not become mechanism-untraceable. Strategy ids are **append-only-registered** — a retired id is burned forever, never reused for a different mechanism (DR-082 Q5).                                                                                                                                                                                    |
+| `skill_version_id`       | UUIDv7 (kernel `$defs/uuidv7`)                  | UUIDv7 of the accepted `SkillVersion` (the 14th kernel entity, DR-028 T1). Referenced by the kernel's EXISTING UUIDv7 primitive — this predicate does NOT define a SkillVersion entity (DR-028 one-way door).                                                                                                                                                                                                                                                                                                         |
+| `parent_version_id`      | UUIDv7 (kernel `$defs/uuidv7`)                  | UUIDv7 of the parent `SkillVersion` the accepted version was refined from. Binds **parent → child** so a refiner cannot launder an unrelated skill through a forged lineage (DR-082 Q2 CISO binding).                                                                                                                                                                                                                                                                                                                 |
+| `source_snapshot_hash`   | sha256-prefixed (kernel `$defs/sha256Prefixed`) | sha256-prefixed content hash of the **post-edit** SkillVersion source snapshot. The in-toto `subject[].digest.sha256` MUST equal this value **without** the `sha256:` prefix (§ 4 — the tamper-evidence binding, DR-082 Q4). References the SkillSnapshot content by the kernel's EXISTING sha256-prefixed primitive (reference, not FK — DR-028 T1).                                                                                                                                                                 |
+| `eval_set_ref`           | object `{ hash, version, lineage_id }`          | Reference to the **FROZEN** eval-set the verdict was derived against — the entire epistemic basis of the claim. `hash` (sha256-prefixed) pins exact content; `version` (string, `minLength: 1`) pins which published eval-set; `lineage_id` (UUIDv7) pins the eval-set lineage. A production PASS over a _mutable_ eval-set is unverifiable by definition (DR-082 Q3 frozen-eval lock). `additionalProperties: false`.                                                                                                |
+| `edit_proposal_hash`     | sha256-prefixed (kernel `$defs/sha256Prefixed`) | sha256-prefixed hash of the `EditProposal` (the bounded edit-ops) that earned the pass — binds **WHAT changed**.                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `behavioral_delta`       | number                                          | Observed delta on the behavioral dimension the accept gate requires significant Pareto-dominance on. A determinant of the accept decision.                                                                                                                                                                                                                                                                                                                                                                            |
+| `named_dimension_deltas` | array of `{ id, delta, non_regressed }`         | Per-named-dimension observed deltas — the **non-regression surface** of the accept gate. Each entry is independently re-checkable: a verifier re-runs the one-sided z-test on these deltas at the stated `alpha`. `id` is a kebab-slug dimension identifier; `delta` is a number; `non_regressed` is a boolean. For an `accept` verdict every entry's `non_regressed` MUST be `true`. MAY be empty when the skill declares no named dimensions beyond the behavioral one. Each item is `additionalProperties: false`. |
+| `alpha`                  | number, `(0, 1)` exclusive                      | The significance level (α) the one-sided z-test was evaluated at — the **falsifiability anchor**. A PASS with no published `alpha` is an unfalsifiable assertion (DR-082 Q2).                                                                                                                                                                                                                                                                                                                                         |
+| `test_statistic_kind`    | const `one-sided-z`                             | Statistical-test family identifier. CONST for v1 — the acceptance gate is a one-sided z-test (DR-028 + DR-082 Q2). Changing the test family is a SEMANTIC change that mints **/v2** (the same deltas/alpha would no longer mean the same verdict).                                                                                                                                                                                                                                                                    |
 
 ### 5.2 Optional fields (descriptive, NOT determinants)
 
-| Field | Type | Normative semantics |
-| --- | --- | --- |
-| `cost_record_ref` | UUIDv7 (kernel `$defs/uuidv7`) | OPTIONAL reference → `CostRecord.id` for cost attribution of the refiner run. Descriptive — NOT a determinant of accept. Consumers MUST NOT treat its absence as a verification failure. |
-| `replay_fidelity_level` | enum `RF-0 \| RF-1 \| RF-2 \| RF-3 \| RF-4` | OPTIONAL replay-fidelity claim for the refiner run, mirroring `gate-result/v1`'s iel-E11 levels. |
-| `signing_downgrade_reason` | string, `minLength: 1` | OPTIONAL structured reason recorded ONLY when the `signing_mode` was downgraded for this row (e.g. a production→staging fallback). Absent on a normally-signed row. |
+| Field                      | Type                                        | Normative semantics                                                                                                                                                                      |
+| -------------------------- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `cost_record_ref`          | UUIDv7 (kernel `$defs/uuidv7`)              | OPTIONAL reference → `CostRecord.id` for cost attribution of the refiner run. Descriptive — NOT a determinant of accept. Consumers MUST NOT treat its absence as a verification failure. |
+| `replay_fidelity_level`    | enum `RF-0 \| RF-1 \| RF-2 \| RF-3 \| RF-4` | OPTIONAL replay-fidelity claim for the refiner run, mirroring `gate-result/v1`'s iel-E11 levels.                                                                                         |
+| `signing_downgrade_reason` | string, `minLength: 1`                      | OPTIONAL structured reason recorded ONLY when the `signing_mode` was downgraded for this row (e.g. a production→staging fallback). Absent on a normally-signed row.                      |
 
 **Determinant rule (DR-082 Q2 / DR-082 Q5 CTO addendum).** A field belongs in the
 REQUIRED set iff a verifier needs it to independently re-derive the accept
@@ -291,7 +291,7 @@ means across signed rows.
   insignificant behavioral delta at the stated `alpha`).
 
 The `reject` verdict is part of the closed enum so the predicate can carry a
-real, signed *negative* result when a refiner run is attested end-to-end — but a
+real, signed _negative_ result when a refiner run is attested end-to-end — but a
 relying party treating the URI as a "this skill got better" badge keys on
 `verdict === "accept"`, never on the presence of a row alone.
 
@@ -310,17 +310,17 @@ bundle.
 
 Per DR-082 Q3 (7–0 staging-first), `skill-refiner-pass/v1` ships in
 `sigstore_staging` and becomes **production-Rekor-signable ONLY when ALL FOUR
-triggers hold, AND-gated**. The kernel `SigningMode` flip is the *effect* of the
+triggers hold, AND-gated**. The kernel `SigningMode` flip is the _effect_ of the
 four triggers holding, never a trigger itself. (The kernel comment refers to the
 staging posture by the shorthand `ln`; the kernel `SigningMode` enum value is
 `sigstore_staging` — `'sigstore_staging' | 'rekor_production' | 'unsigned_experimental'`.)
 
-| # | Trigger | Status as of this section | Owner |
-| --- | --- | --- | --- |
-| **1** | The `skill-refiner-pass/v1` SPEC.md **normative section lands** (RESERVED→ACTIVE in `PREDICATE-TYPES.md`). | **ADVANCED by this document** — landing this section on `intent-eval-lab` main satisfies trigger 1. | this PR |
-| **2** | **DNSSEC + CAA pre-flight green** on `evals.intentsolutions.io` (iah-E06-class). | Already green for `gate-result/v1`; this is **verify-still-green**, not rebuild — the host posture is shared. | maintainer (verify) |
-| **3** | The authoring chamber's **SEPARATE signing trust root is provisioned-and-live** (DR-081 no-shared-root — the NEW gating step `gate-result/v1` never had). | **DESIGN ADVANCED** by § 084; **PROVISIONING is maintainer-run infra** — not satisfiable by a doc. | maintainer (infra) |
-| **4** | **≥1 REAL SkillVersion clears the behavioral gate on a FROZEN, signed eval-set** (a green row, not a synthetic fixture). | **BLOCKED** — requires `@intentsolutions/core` published with this predicate + the SkillVersion entity, then a real `@j-rig/refiner-core` run. | maintainer (release + run) |
+| #     | Trigger                                                                                                                                                   | Status as of this section                                                                                                                      | Owner                      |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| **1** | The `skill-refiner-pass/v1` SPEC.md **normative section lands** (RESERVED→ACTIVE in `PREDICATE-TYPES.md`).                                                | **ADVANCED by this document** — landing this section on `intent-eval-lab` main satisfies trigger 1.                                            | this PR                    |
+| **2** | **DNSSEC + CAA pre-flight green** on `evals.intentsolutions.io` (iah-E06-class).                                                                          | Already green for `gate-result/v1`; this is **verify-still-green**, not rebuild — the host posture is shared.                                  | maintainer (verify)        |
+| **3** | The authoring chamber's **SEPARATE signing trust root is provisioned-and-live** (DR-081 no-shared-root — the NEW gating step `gate-result/v1` never had). | **DESIGN ADVANCED** by § 084; **PROVISIONING is maintainer-run infra** — not satisfiable by a doc.                                             | maintainer (infra)         |
+| **4** | **≥1 REAL SkillVersion clears the behavioral gate on a FROZEN, signed eval-set** (a green row, not a synthetic fixture).                                  | **BLOCKED** — requires `@intentsolutions/core` published with this predicate + the SkillVersion entity, then a real `@j-rig/refiner-core` run. | maintainer (release + run) |
 
 Until all four hold, every `skill-refiner-pass/v1` row carries
 `signing_mode = "sigstore_staging"` and `rekor_log_index = null`, per the DR-028
@@ -337,7 +337,7 @@ production signature, or trust domains silently fuse on the first signature — 
 one un-rollback-able mistake (DR-082 Q3 CISO most-costly).
 
 **Trigger 4 is the non-vacuity lock.** A production-Rekor row for a predicate that
-has never once fired on real data — over a *frozen, signed* eval-set whose hash is
+has never once fired on real data — over a _frozen, signed_ eval-set whose hash is
 the one written into the body — would be the worst possible founding row: an
 empty badge immortalized in a public append-only log. Prove it fires on real
 data, then mint it forever.

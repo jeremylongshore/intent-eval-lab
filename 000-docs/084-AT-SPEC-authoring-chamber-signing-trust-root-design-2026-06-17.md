@@ -31,7 +31,7 @@ forward_refs:
 > maintainer-run provisioning in § 5; provisioning is security infrastructure a
 > human runs, not something a document can complete. Be honest about that line:
 > this is the blueprint, § 5 is the build, § 6 is what blocks the build.
-
+>
 > **Honesty about what "trust root" means in the keyless model.** The runtime
 > chamber signs with **cosign keyless against the public-good sigstore trust
 > root** (`fulcio.sigstore.dev` + `rekor.sigstore.dev`), using GitHub Actions
@@ -58,13 +58,13 @@ shared signing trust root with the runtime chamber. The threat the council named
 
 - **Confused-deputy / blast-radius coupling.** A shared signing identity means a
   runtime-contract compromise (the key/identity that signs `gate-result/v1` et al.)
-  *also* implicates every authoring attestation, and vice versa — one breach, two
+  _also_ implicates every authoring attestation, and vice versa — one breach, two
   chambers down. A signed Rekor row is forever-proof of the coupling.
 - **Trust-class confusion (the lint-vs-attestation wall).** `authoring/v1`
-  *conformance* (a SKILL.md passing a kernel JSON Schema) is a DETERMINISTIC LINT
+  _conformance_ (a SKILL.md passing a kernel JSON Schema) is a DETERMINISTIC LINT
   RESULT, never a signed attestation. `skill-refiner-pass/v1` is the genuine
   exception: it IS a signed behavioral-gate attestation, runtime-class in
-  *kind* but emitted from the authoring/refiner chamber. Precisely because the
+  _kind_ but emitted from the authoring/refiner chamber. Precisely because the
   chamber also produces non-signable lint results, its one signable predicate
   must sign under an identity a verifier can tell apart from the runtime chamber —
   so nobody can wire a "kernel schema PASS" lint into the authoring signing
@@ -79,17 +79,17 @@ different signer.
 
 ## 2. The two chambers, side by side
 
-| Property | Runtime chamber (`gate-result/v1`, …) | Authoring chamber (`skill-refiner-pass/v1`) |
-| --- | --- | --- |
-| **What it signs** | runtime/eval predicates (gate-result, eval-verdict, runtime-receipt, cost-attribution) | the authoring chamber's ONE signable predicate: `skill-refiner-pass/v1` (the refiner behavioral-gate PASS) |
-| **Signing model** | cosign keyless, public-good sigstore | cosign keyless, public-good sigstore (SAME CA + log) |
-| **Fulcio** | `fulcio.sigstore.dev` (default) | `fulcio.sigstore.dev` (default) — **shared CA, by design; the root is NOT what separates the chambers** |
-| **Rekor** | `rekor.sigstore.dev` (production) / `rekor.sigstage.dev` (staging) | same instances; staging until DR-082 Q3 all-four hold |
-| **OIDC issuer** | `https://token.actions.githubusercontent.com` (GitHub Actions ambient) | `https://token.actions.githubusercontent.com` (GitHub Actions ambient) |
+| Property                      | Runtime chamber (`gate-result/v1`, …)                                                      | Authoring chamber (`skill-refiner-pass/v1`)                                                                                                               |
+| ----------------------------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **What it signs**             | runtime/eval predicates (gate-result, eval-verdict, runtime-receipt, cost-attribution)     | the authoring chamber's ONE signable predicate: `skill-refiner-pass/v1` (the refiner behavioral-gate PASS)                                                |
+| **Signing model**             | cosign keyless, public-good sigstore                                                       | cosign keyless, public-good sigstore (SAME CA + log)                                                                                                      |
+| **Fulcio**                    | `fulcio.sigstore.dev` (default)                                                            | `fulcio.sigstore.dev` (default) — **shared CA, by design; the root is NOT what separates the chambers**                                                   |
+| **Rekor**                     | `rekor.sigstore.dev` (production) / `rekor.sigstage.dev` (staging)                         | same instances; staging until DR-082 Q3 all-four hold                                                                                                     |
+| **OIDC issuer**               | `https://token.actions.githubusercontent.com` (GitHub Actions ambient)                     | `https://token.actions.githubusercontent.com` (GitHub Actions ambient)                                                                                    |
 | **OIDC certificate identity** | the runtime signing **workflow-ref** (e.g. the `intent-rollout-gate` release workflow ref) | a **DISTINCT workflow-ref** — the authoring/refiner signing workflow, ideally in a distinct signing repo/workflow file (§ 3). **This is the separation.** |
-| **`$schemaVersion` lane** | runtime lane | independent authoring lane (DR-081 Q3) — runtime bumps never drag it |
-| **Evolution clock** | runtime ISEDC cadence | independent authoring ISEDC cadence (DR-082 Q5 CSO) |
-| **Carrying cost while idle** | live (already signs to production) | **DORMANT until first signed artifact** (DR-081 Q3 CFO binding — zero key-rotation cost until the chamber actually emits a signed row) |
+| **`$schemaVersion` lane**     | runtime lane                                                                               | independent authoring lane (DR-081 Q3) — runtime bumps never drag it                                                                                      |
+| **Evolution clock**           | runtime ISEDC cadence                                                                      | independent authoring ISEDC cadence (DR-082 Q5 CSO)                                                                                                       |
+| **Carrying cost while idle**  | live (already signs to production)                                                         | **DORMANT until first signed artifact** (DR-081 Q3 CFO binding — zero key-rotation cost until the chamber actually emits a signed row)                    |
 
 The single load-bearing difference is the **OIDC certificate identity**. Everything
 else a verifier checks (envelope, predicateType string, schema) is intentionally
@@ -150,7 +150,7 @@ The kernel `SigningMode` enum (`@intentsolutions/core`,
 `src/entities/EvidenceBundle.ts`) is the closed 3-element set:
 
 ```ts
-type SigningMode = 'sigstore_staging' | 'rekor_production' | 'unsigned_experimental';
+type SigningMode = "sigstore_staging" | "rekor_production" | "unsigned_experimental";
 ```
 
 (The `skill-refiner-pass-v1.ts` kernel header refers to the staging posture by
@@ -232,18 +232,18 @@ Wiring rules (NORMATIVE — design intent for the emit path that ships once
 
 ## 6. BLOCKED-ON (what gates this design from becoming "live")
 
-This design is buildable now. Turning it into a *live, provisioned* trust root —
+This design is buildable now. Turning it into a _live, provisioned_ trust root —
 and thereby clearing DR-082 Q3 trigger 3, and ultimately enabling the first
 production `skill-refiner-pass/v1` signature — is blocked on the following, none
 of which a document can clear:
 
-| Blocked-on | Kind | Who clears it |
-| --- | --- | --- |
-| Provisioning the authoring signing workflow + fixing/recording its OIDC identity (§ 5 steps 1–6) | **Infra (maintainer-run)** | maintainer |
-| `@intentsolutions/core` PUBLISHED with the `skill-refiner-pass/v1` predicate body + the `SkillVersion` entity (currently on `main` at 0.7.0-dev but UNPUBLISHED) — any j-rig emit path that imports them is blocked until publish | **Release (maintainer-run)** | maintainer |
-| The DR-028 T1-deferred SkillVersion status/signing-surface fields (`status`, `signing_mode`, `rekor_log_index`, `pending_production`) + the "`rekor_log_index` iff `signing_mode=production`" CISO cross-field invariant on the SkillVersion entity | **Decision (ISEDC follow-up DR)** + kernel work | ISEDC + maintainer |
-| ≥1 REAL SkillVersion clears the `@j-rig/refiner-core` behavioral gate on a FROZEN, signed eval-set (DR-082 Q3 trigger 4) | **Real run** (needs the publish above + a frozen eval-set) | maintainer |
-| The "separate ISEDC production-go" several DR-082 Q3 seats (GC/CFO/CSO/VP-DevRel) requested before the first production signature | **Decision (Class-1 ISEDC)** | ISEDC |
+| Blocked-on                                                                                                                                                                                                                                          | Kind                                                       | Who clears it      |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------ |
+| Provisioning the authoring signing workflow + fixing/recording its OIDC identity (§ 5 steps 1–6)                                                                                                                                                    | **Infra (maintainer-run)**                                 | maintainer         |
+| `@intentsolutions/core` PUBLISHED with the `skill-refiner-pass/v1` predicate body + the `SkillVersion` entity (currently on `main` at 0.7.0-dev but UNPUBLISHED) — any j-rig emit path that imports them is blocked until publish                   | **Release (maintainer-run)**                               | maintainer         |
+| The DR-028 T1-deferred SkillVersion status/signing-surface fields (`status`, `signing_mode`, `rekor_log_index`, `pending_production`) + the "`rekor_log_index` iff `signing_mode=production`" CISO cross-field invariant on the SkillVersion entity | **Decision (ISEDC follow-up DR)** + kernel work            | ISEDC + maintainer |
+| ≥1 REAL SkillVersion clears the `@j-rig/refiner-core` behavioral gate on a FROZEN, signed eval-set (DR-082 Q3 trigger 4)                                                                                                                            | **Real run** (needs the publish above + a frozen eval-set) | maintainer         |
+| The "separate ISEDC production-go" several DR-082 Q3 seats (GC/CFO/CSO/VP-DevRel) requested before the first production signature                                                                                                                   | **Decision (Class-1 ISEDC)**                               | ISEDC              |
 
 **What this document DOES advance:** DR-082 Q3 trigger 3's **design** — the
 chamber's signing topology, the keyid-distinct identity model, the kernel
