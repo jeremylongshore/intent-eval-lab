@@ -80,7 +80,7 @@ Usage:
                  [--dry-run] [--force] [--limit N]
 
 --provider: one of nvidia-llama-405b (default, free), groq-llama-70b,
-            anthropic-haiku, anthropic-sonnet, anthropic-opus.
+            deepseek-v4-flash, anthropic-haiku, anthropic-sonnet, anthropic-opus.
 --dry-run:  simulates propose/apply/score/accept on each specimen with
             synthetic provider responses. Zero API spend. Validates pipeline.
 --limit N:  process only the first N specimens (smoke test).
