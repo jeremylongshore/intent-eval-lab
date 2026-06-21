@@ -84,3 +84,19 @@ specs/state-machines/schema/sak-state.schema.json
 # reconciliation-liveness SLA timer — that one is advisory + unpinned.)
 scripts/sak-reconciliation-queue.py
 specs/state-machines/schema/sak-reconciliation-queue.schema.json
+
+# The SAK Wave-B durability protocol + its schema. Same rationale as the SAK
+# reconciliation queue above: this IS the policy enforcement surface for Wave B's
+# durability guarantee (F-MK-004) — the deterministic per-file branch, the
+# ATOMIC-COMMIT invariant (a Wave-B result is fully committed or not at all, never
+# a partial state), the 3-retry-with-escalation ladder (3 failures park, never
+# silently drop), and the open-PR park (Wave B never runs on an open-PR file). A
+# silent edit to the atomic invariant (assert_atomic / commit_count), the
+# escalation rule (MAX_ATTEMPTS / the 3rd-failure park), the branch-derivation, or
+# the parked-queue routing could let a partial commit land, drop a file silently,
+# or run Wave B on an open-PR file — the durability/concurrency failures the
+# protocol exists to prevent. Pinning makes any change structurally reviewed:
+# editing either file requires a fresh `scripts/audit-harness init` in the same
+# commit. (DISTINCT from the reconciliation-liveness SLA timer — advisory + unpinned.)
+scripts/sak-wave-b-durability.py
+specs/state-machines/schema/sak-wave-b-durability.schema.json
