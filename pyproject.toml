@@ -12,6 +12,7 @@ requires-python = ">=3.11"
 minversion = "8.0"
 testpaths = [
   "research/phase-a-0-baseline/tests",
+  "scripts/tests",
 ]
 addopts = [
   "-v",
@@ -53,6 +54,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "research/phase-a-0-baseline/tests/**" = ["B011"]  # pytest assert idioms
+"scripts/tests/**" = ["B011"]  # pytest assert idioms
 
 # ----------------------------------------------------------------------------
 # mypy (L2 type checking)

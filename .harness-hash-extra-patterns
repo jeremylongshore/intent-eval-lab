@@ -56,3 +56,15 @@ specs/drift-classification/v1/*.json
 # The walls script itself — same rationale as pinning the vendored
 # audit-harness scripts above: it IS the policy enforcement surface.
 scripts/classifier-walls.py
+
+# The SAK Phase-4 advisory->blocking flip state machine + its schema. Same
+# rationale as classifier-walls.py: these ARE the policy enforcement surface
+# for the highest-blast-radius event in SAK (the advisory->blocking flip). A
+# silent edit to the flip's hard-gate preconditions (zero-open-P0 + governance
+# triple sign-off, plan 048 v8 Delta 3) or to the legal-transition graph could
+# un-gate the flip. Pinning makes any change to the gate structurally reviewed:
+# editing either file requires a fresh `scripts/audit-harness init` in the same
+# commit. (DISTINCT from the 13-entity runtime state machine — that one is
+# gated by statemachine-drift.yml, not the hash pin.)
+scripts/sak-state-machine.py
+specs/state-machines/schema/sak-state.schema.json

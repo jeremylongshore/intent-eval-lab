@@ -1,0 +1,172 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://evals.intentsolutions.io/state-machines/sak-state/v1",
+  "title": "SAK Phase-4 advisory->blocking flip state (sak-state/v1)",
+  "description": "Validates the hand-maintained SAK-STATE.json. The normative authority for the state machine is plan 033 v7 § 14.4.shadow (the lifecycle diagram), § 14.4c + plan 048 v8 Delta 3 (the advisory->blocking flip exit preconditions: (a) coverage calendar-dispositionable, (c) zero-open-P0 HARD, (d) governance-triple sign-off HARD), § 14.4.rollback (rollback protocol + ROLLED-BACK semantics), and plan 048 v8 Delta 4 / § 14.31 (lifecycle-states). This is DISTINCT from the 13-entity runtime state machine at specs/state-machines/transition-table.v1.json (Blueprint B). This schema is consumed by scripts/sak-state-machine.py (transition emit/validation) and is compatible with the SAK-STATE.json shape that scripts/render-sak-dashboard.py already reads.",
+  "type": "object",
+  "required": ["state_version", "state_machine"],
+  "additionalProperties": true,
+  "properties": {
+    "_comment": {
+      "type": "string"
+    },
+    "state_version": {
+      "type": "string",
+      "const": "sak-state/v1"
+    },
+    "as_of": {
+      "type": "string",
+      "description": "ISO date (YYYY-MM-DD) the slow-moving facts in this file were last refreshed.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "phases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["phase", "status"],
+        "additionalProperties": true,
+        "properties": {
+          "phase": { "type": "string" },
+          "status": { "type": "string" },
+          "detail": { "type": "string" }
+        }
+      }
+    },
+    "state_machine": { "$ref": "#/$defs/stateMachine" },
+    "cost_ledger": {
+      "type": "object"
+    },
+    "bead_state": {
+      "type": "object"
+    }
+  },
+  "$defs": {
+    "lifecycleState": {
+      "type": "string",
+      "description": "The eight states of the SAK Phase-4 advisory->blocking flip lifecycle (plan 033 v7 § 14.4.shadow). The five named in the prompt brief (ADVISORY, ADVISORY-W-A, SHADOW-MODE, READY-TO-FLIP, BLOCKING) plus the canonical diagram's ADVISORY-W-AB (both waves done) and HOLDING (audit branch off SHADOW-MODE), plus ROLLED-BACK (reachable from the gated states).",
+      "enum": [
+        "ADVISORY",
+        "ADVISORY-W-A",
+        "ADVISORY-W-AB",
+        "SHADOW-MODE",
+        "HOLDING",
+        "READY-TO-FLIP",
+        "BLOCKING",
+        "ROLLED-BACK"
+      ]
+    },
+    "preconditions": {
+      "type": "object",
+      "description": "The advisory->blocking flip exit preconditions (plan 048 v8 Delta 3, revising plan 033 § 14.4c). Used to gate the READY-TO-FLIP -> BLOCKING transition. (a) coverage is the only precondition the 30-day calendar ceiling can disposition (flip with the long tail quarantined); (c) zero-open-P0 and (d) governance-triple sign-off are HARD gates the ceiling never overrides.",
+      "additionalProperties": false,
+      "properties": {
+        "coverage_corpus_pass_pct": {
+          "type": ["number", "null"],
+          "description": "Precondition (a): fraction of corpus passing the kernel schema in advisory + shadow modes, as a percentage. >= 99.5 satisfies (a); below it the flip MAY still fire only via the 30-day calendar ceiling with the long tail quarantined.",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "shadow_days_complete": {
+          "type": ["integer", "null"],
+          "description": "Precondition (b): calendar days of shadow mode completed. >= 7 with deviation < 0.5% satisfies (b) (plan 033 § 14.4b.5).",
+          "minimum": 0
+        },
+        "shadow_deviation_pct": {
+          "type": ["number", "null"],
+          "description": "Precondition (b): dual-validator deviation rate during shadow mode, as a percentage. < 0.5 satisfies (b).",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "open_p0_count": {
+          "type": ["integer", "null"],
+          "description": "Precondition (c) HARD: count of open P0 issues in the schema-revision-candidates queue (plan 048 § 14.A.3). Must be 0 to flip; the calendar ceiling never overrides this.",
+          "minimum": 0
+        },
+        "governance_signoff": {
+          "$ref": "#/$defs/governanceSignoff"
+        }
+      }
+    },
+    "governanceSignoff": {
+      "type": "object",
+      "description": "Precondition (d) HARD: the CTO + CISO + VP DevRel triple sign-off (plan 033 § 14.12). All three must be present for the advisory->blocking flip. STUB INTERFACE: the flip-emission code reads these three booleans + their reference fields; the upstream source of truth for a recorded sign-off is an ISEDC Decision Record (AT-DECR). Until a live governance-signoff source exists, this block is hand-maintained in SAK-STATE.json and the three booleans default false.",
+      "additionalProperties": false,
+      "required": ["cto", "ciso", "vp_devrel"],
+      "properties": {
+        "cto": { "type": "boolean" },
+        "ciso": { "type": "boolean" },
+        "vp_devrel": { "type": "boolean" },
+        "decision_record_ref": {
+          "type": ["string", "null"],
+          "description": "Pointer to the AT-DECR Decision Record recording the triple sign-off (e.g. '044-AT-DECR-...'). Required-by-convention once all three booleans are true; advisory otherwise."
+        }
+      }
+    },
+    "transition": {
+      "type": "object",
+      "description": "One recorded state transition. Append-only history; each entry records the from/to states, the trigger event, when it fired, and (for the flip) a reference to the governing Decision Record / Evidence Bundle.",
+      "additionalProperties": false,
+      "required": ["from", "to", "event", "at"],
+      "properties": {
+        "from": { "$ref": "#/$defs/lifecycleState" },
+        "to": { "$ref": "#/$defs/lifecycleState" },
+        "event": {
+          "type": "string",
+          "description": "The transition event name (e.g. 'wave-a-merged', 'enable-shadow', 'governance-triple-signs', 'regression-detected'). One of the events enumerated in scripts/sak-state-machine.py LEGAL_TRANSITIONS.",
+          "minLength": 1
+        },
+        "at": {
+          "type": "string",
+          "description": "ISO-8601 timestamp (date or date-time) the transition fired.",
+          "minLength": 1
+        },
+        "reason": {
+          "type": ["string", "null"],
+          "description": "Free-text rationale; required for ROLLED-BACK entries (plan 033 § 14.4.rollback records the reason in an AT-DECR-phase-4c-rollback DR)."
+        },
+        "decision_record_ref": {
+          "type": ["string", "null"],
+          "description": "Pointer to the kernel-side Decision Record this transition emitted (plan 033 § 14.4.shadow: 'Each transition emits a kernel-side Decision Record + Evidence Bundle entry.')."
+        }
+      }
+    },
+    "stateMachine": {
+      "type": "object",
+      "description": "The SAK Phase-4 flip state machine. current_state must be one of the eight lifecycle states; states is the declared lifecycle ordering; preconditions carries the flip-gate inputs; transition_history is the append-only record of transitions taken.",
+      "additionalProperties": false,
+      "required": ["machine", "current_state", "states"],
+      "properties": {
+        "_comment": {
+          "type": "string"
+        },
+        "machine": {
+          "type": "string",
+          "description": "Human-readable machine name.",
+          "minLength": 1
+        },
+        "current_state": { "$ref": "#/$defs/lifecycleState" },
+        "entered_at": {
+          "type": "string",
+          "description": "When current_state was entered (ISO date or date-time)."
+        },
+        "next_gate": {
+          "type": "string",
+          "description": "Human-readable description of the next gate that must clear to advance."
+        },
+        "states": {
+          "type": "array",
+          "description": "The declared lifecycle states in nominal forward order. Every entry must be a valid lifecycle state; every state in current_state must appear here.",
+          "items": { "$ref": "#/$defs/lifecycleState" },
+          "minItems": 2,
+          "uniqueItems": true
+        },
+        "preconditions": { "$ref": "#/$defs/preconditions" },
+        "transition_history": {
+          "type": "array",
+          "description": "Append-only record of transitions taken to reach current_state.",
+          "items": { "$ref": "#/$defs/transition" }
+        }
+      }
+    }
+  }
+}

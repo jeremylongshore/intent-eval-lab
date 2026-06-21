@@ -285,3 +285,18 @@ jobs:
         run: |
           python3 scripts/render-sak-dashboard.py --self-test
           python3 scripts/render-sak-dashboard.py --check
+
+      # The SAK Phase-4 advisory->blocking flip state machine (plan 033 v7
+      # § 14.4.shadow + § 14.4c, plan 048 v8 Delta 3 flip preconditions +
+      # § 14.31 lifecycle-states). DISTINCT from the 13-entity runtime state
+      # machine at specs/state-machines/transition-table.v1.json (statemachine-
+      # drift.yml gates that one). --self-test proves legal/illegal transitions,
+      # the hard-gate flip preconditions ((c) zero-open-P0 + (d) governance
+      # triple sign-off, neither overridable by the calendar ceiling), rollback
+      # reachability from each gated state, and emit() immutability on fixtures;
+      # --validate asserts the committed SAK-STATE.json satisfies the schema at
+      # specs/state-machines/schema/sak-state.schema.json.
+      - name: SAK Phase-4 flip state machine self-test + schema validation
+        run: |
+          python3 scripts/sak-state-machine.py --self-test
+          python3 scripts/sak-state-machine.py --validate
