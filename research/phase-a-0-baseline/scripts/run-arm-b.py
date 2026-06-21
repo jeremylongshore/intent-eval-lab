@@ -368,6 +368,7 @@ def run_refiner(
     max_iterations: int,
     dry_run: bool,
     force: bool,
+    max_tokens: int = 1024,
 ) -> dict:
     """Execute the propose/apply/score/accept loop for one specimen.
 
@@ -403,7 +404,7 @@ def run_refiner(
 
         # Call Opus for a proposal
         try:
-            completion = client.complete(prompt, max_tokens=1024)
+            completion = client.complete(prompt, max_tokens=max_tokens)
             meter.record(completion.usage)
         except BudgetExceeded:
             raise
@@ -685,6 +686,16 @@ def main() -> int:
     )
     ap.add_argument("--force", action="store_true", help="Overwrite existing result files.")
     ap.add_argument("--limit", type=int, default=None, help="Process only first N specimens (smoke test).")
+    ap.add_argument(
+        "--max-tokens",
+        type=int,
+        default=1024,
+        help=(
+            "Max output tokens per completion. Default: 1024 (DR-028 pre-registered). "
+            "Raise (e.g. 4096) for reasoning models that spend output budget on hidden "
+            "reasoning, which otherwise truncates the answer."
+        ),
+    )
     ap.add_argument("--validator-path", type=Path, default=None, help="Override path to validate-skills-schema.py")
     args = ap.parse_args()
 
@@ -755,6 +766,7 @@ def main() -> int:
                     max_iterations=args.max_iterations,
                     dry_run=args.dry_run,
                     force=args.force,
+                    max_tokens=args.max_tokens,
                 )
                 all_results.append(result)
 

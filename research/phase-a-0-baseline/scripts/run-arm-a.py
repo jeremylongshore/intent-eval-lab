@@ -89,6 +89,7 @@ def run_single(
     tmp_dir: Path,
     force: bool,
     dry_run: bool,
+    max_tokens: int = 1024,
 ) -> dict | None:
     """Execute one specimen x K run. Returns result dict or None if skipped."""
     sub = f"k={k}"
@@ -129,7 +130,7 @@ def run_single(
 
     # Call provider (or get synthetic response in dry-run mode)
     try:
-        completion = client.complete(prompt, max_tokens=1024)
+        completion = client.complete(prompt, max_tokens=max_tokens)
     except Exception as exc:
         persister.log_error(sha, f"API call failed: {exc}", {"k": k, "sub": sub})
         return None
@@ -288,6 +289,16 @@ def main() -> int:
     )
     ap.add_argument("--force", action="store_true", help="Overwrite existing result files (re-run).")
     ap.add_argument("--limit", type=int, default=None, help="Process only first N specimens (smoke test).")
+    ap.add_argument(
+        "--max-tokens",
+        type=int,
+        default=1024,
+        help=(
+            "Max output tokens per completion. Default: 1024 (DR-028 pre-registered). "
+            "Raise (e.g. 4096) for reasoning models that spend output budget on hidden "
+            "reasoning, which otherwise truncates the answer."
+        ),
+    )
     ap.add_argument("--validator-path", type=Path, default=None, help="Override path to validate-skills-schema.py")
     args = ap.parse_args()
 
@@ -321,7 +332,7 @@ def main() -> int:
     print(
         f"[arm-a] specimens={len(specimens)} k_sweep={k_values} "
         f"provider={args.provider} model={client.model} "
-        f"ceiling=${args.budget_ceiling_usd:.0f} "
+        f"ceiling=${args.budget_ceiling_usd:.0f} max_tokens={args.max_tokens} "
         f"free_tier={free} dry_run={args.dry_run}"
     )
 
@@ -342,6 +353,7 @@ def main() -> int:
                         tmp_dir=tmp_dir,
                         force=args.force,
                         dry_run=args.dry_run,
+                        max_tokens=args.max_tokens,
                     )
                     if result is None:
                         skipped_count += 1
