@@ -300,3 +300,21 @@ jobs:
         run: |
           python3 scripts/sak-state-machine.py --self-test
           python3 scripts/sak-state-machine.py --validate
+
+      # The SAK Phase-4c rollback protocol (plan 033 v7 § 14.4.rollback class 3 +
+      # plan 048 v8 § 14.4c): the kernel-gate-revert command. It drives the
+      # Phase-4 state machine (above) to ROLLED-BACK via its existing emit()
+      # engine + the load_signoff_from_state seam — it does NOT reimplement
+      # state/transition logic. --self-test proves the governance-triple gate
+      # (revert refused if CTO/CISO/VP-DevRel sign-off is absent — each seat
+      # named), the ROLLED-BACK emit reuse, the 7-calendar-day ISEDC Class-2
+      # retrospective_due_at stamping + overdue surfacing, illegal-source-state
+      # rejection, and that the emitted ROLLED-BACK state (incl. the rollback
+      # block) validates against specs/state-machines/schema/sak-state.schema.json.
+      # --check-retrospective surfaces (exit 1) when a stamped retrospective is
+      # overdue; against the committed SAK-STATE.json (no rollback recorded) it
+      # is NONE -> exit 0, so this is green in steady state.
+      - name: SAK Phase-4c rollback protocol (kernel-gate-revert) self-test
+        run: |
+          python3 scripts/sak-kernel-gate-revert.py --self-test
+          python3 scripts/sak-kernel-gate-revert.py --check-retrospective
