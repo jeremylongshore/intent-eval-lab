@@ -1,0 +1,40 @@
+{
+  "rules": [
+    {
+      "id": "partner-name-consent",
+      "rule": "Flag any company, vendor, or partner proper name introduced into a public artifact (specs, 000-docs, README, or any committed .md). No partner is named in public repo content until they have explicitly consented in writing to being named (DR-004 S1Q2 partner-consent discipline, reaffirmed in CLAUDE.md Brand-name policy). Use vendor-generic phrasing ('an enterprise partner engagement', 'the inaugural case study (engagement-private)') instead. This applies even to negative-affirmation phrasings ('we don't mention X, Y, Z'). If a real partner/company name appears, the change needs written consent on file first.",
+      "scope": ["000-docs/**", "specs/**", "README.md", "**/*.md"],
+      "severity": "high"
+    },
+    {
+      "id": "predicate-uri-host-evals-only",
+      "rule": "Predicate URIs, in-toto attestation predicate identifiers, and OpenTelemetry attribute namespaces may ONLY live at evals.intentsolutions.io, following the locked grammar evals.intentsolutions.io/<predicate-type>/v<version> (one segment, no chamber token). The labs.intentsolutions.io subdomain is permanently reserved-don't-touch for predicate URIs (DR-004 CISO binding, reaffirmed DR-010 section 10; Blueprint A section 4.2; Blueprint B; canonical glossary). Flag any predicate URI, attestation predicate identifier, or OTel attribute namespace that points at labs.* — or any predicate URI that deviates from the locked single-segment grammar (e.g. inserting an /authoring/ path segment).",
+      "scope": ["000-docs/**", "specs/**", "**/*.json", "**/*.ts", "**/*.md", "**/*.yml", "**/*.yaml"],
+      "severity": "high"
+    },
+    {
+      "id": "sak-refiner-spec-requires-ratifying-dr",
+      "rule": "Any change to a Spec Authority Kernel (SAK) or Skill Refiner specification, predicate, schema, or entity shape must cite the ratifying ISEDC Decision Record. SAK authority flows from DR-049 (Class-1 charter ratification); the skill-refiner-pass/v1 predicate from DR-082 as corrected by DR-085 (one-way-door correction) and amended in place by DR-086 (freeze-point erratum); the Skill Refiner plan from DR-028 (Session 7 ratification). Flag any SAK/Skill-Refiner governance change (predicate URI, payload shape, SkillVersion entity, acceptance gate, authoring/v1 contract) that does not reference its ratifying DR, or that contradicts a ratified clause without an erratum/amending DR. No un-ratified governance changes to immutable or signed surfaces.",
+      "scope": ["000-docs/**", "specs/**", "**/*.json", "**/*.ts", "**/*.md"],
+      "severity": "high"
+    },
+    {
+      "id": "doc-filing-standard",
+      "rule": "Every authored doc under 000-docs/ must follow the Document Filing Standard naming scheme NNN-CC-ABCD-<short-description>-<date>.md: NNN = three-digit zero-padded sequence; CC = category code (AA after-action, RR research/recon, PP plan, DR draft, RA ready-to-publish, BL baseline/formal-record, AT architecture/decision, DR-GLOS glossary); ABCD = a short sub-type code. Flag any new 000-docs file that does not match this pattern (e.g. an undated, uncoded, or unnumbered filename). Generated/derived dashboards (SAK-DASHBOARD.md, docs/detector-health.md) are owned by their generators and are exempt.",
+      "scope": ["000-docs/**"],
+      "severity": "medium"
+    },
+    {
+      "id": "no-aggregate-pass-across-heterogeneous-predicates",
+      "rule": "Do not aggregate, average, or roll up a single PASS%/pass-rate across heterogeneous predicate types or distinct failure-mode categories. This violates the composable-partial-attestation principle (Blueprint B section 7): each evidence-bundle row is independently verifiable, bundles are unioned not joined, and silence is not failure — a bundle covering 3 of 6 categories means 'these 3 were tested; the other 3 were not', NOT 'the other 3 failed'. Flag any code, doc, or report that collapses results across non-comparable predicates into one headline pass percentage, or that treats an absent row as a failing row.",
+      "scope": ["000-docs/**", "specs/**", "**/*.ts", "**/*.py", "**/*.md"],
+      "severity": "high"
+    },
+    {
+      "id": "source-of-truth-hierarchy",
+      "rule": "Respect the platform source-of-truth hierarchy when docs conflict: bd workspace wins for task state; DR-010 wins for governance bindings; Blueprint A (ecosystem master blueprint) wins for ecosystem principles/repo taxonomy/anti-goals; Blueprint B (platform runtime blueprint) wins for runtime architecture, the 13+1-entity domain model, and the gate-result/v1 normative spec; the kernel @intentsolutions/core authoring/v1 schema wins for authoring-artifact validity; the canonical glossary is the single source for platform terminology (every other doc cites it). Flag any new normative assertion that contradicts a higher-authority source without citing and reconciling it, or that redefines a glossary term inline instead of referencing the glossary.",
+      "scope": ["000-docs/**", "specs/**", "**/*.md"],
+      "severity": "medium"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "files": [
+    {
+      "path": "CLAUDE.md",
+      "description": "Repo governance entry point. Defines the partner-consent / brand-name discipline (no partner named in public artifacts without written consent, vendor-generic phrasing required, enforced by partner-name-guard.yml), the doc-filing standard, the Skill Refiner / SAK ratified-plan discipline (bd-claim-precheck.sh gates refiner-labeled beads behind a RATIFIED status), the tier-1/tier-2 constituent-project distinction, and lab-level conventions. Read first to know what this repo binds.",
+      "scope": ["**/*.md", "specs/**", "000-docs/**"]
+    },
+    {
+      "path": "000-docs/010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md",
+      "description": "DR-010 — ISEDC Session 4 widened-scope architectural lock. The governance source-of-truth when docs conflict. Binds the unification thesis (every validator emits an Evidence Bundle), the TS-primary/Python-permitted hybrid language rule, the predicate-URI grammar and the labs.intentsolutions.io reserved-don't-touch rule (section 10), and the override addenda (section 13.5 customer-signal gate removed; section 13.6 external-pattern non-borrow).",
+      "scope": ["000-docs/**", "specs/**", "**/*.md"]
+    },
+    {
+      "path": "000-docs/011-AT-ARCH-ecosystem-master-blueprint.md",
+      "description": "Blueprint A — the ecosystem constitution. Wins on conflict for ecosystem principles, the repo taxonomy, anti-goals, and governance routing. Section 4.2 carries the locked predicate-URI naming standard (evals.intentsolutions.io/<predicate-type>/v<version>) and the labs.* reserved-don't-touch reaffirmation.",
+      "scope": ["000-docs/**", "specs/**", "**/*.md"]
+    },
+    {
+      "path": "000-docs/012-AT-ARCH-platform-runtime-blueprint.md",
+      "description": "Blueprint B — the platform runtime blueprint. Wins on conflict for runtime architecture, the 13+1-entity canonical domain model, and the normative gate-result/v1 predicate contract. Section 7 defines the composable-partial-attestation principle (row independence; bundles unioned not joined; silence is not failure) that forbids aggregating a single PASS% across heterogeneous predicates.",
+      "scope": ["000-docs/**", "specs/**", "**/*.json", "**/*.ts", "**/*.py", "**/*.md"]
+    },
+    {
+      "path": "000-docs/013-AT-SPEC-repo-blueprint-template.md",
+      "description": "Blueprint C — the reusable per-repo blueprint template every constituent repo's own blueprint applies. Reference for the expected structure and section set of any new repo-level architecture doc.",
+      "scope": ["000-docs/**", "specs/**", "**/*.md"]
+    },
+    {
+      "path": "000-docs/014-DR-GLOS-canonical-glossary.md",
+      "description": "Canonical glossary — the single source of truth for platform terminology; every other doc cites here rather than redefining terms inline. Section 8 enumerates reserved terms and disciplines that cannot be silently violated (labs.intentsolutions.io reserved-don't-touch, vendor-generic discipline, external-pattern non-borrow, approximate reproducibility, no-new-platform-initiation).",
+      "scope": ["000-docs/**", "specs/**", "**/*.md"]
+    },
+    {
+      "path": "000-docs/028-AT-DECR-isedc-council-session-7-skill-refiner-plan-ratification-2026-05-27.md",
+      "description": "DR-028 — ISEDC Session 7 ratifies the Skill Refiner plan (10 decisions: T1 SkillVersion discriminator entity, T2 Phase D anti-goal, T3 bd-canonical-writer collapse, T4 keep-named-product, P0-RATIFY-1..6). The ratifying DR any Skill Refiner spec/plan change must cite. Partly corrected by DR-085 (T1/P0-RATIFY-2 signing-field reconciliation).",
+      "scope": ["000-docs/**", "specs/**", "**/*.json", "**/*.ts", "**/*.md"]
+    },
+    {
+      "path": "000-docs/049-AT-DECR-isedc-class-1-charter-ratification-2026-06-10.md",
+      "description": "DR-049 — ISEDC Class-1 charter ratifying the Spec Authority Kernel (SAK). Makes @intentsolutions/core bicameral (runtime schemas/v1 + new authoring/v1 family); authoring/v1 is Tier-1 kernel material and the canonical source for 'what is a valid agent-native artifact'. The ratifying DR any SAK scope/authoring-contract change must cite. Binds authoring/v1 read-only-immutable (v2 never edits v1), independent $schemaVersion lane and distinct predicate-URI namespace per chamber, Apache-2.0 with no third-party-conformance warranty.",
+      "scope": ["000-docs/**", "specs/**", "**/*.json", "**/*.ts", "**/*.md"]
+    },
+    {
+      "path": "000-docs/082-AT-DECR-isedc-skill-refiner-pass-v1-predicate-uri-2026-06-17.md",
+      "description": "DR-082 — Class-1 record minting the skill-refiner-pass/v1 predicate URI at evals.intentsolutions.io/skill-refiner-pass/v1 (flat, sibling of gate-result/v1; NOT /authoring/...). Locks the immutable v1 payload shape, the staging-first production trigger, and in-toto alignment. The ratifying DR any change to this predicate must cite. Corrected by DR-085 and amended in place by DR-086.",
+      "scope": ["000-docs/**", "specs/**", "**/*.json", "**/*.ts", "**/*.md"]
+    },
+    {
+      "path": "000-docs/085-AT-DECR-isedc-kernel-onewaydoor-correction-2026-06-17.md",
+      "description": "DR-085 — ISEDC corrective council fixing one-way-door defects in the merged-but-unpublished kernel artifacts (skill-refiner-pass/v1 predicate and the SkillVersion 14th entity) before the next @intentsolutions/core tag. Amends DR-028 (T1/P0-RATIFY-2 reconciliation) and DR-082 (predicate v1 erratum + freeze-point doctrine). Mandates 3-layer enforcement (JSON-Schema if/then + Zod superRefine + Pydantic model_validator) of signed cross-field invariants.",
+      "scope": ["000-docs/**", "specs/**", "**/*.json", "**/*.ts", "**/*.py", "**/*.md"]
+    },
+    {
+      "path": "000-docs/086-AT-DECR-dr-082-erratum-skill-refiner-pass-v1-freeze-and-amend-2026-06-18.md",
+      "description": "DR-086 — NORMATIVE erratum to DR-082 issued under DR-085 D2. Corrects the freeze-point doctrine: skill-refiner-pass/v1 freezes at first production-Rekor signature (not at SPEC.md-landing), records the no-prior-signature attestation that legitimizes amend-in-place, and notes the body-shape changes applied per DR-085 D2-D5.",
+      "scope": ["000-docs/**", "specs/**", "**/*.json", "**/*.ts", "**/*.md"]
+    }
+  ]
+}
