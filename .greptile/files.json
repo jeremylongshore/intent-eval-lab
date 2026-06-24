@@ -6,6 +6,31 @@
       "scope": ["**/*.md", "specs/**", "000-docs/**"]
     },
     {
+      "path": "README.md",
+      "description": "Public face of the lab. States the platform thesis (vendor-neutral cross-CLI plugin/agent/MCP invocation-measurement; the niche the competing vendors structurally cannot occupy), the five-repo convergence-via-Evidence-Bundle model, the repo layout (000-docs / specs / research / sandboxes / evidence / scripts / projects-symlinks), and that specs/ is the normative output of the lab. Reference for what the repo claims publicly — any public claim that contradicts the Decision Records or Blueprints is a review finding.",
+      "scope": ["README.md", "specs/**", "**/*.md"]
+    },
+    {
+      "path": "KNOWN-ISSUES.md",
+      "description": "Operational issues affecting the IEP ecosystem that are NOT platform-spec concerns — deliberately kept out of the canonical glossary so the glossary surface stays focused on terminology. Where operational footnotes belong; a normative spec or glossary entry carrying an operational caveat should usually point here instead.",
+      "scope": ["KNOWN-ISSUES.md", "000-docs/**", "**/*.md"]
+    },
+    {
+      "path": "000-docs/004-AT-DECR-isedc-council-record-2026-05-10.md",
+      "description": "DR-004 — the first ISEDC council record (7-seat adversarial review of 5 Phase B open questions). Origin of the predicate-URI namespace binding (evals.intentsolutions.io only, never labs.*) and the partner-name vendor-generic discipline (S1Q2). Foundational governance any predicate-URI or partner-name change must reconcile against.",
+      "scope": ["000-docs/**", "specs/**", "**/*.md"]
+    },
+    {
+      "path": "000-docs/005-AT-DECR-isedc-v2-terminology-rename-2026-05-10.md",
+      "description": "DR-005 — ISEDC terminology-rename record. Binds immutable category codes (the MM-1..MM-6 mapping identifiers KEPT as stable codes; HTTP-status-code precedent — stable identifiers survive conceptual reframings) and the OSS-trust rule that identifiers are not renamed under developers' feet. Cite when any committed identifier, predicate-type token, or category code is renamed.",
+      "scope": ["000-docs/**", "specs/**", "**/*.md"]
+    },
+    {
+      "path": "000-docs/006-AT-DECR-isedc-council-2-phase-b-gate-2026-05-11.md",
+      "description": "DR-006 — ISEDC Session 2: Phase B gate re-evaluation + ecosystem-signal response. Early governance on the Phase B gating posture, later overridden in part by DR-010 § 13.5 (customer-signal gate removed; Phase B is bandwidth-gated). Read alongside DR-010 to know which Phase B clauses still bind.",
+      "scope": ["000-docs/**", "specs/**", "**/*.md"]
+    },
+    {
       "path": "000-docs/010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md",
       "description": "DR-010 — ISEDC Session 4 widened-scope architectural lock. The governance source-of-truth when docs conflict. Binds the unification thesis (every validator emits an Evidence Bundle), the TS-primary/Python-permitted hybrid language rule, the predicate-URI grammar and the labs.intentsolutions.io reserved-don't-touch rule (section 10), and the override addenda (section 13.5 customer-signal gate removed; section 13.6 external-pattern non-borrow).",
       "scope": ["000-docs/**", "specs/**", "**/*.md"]
@@ -31,18 +56,88 @@
       "scope": ["000-docs/**", "specs/**", "**/*.md"]
     },
     {
+      "path": "000-docs/018-AT-DECR-isedc-council-session-5-jrig-reconciliation-2026-05-21.md",
+      "description": "DR-018 — ISEDC Session 5: j-rig kernel-adoption normative reconciliation. Ratifies that a constituent eval tool emitting attestations must conform to the kernel gate-result/v1 contract (the @j-rig/* v2.0.0 major-bump policy, STAGING-STAYS-STAGING for draft-shape attestations, where wire-format authority lives when kernel and consumer operate at different abstraction layers). Cite when a downstream emitter's evidence shape diverges from the kernel.",
+      "scope": ["000-docs/**", "specs/**", "**/*.ts", "**/*.json", "**/*.md"]
+    },
+    {
       "path": "000-docs/028-AT-DECR-isedc-council-session-7-skill-refiner-plan-ratification-2026-05-27.md",
       "description": "DR-028 — ISEDC Session 7 ratifies the Skill Refiner plan (10 decisions: T1 SkillVersion discriminator entity, T2 Phase D anti-goal, T3 bd-canonical-writer collapse, T4 keep-named-product, P0-RATIFY-1..6). The ratifying DR any Skill Refiner spec/plan change must cite. Partly corrected by DR-085 (T1/P0-RATIFY-2 signing-field reconciliation).",
       "scope": ["000-docs/**", "specs/**", "**/*.json", "**/*.ts", "**/*.md"]
     },
     {
+      "path": "000-docs/035-AT-DECR-isedc-council-session-8-labs-dashboard-2026-05-29.md",
+      "description": "DR-035 — ISEDC Session 8: public lab reports dashboard at labs.intentsolutions.io. Confirms labs.* may host blog/methodology/dashboard content but NEVER a predicate URI, attestation predicate identifier, or OTel attribute namespace (those stay at evals.* per DR-004/DR-010). Cite when a labs.* surface is introduced — verify it carries no predicate-identity payload.",
+      "scope": ["000-docs/**", "specs/**", "**/*.md"]
+    },
+    {
+      "path": "000-docs/044-AT-DECR-isedc-council-session-8-sak-charter-2026-06-09.md",
+      "description": "DR-044 — ISEDC Class-1 charter for the Spec Authority Kernel (SAK): ratifies the kernel v0.4.0 authoring/v1 expansion making @intentsolutions/core bicameral (runtime schemas/v1 + authoring/v1). Read with DR-049/DR-081 (the charter-ratification records). The originating SAK charter any authoring-contract change reconciles against.",
+      "scope": ["000-docs/**", "specs/**", "**/*.json", "**/*.ts", "**/*.md"]
+    },
+    {
+      "path": "000-docs/045-RR-LAND-single-source-of-truth-and-continuous-spec-compliance-2026-06-09.md",
+      "description": "RR-LAND — the SSoT declaration: the kernel authoring/v1 chamber is the single internal source of truth for 'what is a valid agent-native authoring artifact', and stays continuously adherent to upstream (agentskills.io + Claude/Anthropic surfaces + the MCP spec) via drift-watch + field-diff + watcher-liveness. The doctrine the CCP validator + the internal SKILL.md validators + j-rig consume. Epic 9k5h / GH intent-eval-lab#114.",
+      "scope": ["000-docs/**", "specs/**", "**/*.md"]
+    },
+    {
+      "path": "000-docs/046-AT-STND-sak-governance-owners.md",
+      "description": "AT-STND (NORMATIVE) — SAK governance-owners taxonomy: which ISEDC seat holds decision-authority over which SAK surface. Reference for whether a proposed SAK/authoring change is being made by the seat that owns it.",
+      "scope": ["000-docs/**", "specs/**", "**/*.md"]
+    },
+    {
       "path": "000-docs/049-AT-DECR-isedc-class-1-charter-ratification-2026-06-10.md",
-      "description": "DR-049 — ISEDC Class-1 charter ratifying the Spec Authority Kernel (SAK). Makes @intentsolutions/core bicameral (runtime schemas/v1 + new authoring/v1 family); authoring/v1 is Tier-1 kernel material and the canonical source for 'what is a valid agent-native artifact'. The ratifying DR any SAK scope/authoring-contract change must cite. Binds authoring/v1 read-only-immutable (v2 never edits v1), independent $schemaVersion lane and distinct predicate-URI namespace per chamber, Apache-2.0 with no third-party-conformance warranty.",
+      "description": "DR-049 — ISEDC Class-1 charter RATIFYING the Spec Authority Kernel (SAK). Makes @intentsolutions/core bicameral (runtime schemas/v1 + authoring/v1 family); authoring/v1 is Tier-1 kernel material and the canonical source for 'what is a valid agent-native artifact'. Binds authoring/v1 read-only-immutable (v2 never edits v1), independent $schemaVersion lane and distinct predicate-URI namespace per chamber, Apache-2.0 with no third-party-conformance warranty. The ratifying DR any SAK scope/authoring-contract change must cite.",
+      "scope": ["000-docs/**", "specs/**", "**/*.json", "**/*.ts", "**/*.md"]
+    },
+    {
+      "path": "000-docs/050-AT-SPEC-upstream-surface-registry-2026-06-11.md",
+      "description": "AT-SPEC (NORMATIVE) — the upstream-surface registry: the 16 monitored upstream surfaces the SSoT tracks for continuous spec-compliance, with per-surface authority tier and machine-readability. Authority: DR-045 (SSoT) + epic 9k5h. Reference for whether an authoring-contract claim is grounded in a tracked upstream surface.",
+      "scope": ["000-docs/**", "specs/**", "**/*.json", "**/*.md"]
+    },
+    {
+      "path": "000-docs/068-AT-STND-core-repo-boundaries-2026-06-18.md",
+      "description": "AT-STND (NORMATIVE) — Core repo boundaries: what each IEP repo owns, what crosses the Evidence Bundle seam, and per-repo anti-goals. Authority: Blueprint A § 2.1 (5-repo taxonomy, DR-010 Q1=A). Cite when a change places logic in the wrong repo (e.g. execution/judges in the contracts kernel, which the kernel forbids).",
+      "scope": ["000-docs/**", "specs/**", "**/*.md"]
+    },
+    {
+      "path": "000-docs/069-DR-STND-state-labeling-standard-2026-06-18.md",
+      "description": "DR-STND (NORMATIVE) — the state-labeling standard: the lifecycle labels (NORMATIVE / DRAFT / SUPERSEDED / PLANNED / CURRENT) every numbered document must carry, and what each binds. Authority: Blueprint A § 2.3 (DR-010 three-class governance routing). Reference for whether a doc's state_label is set correctly and whether a SUPERSEDED doc is being treated as live.",
+      "scope": ["000-docs/**", "**/*.md"]
+    },
+    {
+      "path": "000-docs/073-AT-STND-economics-and-cost-governance-2026-06-18.md",
+      "description": "AT-STND (NORMATIVE) — economics and cost governance: how the platform attributes, attests, and bounds the cost of running evals. Authority: Blueprint B § 4.2 (budget enforcement) + DR-010 § 7 Q5 (bandwidth gate). Reference for cost-attestation and budget-bound claims.",
+      "scope": ["000-docs/**", "specs/**", "**/*.md"]
+    },
+    {
+      "path": "000-docs/074-AT-STND-optimizer-safety-model-2026-06-18.md",
+      "description": "AT-STND (NORMATIVE) — the optimizer safety model: the autonomy ladder, the accept predicate, and the blast-radius bounds for automated SKILL.md improvement. Authority: DR-028 (Skill Refiner ratification) + Blueprint A § 1.2 (one-variable-change, rollback-as-pin). Cite when an automated-improvement change widens autonomy or relaxes the accept predicate.",
+      "scope": ["000-docs/**", "specs/**", "**/*.ts", "**/*.md"]
+    },
+    {
+      "path": "000-docs/075-AT-STND-priority-governance-2026-06-18.md",
+      "description": "AT-STND (NORMATIVE) — priority governance: the lattice that orders what gets built, evaluated, and shipped under a fixed bandwidth budget. Authority: DR-010 § 7 Q5 (primary-engagement off-the-top; bandwidth sequencing) + Blueprint A § 2.3. Reference for sequencing/priority claims.",
+      "scope": ["000-docs/**", "**/*.md"]
+    },
+    {
+      "path": "000-docs/076-AT-SPEC-state-machine-single-source-and-drift-gate-2026-06-13.md",
+      "description": "AT-SPEC (NORMATIVE) — state-machine single-source + drift gate: Blueprint B is canon for entity state machines and the kernel is checked against it (CI statemachine-drift gate). Cite when an entity state machine in code or the kernel diverges from Blueprint B without reconciliation.",
+      "scope": ["000-docs/**", "specs/**", "**/*.ts", "**/*.json", "**/*.md"]
+    },
+    {
+      "path": "000-docs/081-AT-DECR-isedc-sak-class-1-charter-ratification-2026-06-17.md",
+      "description": "DR-081 — ISEDC re-ratification of the SAK Class-1 charter (5 decisions Q1–Q5, all 7–0 RATIFY with stacked binding conditions). Confirms the authoring/v1 chamber as the single internal source of truth for valid agent-native authoring artifacts and gates ~40 IEP beads. The current ratifying record for SAK scope.",
       "scope": ["000-docs/**", "specs/**", "**/*.json", "**/*.ts", "**/*.md"]
     },
     {
       "path": "000-docs/082-AT-DECR-isedc-skill-refiner-pass-v1-predicate-uri-2026-06-17.md",
       "description": "DR-082 — Class-1 record minting the skill-refiner-pass/v1 predicate URI at evals.intentsolutions.io/skill-refiner-pass/v1 (flat, sibling of gate-result/v1; NOT /authoring/...). Locks the immutable v1 payload shape, the staging-first production trigger, and in-toto alignment. The ratifying DR any change to this predicate must cite. Corrected by DR-085 and amended in place by DR-086.",
+      "scope": ["000-docs/**", "specs/**", "**/*.json", "**/*.ts", "**/*.md"]
+    },
+    {
+      "path": "000-docs/083-AT-SPEC-skill-refiner-pass-v1-normative-spec-2026-06-17.md",
+      "description": "AT-SPEC (NORMATIVE) — the skill-refiner-pass/v1 normative prose spec, mirroring the gate-result/v1 fold of Blueprint B § 7. The kernel JSON Schema is the machine-readable authority; on disagreement the kernel schema wins and this section is amended to match — never the reverse. Authority: DR-082. Cite when the prose spec and the kernel schema disagree.",
       "scope": ["000-docs/**", "specs/**", "**/*.json", "**/*.ts", "**/*.md"]
     },
     {
@@ -54,6 +149,21 @@
       "path": "000-docs/086-AT-DECR-dr-082-erratum-skill-refiner-pass-v1-freeze-and-amend-2026-06-18.md",
       "description": "DR-086 — NORMATIVE erratum to DR-082 issued under DR-085 D2. Corrects the freeze-point doctrine: skill-refiner-pass/v1 freezes at first production-Rekor signature (not at SPEC.md-landing), records the no-prior-signature attestation that legitimizes amend-in-place, and notes the body-shape changes applied per DR-085 D2-D5.",
       "scope": ["000-docs/**", "specs/**", "**/*.json", "**/*.ts", "**/*.md"]
+    },
+    {
+      "path": "000-docs/087-AT-STND-ratified-clause-conflict-halt-gate-2026-06-18.md",
+      "description": "AT-STND (NORMATIVE) — the ratified-clause-conflict halt gate: a build agent (human or AI) that detects two contradictory ratified clauses on a one-way-door artifact MUST HALT and escalate rather than pick a side. Authority: DR-085 D1. The procedural rule a high-quality review applies when a change appears to resolve a governance contradiction unilaterally instead of escalating.",
+      "scope": ["000-docs/**", "specs/**", "**/*.md"]
+    },
+    {
+      "path": "000-docs/027-PP-PLAN-skill-refiner-snoopy-fluttering-comet-v4-2026-05-26.md",
+      "description": "PP-PLAN — THE Skill Refiner plan (v5 inline; the eval-guided SKILL.md improvement loop). The DR-028 Amendments Index block at top is the v5 delta digest. Governed by DR-028 (ratification) as corrected by DR-085/DR-086. Reference for the planned architecture, phases, and accept-predicate any refiner spec change implements.",
+      "scope": ["000-docs/**", "specs/**", "**/*.md"]
+    },
+    {
+      "path": "000-docs/029-DR-BAND-skill-refiner-bandwidth-model-2026-05-27.md",
+      "description": "DR-BAND — the Skill Refiner bandwidth model (FTE-week budget per phase; critical-path beads; pre-mortem). Ratified per DR-028 implementation directive #1. Reference for whether a scope/sequencing claim respects the bandwidth gate that replaced the removed customer-signal gate (DR-010 § 13.5).",
+      "scope": ["000-docs/**", "**/*.md"]
     }
   ]
 }
