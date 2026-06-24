@@ -52,7 +52,7 @@ intent-eval-lab/
 
 ## Status
 
-Early-stage. Scaffolding + initial research underway. Public so the methodology can be reviewed and the work can be discoverable. **No published harness yet** — when output is ready it will land here as either a tagged release or as a PR to `j-rig-skill-binary-eval`.
+Active. The Phase A foundation is complete (Blueprints A/B/C, the canonical glossary, and the Evidence Bundle spec module are landed on `main`), the Spec Authority Kernel Class-1 charter is ratified, and the repo is releasing at `v0.3.0`. Public so the methodology can be reviewed and the work can be discoverable. The lab publishes **methodology and normative specs**, not an executable harness — productizable harness code lands in the sister repo `j-rig-skill-binary-eval`.
 
 ## License
 
