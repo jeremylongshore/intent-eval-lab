@@ -168,6 +168,23 @@ The Skill Refiner buildout is the active multi-week effort under this lab umbrel
 
 Detailed operational state (active engagements, sock-puppet observations, partner-specific notes, patent-sensitive cross-refs) lives in `.private/CLAUDE-private.md` — gitignored, local-only. Read that file in addition to this one when working in this dir on operational tasks.
 
+## AI code review (Greptile + Gemini)
+
+Two AI reviewers run on PRs here, **both advisory** — neither is a branch-protection
+required check. The deterministic merge gate is this repo's own CI (the partner-name guard + schema-drift gate + doc gates) plus CodeQL.
+
+- **Gemini Code Assist** (`.gemini/config.yaml` + `.gemini/styleguide.md`) is the
+  **active** reviewer. Re-instated 2026-06-24 as the fallback after the Greptile
+  review quota was exhausted. Workhorse for design / logic / correctness /
+  cross-artifact consistency; CodeQL owns security.
+- **Greptile** (`.greptile/config.json` + `rules.md` + `files.json`) is configured to
+  the platform-unified schema (`strictness: 3`, `commentTypes: ["logic","syntax"]`,
+  `statusCheck: false`, a universal `no-gate-weakening` rule, plus this repo's scoped
+  invariant rules). It stays in place and resumes when the Greptile quota resets.
+
+Read either review when present; the required gate is CI. Re-installing/uninstalling
+the GitHub Apps is an admin (UI) action — the in-repo config here does not install them.
+
 <!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:ca08a54f -->
 
 ## Beads Issue Tracker

@@ -170,3 +170,22 @@ Beyond ordinary correctness and prose quality, a strong review here surfaces:
 
 When in doubt about which source governs, prefer the higher tier in § 2 and ask
 for the DR that authorizes the change.
+
+
+## Review priorities — what to weight, what to skip
+
+Greptile is **advisory** here. The deterministic merge gate is this repo's own
+required CI (typecheck, lint, tests, coverage/mutation where applicable, the
+audit-harness self-check, and CodeQL). Greptile's job is the semantic layer those
+gates structurally cannot see — weight findings accordingly.
+
+**Prioritize** (worth a comment): correctness and logic errors; security and
+supply-chain / credential exposure; data-integrity and signed-evidence invariants;
+concurrency and ordering hazards; input validation; auth / authorization
+boundaries; secret handling; and regressions against the scoped invariants in
+`config.json`.
+
+**Deprioritize** (do not spend a comment here): style and naming; formatting;
+churn in generated or build artifacts; and anything the L1 linters or CodeQL
+already report. Never restate a deterministic gate — state the problem, the
+`file:line`, and the concrete fix.

@@ -1,5 +1,18 @@
 {
+  "strictness": 3,
+  "commentTypes": ["logic", "syntax"],
+  "triggerOnUpdates": true,
+  "fixWithAI": true,
+  "statusCheck": false,
+  "ignorePatterns": "node_modules/\ncoverage/\npnpm-lock.yaml\n.audit-harness/\nSAK-DASHBOARD.md\ndocs/detector-health.md",
+  "confidenceScoreSection": { "included": true },
+  "sequenceDiagramSection": { "included": true },
   "rules": [
+    {
+      "id": "no-gate-weakening",
+      "rule": "Never suggest lowering a CI threshold, deleting/skipping/weakening a test, relaxing an assertion, bypassing type checks, disabling a security/policy/audit check, or reducing coverage/mutation/audit requirements — unless the same PR replaces it with a stronger equivalent.",
+      "severity": "high"
+    },
     {
       "id": "partner-name-consent",
       "rule": "Flag any company, vendor, or partner proper name introduced into a public artifact (specs, 000-docs, README, or any committed .md). No partner is named in public repo content until they have explicitly consented in writing to being named (DR-004 S1Q2 partner-consent discipline, reaffirmed in CLAUDE.md Brand-name policy). Use vendor-generic phrasing ('an enterprise partner engagement', 'the inaugural case study (engagement-private)') instead. This applies even to negative-affirmation phrasings ('we don't mention X, Y, Z'). If a real partner/company name appears, the change needs written consent on file first.",
