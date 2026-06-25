@@ -359,8 +359,7 @@ jobs:
       - name: Fire ntfy notification on drift, liveness trip, or bad fetch
         if: >-
           github.event_name == 'schedule' &&
-          (steps.check.outputs.drift == 'true' ||
-           steps.projection.outputs.drift == 'true' ||
+          (steps.projection.outputs.drift == 'true' ||
            steps.heartbeat.outputs.stale == 'true' ||
            steps.streak.outputs.exceeded == 'true' ||
            steps.capture.outputs.bad_fetch == 'true')
@@ -387,8 +386,7 @@ jobs:
       - name: Open or update drift issue
         if: >-
           github.event_name == 'schedule' &&
-          (steps.check.outputs.drift == 'true' ||
-           steps.projection.outputs.drift == 'true' ||
+          (steps.projection.outputs.drift == 'true' ||
            steps.heartbeat.outputs.stale == 'true' ||
            steps.streak.outputs.exceeded == 'true')
         shell: bash
@@ -403,7 +401,7 @@ jobs:
             exit 0
           fi
           body=$(cat <<EOF
-          Daily spec-drift-watch detected drift or a liveness trip.
+          spec-drift-watch detected field-level (semantic) drift or a liveness trip (byte-hash churn alone no longer alerts).
 
           - byte-hash drift: ${{ steps.check.outputs.drift }}
           - field-level projection drift: ${{ steps.projection.outputs.drift }}
@@ -464,8 +462,7 @@ jobs:
       - name: Fail on live drift or liveness trip (scheduled run)
         if: >-
           github.event_name == 'schedule' &&
-          (steps.check.outputs.drift == 'true' ||
-           steps.heartbeat.outputs.stale == 'true' ||
+          (steps.heartbeat.outputs.stale == 'true' ||
            steps.streak.outputs.exceeded == 'true')
         run: |
           echo "::error::Spec drift or liveness trip detected — see report above + auto-opened issue."
