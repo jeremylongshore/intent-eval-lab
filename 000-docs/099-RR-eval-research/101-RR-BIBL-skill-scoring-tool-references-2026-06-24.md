@@ -15,40 +15,40 @@
 
 **File:line citations** (cloned to `/tmp/meta_skill` during research):
 
-| Area | Path:lines |
-|---|---|
-| Quality score (formula + weights) | `src/quality/skill.rs:24-57`, weights `:95-105`, sub-scorers `:136-207`, issue detection `:223-276` |
-| Slice utility constants | `src/core/slicing.rs:161-172` |
-| Slice classification | `src/core/slicing.rs:96-111`; token estimate `:174-178` |
-| Feedback → reward map / bandit | `src/suggestions/bandit/rewards.rs:10-50` (enum), `:84-130` (rewards), `:139-163` (contextual), `:169-188` (aggregate) |
-| Session-quality mining gate (CASS) | `src/cass/quality.rs:1-241` |
-| Packing modes | `src/core/packing.rs:447-465` |
-| CLI commands | `src/cli/commands/{search,quality,feedback,recommend,experiment,mcp}.rs` |
-| MCP server | `src/cli/commands/mcp.rs:1-39` |
-| DB schema | `migrations/001_initial_schema.sql` (skills `:6-37`, evidence `:69-77`, usage `:141-166`, experiments `:212-221`), `migrations/009_add_skill_feedback.sql:1-14` |
-| Manifests / docs | `Cargo.toml`, `README.md` (storage model `:87-96`), `skills/crafting-readme-files/skill.spec.json` |
+| Area                               | Path:lines                                                                                                                                                      |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Quality score (formula + weights)  | `src/quality/skill.rs:24-57`, weights `:95-105`, sub-scorers `:136-207`, issue detection `:223-276`                                                             |
+| Slice utility constants            | `src/core/slicing.rs:161-172`                                                                                                                                   |
+| Slice classification               | `src/core/slicing.rs:96-111`; token estimate `:174-178`                                                                                                         |
+| Feedback → reward map / bandit     | `src/suggestions/bandit/rewards.rs:10-50` (enum), `:84-130` (rewards), `:139-163` (contextual), `:169-188` (aggregate)                                          |
+| Session-quality mining gate (CASS) | `src/cass/quality.rs:1-241`                                                                                                                                     |
+| Packing modes                      | `src/core/packing.rs:447-465`                                                                                                                                   |
+| CLI commands                       | `src/cli/commands/{search,quality,feedback,recommend,experiment,mcp}.rs`                                                                                        |
+| MCP server                         | `src/cli/commands/mcp.rs:1-39`                                                                                                                                  |
+| DB schema                          | `migrations/001_initial_schema.sql` (skills `:6-37`, evidence `:69-77`, usage `:141-166`, experiments `:212-221`), `migrations/009_add_skill_feedback.sql:1-14` |
+| Manifests / docs                   | `Cargo.toml`, `README.md` (storage model `:87-96`), `skills/crafting-readme-files/skill.spec.json`                                                              |
 
 ---
 
 ## 2. The eval-tool landscape (13 + 2)
 
-| Tool | Repo / docs |
-|---|---|
-| Promptfoo | `github.com/promptfoo/promptfoo` (evaluators: `/tree/main/src/evaluators`); `promptfoo.dev/docs` |
-| Inspect AI (UK AISI) | `github.com/UKGovernmentBEIS/inspect_ai` |
-| OpenAI Evals | `github.com/openai/evals` (`/blob/main/docs/custom-eval.md`) |
-| DeepEval (Confident AI) | `github.com/confident-ai/deepeval` |
-| Ragas | `github.com/vibrantlabsai/ragas` |
-| Braintrust | `github.com/braintrustdata`; `braintrust.dev/docs/annotate/human-review`; `braintrust.dev/articles/agent-observability-complete-guide-2026` |
-| Langfuse | `github.com/langfuse/langfuse`; `langfuse.com/docs/evaluation/overview`; `.../evaluation-methods/annotation` |
-| Arize Phoenix | `github.com/Arize-ai/phoenix` |
-| LangSmith | `docs.langchain.com/langsmith/evaluation` |
-| lm-evaluation-harness (EleutherAI) | `github.com/EleutherAI/lm-evaluation-harness` (`/blob/main/docs/task_guide.md`) |
-| Giskard | `github.com/Giskard-AI/giskard-oss` |
-| SWE-bench | `github.com/swe-bench` |
-| MCP Registry | `registry.modelcontextprotocol.io`; `github.com/modelcontextprotocol/registry` |
-| Claude Code Plugins/Skills | `github.com/anthropics/claude-plugins-official`; community: `alirezarezvani/claude-skills`, `sickn33/antigravity-awesome-skills` |
-| awesome-mcp ecosystem | `smithery.ai`, `mcp.so`, `glama.ai/mcp`, `punkpeye/awesome-mcp-*` |
+| Tool                               | Repo / docs                                                                                                                                 |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Promptfoo                          | `github.com/promptfoo/promptfoo` (evaluators: `/tree/main/src/evaluators`); `promptfoo.dev/docs`                                            |
+| Inspect AI (UK AISI)               | `github.com/UKGovernmentBEIS/inspect_ai`                                                                                                    |
+| OpenAI Evals                       | `github.com/openai/evals` (`/blob/main/docs/custom-eval.md`)                                                                                |
+| DeepEval (Confident AI)            | `github.com/confident-ai/deepeval`                                                                                                          |
+| Ragas                              | `github.com/vibrantlabsai/ragas`                                                                                                            |
+| Braintrust                         | `github.com/braintrustdata`; `braintrust.dev/docs/annotate/human-review`; `braintrust.dev/articles/agent-observability-complete-guide-2026` |
+| Langfuse                           | `github.com/langfuse/langfuse`; `langfuse.com/docs/evaluation/overview`; `.../evaluation-methods/annotation`                                |
+| Arize Phoenix                      | `github.com/Arize-ai/phoenix`                                                                                                               |
+| LangSmith                          | `docs.langchain.com/langsmith/evaluation`                                                                                                   |
+| lm-evaluation-harness (EleutherAI) | `github.com/EleutherAI/lm-evaluation-harness` (`/blob/main/docs/task_guide.md`)                                                             |
+| Giskard                            | `github.com/Giskard-AI/giskard-oss`                                                                                                         |
+| SWE-bench                          | `github.com/swe-bench`                                                                                                                      |
+| MCP Registry                       | `registry.modelcontextprotocol.io`; `github.com/modelcontextprotocol/registry`                                                              |
+| Claude Code Plugins/Skills         | `github.com/anthropics/claude-plugins-official`; community: `alirezarezvani/claude-skills`, `sickn33/antigravity-awesome-skills`            |
+| awesome-mcp ecosystem              | `smithery.ai`, `mcp.so`, `glama.ai/mcp`, `punkpeye/awesome-mcp-*`                                                                           |
 
 ---
 
@@ -62,14 +62,14 @@
 
 ## 4. IEP internal references (the "already owns" inventory)
 
-| Surface | Path |
-|---|---|
-| Kernel `@intentsolutions/core` (14 entities, gate-result/v1, EvidenceBundle, SAK authoring) | `intent-eval-core/src/entities/*`, `schemas/v1/*`, `schemas/authoring/v1..v2/*`, `src/validators/v1/*` |
-| j-rig 7-layer binary harness + Refiner | `j-rig-binary-eval/packages/*` |
-| audit-harness deterministic gates + emit-evidence + classify/conform | `audit-harness/scripts/*` |
-| dashboard verify-before-render + freshness + C3 gate | `intent-eval-dashboard/src/{results,freshness,ingest}/*` (C3: `src/results/c3-scan.ts`) |
-| `validate-skillmd` 10-dimension deep-eval + 8-field rubric | `~/.claude/skills/validate-skillmd/SKILL.md`; validator `~/000-projects/claude-code-plugins/scripts/validate-skills-schema.py` |
-| Governance bindings (DR-010, DR-028, DR-035, Blueprints A/B) | `intent-eval-lab/000-docs/{010,012,028,035}-*.md` |
+| Surface                                                                                     | Path                                                                                                                           |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Kernel `@intentsolutions/core` (14 entities, gate-result/v1, EvidenceBundle, SAK authoring) | `intent-eval-core/src/entities/*`, `schemas/v1/*`, `schemas/authoring/v1..v2/*`, `src/validators/v1/*`                         |
+| j-rig 7-layer binary harness + Refiner                                                      | `j-rig-binary-eval/packages/*`                                                                                                 |
+| audit-harness deterministic gates + emit-evidence + classify/conform                        | `audit-harness/scripts/*`                                                                                                      |
+| dashboard verify-before-render + freshness + C3 gate                                        | `intent-eval-dashboard/src/{results,freshness,ingest}/*` (C3: `src/results/c3-scan.ts`)                                        |
+| `validate-skillmd` 10-dimension deep-eval + 8-field rubric                                  | `~/.claude/skills/validate-skillmd/SKILL.md`; validator `~/000-projects/claude-code-plugins/scripts/validate-skills-schema.py` |
+| Governance bindings (DR-010, DR-028, DR-035, Blueprints A/B)                                | `intent-eval-lab/000-docs/{010,012,028,035}-*.md`                                                                              |
 
 ---
 
@@ -80,4 +80,4 @@
 
 ---
 
-*Reference index only. URLs captured 2026-06-24; `meta_skill` line numbers are unpinned and should be re-verified before any normative citation.*
+_Reference index only. URLs captured 2026-06-24; `meta_skill` line numbers are unpinned and should be re-verified before any normative citation._

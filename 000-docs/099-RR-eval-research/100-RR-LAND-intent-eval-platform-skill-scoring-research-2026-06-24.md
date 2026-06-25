@@ -18,14 +18,14 @@ A blunt caveat that shapes the whole report: **`meta_skill` does not actually co
 
 ## 1. What `meta_skill` actually is (verified from source, not marketing)
 
-| Aspect | Finding | Evidence |
-|---|---|---|
-| Identity | `Dicklesworthstone/meta_skill`; CLI binary `ms`. A **local-first Rust CLI + SQLite** skill-management platform — the author's primary tool to grade/rank/score/search/manage AI skills. **No separate web-app repo.** | repo `github.com/Dicklesworthstone/meta_skill`; `Cargo.toml` |
-| Language / DB | **Rust (Edition 2024, 1.85+)**, **SQLite + FTS5** (`fsqlite`), full-text via **Tantivy 0.26**, embeddings via **deterministic FNV-1a hash, 384-dim** (no external model), CLI **Clap 4.5**, TUI Ratatui. | `Cargo.toml` |
-| Storage model | **Dual persistence** — SQLite (fast queries, FTS, metadata filter) + Git (immutable history, diffs, audit). Neither privileged: corrupt SQLite → rebuild from Git; no Git → DB still works. | `README.md:87-96` |
-| Surface | **57 CLI commands** across Metadata/Discovery, Quality/Mgmt, Content/Slicing, Indexing/Sync, Graph/Deps, Advanced. | `src/cli/commands/` |
-| MCP | `ms mcp serve` (stdio / `--port`), protocol `2024-11-05`, exposes **6 tools** (`search`, `load`, `evidence`, `list`, `show`, `doctor`). | `src/cli/commands/mcp.rs:1-39` |
-| Design DNA | deterministic embeddings (reproducible), RRF rank-fusion search, Thompson-sampling bandit for recommendations, multi-layer command/injection safety, evidence-as-provenance, session-quality gate before mining, **slice-based (per-block) utility**. | README + code (below) |
+| Aspect        | Finding                                                                                                                                                                                                                                               | Evidence                                                     |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| Identity      | `Dicklesworthstone/meta_skill`; CLI binary `ms`. A **local-first Rust CLI + SQLite** skill-management platform — the author's primary tool to grade/rank/score/search/manage AI skills. **No separate web-app repo.**                                 | repo `github.com/Dicklesworthstone/meta_skill`; `Cargo.toml` |
+| Language / DB | **Rust (Edition 2024, 1.85+)**, **SQLite + FTS5** (`fsqlite`), full-text via **Tantivy 0.26**, embeddings via **deterministic FNV-1a hash, 384-dim** (no external model), CLI **Clap 4.5**, TUI Ratatui.                                              | `Cargo.toml`                                                 |
+| Storage model | **Dual persistence** — SQLite (fast queries, FTS, metadata filter) + Git (immutable history, diffs, audit). Neither privileged: corrupt SQLite → rebuild from Git; no Git → DB still works.                                                           | `README.md:87-96`                                            |
+| Surface       | **57 CLI commands** across Metadata/Discovery, Quality/Mgmt, Content/Slicing, Indexing/Sync, Graph/Deps, Advanced.                                                                                                                                    | `src/cli/commands/`                                          |
+| MCP           | `ms mcp serve` (stdio / `--port`), protocol `2024-11-05`, exposes **6 tools** (`search`, `load`, `evidence`, `list`, `show`, `doctor`).                                                                                                               | `src/cli/commands/mcp.rs:1-39`                               |
+| Design DNA    | deterministic embeddings (reproducible), RRF rank-fusion search, Thompson-sampling bandit for recommendations, multi-layer command/injection safety, evidence-as-provenance, session-quality gate before mining, **slice-based (per-block) utility**. | README + code (below)                                        |
 
 Reading note: `meta_skill` is a **single-user, local-first** system. Several of its choices (hash embeddings, local Git audit, a personal bandit) are excellent for one operator on one box and **do not transfer unchanged** to a multi-tenant / CI / signed-attestation platform. That mismatch is itself a finding (§9 open questions).
 
@@ -51,11 +51,11 @@ const fn utility_score(slice_type: SliceType) -> f32 {
 }
 ```
 
-This is **not machine-learned and not dynamically computed** — policies/rules are *declared* more useful than examples/references. Slice classification that feeds it is also rule-based (`src/core/slicing.rs:96-111`): a `Rule` block becomes `Policy` if its id contains "policy"/"invariant", `Code`→`Example`, `Checklist`→`Checklist`, etc. Packing modes (`src/core/packing.rs:447-465`) then bias selection by these constants (BalancedPacking, UtilityFirst, RuleHeavy, SafetyFirst).
+This is **not machine-learned and not dynamically computed** — policies/rules are _declared_ more useful than examples/references. Slice classification that feeds it is also rule-based (`src/core/slicing.rs:96-111`): a `Rule` block becomes `Policy` if its id contains "policy"/"invariant", `Code`→`Example`, `Checklist`→`Checklist`, etc. Packing modes (`src/core/packing.rs:447-465`) then bias selection by these constants (BalancedPacking, UtilityFirst, RuleHeavy, SafetyFirst).
 
 **The `jeffreys-skills.md` website — unconfirmed, do not assert.** The meta_skill repo has **no web-app code** (no JS/TS/Node/web-framework files), **no Netlify/Vercel config**, and a standalone `jeffreys-skills.md` repo **does not resolve** (clone → "repository not found"). The README references a "JeffreysPrompts Premium Cloud" sync but nothing public. **Conclusion to carry forward: the site is powered by something not in the repo (private / different tool / hosted elsewhere) — the CLI + SQLite DB is the authoritative system, and the report must not claim the site's backing is confirmed.**
 
-Where the real dynamic signal lives: feedback flows into a Thompson-sampling contextual bandit that drives *recommendations* (`ms recommend`), and `quality` uses a genuine weighted formula. "Usefulness/utility" itself is the constants above.
+Where the real dynamic signal lives: feedback flows into a Thompson-sampling contextual bandit that drives _recommendations_ (`ms recommend`), and `quality` uses a genuine weighted formula. "Usefulness/utility" itself is the constants above.
 
 ---
 
@@ -65,14 +65,14 @@ Where the real dynamic signal lives: feedback flows into a Thompson-sampling con
 
 Weighted average of 6 dimensions, each normalized 0.0–1.0 (`src/quality/skill.rs:24-57`, weights `:95-105`):
 
-| Dimension | Weight | Signal | Function |
-|---|---|---|---|
-| content | **0.25** | depth of explanation + code examples | `content_score :146-172` (graduated by length; +0.1 code-block bonus; cap 1.0) |
-| evidence | **0.20** | provenance refs linked | `evidence_score :174-181` (0=0.2 … 5+=1.0) |
-| usage | **0.20** | times loaded/used | `usage_score :183-191` (0=0.1 … 11+=1.0) |
-| structure | **0.15** | section organization | `structure_score :136-144` (0=0.1 … 3+=1.0) |
-| toolchain | **0.10** | env compatibility | match=1.0 / no-match=0.4 (`:29`) |
-| freshness | **0.10** | recency | `freshness_score :193-207` (0-30d=1.0 … 180+d=0.3; unknown=0.5) |
+| Dimension | Weight   | Signal                               | Function                                                                       |
+| --------- | -------- | ------------------------------------ | ------------------------------------------------------------------------------ |
+| content   | **0.25** | depth of explanation + code examples | `content_score :146-172` (graduated by length; +0.1 code-block bonus; cap 1.0) |
+| evidence  | **0.20** | provenance refs linked               | `evidence_score :174-181` (0=0.2 … 5+=1.0)                                     |
+| usage     | **0.20** | times loaded/used                    | `usage_score :183-191` (0=0.1 … 11+=1.0)                                       |
+| structure | **0.15** | section organization                 | `structure_score :136-144` (0=0.1 … 3+=1.0)                                    |
+| toolchain | **0.10** | env compatibility                    | match=1.0 / no-match=0.4 (`:29`)                                               |
+| freshness | **0.10** | recency                              | `freshness_score :193-207` (0-30d=1.0 … 180+d=0.3; unknown=0.5)                |
 
 Issue/suggestion detection at `:223-276` (missing sections, low content, no examples, low evidence, low usage, missing tags).
 
@@ -82,15 +82,15 @@ Issue/suggestion detection at `:223-276` (missing sections, low content, no exam
 
 Feedback enum (`src/suggestions/bandit/rewards.rs:10-50`): `ExplicitHelpful`, `UsedDuration{minutes}`, `LoadedOnly`, `Ignored`, `ExplicitNotHelpful{reason}`, `UnloadedQuickly`, `Rating{stars}`, `TaskCompleted{success,duration}`. Reward mapping (`:84-130`):
 
-| Feedback | Reward |
-|---|---|
-| ExplicitHelpful | 1.0 |
-| UsedDuration >5 min | 0.8 (0–5 min scales 0.4–0.8) |
-| LoadedOnly | 0.3 |
-| Ignored | 0.1 |
-| ExplicitNotHelpful / UnloadedQuickly | 0.0 |
-| Rating | `(stars-1)/4` (1★=0.0, 3★=0.5, 5★=1.0) |
-| TaskCompleted (success+fast) | 0.7–0.9 (failure → 0.2) |
+| Feedback                             | Reward                                 |
+| ------------------------------------ | -------------------------------------- |
+| ExplicitHelpful                      | 1.0                                    |
+| UsedDuration >5 min                  | 0.8 (0–5 min scales 0.4–0.8)           |
+| LoadedOnly                           | 0.3                                    |
+| Ignored                              | 0.1                                    |
+| ExplicitNotHelpful / UnloadedQuickly | 0.0                                    |
+| Rating                               | `(stars-1)/4` (1★=0.0, 3★=0.5, 5★=1.0) |
+| TaskCompleted (success+fast)         | 0.7–0.9 (failure → 0.2)                |
 
 Contextual adjustment (`:139-163`): context-match >0.7 → ×1.1, <0.3 → ×0.9; was-top-suggestion & reward>0.5 → ×1.1; capped 1.0. Aggregate weights (`:169-188`): Explicit ×2.0; Rating/TaskCompleted ×1.5; UsedDuration ×1.0; LoadedOnly/UnloadedQuickly ×0.8; Ignored ×0.5. **This is a contextual bandit driven by real observed adoption — the single most interesting thing IEP does not have.**
 
@@ -108,23 +108,23 @@ Before a skill is mined from a session, the session must clear a quality bar: te
 
 Twelve eval/benchmark tools + the MCP Registry pattern (the brief's "13"); two extra catalog patterns (#14–15) included for completeness. Verdicts are "what's worth copying" / "what to avoid," not endorsements.
 
-| # | Tool | What it does | LEARN | AVOID |
-|---|---|---|---|---|
-| 1 | **Promptfoo** | declarative prompt/agent testing, red-team, regression diff, CI | bootstrap-95%-CI regression on a **delta vector** (baseline = prior version's score vector, not a frozen number); cost-per-run + prompt versioning first-class | ad-hoc result storage |
-| 2 | **Inspect AI** (UK AISI) | eval framework, 200+ prebuilt evals, model-graded | **Solvers** abstraction (separate task def from solve strategy) | no enforced metadata schema |
-| 3 | **OpenAI Evals** | eval framework + GitHub registry | **spec-first YAML rubrics**; YAML-only registry as a quality gate | custom code in the eval registry (they learned this the hard way) |
-| 4 | **DeepEval** | Python eval framework, rich metric lib | scorer-interface pattern; cost tracking first-class | duck-typed extensibility; "agent-native v4" vaporware |
-| 5 | **Ragas** | RAG-specialized, reference-free metrics | **Metric-Family** concept; typed dataset schema (Single/MultiTurnSample) | HuggingFace tight coupling |
-| 6 | **Braintrust** | observability + eval; tracing + human feedback | **side-by-side human + automated scores**; typed error/retry trace schema | cloud lock-in |
-| 7 | **Langfuse** | OSS observability + eval + prompt mgmt | **datasets as first-class artifact**; annotation queues with an open-ended **TEXT score type** | overloading one platform with everything |
-| 8 | **Arize Phoenix** | OSS observability + eval, **OTel-native** | **explanations as first-class eval output**; OTel > proprietary trace schema | Jupyter-first DX |
-| 9 | **LangSmith** | LangChain commercial observability + eval | low- + high-level evaluator helper-library pattern | vendor lock-in |
-| 10 | **lm-evaluation-harness** (EleutherAI) | few-shot LLM eval; backs HF Open LLM Leaderboard | **filter/pipeline scoring** (extract→normalize→match→aggregate, composable) | coupling scoring to task definition |
-| 11 | **Giskard** | LLM-agent testing + red-team; auto-generated Scan suites | **auto adversarial test generation from a plain description**; test behaviors not just outputs | over-relying on LLM-generated adversarial cases |
-| 12 | **SWE-bench** | benchmark for code agents on real GitHub issues | **execution-based ground truth** (run repo tests = pass/fail) — the gold standard | repo-specific bespoke harnesses |
-| 13 | **MCP Registry** | community discovery for MCP servers | **reverse-DNS naming** kills collision; strict submission format; env-var schema (`isRequired`/`isSecret`) | per-registry submission overhead |
-| 14 | Claude Code Plugins/Skills | plugin/skill/agent/MCP discovery | **SKILL.md (YAML+MD) is portable**; `metadata.version` + `reviewed_at`; `allowed-tools` privilege guard | fragmented competing registries |
-| 15 | awesome-mcp ecosystem | competing curated MCP lists | objective **ranking framework** (stars/recency/license/docs/activity); Smithery **Toolbox meta-MCP** routing | accepting fragmentation as inevitable |
+| #   | Tool                                   | What it does                                                    | LEARN                                                                                                                                                          | AVOID                                                             |
+| --- | -------------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| 1   | **Promptfoo**                          | declarative prompt/agent testing, red-team, regression diff, CI | bootstrap-95%-CI regression on a **delta vector** (baseline = prior version's score vector, not a frozen number); cost-per-run + prompt versioning first-class | ad-hoc result storage                                             |
+| 2   | **Inspect AI** (UK AISI)               | eval framework, 200+ prebuilt evals, model-graded               | **Solvers** abstraction (separate task def from solve strategy)                                                                                                | no enforced metadata schema                                       |
+| 3   | **OpenAI Evals**                       | eval framework + GitHub registry                                | **spec-first YAML rubrics**; YAML-only registry as a quality gate                                                                                              | custom code in the eval registry (they learned this the hard way) |
+| 4   | **DeepEval**                           | Python eval framework, rich metric lib                          | scorer-interface pattern; cost tracking first-class                                                                                                            | duck-typed extensibility; "agent-native v4" vaporware             |
+| 5   | **Ragas**                              | RAG-specialized, reference-free metrics                         | **Metric-Family** concept; typed dataset schema (Single/MultiTurnSample)                                                                                       | HuggingFace tight coupling                                        |
+| 6   | **Braintrust**                         | observability + eval; tracing + human feedback                  | **side-by-side human + automated scores**; typed error/retry trace schema                                                                                      | cloud lock-in                                                     |
+| 7   | **Langfuse**                           | OSS observability + eval + prompt mgmt                          | **datasets as first-class artifact**; annotation queues with an open-ended **TEXT score type**                                                                 | overloading one platform with everything                          |
+| 8   | **Arize Phoenix**                      | OSS observability + eval, **OTel-native**                       | **explanations as first-class eval output**; OTel > proprietary trace schema                                                                                   | Jupyter-first DX                                                  |
+| 9   | **LangSmith**                          | LangChain commercial observability + eval                       | low- + high-level evaluator helper-library pattern                                                                                                             | vendor lock-in                                                    |
+| 10  | **lm-evaluation-harness** (EleutherAI) | few-shot LLM eval; backs HF Open LLM Leaderboard                | **filter/pipeline scoring** (extract→normalize→match→aggregate, composable)                                                                                    | coupling scoring to task definition                               |
+| 11  | **Giskard**                            | LLM-agent testing + red-team; auto-generated Scan suites        | **auto adversarial test generation from a plain description**; test behaviors not just outputs                                                                 | over-relying on LLM-generated adversarial cases                   |
+| 12  | **SWE-bench**                          | benchmark for code agents on real GitHub issues                 | **execution-based ground truth** (run repo tests = pass/fail) — the gold standard                                                                              | repo-specific bespoke harnesses                                   |
+| 13  | **MCP Registry**                       | community discovery for MCP servers                             | **reverse-DNS naming** kills collision; strict submission format; env-var schema (`isRequired`/`isSecret`)                                                     | per-registry submission overhead                                  |
+| 14  | Claude Code Plugins/Skills             | plugin/skill/agent/MCP discovery                                | **SKILL.md (YAML+MD) is portable**; `metadata.version` + `reviewed_at`; `allowed-tools` privilege guard                                                        | fragmented competing registries                                   |
+| 15  | awesome-mcp ecosystem                  | competing curated MCP lists                                     | objective **ranking framework** (stars/recency/license/docs/activity); Smithery **Toolbox meta-MCP** routing                                                   | accepting fragmentation as inevitable                             |
 
 **Cross-cutting patterns worth internalizing:** (i) regression baselines are **vectors with confidence intervals**, not frozen scalars (Promptfoo); (ii) **execution-based ground truth** beats LLM-judge where you can get it (SWE-bench); (iii) **explanations + OTel-native traces** as first-class eval outputs (Phoenix); (iv) **human review side-by-side with automated scores** (Braintrust/Langfuse); (v) **open-ended TEXT scores** for things that don't fit a number (Langfuse). The full aspect-by-aspect tables (Storage/Serialization, Scoring Model, Human Feedback, Regression Testing, Traces & Provenance) live in the persisted survey artifact (see §Bibliography).
 
@@ -153,16 +153,16 @@ Twelve eval/benchmark tools + the MCP Registry pattern (the brief's "13"); two e
 
 Eight scores. Each tagged with where it already lives in IEP, or GAP.
 
-| Score | What it measures | Computed? | IEP status |
-|---|---|---|---|
-| **Quality** | structure/content/evidence/freshness of the artifact | computed | **EXISTS** — `validate-skillmd` 10-dimension deep-eval engine v6.0 (`~/.claude/skills/validate-skillmd/SKILL.md`); kernel `SkillSnapshot`/`SkillVersion` |
-| **Reliability** | does it pass its behavioral eval across models | computed | **EXISTS** — j-rig 7-layer binary harness; per-model matrix |
-| **Regression** | did a change break a sacred case | computed | **EXISTS** — j-rig `regressions`/`RegressionPack`; "regressions are sacred" |
-| **Evidence** | provenance / signed-bundle backing | computed | **EXISTS** — kernel `EvidenceBundle` + `gate-result/v1`; audit-harness `emit-evidence` |
-| **Freshness** | recency / drift | computed | **EXISTS** — dashboard `src/freshness/*` (24h buckets, USE-method); kernel timestamps |
-| **Adoption / usage** | times loaded/used, real-world pickup | computed | **GAP (a)** — no `usage_events` entity anywhere |
-| **Human-trust** | reviewer thumbs / annotations | curated | **GAP** — no `human_reviews` entity; landscape says make it first-class (Braintrust/Langfuse) |
-| **Usefulness (slice)** | per-block policy/rule/example value | hybrid | **GAP (b)** — `meta_skill` fakes it with constants; IEP has none. If added, compute it. |
+| Score                  | What it measures                                     | Computed? | IEP status                                                                                                                                               |
+| ---------------------- | ---------------------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Quality**            | structure/content/evidence/freshness of the artifact | computed  | **EXISTS** — `validate-skillmd` 10-dimension deep-eval engine v6.0 (`~/.claude/skills/validate-skillmd/SKILL.md`); kernel `SkillSnapshot`/`SkillVersion` |
+| **Reliability**        | does it pass its behavioral eval across models       | computed  | **EXISTS** — j-rig 7-layer binary harness; per-model matrix                                                                                              |
+| **Regression**         | did a change break a sacred case                     | computed  | **EXISTS** — j-rig `regressions`/`RegressionPack`; "regressions are sacred"                                                                              |
+| **Evidence**           | provenance / signed-bundle backing                   | computed  | **EXISTS** — kernel `EvidenceBundle` + `gate-result/v1`; audit-harness `emit-evidence`                                                                   |
+| **Freshness**          | recency / drift                                      | computed  | **EXISTS** — dashboard `src/freshness/*` (24h buckets, USE-method); kernel timestamps                                                                    |
+| **Adoption / usage**   | times loaded/used, real-world pickup                 | computed  | **GAP (a)** — no `usage_events` entity anywhere                                                                                                          |
+| **Human-trust**        | reviewer thumbs / annotations                        | curated   | **GAP** — no `human_reviews` entity; landscape says make it first-class (Braintrust/Langfuse)                                                            |
+| **Usefulness (slice)** | per-block policy/rule/example value                  | hybrid    | **GAP (b)** — `meta_skill` fakes it with constants; IEP has none. If added, compute it.                                                                  |
 
 Anti-gaming note: every added score needs a guardrail (e.g. usage counted only from verified sessions à la `meta_skill`'s session-quality gate §3D, not raw load counts). **Do not roll these into one headline number** — see §9 (C3 tension).
 
@@ -172,19 +172,19 @@ Anti-gaming note: every added score needs a guardrail (e.g. usage counted only f
 
 Twelve conceptual tables; most are already a kernel entity. Only two are genuinely new.
 
-| Table | Covered by existing kernel entity? |
-|---|---|
-| `eval_subjects` | `SkillSnapshot` / `SkillVersion` |
-| `eval_runs` | `EvalRun` |
-| `eval_cases` | `EvalSpec` (criteria/test cases) |
-| `eval_results` | `JudgeDecision` / `criterion_results` (j-rig) |
-| `scorecards` | `EvidenceBundle` (gate-result rows) |
-| `evidence_items` | `EvidenceBundle` payload / audit-harness rows |
-| `provenance_events` | `RuntimeReceipt` / `SessionTrace` |
-| `skill_versions` | `SkillVersion` (14th entity, DR-028 T1) |
-| `tool_versions` / `agent_versions` | `ToolInvocation` + (SAK authoring artifacts) |
-| **`usage_events`** | **NEW** — adoption signal (gap a) |
-| **`human_reviews`** | **NEW** — curated trust signal |
+| Table                              | Covered by existing kernel entity?            |
+| ---------------------------------- | --------------------------------------------- |
+| `eval_subjects`                    | `SkillSnapshot` / `SkillVersion`              |
+| `eval_runs`                        | `EvalRun`                                     |
+| `eval_cases`                       | `EvalSpec` (criteria/test cases)              |
+| `eval_results`                     | `JudgeDecision` / `criterion_results` (j-rig) |
+| `scorecards`                       | `EvidenceBundle` (gate-result rows)           |
+| `evidence_items`                   | `EvidenceBundle` payload / audit-harness rows |
+| `provenance_events`                | `RuntimeReceipt` / `SessionTrace`             |
+| `skill_versions`                   | `SkillVersion` (14th entity, DR-028 T1)       |
+| `tool_versions` / `agent_versions` | `ToolInvocation` + (SAK authoring artifacts)  |
+| **`usage_events`**                 | **NEW** — adoption signal (gap a)             |
+| **`human_reviews`**                | **NEW** — curated trust signal                |
 
 **Only `usage_events` + `human_reviews` are new.** Both should ship as kernel contract triplets (JSON Schema + Zod + state machine) per DR-010's unification thesis, and emit Evidence-Bundle-compatible rows.
 
@@ -194,15 +194,15 @@ Twelve conceptual tables; most are already a kernel entity. Only two are genuine
 
 `intent-eval { scan, score, test, compare, publish-scorecard, ingest-skill, evidence add, review, ci-gate }` — most already exist:
 
-| Verb | Already provided by |
-|---|---|
-| `scan` / `classify` | audit-harness `classify`/`scan` |
-| `score` | `validate-skillmd` + j-rig |
-| `test` | j-rig binary harness |
-| `compare` | j-rig baseline/regression |
-| `evidence add` | audit-harness `emit-evidence` |
-| `ci-gate` | `intent-rollout-gate` Action |
-| `publish-scorecard` | dashboard results browser |
+| Verb                          | Already provided by                                                      |
+| ----------------------------- | ------------------------------------------------------------------------ |
+| `scan` / `classify`           | audit-harness `classify`/`scan`                                          |
+| `score`                       | `validate-skillmd` + j-rig                                               |
+| `test`                        | j-rig binary harness                                                     |
+| `compare`                     | j-rig baseline/regression                                                |
+| `evidence add`                | audit-harness `emit-evidence`                                            |
+| `ci-gate`                     | `intent-rollout-gate` Action                                             |
+| `publish-scorecard`           | dashboard results browser                                                |
 | **`ingest-skill` / `review`** | **partially GAP** — the usage/human-review intake (gaps a + Human-trust) |
 
 ---
@@ -258,4 +258,4 @@ Twelve conceptual tables; most are already a kernel entity. Only two are genuine
 
 ---
 
-*Non-normative research. If a scoring-layer epic proceeds, the two new entities (`usage_events`, `human_reviews`) route through the kernel per DR-010, and any "usefulness %" surfacing must be reconciled against the C3 no-aggregate-PASS binding before it ships.*
+_Non-normative research. If a scoring-layer epic proceeds, the two new entities (`usage_events`, `human_reviews`) route through the kernel per DR-010, and any "usefulness %" surfacing must be reconciled against the C3 no-aggregate-PASS binding before it ships._
