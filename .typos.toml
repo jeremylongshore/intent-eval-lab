@@ -79,6 +79,10 @@ roght = "roght"
 # Council-seat acronym (Chief Marketing Officer), not "COM".
 cmo = "cmo"
 # Product / metric proper nouns frequently flagged.
+# meta_skill stack proper nouns (RR-eval-research cluster): Rust TUI + FTS crates.
+ratatui = "ratatui"
+tantivy = "tantivy"
+fsqlite = "fsqlite"
 trulens = "trulens"
 tru = "tru"
 ttest = "ttest"

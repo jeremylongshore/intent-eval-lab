@@ -171,7 +171,6 @@ Beyond ordinary correctness and prose quality, a strong review here surfaces:
 When in doubt about which source governs, prefer the higher tier in § 2 and ask
 for the DR that authorizes the change.
 
-
 ## Review priorities — what to weight, what to skip
 
 Greptile is **advisory** here. The deterministic merge gate is this repo's own

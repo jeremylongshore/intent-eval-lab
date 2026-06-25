@@ -133,12 +133,14 @@ Twelve eval/benchmark tools + the MCP Registry pattern (the brief's "13"); two e
 ## 5. COPY / DON'T-COPY / BEST-DIRECTION
 
 **COPY (the real gaps):**
+
 - The **usage → feedback → bandit loop** (`meta_skill` §3C) — a learned "which skill/version actually helped" signal driven by real adoption, not self-description.
 - **Slice-level utility** — score per block (policy/rule/example), not only per skill.
 - **Hybrid BM25 + semantic catalog search** with rank-fusion over a skill catalog (softer adjacent).
 - From the landscape: delta-vector regression with CIs (Promptfoo), explanations-as-output + OTel (Phoenix), human-review-beside-automated (Braintrust/Langfuse), execution-based ground truth where available (SWE-bench).
 
 **DON'T COPY:**
+
 - A **static "utility" constant** dressed up as a computed score (§2). If IEP adds utility, compute it.
 - **Hash-only embeddings** (FNV-1a) — fine for a reproducible single-user box, wrong for a catalog that needs real semantic recall.
 - **Single-user local-first assumptions** — a personal Git audit log and a personal bandit do not survive multi-tenant / CI / signed-attestation requirements.
@@ -210,6 +212,7 @@ Twelve conceptual tables; most are already a kernel entity. Only two are genuine
 **30-day MVP (wire existing surfaces + add the two gaps, not build-from-zero):** wk1 — `usage_events` + `human_reviews` kernel triplets + ingestion; wk2 — adoption/usefulness scoring on top of existing j-rig/validate-skillmd; wk3 — CLI `ingest-skill`/`review` + a scorecard report; wk4 — CI gate + scorecard surface on the dashboard.
 
 **Open questions:**
+
 1. **What actually powers `jeffreys-skills.md`?** Unconfirmed (§2). Do not design against it.
 2. **Does a contextual bandit fit a multi-tenant / CI context** at all, or only a single-user local box? `meta_skill`'s bandit assumes one operator's feedback stream.
 3. **The C3 tension (important).** A single rolled "usefulness %" collides with the dashboard's **hard C3 binding — no aggregate PASS% across heterogeneous predicates** (`src/results/c3-scan.ts`, CTO+CMO+VP-DevRel triple-refusal). A skill scorecard that averages quality+usefulness+adoption into one headline number would violate the platform's own integrity rule. **Lean toward per-dimension scores shown side-by-side, never one rolled number.**
@@ -220,6 +223,7 @@ Twelve conceptual tables; most are already a kernel entity. Only two are genuine
 ## 10. Closing four lists
 
 **(1) Top-10 takeaways**
+
 1. This is a gap analysis — IEP already owns the hard parts.
 2. `meta_skill` "usefulness" is a static `const fn`, not computed (`slicing.rs:161-172`).
 3. The only genuinely-learned signal is the feedback→bandit loop (`rewards.rs`) — that's gap (a).
@@ -232,6 +236,7 @@ Twelve conceptual tables; most are already a kernel entity. Only two are genuine
 10. A rolled "usefulness %" would violate the dashboard's C3 binding — keep dimensions un-rolled.
 
 **(2) Five features to build first**
+
 1. `usage_events` kernel triplet + verified-session intake.
 2. `human_reviews` kernel triplet (open-ended TEXT score, à la Langfuse).
 3. Adoption score computed from verified usage (anti-gaming gated).
@@ -239,6 +244,7 @@ Twelve conceptual tables; most are already a kernel entity. Only two are genuine
 5. Delta-vector regression baselines with CIs (Promptfoo pattern) layered onto j-rig.
 
 **(3) Five traps to avoid**
+
 1. Forking a new standalone tool.
 2. Static constants masquerading as computed utility.
 3. Hash-only embeddings for catalog search.
@@ -246,6 +252,7 @@ Twelve conceptual tables; most are already a kernel entity. Only two are genuine
 5. Counting raw loads as adoption (gameable).
 
 **(4) Files created**
+
 - `099-RR-eval-research/100-RR-LAND-intent-eval-platform-skill-scoring-research-2026-06-24.md` (this file)
 - `099-RR-eval-research/101-RR-BIBL-skill-scoring-tool-references-2026-06-24.md` (sources)
 
