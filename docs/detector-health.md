@@ -6,11 +6,11 @@
 
 All composite-predicate conditions pass:
 
-- ok `watcher-run-recent` — last successful watcher run 2026-06-29T03:17:30Z was 0.0h ago (max gap 26h)
+- ok `watcher-run-recent` — last successful watcher run 2026-06-29T10:45:10Z was 0.0h ago (max gap 26h)
 - ok `no-fetch-error-streaks` — all 16 tracked surfaces under the streak threshold (3)
 - ok `coverage-at-target` — 16/16 registered surfaces monitored (100.0% of target 100%)
 
-Lineage: 11 surfaces adopted, 12 divergences outstanding, 0 convergence triggers fired. Evaluated at 2026-06-29T03:17:32Z.
+Lineage: 11 surfaces adopted, 12 divergences outstanding, 0 convergence triggers fired. Evaluated at 2026-06-29T10:45:12Z.
 
 ## Drift table (per registered surface)
 
