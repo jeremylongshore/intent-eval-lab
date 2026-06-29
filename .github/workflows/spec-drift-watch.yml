@@ -82,6 +82,17 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 1
+          # L1 fix (692-AA-AACR § 0.5): the daily commit-backs (SSoT snapshots,
+          # liveness .state.json, lineage, currency evidence) must push past main's
+          # required status checks. The default GITHUB_TOKEN is the github-actions
+          # bot — NOT an admin — so its direct push is rejected and every commit-back
+          # silently falls back to an ephemeral artifact (the watcher can detect drift
+          # but never persist it). With enforce_admins:false, a push authenticated as
+          # an admin bypasses the status-check gate, so we use an admin/bypass PAT
+          # (secret SPEC_DRIFT_PUSH_TOKEN). Falls back to GITHUB_TOKEN when the secret
+          # is unset — i.e. NO regression: until you mint the PAT, behavior is exactly
+          # as today (push fails → artifact fallback).
+          token: ${{ secrets.SPEC_DRIFT_PUSH_TOKEN || github.token }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -314,6 +325,33 @@ jobs:
         with:
           path: specs/snapshots/.state.json
           key: spec-drift-state-${{ github.run_id }}
+
+      # Durable liveness (L1 fix, 692-AA-AACR § 0.5). The cache above is ephemeral:
+      # on GH-cache eviction the restore falls back to the committed bootstrap seed,
+      # which has stayed `last_run_utc: null` because no commit-back ever landed — so
+      # `watcher-liveness.py --heartbeat-check` reads null and prints "bootstrap …
+      # (OK)" forever, the dead-man heartbeat is inert, and the dashboard reads
+      # DEGRADED even while the watcher is live. Commit the freshly-recorded
+      # .state.json back so the committed seed ADVANCES each run: the heartbeat then
+      # survives eviction, and the committed last_run_utc is the provable
+      # proof-of-life. Needs the SPEC_DRIFT_PUSH_TOKEN admin push (Checkout step) to
+      # land past branch protection; without it this push fails-soft like the others.
+      - name: Commit liveness heartbeat back (durable dead-man)
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "$(git status --porcelain specs/snapshots/.state.json 2>/dev/null)" ]]; then
+            echo "No liveness-state change to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add specs/snapshots/.state.json
+          git commit -m "chore(spec-drift): liveness heartbeat $(date -u +%Y-%m-%dT%H:%MZ) [skip ci]"
+          if ! git push origin "HEAD:${GITHUB_REF_NAME}"; then
+            echo "::warning::liveness heartbeat push failed — set SPEC_DRIFT_PUSH_TOKEN (admin/bypass PAT) to enable durable liveness; cache still holds state."
+          fi
 
       - name: Summarize
         if: always()
