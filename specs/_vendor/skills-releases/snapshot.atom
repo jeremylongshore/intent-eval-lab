@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xml:lang="en-US">
+  <id>tag:github.com,2008:https://github.com/anthropics/skills/releases</id>
+  <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/releases"/>
+  <link type="application/atom+xml" rel="self" href="https://github.com/anthropics/skills/releases.atom"/>
+  <title>Release notes from skills</title>
+  <updated>2026-06-29T03:17:18Z</updated>
+</feed>
+
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xml:lang="en-US">
+  <id>tag:github.com,2008:/anthropics/skills/commits/main</id>
+  <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commits/main"/>
+  <link type="application/atom+xml" rel="self" href="https://github.com/anthropics/skills/commits/main.atom"/>
+  <title>Recent Commits to skills:main</title>
+  <updated>2026-06-27T16:07:56Z</updated>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/35414756ca55738e050562e272a6bbc6273aa926</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/35414756ca55738e050562e272a6bbc6273aa926"/>
+    <title>
+        Update claude-api skill: per-SDK doc split, code_execution_20260521, …
+    </title>
+    <updated>2026-06-27T16:07:56Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/122662504?s=30&amp;v=4"/>
+    <author>
+      <name>rlancemartin</name>
+      <uri>https://github.com/rlancemartin</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Update claude-api skill: per-SDK doc split, code_execution_20260521, platform-availability, onboarding streamline (#1363)&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/57546260929473d4e0d1c1bb75297be2fdfa1949</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/57546260929473d4e0d1c1bb75297be2fdfa1949"/>
+    <title>
+        Update claude-api skill: scheduled deployments, vault env-var credent…
+    </title>
+    <updated>2026-06-09T20:35:16Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/122662504?s=30&amp;v=4"/>
+    <author>
+      <name>rlancemartin</name>
+      <uri>https://github.com/rlancemartin</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Update claude-api skill: scheduled deployments, vault env-var credentials, system.message events (#1297)
+
+- Add Managed Agents scheduled deployments: new
+  shared/managed-agents-scheduled-deployments.md (cron schedules, deployment
+  runs, pause/auto-pause), Deployments and Deployment Runs API reference,
+  beta-header coverage, and SKILL.md routing
+- Vault environment_variable credentials: secrets substituted at egress with
+  networking allowlists; secrets guidance in tools, client-patterns, and
+  onboarding docs rewritten around them; self-hosted sandbox caveats noted
+- Add system.message event for mid-session system prompt updates (Opus 4.8
+  only) to the events guide and API reference&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/2235be7c60b551f5de82ade908fd3816455afcda</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/2235be7c60b551f5de82ade908fd3816455afcda"/>
+    <title>
+        Update frontend-design skill (#1293)
+    </title>
+    <updated>2026-06-09T19:33:41Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/22250112?s=30&amp;v=4"/>
+    <author>
+      <name>williamqian12</name>
+      <uri>https://github.com/williamqian12</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Update frontend-design skill (#1293)&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/5d25128289ff72bc9c7839ac3d245f4d57515447</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/5d25128289ff72bc9c7839ac3d245f4d57515447"/>
+    <title>
+        Update claude-api skill: Claude Fable 5 and Claude Mythos 5 (#1294)
+    </title>
+    <updated>2026-06-09T17:34:55Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/122662504?s=30&amp;v=4"/>
+    <author>
+      <name>rlancemartin</name>
+      <uri>https://github.com/rlancemartin</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Update claude-api skill: Claude Fable 5 and Claude Mythos 5 (#1294)
+
+- Add Claude Fable 5 and Claude Mythos 5 to the model tables with pricing,
+  context window, and model-selection guidance
+- Document Fable-specific API behavior: always-on adaptive thinking (explicit
+  disabled returns 400), protected-thinking display and replay rules, new
+  tokenizer (~30% more tokens), refusal stop reason with server-side fallbacks
+  and SDK fallback middleware, 30-day data-retention requirement
+- Add the full Migrating to Claude Fable 5 guide section and checklist,
+  including the Mythos Preview migration path
+- Refresh skill trigger description, effort/compaction/task-budget notes,
+  caching minimums, structured-output and dynamic-filtering support tables&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/c30d329f5814647c1e2f071020c1e8c1c9893ef1</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/c30d329f5814647c1e2f071020c1e8c1c9893ef1"/>
+    <title>
+        Update claude-api skill: auth, cloud providers, Managed Agents fixes,…
+    </title>
+    <updated>2026-06-07T20:21:33Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/122662504?s=30&amp;v=4"/>
+    <author>
+      <name>rlancemartin</name>
+      <uri>https://github.com/rlancemartin</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Update claude-api skill: auth, cloud providers, Managed Agents fixes, token counting (#1276)
+
+* Sync claude-api skill with latest upstream updates
+
+- Add token-counting.md and SKILL.md trigger description update
+- Add auth guidance: env credential resolution, ant auth login, OAuth/WIF doc links, 401 causes
+- Add mid-conversation system messages (beta) to prompt-caching, agent-design, SKILL.md, Python/TS READMEs
+- Add cache pre-warming (max_tokens: 0) section to prompt-caching
+- Add Managed Agents pre-flight viability check to onboarding and overview
+- Add Bedrock model-ID section to model-migration; add Bedrock row to live-sources
+- Add /claude-api migrate subcommand row and migrate-entry callout
+- Fix MA networking config: limited type with allow_package_managers/allow_mcp_servers
+- Bump MA create-operations rate limit to 300 RPM
+- Fix MA SDK drift: sessions.events.stream(), event.name, typed event arrays
+- Add SDK coverage: stop_details, error .type, C# tool runner + MA support, Go model constants, Java 2.34.0, client config, response helpers, auto-pagination, advisor tool
+- Move Sonnet 4 / Opus 4 to deprecated in models.md
+
+* Add Anthropic CLI and Claude Platform on AWS docs to claude-api skill
+
+- Add shared/anthropic-cli.md: install, auth profiles, OAuth scopes, command
+  structure, version-controlled Managed Agents resources, credential traps
+- Add shared/claude-platform-on-aws.md: AnthropicAWS clients, SigV4 auth,
+  workspace_id, regions, feature availability
+- Restore cross-references to both files throughout SKILL.md and the
+  managed-agents docs (previously rewritten to live-sources.md pointers)
+- Restore Claude Platform on AWS provider taxonomy in SKILL.md, the
+  migration-guide section, and live-sources rows&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/da20c92503b2e8ff1cf28ca81a0df4673debdbf7</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/da20c92503b2e8ff1cf28ca81a0df4673debdbf7"/>
+    <title>
+        Add Opus 4.8 migration guide and model updates to claude-api skill (#…
+    </title>
+    <updated>2026-05-29T02:02:26Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/122662504?s=30&amp;v=4"/>
+    <author>
+      <name>rlancemartin</name>
+      <uri>https://github.com/rlancemartin</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Add Opus 4.8 migration guide and model updates to claude-api skill (#1216)
+
+* Add Managed Agents self-hosted sandboxes + mid-session agent updates + MCP tool-output offload to claude-api skill
+
+Self-hosted sandboxes: new shared/managed-agents-self-hosted-sandboxes.md for config:{type:&amp;quot;self_hosted&amp;quot;} — agent loop on Anthropic&amp;#39;s orchestration, tool execution on customer infra via outbound-polling worker. Covers EnvironmentWorker.run()/.run_one() (Py/TS), ant beta:worker poll/run, mid-level work.poller()/WorkPoller (Py/TS/Go only; Go has no auto_stop opt-out), AgentToolContext/beta_agent_toolset/tool_runner(), monitoring (environments.work.stats/stop — x-api-key, call from outside worker host), runtime deps, cloud-vs-self_hosted delta table, credentials, security ownership split. Cross-refs in environments.md, overview.md (Reading Guide + rewrote cloud-only pitfall), api-reference.md (SDK row + naming-quirks + schema + work REST rows), tools.md (Who-runs-it carve-out), onboarding.md, live-sources.md.
+
+Mid-session agent updates: sessions.update(session_id, agent={tools, mcp_servers}, vault_ids=[...]) — session-local override (doesn&amp;#39;t bump agent version), full-replacement semantics, session must be idle. New core.md section + pointers in tools.md, api-reference.md (UpdateSession row), overview.md.
+
+Large MCP tool outputs → files: &amp;gt;100K tokens → automatic offload to sandbox file; agent gets truncated preview + path. Plus: invalid vault credentials don&amp;#39;t block sessions.create() — session.error event fires, auth retries on next idle→running. Both in tools.md.
+
+* Point ant CLI install ref to live-sources.md (OSS has no anthropic-cli.md)
+
+* Add Opus 4.8 model migration guide to claude-api skill
+
+* Add prescriptive tool-description guidance for Opus 4.8 to claude-api skill&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/690f15cac7f7b4c055c5ab109c79ed9259934081</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/690f15cac7f7b4c055c5ab109c79ed9259934081"/>
+    <title>
+        Add CMA claude-api skill updates (#1164)
+    </title>
+    <updated>2026-05-19T14:11:06Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/122662504?s=30&amp;v=4"/>
+    <author>
+      <name>rlancemartin</name>
+      <uri>https://github.com/rlancemartin</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Add CMA claude-api skill updates (#1164)
+
+* Add Managed Agents self-hosted sandboxes + mid-session agent updates + MCP tool-output offload to claude-api skill
+
+Self-hosted sandboxes: new shared/managed-agents-self-hosted-sandboxes.md for config:{type:&amp;quot;self_hosted&amp;quot;} — agent loop on Anthropic&amp;#39;s orchestration, tool execution on customer infra via outbound-polling worker. Covers EnvironmentWorker.run()/.run_one() (Py/TS), ant beta:worker poll/run, mid-level work.poller()/WorkPoller (Py/TS/Go only; Go has no auto_stop opt-out), AgentToolContext/beta_agent_toolset/tool_runner(), monitoring (environments.work.stats/stop — x-api-key, call from outside worker host), runtime deps, cloud-vs-self_hosted delta table, credentials, security ownership split. Cross-refs in environments.md, overview.md (Reading Guide + rewrote cloud-only pitfall), api-reference.md (SDK row + naming-quirks + schema + work REST rows), tools.md (Who-runs-it carve-out), onboarding.md, live-sources.md.
+
+Mid-session agent updates: sessions.update(session_id, agent={tools, mcp_servers}, vault_ids=[...]) — session-local override (doesn&amp;#39;t bump agent version), full-replacement semantics, session must be idle. New core.md section + pointers in tools.md, api-reference.md (UpdateSession row), overview.md.
+
+Large MCP tool outputs → files: &amp;gt;100K tokens → automatic offload to sandbox file; agent gets truncated preview + path. Plus: invalid vault credentials don&amp;#39;t block sessions.create() — session.error event fires, auth retries on next idle→running. Both in tools.md.
+
+* Point ant CLI install ref to live-sources.md (OSS has no anthropic-cli.md)&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/6a5bb06904ab164a345e41c381fc9097954b83da</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/6a5bb06904ab164a345e41c381fc9097954b83da"/>
+    <title>
+        Fix model config shape in managed-agents API reference (#1145)
+    </title>
+    <updated>2026-05-17T22:47:17Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/122662504?s=30&amp;v=4"/>
+    <author>
+      <name>rlancemartin</name>
+      <uri>https://github.com/rlancemartin</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Fix model config shape in managed-agents API reference (#1145)
+
+The model field on agent create accepts {id, speed}, not
+{type: &amp;quot;model_config&amp;quot;, id, speed}. Aligns with the shape documented
+elsewhere in managed-agents-core.md and the request body table.&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/f458cee31a7577a47ba0c9a101976fa599385174</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/f458cee31a7577a47ba0c9a101976fa599385174"/>
+    <title>
+        Update README.md (#1094)
+    </title>
+    <updated>2026-05-09T00:34:37Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/32676955?s=30&amp;v=4"/>
+    <author>
+      <name>quuu</name>
+      <uri>https://github.com/quuu</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Update README.md (#1094)&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/d211d437443a7b2496a3dad9575e7dddd724c585</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/d211d437443a7b2496a3dad9575e7dddd724c585"/>
+    <title>
+        Add Managed Agents outcomes, multiagent, and webhooks to claude-api s…
+    </title>
+    <updated>2026-05-06T16:05:49Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/122662504?s=30&amp;v=4"/>
+    <author>
+      <name>rlancemartin</name>
+      <uri>https://github.com/rlancemartin</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Add Managed Agents outcomes, multiagent, and webhooks to claude-api skill (#1096)&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/d230a6dd6eb1a0dbee9fec55e2f00a96e28dff81</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/d230a6dd6eb1a0dbee9fec55e2f00a96e28dff81"/>
+    <title>
+        Remove non-existent purpose field from Files API examples (#1081)
+    </title>
+    <updated>2026-05-03T13:58:40Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/122662504?s=30&amp;v=4"/>
+    <author>
+      <name>rlancemartin</name>
+      <uri>https://github.com/rlancemartin</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Remove non-existent purpose field from Files API examples (#1081)
+
+The Files API upload endpoint does not accept a purpose parameter.
+Drop it from the managed-agents skill examples (TS and curl).&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/5128e1865d670f5d6c9cef000e6dfc4e951fb5b9</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/5128e1865d670f5d6c9cef000e6dfc4e951fb5b9"/>
+    <title>
+        Add Managed Agents memory stores page to claude-api skill (#1014)
+    </title>
+    <updated>2026-04-23T17:07:18Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/122662504?s=30&amp;v=4"/>
+    <author>
+      <name>rlancemartin</name>
+      <uri>https://github.com/rlancemartin</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Add Managed Agents memory stores page to claude-api skill (#1014)
+
+Add shared/managed-agents-memory.md covering the Memory Stores public
+beta under managed-agents-2026-04-01: object model (memstore_/mem_/
+memver_), create + seed, attach via resources[] at session-create time,
+FUSE mount at /mnt/memory/&amp;lt;store&amp;gt;/, host-side CRUD with create-by-path
+vs update-by-id, content_sha256 preconditions, and versions/redact.
+
+Wire it through all cross-references: SKILL.md beta-headers namespace
+and reading guide; api-reference SDK method rows, delete/archive quirks
+bullet, AddResource note, and three new endpoint sections; core.md
+architecture diagram and resources[] enumerations; environments.md
+Resources intro; overview.md beta-headers table, Reading Guide row, and
+archive-is-permanent bullet.&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/b9e19e6f44773509fbdd7001d77ff41a49a486c1</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/b9e19e6f44773509fbdd7001d77ff41a49a486c1"/>
+    <title>
+        Fill in Apache 2.0 copyright notice in claude-api LICENSE.txt (#990)
+    </title>
+    <updated>2026-04-20T21:38:16Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/122662504?s=30&amp;v=4"/>
+    <author>
+      <name>rlancemartin</name>
+      <uri>https://github.com/rlancemartin</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Fill in Apache 2.0 copyright notice in claude-api LICENSE.txt (#990)
+
+Replace the [yyyy] [name of copyright owner] placeholder with the
+actual copyright holder so the license attribution is explicit.&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/2c7ec5e78b8e5d43ea02e90bb8826f6b9f147b0c</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/2c7ec5e78b8e5d43ea02e90bb8826f6b9f147b0c"/>
+    <title>
+        chore: update claude-api skill (#956)
+    </title>
+    <updated>2026-04-16T19:12:57Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/27286675?s=30&amp;v=4"/>
+    <author>
+      <name>ericharmeling</name>
+      <uri>https://github.com/ericharmeling</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;chore: update claude-api skill (#956)
+
+Add shared/model-migration.md and refresh model references, managed
+agents docs, and skill description across all language guides.&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/0f7c287eaf0d4fa511cb871bb55e2a7862251fbb</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/0f7c287eaf0d4fa511cb871bb55e2a7862251fbb"/>
+    <title>
+        fix skill yaml rendering (#898)
+    </title>
+    <updated>2026-04-13T20:37:42Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/46854522?s=30&amp;v=4"/>
+    <author>
+      <name>allenzhou101</name>
+      <uri>https://github.com/allenzhou101</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;fix skill yaml rendering (#898)
+
+Made-with: Cursor&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/12ab35c2eb5668c95810e6a6066f40f4218adc39</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/12ab35c2eb5668c95810e6a6066f40f4218adc39"/>
+    <title>
+        Add proper front-matter to SKILL.md for claude-api (#897)
+    </title>
+    <updated>2026-04-09T17:20:06Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/32676955?s=30&amp;v=4"/>
+    <author>
+      <name>quuu</name>
+      <uri>https://github.com/quuu</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Add proper front-matter to SKILL.md for claude-api (#897)
+
+* Add proper front-matter to SKILL.md for claude-api
+
+Added metadata section with name, description, and license information.
+
+* Apply suggestion from @ericharmeling
+
+---------
+
+Co-authored-by: Eric Harmeling &amp;lt;eric.harmeling@outlook.com&amp;gt;&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/ca1e7dc13c0ab5e2dfaa6de71991cd951b8f1cf2</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/ca1e7dc13c0ab5e2dfaa6de71991cd951b8f1cf2"/>
+    <title>
+        Update claude-api skill with Managed Agents guidance (#891)
+    </title>
+    <updated>2026-04-08T17:01:02Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/27286675?s=30&amp;v=4"/>
+    <author>
+      <name>ericharmeling</name>
+      <uri>https://github.com/ericharmeling</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Update claude-api skill with Managed Agents guidance (#891)
+
+* Update claude-api skill with Managed Agents guidance
+
+* Replace OPUS_ID placeholder with concrete model string in claude-api skill
+
+* Replace remaining model placeholders with concrete model names and IDs&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/98669c11ca63e9c81c11501e1437e5c47b556621</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/98669c11ca63e9c81c11501e1437e5c47b556621"/>
+    <title>
+        chore: update claude-api skill [auto-sync] (#730)
+    </title>
+    <updated>2026-03-25T15:10:46Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/76263028?s=30&amp;v=4"/>
+    <author>
+      <name>cc-skill-sync</name>
+      <uri>https://github.com/cc-skill-sync</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;chore: update claude-api skill [auto-sync] (#730)
+
+Co-authored-by: github-actions[bot] &amp;lt;41898282+github-actions[bot]@users.noreply.github.com&amp;gt;&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/887114fd09f8f24a7e6c907f9ee505348498ab6a</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/887114fd09f8f24a7e6c907f9ee505348498ab6a"/>
+    <title>
+        chore: update claude-api skill [auto-sync] (#729)
+    </title>
+    <updated>2026-03-22T16:16:01Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/76263028?s=30&amp;v=4"/>
+    <author>
+      <name>cc-skill-sync</name>
+      <uri>https://github.com/cc-skill-sync</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;chore: update claude-api skill [auto-sync] (#729)
+
+co-sign
+
+Co-authored-by: github-actions[bot] &amp;lt;41898282+github-actions[bot]@users.noreply.github.com&amp;gt;&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/b0cbd3df1533b396d281a6886d5132f623393a9c</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/b0cbd3df1533b396d281a6886d5132f623393a9c"/>
+    <title>
+        skill-creator: drop ANTHROPIC_API_KEY requirement from description op…
+    </title>
+    <updated>2026-03-06T20:06:23Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/139395547?s=30&amp;v=4"/>
+    <author>
+      <name>zack-anthropic</name>
+      <uri>https://github.com/zack-anthropic</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;skill-creator: drop ANTHROPIC_API_KEY requirement from description optimizer (#547)
+
+improve_description.py now calls `claude -p`
+as a subprocess instead of the Anthropic SDK, so users no longer need a
+separate ANTHROPIC_API_KEY to run the description optimization loop. Same
+auth pattern run_eval.py already used for the triggering eval.
+
+Prompts go over stdin (they embed the full SKILL.md body). Strips CLAUDECODE
+env var to allow nesting inside a Claude Code session. The over-1024-char
+retry is now a fresh single-turn call that inlines the too-long version
+rather than a multi-turn followup.
+
+SKILL.md: dropped the stale &amp;quot;extended thinking&amp;quot; reference to match.&lt;/pre&gt;
+    </content>
+  </entry>
+</feed>

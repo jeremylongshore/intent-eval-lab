@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xml:lang="en-US">
+  <id>tag:github.com,2008:https://github.com/modelcontextprotocol/modelcontextprotocol/releases</id>
+  <link type="text/html" rel="alternate" href="https://github.com/modelcontextprotocol/modelcontextprotocol/releases"/>
+  <link type="application/atom+xml" rel="self" href="https://github.com/modelcontextprotocol/modelcontextprotocol/releases.atom"/>
+  <title>Release notes from modelcontextprotocol</title>
+  <updated>2026-05-29T12:49:07Z</updated>
+  <entry>
+    <id>tag:github.com,2008:Repository/862570523/2026-07-28-RC</id>
+    <updated>2026-05-29T12:51:22Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/modelcontextprotocol/modelcontextprotocol/releases/tag/2026-07-28-RC"/>
+    <title>MCP 2026-07-28 RC</title>
+    <content type="html">&lt;p&gt;This release marks the &lt;strong&gt;release candidate (RC)&lt;/strong&gt; &lt;code&gt;2026-07-28&lt;/code&gt; revision of the Model Context Protocol.&lt;/p&gt;
+&lt;p&gt;The specification is available in &lt;a href=&quot;https://modelcontextprotocol.io/specification/draft&quot; rel=&quot;nofollow&quot;&gt;draft form&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;For a detailed overview of changes, see &lt;a href=&quot;https://modelcontextprotocol.io/specification/draft/changelog&quot; rel=&quot;nofollow&quot;&gt;2026-07-28 draft changelog&lt;/a&gt;.&lt;/p&gt;
+&lt;div class=&quot;markdown-alert markdown-alert-note&quot;&gt;&lt;p class=&quot;markdown-alert-title&quot;&gt;&lt;svg data-component=&quot;Octicon&quot; class=&quot;octicon octicon-info mr-2&quot; viewBox=&quot;0 0 16 16&quot; version=&quot;1.1&quot; width=&quot;16&quot; height=&quot;16&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;Note&lt;/p&gt;&lt;p&gt;&lt;strong&gt;To users and implementers:&lt;/strong&gt; this specification is not final. Changes may be introduced between the RC and the final release. SDKs will adopt this version at their own pace, and the prior version of the spec may remain in use for an undetermined amount of time.&lt;/p&gt;
+&lt;p&gt;Refer to the &lt;a href=&quot;https://modelcontextprotocol.io/specification/draft/basic/lifecycle#version-negotiation&quot; rel=&quot;nofollow&quot;&gt;Version Negotiation documentation&lt;/a&gt; to learn about the process for clients and servers to determine the version of the protocol being used.&lt;/p&gt;
+&lt;/div&gt;</content>
+    <author>
+      <name>github-actions[bot]</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/in/15368?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/862570523/2025-11-25</id>
+    <updated>2025-11-25T21:17:42Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/modelcontextprotocol/modelcontextprotocol/releases/tag/2025-11-25"/>
+    <title>2025-11-25</title>
+    <content type="html">&lt;p&gt;This release marks the &lt;strong&gt;stable release&lt;/strong&gt; of the &lt;code&gt;2025-11-25&lt;/code&gt; revision of the Model Context Protocol.&lt;/p&gt;
+&lt;p&gt;The specification is available on the &lt;a href=&quot;https://modelcontextprotocol.io/specification/2025-11-25&quot; rel=&quot;nofollow&quot;&gt;official Model Context Protocol website&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;For a detailed overview of changes, see &lt;a href=&quot;https://modelcontextprotocol.io/specification/2025-11-25/changelog&quot; rel=&quot;nofollow&quot;&gt;2025-11-25 changelog&lt;/a&gt;.&lt;/p&gt;</content>
+    <author>
+      <name>localden</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/53200638?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/862570523/2025-11-25-RC</id>
+    <updated>2025-11-15T06:06:55Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/modelcontextprotocol/modelcontextprotocol/releases/tag/2025-11-25-RC"/>
+    <title>2025-11-25-RC</title>
+    <content type="html">&lt;p&gt;This release marks the &lt;strong&gt;release candidate (RC)&lt;/strong&gt; &lt;code&gt;2025-11-25&lt;/code&gt; revision of the Model Context Protocol.&lt;/p&gt;
+&lt;p&gt;The specification is available in &lt;a href=&quot;https://modelcontextprotocol.io/specification/draft&quot; rel=&quot;nofollow&quot;&gt;draft form&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;For a detailed overview of changes, see &lt;a href=&quot;https://modelcontextprotocol.io/specification/draft/changelog&quot; rel=&quot;nofollow&quot;&gt;2025-11-25 draft changelog&lt;/a&gt;.&lt;/p&gt;
+&lt;div class=&quot;markdown-alert markdown-alert-note&quot;&gt;&lt;p class=&quot;markdown-alert-title&quot;&gt;&lt;svg data-component=&quot;Octicon&quot; class=&quot;octicon octicon-info mr-2&quot; viewBox=&quot;0 0 16 16&quot; version=&quot;1.1&quot; width=&quot;16&quot; height=&quot;16&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;Note&lt;/p&gt;&lt;p&gt;&lt;strong&gt;To users and implementers:&lt;/strong&gt; this specification is not final. Changes may be introduced between the RC and the final release. SDKs will adopt this version at their own pace, and the prior version of the spec may remain in use for an undetermined amount of time.&lt;/p&gt;
+&lt;p&gt;Refer to the &lt;a href=&quot;https://modelcontextprotocol.io/specification/draft/basic/lifecycle#version-negotiation&quot; rel=&quot;nofollow&quot;&gt;Version Negotiation documentation&lt;/a&gt; to learn about the process for clients and servers to determine the version of the protocol being used.&lt;/p&gt;
+&lt;/div&gt;</content>
+    <author>
+      <name>localden</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/53200638?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/862570523/2025-06-18</id>
+    <updated>2025-06-18T20:09:59Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/modelcontextprotocol/modelcontextprotocol/releases/tag/2025-06-18"/>
+    <title>2025-06-18</title>
+    <content type="html">&lt;p&gt;This release marks the initial 2025-06-18 revision of the Model Context Protocol.&lt;/p&gt;
+&lt;p&gt;For a detailed overview of changes, see &lt;a href=&quot;https://modelcontextprotocol.io/specification/2025-06-18/changelog&quot; rel=&quot;nofollow&quot;&gt;2025-06-18 changelog&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;To users and implementors:&lt;/em&gt; note that SDKs will adopt this version at their own pace, and the prior version of the spec may remain in use for an undetermined amount of time. The spec describes how clients and servers perform version negotiation with one another, permitting backwards and forwards compatibility.&lt;/p&gt;</content>
+    <author>
+      <name>dsp-ant</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/167242713?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/862570523/2025-03-26</id>
+    <updated>2025-03-26T14:59:10Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/modelcontextprotocol/modelcontextprotocol/releases/tag/2025-03-26"/>
+    <title>2025-03-26</title>
+    <content type="html">&lt;p&gt;This release marks the initial 2025-03-26 revision of the Model Context Protocol.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;To users and implementors:&lt;/em&gt; note that SDKs will adopt this version at their own pace, and the prior version of the spec may remain in use for an undetermined amount of time. The spec describes how clients and servers perform version negotiation with one another, permitting backwards and forwards compatibility.&lt;/p&gt;</content>
+    <author>
+      <name>jspahrsummers</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/432536?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/862570523/2024-11-05-final</id>
+    <updated>2025-03-26T13:53:30Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/modelcontextprotocol/modelcontextprotocol/releases/tag/2024-11-05-final"/>
+    <title>2024-11-05-final</title>
+    <content type="html">&lt;p&gt;This release marks the final 2024-11-05 revision of the Model Context Protocol, including all backwards compatible changes made since &lt;a href=&quot;https://github.com/modelcontextprotocol/specification/releases/tag/2024-11-05&quot;&gt;the initial 2024-11-05 release&lt;/a&gt;.&lt;/p&gt;</content>
+    <author>
+      <name>jspahrsummers</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/432536?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/862570523/2024-11-05</id>
+    <updated>2025-03-26T13:50:36Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/modelcontextprotocol/modelcontextprotocol/releases/tag/2024-11-05"/>
+    <title>2024-11-05</title>
+    <content type="html">&lt;p&gt;This release marks the initial 2024-11-05 revision of the Model Context Protocol.&lt;/p&gt;</content>
+    <author>
+      <name>dsp-ant</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/167242713?s=60&amp;v=4"/>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Repository/862570523/2024-10-07</id>
+    <updated>2024-11-06T10:59:59Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/modelcontextprotocol/modelcontextprotocol/releases/tag/2024-10-07"/>
+    <title>2024-10-07</title>
+    <content type="html">&lt;p&gt;Final update to version 2024-10-07 of the spec.&lt;/p&gt;</content>
+    <author>
+      <name>jspahrsummers</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/432536?s=60&amp;v=4"/>
+  </entry>
+</feed>
