@@ -31,8 +31,8 @@ Of the 8 proposed scores, **exactly one ("Quality") touches the rubric, and the 
 
 ### Is the gap analysis itself sound? — Mostly, with two corrections fed into the design
 
-1. **It missed a genuine 3rd gap: a skill-to-skill DEPENDENCY/RELATIONSHIP GRAPH** (meta_skill `ms graph` — PageRank keystones, betweenness bottlenecks, cycle detection). No IEP entity models any edge between skills. This is arguably the _most shippable_ finding the report skipped: meta_skill's graph delegates to `bv`, the **same beads-graph engine IEP already runs on its own bead workspace** — IEP owns the engine but never points it at the skill catalog. "You already have `bv`, apply it to skills" was the strongest available finding and went unsurfaced. **It is NOT in epic #206's six items; flag it as a follow-on bead, do not bolt it in here.**
-2. **Slice-utility (gap b) is softer than co-billed.** Its only existing implementation is a hardcoded const that the report itself says "DON'T COPY." That makes it "a feature nobody has built well," not "a thing meta_skill has that IEP lacks." It's still worth building (the _computed_ form is genuinely new) but it should be sequenced behind the two hard gaps, not as a co-equal.
+1. **It missed a genuine 3rd gap: a skill-to-skill DEPENDENCY/RELATIONSHIP GRAPH** (meta*skill `ms graph` — PageRank keystones, betweenness bottlenecks, cycle detection). No IEP entity models any edge between skills. This is arguably the \_most shippable* finding the report skipped: meta_skill's graph delegates to `bv`, the **same beads-graph engine IEP already runs on its own bead workspace** — IEP owns the engine but never points it at the skill catalog. "You already have `bv`, apply it to skills" was the strongest available finding and went unsurfaced. **It is NOT in epic #206's six items; flag it as a follow-on bead, do not bolt it in here.**
+2. **Slice-utility (gap b) is softer than co-billed.** Its only existing implementation is a hardcoded const that the report itself says "DON'T COPY." That makes it "a feature nobody has built well," not "a thing meta*skill has that IEP lacks." It's still worth building (the \_computed* form is genuinely new) but it should be sequenced behind the two hard gaps, not as a co-equal.
 
 ### Bottom line
 
@@ -75,7 +75,7 @@ The 6 work items are each individually **NOT confirmed build-ready as drawn** �
 
 ### Item 3 — `slice_utility` (refiner-core, COMPUTED per-block) — **GO with fixes, lowest kernel risk**
 
-**Algorithm: Leave-One-Block-Out (LOBO) causal attribution.** A block's utility is the **measured counterfactual drop in behavioral score when the block is ablated**, judged at the _same α=0.05 z-test bar_ the acceptance gate already uses. This is the deliberate inverse of meta_skill's const table (Policy=0.95 by fiat): here a block's _type_ is never its utility; its utility is the demonstrated effect of its presence.
+**Algorithm: Leave-One-Block-Out (LOBO) causal attribution.** A block's utility is the **measured counterfactual drop in behavioral score when the block is ablated**, judged at the _same α=0.05 z-test bar_ the acceptance gate already uses. This is the deliberate inverse of meta*skill's const table (Policy=0.95 by fiat): here a block's \_type* is never its utility; its utility is the demonstrated effect of its presence.
 
 Per anchorable block B (reusing existing machinery only):
 
