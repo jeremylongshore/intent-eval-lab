@@ -155,13 +155,13 @@ This is the consequential finding. The j-rig `GateResultPredicate` mirrors the *
 
 ### 4.2 Optional-field comparison
 
-| Kernel `GateResultV1Optional` field           | j-rig field                                          | Status                                                                        |
+| Kernel `GateResultV1Optional` field | j-rig field | Status |
 | --------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------- | ------ | ---------- |
-| `metadata?: Record<string, unknown>`          | `metadata: z.record(...).optional()`                 | ✅ Match.                                                                     |
-| `failure_mode?: string`                       | `failure_mode: z.string().optional()`                | ✅ Match.                                                                     |
-| `advisory_severity?: AdvisorySeverity`        | `advisory_severity: AdvisorySeverityEnum.optional()` | ✅ Match (same 3-value enum: `'info'                                          | 'warn' | 'error'`). |
-| `cost_record_ref?: Uuidv7`                    | —                                                    | ❌ **Missing in j-rig.** Kernel addition.                                     |
-| `replay_fidelity_level?: ReplayFidelityLevel` | —                                                    | ❌ **Missing in j-rig.** Kernel addition (forward-ref to iel-E11 RF-0..RF-4). |
+| `metadata?: Record<string, unknown>` | `metadata: z.record(...).optional()` | ✅ Match. |
+| `failure_mode?: string` | `failure_mode: z.string().optional()` | ✅ Match. |
+| `advisory_severity?: AdvisorySeverity` | `advisory_severity: AdvisorySeverityEnum.optional()` | ✅ Match (same 3-value enum: `'info'                                          | 'warn' | 'error'`). |
+| `cost_record_ref?: Uuidv7` | — | ❌ **Missing in j-rig.** Kernel addition. |
+| `replay_fidelity_level?: ReplayFidelityLevel` | — | ❌ **Missing in j-rig.** Kernel addition (forward-ref to iel-E11 RF-0..RF-4). |
 
 ### 4.3 Cross-field invariants
 

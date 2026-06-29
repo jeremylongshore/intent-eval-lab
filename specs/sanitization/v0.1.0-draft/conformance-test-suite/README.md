@@ -36,16 +36,12 @@ Each fixture is a JSON document:
   "class": "must-redact", // or "must-preserve"
   "description": "<what this fixture exercises>",
   "spec_rules": ["R4", "R12"], // the SPEC rules under test
-  "input_trace": {
-    /* a SessionTrace-shaped fragment, pre-sanitization */
-  },
+  "input_trace": {/* a SessionTrace-shaped fragment, pre-sanitization */},
   "planted_secret": "<the exact secret string, MUST-REDACT only>",
   "expected": {
     "escape_scan_matches": 0, // MUST be 0 for a pass
     "outcome": "redacted | refused", // MUST-REDACT: one of these
-    "preserved_assertions": [
-      /* MUST-PRESERVE: forensic content that MUST survive */
-    ],
+    "preserved_assertions": [/* MUST-PRESERVE: forensic content that MUST survive */],
   },
 }
 ```
