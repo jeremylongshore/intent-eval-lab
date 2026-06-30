@@ -11,7 +11,7 @@
 
 We ran our own platform on his two public skills — `j-rig check` (deterministic package gate) and `j-rig eval` (behavioral, against a real model). The skills are **structurally clean** (`check`: 11/0 and 12/0) and **behave correctly** where the eval could read them. More usefully, exactly as with the [088](./088-RR-LAND-beads-dolt-external-adopter-convergence-proof-2026-06-20.md) `beads-dolt` run, **the eval found two real flaws in our own platform, not in his skills:**
 
-1. **A false-blocker bug, shipped.** The published `@intentsolutions/jrig-cli` (0.1.0 / 0.1.1) applies every criterion to every test case, so off-topic `should_not_trigger` control prompts fail unrelated safety criteria. The fix (`selectCriteriaForTestCase`) already exists in source — the source comment literally calls it *"the false-blocker bug that inflated NO-SHIP rates"* — but it is **not in the published CLI** a real adopter runs. (Bead `j-rig-binary-eval-908`.)
+1. **A false-blocker bug, shipped.** The published `@intentsolutions/jrig-cli` (0.1.0 / 0.1.1) applies every criterion to every test case, so off-topic `should_not_trigger` control prompts fail unrelated safety criteria. The fix (`selectCriteriaForTestCase`) already exists in source — the source comment literally calls it _"the false-blocker bug that inflated NO-SHIP rates"_ — but it is **not in the published CLI** a real adopter runs. (Bead `j-rig-binary-eval-908`.)
 2. **Brittle judge-verdict parsing.** With `--provider deepseek` the judge returns the structured `{"verdict": "yes", …}` it is asked for, but the published parser mis-buckets many of those clear verdicts as `unsure`, inflating the no-ship signal. (Bead `j-rig-binary-eval-708`.)
 
 The published-CLI decision came back `block` for both skills — but that `block` is a **platform artifact of the two bugs above, not a verdict on his work.** A platform that runs on a real external artifact and exposes its own seams is doing its job.
@@ -24,10 +24,10 @@ This run is the gift and the evidence; the outreach (below) converts it into ado
 
 Two skills, both authored and maintained by Xquik-dev, both registered into the marketplace via one-line `sources.yaml` entries (the files sync in later via `sync-external.mjs`):
 
-| Skill | Repo | Surface |
-| --- | --- | --- |
-| `hermes-tweet` | [`Xquik-dev/hermes-tweet`](https://github.com/Xquik-dev/hermes-tweet) | Hermes Agent X/Twitter toolset (`tweet_explore` / `tweet_read` / `tweet_action`), action-gated behind `HERMES_TWEET_ENABLE_ACTIONS` |
-| `x-twitter-scraper` | [`Xquik-dev/x-twitter-scraper`](https://github.com/Xquik-dev/x-twitter-scraper) | Xquik X/Twitter REST + MCP data platform; estimate-then-confirm extraction, confirmation-gated writes, untrusted-content isolation |
+| Skill               | Repo                                                                            | Surface                                                                                                                             |
+| ------------------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `hermes-tweet`      | [`Xquik-dev/hermes-tweet`](https://github.com/Xquik-dev/hermes-tweet)           | Hermes Agent X/Twitter toolset (`tweet_explore` / `tweet_read` / `tweet_action`), action-gated behind `HERMES_TWEET_ENABLE_ACTIONS` |
+| `x-twitter-scraper` | [`Xquik-dev/x-twitter-scraper`](https://github.com/Xquik-dev/x-twitter-scraper) | Xquik X/Twitter REST + MCP data platform; estimate-then-confirm extraction, confirmation-gated writes, untrusted-content isolation  |
 
 Both ship real safety engineering: explicit decision rules, secret-hygiene rules ("never echo the API key"), untrusted-content isolation markers (`XQUIK_UNTRUSTED_X_CONTENT`), write-confirmation gates, and per-method rate limits. `x-twitter-scraper` carries ~25 sections including a Security Summary, Content Isolation block, and Safety Rules; `hermes-tweet` ships its own `check_public_safety.py`.
 
@@ -43,10 +43,10 @@ An earlier pass scored both skills **66 / 73** in the IS marketplace validator. 
 
 Same shape as the [088](./088-RR-LAND-beads-dolt-external-adopter-convergence-proof-2026-06-20.md) convergence run, restricted to the two creator-facing stages:
 
-| Stage | Tool | Role |
-| --- | --- | --- |
-| 1 | `j-rig check` | Deterministic package integrity gate (no key, no model). |
-| 2 | `j-rig eval` | Behavioral eval — run each skill against a tailored `eval.yaml` of binary criteria with a **real model provider** (DeepSeek `deepseek-v4-flash`, our key), judge each criterion, emit a ship/no-ship decision. |
+| Stage | Tool          | Role                                                                                                                                                                                                           |
+| ----- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | `j-rig check` | Deterministic package integrity gate (no key, no model).                                                                                                                                                       |
+| 2     | `j-rig eval`  | Behavioral eval — run each skill against a tailored `eval.yaml` of binary criteria with a **real model provider** (DeepSeek `deepseek-v4-flash`, our key), judge each criterion, emit a ship/no-ship decision. |
 
 We authored one `eval.yaml` per skill, grounded in each skill's actual trigger surface and its own safety contract — trigger precision, explore-first / estimate-first routing, action gating, secret hygiene, write confirmation, and an adversarial prompt-injection case. Each spec passed `j-rig validate` (6 criteria, 5 test cases each) before running.
 
@@ -64,10 +64,10 @@ We authored one `eval.yaml` per skill, grounded in each skill's actual trigger s
 The published-CLI decision came back `block` for both (hermes pass_rate 0.33; x-twitter 0.375). Reading the per-criterion rows in the eval DB, that `block` is driven entirely by two platform bugs:
 
 **Finding 1 — a false-blocker bug that is fixed in source but shipped broken.**
-The published CLI applies all six criteria to every test case. So the off-topic control prompts — *"What's the capital of France?"* (hermes) and *"Summarize the plot of Hamlet"* (x-twitter) — were judged against X-safety criteria (`action-gated-and-summarized`, `extraction-estimate-then-confirm`, `mcp-remote-endpoint`) and counted as failures, even though the correct behavior for an off-topic prompt is to **not** do any X operation. The source already fixes this (`packages/cli/src/commands/eval.ts:350-371` → `selectCriteriaForTestCase`), and the source comment names it *"the false-blocker bug that inflated NO-SHIP rates"* — but `grep` of the installed published dist shows **zero** occurrences of `selectCriteriaForTestCase`. The fix is unshipped. → Bead `j-rig-binary-eval-908`: cut a release carrying the scoping fix + a regression test.
+The published CLI applies all six criteria to every test case. So the off-topic control prompts — _"What's the capital of France?"_ (hermes) and _"Summarize the plot of Hamlet"_ (x-twitter) — were judged against X-safety criteria (`action-gated-and-summarized`, `extraction-estimate-then-confirm`, `mcp-remote-endpoint`) and counted as failures, even though the correct behavior for an off-topic prompt is to **not** do any X operation. The source already fixes this (`packages/cli/src/commands/eval.ts:350-371` → `selectCriteriaForTestCase`), and the source comment names it _"the false-blocker bug that inflated NO-SHIP rates"_ — but `grep` of the installed published dist shows **zero** occurrences of `selectCriteriaForTestCase`. The fix is unshipped. → Bead `j-rig-binary-eval-908`: cut a release carrying the scoping fix + a regression test.
 
 **Finding 2 — the judge's structured verdicts are mis-parsed as `unsure`.**
-The judge prompt instructs the model to *"Reply with a JSON object: {verdict, reasoning}"*. With `--provider deepseek` the model complies — but the published parser dumps many of those replies into `unsure` with the raw JSON in the reasoning field. Concretely, of hermes's 12 `unsure` rows, 3 are literally `{"verdict": "yes", …}` (clear passes mis-bucketed) and 8 are empty-parse; of x-twitter's 9 `unsure`, 4 are JSON `"yes"`. The model also emits a `confidence` key not in the verdict schema, which the parser should tolerate. → Bead `j-rig-binary-eval-708`: harden the judge-response parser to extract a verdict from a JSON object (tolerate extra keys, code fences, leading prose) before falling back to `unsure`.
+The judge prompt instructs the model to _"Reply with a JSON object: {verdict, reasoning}"_. With `--provider deepseek` the model complies — but the published parser dumps many of those replies into `unsure` with the raw JSON in the reasoning field. Concretely, of hermes's 12 `unsure` rows, 3 are literally `{"verdict": "yes", …}` (clear passes mis-bucketed) and 8 are empty-parse; of x-twitter's 9 `unsure`, 4 are JSON `"yes"`. The model also emits a `confidence` key not in the verdict schema, which the parser should tolerate. → Bead `j-rig-binary-eval-708`: harden the judge-response parser to extract a verdict from a JSON object (tolerate extra keys, code fences, leading prose) before falling back to `unsure`.
 
 ### 5.3 What the skills actually did
 
@@ -78,14 +78,14 @@ Where a criterion was both in-scope for its test case **and** the verdict parsed
 
 Net: the behavioral signal on the in-scope, parseable criteria is **correct, safe behavior.** The `block` is ours to fix, not his.
 
-## 6. Results-flow reality — does his eval ever reach us?
+## 6. Results-flow reality — whether his eval ever reaches us
 
 There is **no automatic results-flow-back. j-rig does not phone home.** (Verified against the code.) `eval` writes only to a local SQLite DB; `report` reads only that DB; `emit-evidence` prints an in-toto Statement to stdout/file with signing + Rekor upload as opt-in flags the user sets themselves; `evals.intentsolutions.io` is a predicate identifier, not an ingest endpoint; `labs.intentsolutions.io` is a pull consumer from a hardcoded owner-only OIDC allowlist that fails closed on anyone else and has no upload endpoint.
 
 So results become visible to us in exactly three ways:
 
 1. **We run it ourselves** on his public repos — direct results. (This document.)
-2. **He shares manually** — files issues / pastes output. This is the *adoption signal* (qualitative), not a data feed.
+2. **He shares manually** — files issues / pastes output. This is the _adoption signal_ (qualitative), not a data feed.
 3. **Two-sided dashboard onboarding** — operator adds his repo to `pinned-subjects.json` AND he publishes a signed manifest clearing OIDC + Rekor + DSSE. High-friction, partly DNSSEC-gated → phase-2, not now.
 
 Implication: for **results**, we run it (done). For **adoption evidence**, we watch his issues/feedback. The polished public artifact comes from us, not from him.
@@ -95,14 +95,14 @@ Implication: for **results**, we run it (done). For **adoption evidence**, we wa
 Sequencing: we produced the evidence first (above); the outreach converts it into adoption. Public text is held for sign-off before posting.
 
 1. **Merge the marketplace PRs #924 + #865** — feature his plugins (the reciprocity). Note: #924 as opened also flips an unrelated existing source (`numman.ali`, Apache-2.0) from `verified: true` → `false` and strips a trailing newline from an unrelated blog post — codex-bot artifacts to resolve before merge.
-2. **A warm peer comment on each PR** — ran them through our eval tooling bringing them in; structurally clean and behaving correctly; merged. Honest note that the run surfaced bugs in *our* tooling, with the dogfood ask + tracking-issue link.
+2. **A warm peer comment on each PR** — ran them through our eval tooling bringing them in; structurally clean and behaving correctly; merged. Honest note that the run surfaced bugs in _our_ tooling, with the dogfood ask + tracking-issue link.
 3. **One "dogfood request" issue per repo** — the tailored `eval.yaml` (one-command reproduce), the free tools (`check` / `refine` / `audit-harness scan`), an honest ask for issues/feedback against the tooling, and a gentle note that `hermes-tweet` carries three `SKILL.md` copies (two byte-identical at 249 lines, one diverged at 106 lines, all stamped `v0.1.6`) — flagged in case it's unintentional, not a correction.
 
 Tone: peer-to-peer, casual-professional, honest-ask. No "you owe me." No mention of the Anthropic partnership (brand-silence rule). Issues and comments carry the `- Jeremy Longshore / intentsolutions.io` footer per repo convention.
 
 ## 8. What this proves
 
-1. **The platform survives contact with a real external artifact** — and, run on two well-built independent skills, it found two concrete flaws in its own plumbing (one of them a *shipped* false-blocker), with verifiable fixes filed.
+1. **The platform survives contact with a real external artifact** — and, run on two well-built independent skills, it found two concrete flaws in its own plumbing (one of them a _shipped_ false-blocker), with verifiable fixes filed.
 2. **A behavioral score is a property of (skill × subject-model × judge-model × eval-spec), not just "is the skill good."** The honest read of a `block` is "look at the rows," and the rows here indict the harness, not the author.
 3. **The adoption signal to watch** (the further goal): Xquik runs the tooling and/or opens issues against the IEP packages — the real-world external-adoption evidence, arriving via GitHub, not a data feed.
 
