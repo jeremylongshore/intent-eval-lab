@@ -103,6 +103,11 @@ extend-exclude = [
   # `_vendor/` did not catch the nested path, so minified captured HTML (an
   # Anthropic web page) leaked into the scan and tripped on garbage tokens.
   "**/_vendor/**",
+  # Raw fetch-capture bodies (Claude Code changelog/releases HTML+markdown
+  # snapshots committed by the scheduled spec-archive capture). External captured
+  # content, not authored prose — e.g. "iTerm2" tripping iterm->term. Same class
+  # as the _vendor snapshots above.
+  "archive/raw/**",
   ".beads/",
   ".audit-harness/",
   "*.lock",
