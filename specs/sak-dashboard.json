@@ -192,7 +192,7 @@
   "inputs": {
     "SAK-STATE.json": "8f0c009bb43b7175fcc97521095a2f887df72232ed203156fbeb6a496f32b27d",
     "specs/leading-indicators.v1.json": "4bcb1549ded6bf02d043a81d122c02d36538221e508340bdc1d061994cef4f67",
-    "specs/lineage/coverage-map.json": "0a19660c0ad89d1a28d7f7e191ef5edd365336bcd19061d3d5ad9ed126a368ee"
+    "specs/lineage/coverage-map.json": "037bfb5d046a60176b6dc6630acbf10ecb7a8cc1ca5645ff84d95254a9edb4a5"
   },
   "leading_indicators": {
     "action": "Continue per plan",
