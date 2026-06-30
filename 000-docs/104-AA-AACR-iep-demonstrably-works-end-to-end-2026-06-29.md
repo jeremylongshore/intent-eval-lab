@@ -25,22 +25,22 @@ Plus trust gaps: docs claimed capabilities the code didn't have.
 
 ## 2. What shipped
 
-| Phase | Deliverable | PR | CI |
-|---|---|---|---|
-| 0 (truth) | `intent-rollout-gate` SECURITY.md de-lied to actual v0.3.0 behavior + version drift | [intent-rollout-gate#46](https://github.com/jeremylongshore/intent-rollout-gate/pull/46) | green |
-| 0 (truth) | j-rig CLAUDE.md stale "auto-bump" release claim corrected | [j-rig#171](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/171) | green |
-| 0 (truth) | `@intentsolutions/core` README v0.8.0 → v0.9.0 | [intent-eval-core#75](https://github.com/jeremylongshore/intent-eval-core/pull/75) | green |
-| 0 (truth) | `validate-skillmd/SKILL.md` false "auto-generates a spec" claim corrected (local `~/.claude` skill) | — | n/a |
-| 1 (chain) | `j-rig eval --emit-bundle`: real kernel-validated `gate-result/v1` Statement + committed e2e self-eval test | [j-rig#172](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/172) | green |
-| 2 (scale) | `j-rig scaffold-spec`: generate a baseline eval-spec from a SKILL.md | [j-rig#174](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/174) | green |
-| 3 (prereq) | Reasoning-model `max_tokens` fix across execution + trigger + judge providers | [j-rig#173](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/173) | green |
+| Phase      | Deliverable                                                                                                 | PR                                                                                       | CI    |
+| ---------- | ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ----- |
+| 0 (truth)  | `intent-rollout-gate` SECURITY.md de-lied to actual v0.3.0 behavior + version drift                         | [intent-rollout-gate#46](https://github.com/jeremylongshore/intent-rollout-gate/pull/46) | green |
+| 0 (truth)  | j-rig CLAUDE.md stale "auto-bump" release claim corrected                                                   | [j-rig#171](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/171)         | green |
+| 0 (truth)  | `@intentsolutions/core` README v0.8.0 → v0.9.0                                                              | [intent-eval-core#75](https://github.com/jeremylongshore/intent-eval-core/pull/75)       | green |
+| 0 (truth)  | `validate-skillmd/SKILL.md` false "auto-generates a spec" claim corrected (local `~/.claude` skill)         | —                                                                                        | n/a   |
+| 1 (chain)  | `j-rig eval --emit-bundle`: real kernel-validated `gate-result/v1` Statement + committed e2e self-eval test | [j-rig#172](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/172)         | green |
+| 2 (scale)  | `j-rig scaffold-spec`: generate a baseline eval-spec from a SKILL.md                                        | [j-rig#174](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/174)         | green |
+| 3 (prereq) | Reasoning-model `max_tokens` fix across execution + trigger + judge providers                               | [j-rig#173](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/173)         | green |
 
 ## 3. The proof (end-to-end, real components, no placeholders)
 
 `j-rig eval` now emits a real, kernel-validated `gate-result/v1` in-toto Statement
 (`--emit-bundle`). Verified locally, both directions of the gate:
 
-```
+```text
 # SHIP path (stub provider, deterministic):
 j-rig eval ./skill --provider stub --emit-bundle bundle.json   → gate_decision: pass
 intent-rollout-gate (policy j-rig:local:*)                      → decision: allow
@@ -56,8 +56,8 @@ intent-rollout-gate (policy j-rig:local:*)
   array). `commit_sha` is resolved honestly (env → skill-dir git HEAD →
   content-derived slice, with the source recorded in `metadata.commit_sha_source`).
 - A committed e2e test (`eval.e2e.test.ts`) spawns the built CLI evaluating j-rig's
-  own skill and asserts a kernel-valid bundle with non-placeholder hashes — *the
-  tool that evaluates skills, tested evaluating a skill* (071 P1 #6).
+  own skill and asserts a kernel-valid bundle with non-placeholder hashes — _the
+  tool that evaluates skills, tested evaluating a skill_ (071 P1 #6).
 - Signing (cosign → Rekor) is the only un-exercised step; it is dispatch-only /
   DNSSEC-gated and flows through release CI per DR-002 § 6.3.
 
@@ -84,11 +84,11 @@ against `max_tokens` but never appear in `content`. The OpenAI-compat providers 
 small budgets, so reasoning exhausted them and returned empty/truncated output that
 silently became garbage grades:
 
-| Layer | Old budget | Symptom | Fix |
-|---|---|---|---|
-| Execution | 1024 | empty `content`, `finish_reason=length` → false BLOCK | 8192 + throw on empty+length |
-| Judge | 256 | empty verdict → `parseJsonObject(null)` → false "unsure" | 2048 |
-| Trigger | 256 | truncated routing → missed triggers | 2048 |
+| Layer     | Old budget | Symptom                                                  | Fix                          |
+| --------- | ---------- | -------------------------------------------------------- | ---------------------------- |
+| Execution | 1024       | empty `content`, `finish_reason=length` → false BLOCK    | 8192 + throw on empty+length |
+| Judge     | 256        | empty verdict → `parseJsonObject(null)` → false "unsure" | 2048                         |
+| Trigger   | 256        | truncated routing → missed triggers                      | 2048                         |
 
 Empirically verified against DeepSeek (2026-06-29): complex task @400 → 0 chars,
 @8000 → 5792 chars. After the fix on a real eval: **trigger recall 0.75 → 1.00**;
@@ -100,7 +100,7 @@ Empirically verified against DeepSeek (2026-06-29): complex task @400 → 0 char
 After the fixes, `databricks-cost-leak-hunter`'s functional **execution** still
 returns empty for the cost-question prompts specifically, while producing real
 output for the grant-chain case. The most likely cause is that this skill is
-**tool/script-dependent** (it ships a `scripts/` dir and is designed to *run*
+**tool/script-dependent** (it ships a `scripts/` dir and is designed to _run_
 queries, not answer in a single completion turn) — so a single-turn completion eval
 cannot fully grade it. This is an eval-coverage boundary, not a wiring bug, and
 matches the plan's directive to "document the boundary rather than fake depth." It is
@@ -138,7 +138,7 @@ completion" classification.
 2. **A green suite is not a working system.** The make-or-break gap (no bundle ever
    emitted) sat under 1200+ passing tests.
 3. **Reasoning models break naïve `max_tokens`.** Any provider call that expects
-   content must budget for hidden reasoning; a too-small budget fails *silently* as
+   content must budget for hidden reasoning; a too-small budget fails _silently_ as
    empty content, which downstream code charitably interprets (empty output → "the
    skill produced nothing" → BLOCK; empty verdict → "unsure"). Surface truncation as
    an error; don't let it masquerade as a real result.
@@ -149,4 +149,4 @@ completion" classification.
 ---
 
 - Jeremy Longshore
-intentsolutions.io
+  intentsolutions.io
