@@ -1,8 +1,8 @@
 {
   "_generated": "GENERATED-DO-NOT-EDIT \u2014 derived projection of the append-only lineage log (specs/lineage/log.jsonl). Regenerate: python3 scripts/lineage-log.py project-coverage. Normative spec: 000-docs/054-AT-SPEC-lineage-log-and-derived-coverage-map-2026-06-12.md",
   "derived_from": {
-    "last_event_id": 52,
-    "line_count": 52,
+    "last_event_id": 66,
+    "line_count": 66,
     "log": "specs/lineage/log.jsonl"
   },
   "projection_version": "lineage-coverage/v1",
@@ -74,9 +74,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-06-29T10:45:01Z",
-        "event_id": 52,
-        "upstream_version": "02071bcf71b3092070e35963df5469aa3b26e76223023864c880119219ca0405"
+        "at": "2026-06-30T10:18:14Z",
+        "event_id": 66,
+        "upstream_version": "a1c91198f722c78afaf713aa037e04e2dad5a57c254167db0d3a6d1539eba55e"
       }
     },
     "claude-code-changelog": {
@@ -87,9 +87,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-06-29T03:17:18Z",
-        "event_id": 47,
-        "upstream_version": "702ffe0b97e3a282b10c38f46cc75e4e81a326612f03775291286bd0e212dc65"
+        "at": "2026-06-30T10:18:14Z",
+        "event_id": 63,
+        "upstream_version": "e2d7c6ac20ab7ef7e25097f0245e3a65e412deede4d97f2d3c011e33fc3ba334"
       }
     },
     "claude-code-npm": {
@@ -100,9 +100,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-06-29T03:17:18Z",
-        "event_id": 48,
-        "upstream_version": "003baff1d99042077e7b577504169668dd9657a1c9a63fcd5becbb1bbdd5e91d"
+        "at": "2026-06-30T10:18:14Z",
+        "event_id": 64,
+        "upstream_version": "5fe9ab881b352a4499f2da6fe7b6f321759b65871d7ae4799cec34da57bc6646"
       }
     },
     "claude-code-releases": {
@@ -113,9 +113,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-06-29T03:17:18Z",
-        "event_id": 49,
-        "upstream_version": "a36bea7288aa3d157e9cdbf66902044d0cd57f1f9d33ebc89f80db5259470fe0"
+        "at": "2026-06-30T10:18:14Z",
+        "event_id": 65,
+        "upstream_version": "de1114578673afc074e19c9633e0225cad7df5e4dbd49364a2e8f6ce1e6e89dc"
       }
     },
     "claude-hooks": {
@@ -136,9 +136,9 @@
       ],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-06-29T03:17:18Z",
-        "event_id": 41,
-        "upstream_version": "8856db8578876dadb2a5c0b9d078abc03b74263a4cd759b3f9d6dc9a210ee302"
+        "at": "2026-06-30T10:18:14Z",
+        "event_id": 57,
+        "upstream_version": "1c8367abb06f55a5bb98cd7e3a6efa93344b43d03fe14f620347cdb1597c80b8"
       }
     },
     "claude-settings": {
@@ -152,9 +152,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-06-29T03:17:18Z",
-        "event_id": 42,
-        "upstream_version": "14604f0b3631288c2a323991df234375725f0300f762a61ee3a87f1bc17db7c8"
+        "at": "2026-06-30T10:18:14Z",
+        "event_id": 58,
+        "upstream_version": "726236675d943c63218c1aae605fea528a55685e7083d784a11ed5059f029a93"
       }
     },
     "claude-slash-commands": {
@@ -165,9 +165,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-06-29T03:17:18Z",
-        "event_id": 43,
-        "upstream_version": "56fd282f5b07885cdd685f580f49fd4d33dec8315fe4649d463d544ca40b4672"
+        "at": "2026-06-30T10:18:14Z",
+        "event_id": 59,
+        "upstream_version": "7aaca90961b7e45b0402599a017ee9afcbbf1c1851d1d26cead3f05b2883970e"
       }
     },
     "mcp-releases": {
@@ -204,9 +204,9 @@
       ],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-06-29T03:17:18Z",
-        "event_id": 38,
-        "upstream_version": "51ac48a472a14e63b21af6ce430abbbca59a3c6551e02aa29f719e935261f71f"
+        "at": "2026-06-30T10:18:14Z",
+        "event_id": 55,
+        "upstream_version": "6e4cba2d17f7156877357762b6b4b63cd790d8973f61ec35ab73cd61ad67017d"
       }
     },
     "mcp-spec-docs": {
@@ -220,9 +220,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-06-29T03:17:18Z",
-        "event_id": 39,
-        "upstream_version": "d0312accd65cf6b0358360acbbce76c73f96cf9bfb6351186f0ca47364fa20bc"
+        "at": "2026-06-30T10:18:14Z",
+        "event_id": 56,
+        "upstream_version": "3c555f88228d155773009fd74d05a4f72990ea983f4637db32714f52454e33ab"
       }
     },
     "platform-skills-overview": {
@@ -236,9 +236,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-06-29T03:17:18Z",
-        "event_id": 36,
-        "upstream_version": "f8032be4f748149cbad3f9a078b3071478e0fc83b5e5cadcb4b4cfb1f74734f8"
+        "at": "2026-06-30T10:18:14Z",
+        "event_id": 53,
+        "upstream_version": "6e0317c9322ea8c9f82dee4bb97e10efd67bc9d022eabd7fae38405263632c96"
       }
     },
     "plugin-marketplaces": {
@@ -259,9 +259,9 @@
       ],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-06-29T03:17:18Z",
-        "event_id": 46,
-        "upstream_version": "48b173cbfd0a3b2780411406bb4291cb111ae8eb6df3d8b71d6fa0b241c44a37"
+        "at": "2026-06-30T10:18:14Z",
+        "event_id": 62,
+        "upstream_version": "dcf2af9d348256d512e985a8bdbf0e09366289abe77b6f9303006244e6452e30"
       }
     },
     "plugins-reference": {
@@ -282,9 +282,9 @@
       ],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-06-29T03:17:18Z",
-        "event_id": 44,
-        "upstream_version": "1427291b1a372c78e9ac4826f2e9073d5a8336716f9d34febcf70fca4ff9065d"
+        "at": "2026-06-30T10:18:14Z",
+        "event_id": 60,
+        "upstream_version": "72099a2abb47caf51e34da30cec9dd97c42c89947d7d8e2e6deba2ab931b9950"
       }
     },
     "skills-releases": {
@@ -298,9 +298,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-06-29T10:45:01Z",
-        "event_id": 51,
-        "upstream_version": "c2dad0f6a6810869062f4028c76c36977fc1e09e4d137ebdb61041ab5b3931b5"
+        "at": "2026-06-30T10:18:14Z",
+        "event_id": 54,
+        "upstream_version": "10a39cf514702e3475d38b55514b0da89d66a3d044b0ebde3423030f008a3f2b"
       }
     },
     "sub-agents": {
@@ -321,9 +321,9 @@
       ],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-06-29T03:17:18Z",
-        "event_id": 45,
-        "upstream_version": "ed7dec56883ed80fb3a5ea0cc494499bee221420dd9c02068a1930f40ca63e6d"
+        "at": "2026-06-30T10:18:14Z",
+        "event_id": 61,
+        "upstream_version": "d361579a94ddf7f452b887229ef85f80088e58a6daf65f4753c131574aaf7222"
       }
     }
   }
