@@ -79,6 +79,34 @@
         "surface": "agentskills-spec"
       },
       {
+        "adopted": false,
+        "contract": "cross-cutting-signal",
+        "convergence_triggers_outstanding": 0,
+        "divergences_outstanding": 0,
+        "surface": "anthropic-engineering"
+      },
+      {
+        "adopted": false,
+        "contract": "version-signal",
+        "convergence_triggers_outstanding": 0,
+        "divergences_outstanding": 0,
+        "surface": "claude-code-changelog"
+      },
+      {
+        "adopted": false,
+        "contract": "version-signal",
+        "convergence_triggers_outstanding": 0,
+        "divergences_outstanding": 0,
+        "surface": "claude-code-npm"
+      },
+      {
+        "adopted": false,
+        "contract": "version-signal",
+        "convergence_triggers_outstanding": 0,
+        "divergences_outstanding": 0,
+        "surface": "claude-code-releases"
+      },
+      {
         "adopted": true,
         "contract": "hook-config",
         "convergence_triggers_outstanding": 1,
@@ -91,6 +119,13 @@
         "convergence_triggers_outstanding": 0,
         "divergences_outstanding": 0,
         "surface": "claude-settings"
+      },
+      {
+        "adopted": false,
+        "contract": "slash-commands",
+        "convergence_triggers_outstanding": 0,
+        "divergences_outstanding": 0,
+        "surface": "claude-slash-commands"
       },
       {
         "adopted": true,
@@ -150,14 +185,14 @@
       }
     ],
     "surfaces_adopted": 11,
-    "surfaces_total": 11
+    "surfaces_total": 16
   },
   "dashboard_version": "sak-dashboard/v1",
-  "generated_at": "2026-06-20T12:00:00Z",
+  "generated_at": "2026-06-30T12:00:00Z",
   "inputs": {
     "SAK-STATE.json": "8f0c009bb43b7175fcc97521095a2f887df72232ed203156fbeb6a496f32b27d",
     "specs/leading-indicators.v1.json": "4bcb1549ded6bf02d043a81d122c02d36538221e508340bdc1d061994cef4f67",
-    "specs/lineage/coverage-map.json": "c5e0bfe353a5df27c92e6ef1b144bd65ecf506620fec214e5146804ab9269b82"
+    "specs/lineage/coverage-map.json": "0a19660c0ad89d1a28d7f7e191ef5edd365336bcd19061d3d5ad9ed126a368ee"
   },
   "leading_indicators": {
     "action": "Continue per plan",

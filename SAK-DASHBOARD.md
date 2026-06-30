@@ -1,6 +1,6 @@
 <!-- GENERATED-DO-NOT-EDIT — SAK dashboard derived from committed state (SAK-STATE.json + leading-indicators registry + lineage coverage map). Regenerate: python3 scripts/render-sak-dashboard.py. Normative spec: 000-docs/033-PP-PLAN-skill-refiner-sak-amendment-v7-2026-05-28.md § 14.13.1 -->
 
-# SAK Dashboard — generated 2026-06-20T12:00:00Z
+# SAK Dashboard — generated 2026-06-30T12:00:00Z
 
 State as of 2026-06-20. This file is DERIVED — never hand-edit it.
 
@@ -62,13 +62,18 @@ SAK / Skill-Refiner bead subtree (epic `9k5h`); captured 2026-06-20.
 
 ## Coverage map state
 
-- 11/11 upstream surfaces adopted | 12 divergences outstanding | 12 convergence triggers outstanding | 0 convergence triggers fired
+- 11/16 upstream surfaces adopted | 12 divergences outstanding | 12 convergence triggers outstanding | 0 convergence triggers fired
 
 | Surface | Contract | Adopted | Divergences outstanding | Convergence triggers outstanding |
 |---|---|---|---|---|
 | agentskills-spec | skill-frontmatter | yes | 7 | 7 |
+| anthropic-engineering | cross-cutting-signal | NO | 0 | 0 |
+| claude-code-changelog | version-signal | NO | 0 | 0 |
+| claude-code-npm | version-signal | NO | 0 | 0 |
+| claude-code-releases | version-signal | NO | 0 | 0 |
 | claude-hooks | hook-config | yes | 1 | 1 |
 | claude-settings | hook-config | yes | 0 | 0 |
+| claude-slash-commands | slash-commands | NO | 0 | 0 |
 | mcp-releases | mcp-config | yes | 0 | 0 |
 | mcp-schema-ts | mcp-config | yes | 1 | 1 |
 | mcp-spec-docs | mcp-config | yes | 0 | 0 |
