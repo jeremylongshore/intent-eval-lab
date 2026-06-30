@@ -98,7 +98,11 @@ extend-exclude = [
   "node_modules/",
   "dist/",
   "build/",
-  "_vendor/",
+  # Vendored fetch-capture snapshots live nested (e.g. specs/_vendor/<surface>/
+  # snapshot.html) — match `_vendor` at ANY depth, not just repo root. A bare
+  # `_vendor/` did not catch the nested path, so minified captured HTML (an
+  # Anthropic web page) leaked into the scan and tripped on garbage tokens.
+  "**/_vendor/**",
   ".beads/",
   ".audit-harness/",
   "*.lock",
