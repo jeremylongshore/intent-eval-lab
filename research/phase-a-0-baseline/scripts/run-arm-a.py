@@ -47,6 +47,7 @@ import statistics
 import sys
 import tempfile
 from pathlib import Path
+from typing import Any
 
 # Resolve _arm_common relative to this script's location (avoids PYTHONPATH dep)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -56,6 +57,7 @@ from _arm_common import (
     DEFAULT_PROVIDER,
     BudgetExceeded,
     CostMeter,
+    LLMProvider,
     ManifestReader,
     ResultPersister,
     Scorer,
@@ -82,14 +84,14 @@ def run_single(
     specimen: SpecimenMeta,
     k: int,
     manifest: ManifestReader,
-    client: object,  # any LLMProvider instance
+    client: LLMProvider,
     meter: CostMeter,
     persister: ResultPersister,
     scorer: Scorer,
     tmp_dir: Path,
     force: bool,
     dry_run: bool,
-) -> dict | None:
+) -> dict[str, Any] | None:
     """Execute one specimen x K run. Returns result dict or None if skipped."""
     sub = f"k={k}"
     sha = specimen.sha256
@@ -207,15 +209,15 @@ def run_single(
 
 
 def aggregate_results(
-    all_results: list[dict],
+    all_results: list[dict[str, Any]],
     k_values: list[int],
-) -> dict:
+) -> dict[str, dict[str, Any]]:
     """Compute per-K mean+std of marketplace_score_pct delta."""
     by_k: dict[int, list[int]] = {k: [] for k in k_values}
     for r in all_results:
         by_k[r["k"]].append(r["delta"])
 
-    per_k_stats: dict[str, dict] = {}
+    per_k_stats: dict[str, dict[str, Any]] = {}
     for k, deltas in by_k.items():
         if not deltas:
             per_k_stats[str(k)] = {"n": 0, "mean": None, "std": None, "min": None, "max": None}
@@ -234,7 +236,7 @@ def aggregate_results(
 
 def write_summary(
     out_dir: Path,
-    all_results: list[dict],
+    all_results: list[dict[str, Any]],
     k_values: list[int],
     meter: CostMeter,
     dry_run: bool,
@@ -315,7 +317,7 @@ def main() -> int:
     persister = ResultPersister(args.out, ARM_NAME, provider=args.provider, force=args.force)
     scorer = Scorer(validator_path=args.validator_path)
 
-    all_results: list[dict] = []
+    all_results: list[dict[str, Any]] = []
     skipped_count = 0
 
     print(

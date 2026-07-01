@@ -97,6 +97,7 @@ import sys
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _arm_common import (
@@ -105,6 +106,7 @@ from _arm_common import (
     DEFAULT_PROVIDER,
     BudgetExceeded,
     CostMeter,
+    LLMProvider,
     ManifestReader,
     ResultPersister,
     Scorer,
@@ -143,13 +145,13 @@ class EditProposal:
     ops: list[EditOp]
 
 
-def _validate_proposal(raw: dict) -> tuple[EditProposal, str | None]:
+def _validate_proposal(raw: dict[str, Any]) -> tuple[EditProposal | None, str | None]:
     """Parse + validate a raw dict as an EditProposal.
 
     Returns (proposal, None) on success; (None, error_message) on failure.
     """
     if not isinstance(raw, dict):
-        return None, "Response is not a JSON object"  # type: ignore[return-value]
+        return None, "Response is not a JSON object"
 
     sv = raw.get("schema_version", "")
     if sv != "arm-b-proposal/v1":
@@ -292,7 +294,7 @@ def _format_value(value: str) -> str:
 def build_propose_prompt(
     input_text: str,
     iteration: int,
-    rejection_history: list[dict],
+    rejection_history: list[dict[str, str]],
 ) -> str:
     """Build the proposal prompt for the Refiner mechanism.
 
@@ -360,7 +362,7 @@ Rules:
 def run_refiner(
     specimen: SpecimenMeta,
     input_text: str,
-    client: object,  # any LLMProvider instance
+    client: LLMProvider,
     meter: CostMeter,
     persister: ResultPersister,
     scorer: Scorer,
@@ -368,7 +370,7 @@ def run_refiner(
     max_iterations: int,
     dry_run: bool,
     force: bool,
-) -> dict:
+) -> dict[str, Any]:
     """Execute the propose/apply/score/accept loop for one specimen.
 
     Returns a trajectory dict summarising all iterations.
@@ -386,12 +388,12 @@ def run_refiner(
             "iterations": 0,
         }
 
-    rejection_history: list[dict] = []
+    rejection_history: list[dict[str, str]] = []
     best_text = input_text
     best_score = score_v1
     accepted = False
     iterations_to_accept: int | None = None
-    trajectory: list[dict] = []
+    trajectory: list[dict[str, Any]] = []
 
     for iteration in range(max_iterations):
         prompt = build_propose_prompt(input_text, iteration, rejection_history)
@@ -412,7 +414,7 @@ def run_refiner(
             break
 
         # Parse the JSON proposal from the response
-        raw_proposal: dict | None = None
+        raw_proposal: dict[str, Any] | None = None
         parse_error: str | None = None
         try:
             # Extract JSON from response (may be wrapped in markdown code block)
@@ -432,6 +434,7 @@ def run_refiner(
             if parse_error:
                 print(f"    proposal parse error: {parse_error}")
             else:
+                assert proposal_obj is not None  # parse_error is None iff proposal_obj is valid
                 print(f"    proposal: {len(proposal_obj.ops)} ops — {[o.op + ':' + o.field for o in proposal_obj.ops]}")
 
         # Persist proposal
@@ -599,7 +602,7 @@ def run_refiner(
 
 def write_summary(
     out_dir: Path,
-    all_results: list[dict],
+    all_results: list[dict[str, Any]],
     meter: CostMeter,
     dry_run: bool,
     provider: str = "unknown",
@@ -614,10 +617,10 @@ def write_summary(
     deltas = [r["delta_marketplace_score_pct"] for r in all_results if "delta_marketplace_score_pct" in r]
     iters_list = [r["iterations_to_accept"] for r in accepted_results if r.get("iterations_to_accept") is not None]
 
-    def safe_mean(lst: list) -> float | None:
+    def safe_mean(lst: list[float]) -> float | None:
         return round(_stats.mean(lst), 3) if lst else None
 
-    def safe_std(lst: list) -> float | None:
+    def safe_std(lst: list[float]) -> float | None:
         return round(_stats.stdev(lst), 3) if len(lst) > 1 else (0.0 if len(lst) == 1 else None)
 
     summary = {
@@ -705,7 +708,7 @@ def main() -> int:
     persister = ResultPersister(args.out, ARM_NAME, provider=args.provider, force=args.force)
     scorer = Scorer(validator_path=args.validator_path)
 
-    all_results: list[dict] = []
+    all_results: list[dict[str, Any]] = []
 
     print(
         f"[arm-b] specimens={len(specimens)} max_iterations={args.max_iterations} "

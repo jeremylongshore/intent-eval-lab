@@ -43,6 +43,7 @@ import re
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any
 
 # IS marketplace tier required fields per SCHEMA_CHANGELOG NON-NEGOTIABLES #1
 IS_MARKETPLACE_REQUIRED = {
@@ -78,7 +79,7 @@ def sha256_of_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def parse_frontmatter(skill_md_text: str) -> dict:
+def parse_frontmatter(skill_md_text: str) -> dict[str, bool]:
     """Extract YAML frontmatter without depending on PyYAML at runtime.
 
     Returns {} if no frontmatter detected. This is a permissive parser — it
@@ -92,7 +93,7 @@ def parse_frontmatter(skill_md_text: str) -> dict:
     if end == -1:
         return {}
     block = skill_md_text[4:end]
-    fm: dict = {}
+    fm: dict[str, bool] = {}
     for line in block.splitlines():
         m = re.match(r"^([A-Za-z][A-Za-z0-9_-]*)\s*:", line)
         if m:
@@ -119,7 +120,7 @@ def parse_grade(text: str) -> tuple[str, int]:
     return "F", 0
 
 
-def parse_findings(text: str) -> list[dict]:
+def parse_findings(text: str) -> list[dict[str, Any]]:
     """Extract WARN and INFO lines into structured findings.
 
     Format observed:
