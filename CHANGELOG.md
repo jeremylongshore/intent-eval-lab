@@ -36,9 +36,6 @@ skill evals still hit the judge-truncation (#175) + reasoning-model
   execution boundary (text length, tool_calls, status, timed_out) per test case
   (`--trace-boundary`), so a completion-only eval no longer silently grades a
   tool-dependent skill's degenerate empty response (j-rig #178).
-
-#### Changed
-
 - **Coverage-gate honesty (phase-a-0 research suite).** Documented the real
   reason the `pytest + coverage` job's CI coverage (~40%) trails local
   (~66-68%): the subprocess arm-runner scripts short-circuit in CI because the
