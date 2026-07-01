@@ -193,6 +193,29 @@ def _validate_proposal(raw: dict[str, Any]) -> tuple[EditProposal | None, str | 
     return EditProposal(schema_version=sv, rationale=rationale, ops=ops), None
 
 
+def _extract_json_object(response_text: str) -> tuple[dict[str, Any] | None, str | None]:
+    """Extract a JSON OBJECT from a model response.
+
+    Returns (obj, None) when the response (after stripping an optional ```json
+    fence) parses to a JSON object, else (None, error). Guards the cases
+    `json.loads` accepts WITHOUT raising but that are not proposals: `null` ->
+    None, arrays, and bare scalars — a `null`/`[...]`/`5` response must not slip
+    through the `is not None` guard as a valid proposal nor reach
+    `_validate_proposal`'s `.get()` (which would crash on a non-dict).
+    """
+    text = response_text.strip()
+    json_match = re.search(r"```(?:json)?\s*([\s\S]+?)\s*```", text)
+    if json_match:
+        text = json_match.group(1)
+    try:
+        parsed = json.loads(text)
+    except json.JSONDecodeError as exc:
+        return None, f"JSON decode error: {exc}"
+    if not isinstance(parsed, dict):
+        return None, f"response was not a JSON object (got {type(parsed).__name__})"
+    return parsed, None
+
+
 # ---------------------------------------------------------------------------
 # Frontmatter apply() — pure function
 # ---------------------------------------------------------------------------
@@ -413,28 +436,21 @@ def run_refiner(
             persister.log_error(sha, f"API call failed at iteration {iteration}: {exc}", {"iteration": iteration})
             break
 
-        # Parse the JSON proposal from the response
-        raw_proposal: dict[str, Any] | None = None
-        parse_error: str | None = None
-        try:
-            # Extract JSON from response (may be wrapped in markdown code block)
-            text = completion.text.strip()
-            json_match = re.search(r"```(?:json)?\s*([\s\S]+?)\s*```", text)
-            if json_match:
-                text = json_match.group(1)
-            raw_proposal = json.loads(text)
-        except json.JSONDecodeError as exc:
-            parse_error = f"JSON decode error: {exc}"
+        # Parse the JSON proposal from the response (guards null / non-object
+        # responses; see _extract_json_object).
+        raw_proposal, parse_error = _extract_json_object(completion.text)
 
         proposal_obj: EditProposal | None = None
         if raw_proposal is not None:
             proposal_obj, parse_error = _validate_proposal(raw_proposal)
 
         if dry_run:
-            if parse_error:
-                print(f"    proposal parse error: {parse_error}")
+            # Defensive on both channels rather than asserting an invariant:
+            # a parse error OR a missing proposal both take the "no proposal"
+            # branch (an assert here would crash on a `null`/non-object response).
+            if parse_error or proposal_obj is None:
+                print(f"    proposal parse error: {parse_error or 'no proposal object'}")
             else:
-                assert proposal_obj is not None  # parse_error is None iff proposal_obj is valid
                 print(f"    proposal: {len(proposal_obj.ops)} ops — {[o.op + ':' + o.field for o in proposal_obj.ops]}")
 
         # Persist proposal
