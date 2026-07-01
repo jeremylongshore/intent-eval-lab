@@ -11,6 +11,43 @@ Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skelet
 
 ### Added
 
+#### Cross-repo CI/CD remediation — the stranded j-rig-cli release + gate hygiene
+
+Executes `000-docs/106-PP-PLAN-cicd-jrig-cross-repo-remediation-2026-07-01.md`
+(full send A+B+C+D). The session's hardening work + four merged j-rig fixes
+(#172–#175) were stranded in `main`, unpublished, so `claude-code-plugins`
+skill evals still hit the judge-truncation (#175) + reasoning-model
+`max_tokens` (#173) bugs that inflate false NO-SHIP (the Xquik dogfood,
+`693-AA-AACR`).
+
+- **The core fix.** Cut `@intentsolutions/jrig-cli@0.1.2` (j-rig #176; sigstore
+  provenance) carrying #172–#175, and bumped the `claude-code-plugins` exact
+  pin `0.1.1 → 0.1.2` (cc-plugins #928) so the fix reaches skill evals. j-rig is
+  a build-time enrichment step there, not a PR merge gate.
+- **cc-plugins CI hygiene.** `enrich-jrig-data.mjs` now warns loudly (GitHub
+  Actions `::warning::`) instead of silently blanking every JRig-Verified badge
+  when `forge_proofs` is missing/empty (#929). Report-only deadline gates
+  (`# REPORT-ONLY-UNTIL:`) added to the frontmatter `--strict` relaxation (live
+  count corrected 182→**317**) and the `npm-audit` policy (#930). A generator,
+  `scripts/sync-lint-ignores.mjs`, replaces the check-only sync-lint gate so a
+  newly-synced source self-registers its markdownlint/ruff exclusion (#931),
+  unblocking beads-dolt re-sync.
+- **Eval instrumentation.** `j-rig eval` now characterizes the empty-output
+  execution boundary (text length, tool_calls, status, timed_out) per test case
+  (`--trace-boundary`), so a completion-only eval no longer silently grades a
+  tool-dependent skill's degenerate empty response (j-rig #178).
+
+#### Changed
+
+- **Coverage-gate honesty (phase-a-0 research suite).** Documented the real
+  reason the `pytest + coverage` job's CI coverage (~40%) trails local
+  (~66-68%): the subprocess arm-runner scripts short-circuit in CI because the
+  cross-repo IS validator + fixtures and real model-provider keys are absent —
+  an environment limit, not the earlier "process-init timing" hypothesis and
+  not a coverage bug. Coverage stays advisory-by-design (`continue-on-error`, no
+  `--fail-under`); the 62 unit tests are the required signal. No threshold
+  lowered, no exclusion added.
+
 #### Spec Authority Kernel (SAK) + continuous-spec-compliance
 
 - ISEDC Session 8 Class-1 Charter for the Spec Authority Kernel (DR-044) (#112)
