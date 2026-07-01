@@ -42,7 +42,7 @@ import random
 import subprocess
 from collections.abc import Generator, Sequence  # noqa: F401 — Sequence used by callers
 from pathlib import Path
-from typing import Protocol
+from typing import Any, Protocol
 
 # ---------------------------------------------------------------------------
 # Pricing constants (USD per million tokens)
@@ -147,11 +147,11 @@ class ScoreRecord:
     security_finding_count: int
     is_extras_present: int
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         return dataclasses.asdict(self)
 
     @classmethod
-    def from_dict(cls, d: dict) -> ScoreRecord:
+    def from_dict(cls, d: dict[str, Any]) -> ScoreRecord:
         tiers = d.get("tiers", {})
         mkt = tiers.get("marketplace", {})
         return cls(
@@ -319,11 +319,11 @@ class AnthropicProvider:
         """Return (input_usd_per_mtok, output_usd_per_mtok) for self.model."""
         return self._PRICING.get(self.model, (OPUS_INPUT_USD_PER_MTOK, OPUS_OUTPUT_USD_PER_MTOK))
 
-    def _get_client(self):  # type: ignore[return]
+    def _get_client(self) -> Any:
         if self._client is not None:
             return self._client
         try:
-            import anthropic  # type: ignore[import]
+            import anthropic
         except ImportError as exc:
             raise ImportError("anthropic SDK not installed. Run: pip install anthropic") from exc
         api_key = os.environ.get("ANTHROPIC_API_KEY", "")
@@ -409,11 +409,11 @@ class NVIDIAProvider:
         self.dry_run = dry_run
         self._client = None
 
-    def _get_client(self):  # type: ignore[return]
+    def _get_client(self) -> Any:
         if self._client is not None:
             return self._client
         try:
-            from openai import OpenAI  # type: ignore[import]
+            from openai import OpenAI
         except ImportError as exc:
             raise ImportError("openai SDK not installed. Run: pip install 'openai>=1.0'") from exc
         api_key = os.environ.get("NVIDIA_API_KEY", "")
@@ -497,11 +497,11 @@ class GroqProvider:
         self.dry_run = dry_run
         self._client = None
 
-    def _get_client(self):  # type: ignore[return]
+    def _get_client(self) -> Any:
         if self._client is not None:
             return self._client
         try:
-            from openai import OpenAI  # type: ignore[import]
+            from openai import OpenAI
         except ImportError as exc:
             raise ImportError("openai SDK not installed. Run: pip install 'openai>=1.0'") from exc
         api_key = os.environ.get("GROQ_API_KEY", "")
@@ -581,11 +581,11 @@ class DeepSeekProvider:
         self.dry_run = dry_run
         self._client = None
 
-    def _get_client(self):  # type: ignore[return]
+    def _get_client(self) -> Any:
         if self._client is not None:
             return self._client
         try:
-            from openai import OpenAI  # type: ignore[import]
+            from openai import OpenAI
         except ImportError as exc:
             raise ImportError("openai SDK not installed. Run: pip install 'openai>=1.0'") from exc
         api_key = os.environ.get("DEEPSEEK_API_KEY", "")
@@ -732,7 +732,7 @@ class AnthropicClient(AnthropicProvider):
     AnthropicClient directly. All arm runners now use get_provider().
     """
 
-    def complete(  # type: ignore[override]
+    def complete(
         self,
         prompt: str,
         max_tokens: int = 2048,
@@ -808,7 +808,7 @@ class CostMeter:
     def remaining_usd(self) -> float:
         return max(0.0, self.ceiling_usd - self._spent_usd)
 
-    def summary(self) -> dict:
+    def summary(self) -> dict[str, float | int]:
         return {
             "spent_usd": round(self._spent_usd, 6),
             "ceiling_usd": self.ceiling_usd,
@@ -836,8 +836,8 @@ class ManifestReader:
     def __init__(self, manifest_path: Path, include_held_out: bool = False) -> None:
         raw = json.loads(manifest_path.read_text(encoding="utf-8"))
         self._pre_registration = raw.get("pre_registration", {})
-        self._strata: dict[str, list[dict]] = raw.get("strata", {})
-        self._held_out_strata: dict[str, list[dict]] = raw.get("held_out", {})
+        self._strata: dict[str, list[dict[str, Any]]] = raw.get("strata", {})
+        self._held_out_strata: dict[str, list[dict[str, Any]]] = raw.get("held_out", {})
         self._include_held_out = include_held_out
 
     @property
@@ -935,7 +935,7 @@ class ResultPersister:
     def exists(self, sha: str, filename: str, sub: str = "") -> bool:
         return (self._slot_dir(sha, sub) / filename).exists()
 
-    def write_json(self, sha: str, filename: str, data: dict, sub: str = "") -> Path:
+    def write_json(self, sha: str, filename: str, data: dict[str, Any], sub: str = "") -> Path:
         """Write data as JSON to slot_dir/filename. Returns the path."""
         target = self._slot_dir(sha, sub) / filename
         if target.exists() and not self.force:
@@ -951,7 +951,7 @@ class ResultPersister:
         target.write_text(text, encoding="utf-8")
         return target
 
-    def log_error(self, sha: str, error: str, context: dict | None = None) -> None:
+    def log_error(self, sha: str, error: str, context: dict[str, Any] | None = None) -> None:
         """Append an error record to the provider-scoped errors.jsonl file."""
         import datetime as dt
 
