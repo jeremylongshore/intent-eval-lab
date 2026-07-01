@@ -52,15 +52,29 @@ jobs:
       - run: mypy research/phase-a-0-baseline/scripts/
 
   # ---------------------------------------------------------------------------
-  # L3 unit + coverage gate (with subprocess instrumentation)
+  # L3 unit tests (the required signal) + ADVISORY subprocess coverage.
   # ---------------------------------------------------------------------------
   pytest:
     name: pytest + coverage (research/phase-a-0-baseline)
     runs-on: ubuntu-latest
-    # Advisory first install: local coverage hits ~68% via subprocess
-    # instrumentation, CI hits ~40% — gap likely process-init timing.
-    # Investigated + tightened in follow-up; pytest itself (62 tests) always
-    # runs and is the real signal here.
+    # Coverage here is ADVISORY BY DESIGN (continue-on-error), not a gate, and
+    # there is deliberately no --fail-under. The smoke tests shell out via
+    # subprocess to the arm-runner scripts (run-arm-a.py / run-arm-b.py /
+    # analyze.py); in CI those children short-circuit early because the two
+    # external dependencies they need are absent:
+    #   1. the cross-repo IS validator + fixtures (Makefile FIXTURE_DIR →
+    #      ~/000-projects/claude-code-plugins/tests/fixtures/skill-frontmatter),
+    #      not checked out in this repo's CI, and
+    #   2. real model-provider keys (NVIDIA_API_KEY / GROQ_API_KEY / ANTHROPIC).
+    # So the arm-script bodies don't execute under coverage in CI (~40%) the way
+    # they do locally (~66-68%). That is an ENVIRONMENT limit — not a coverage
+    # bug and not "process-init timing" (an earlier, wrong hypothesis). The 62
+    # unit tests ALWAYS run and pass; that pass/fail is the real signal and the
+    # `ruff lint + format` job above is the required Python gate. Making CI
+    # measure the real ~66% would mean stubbing the cross-repo validator AND
+    # every model provider — i.e. mocking the very integration the suite exists
+    # to exercise. The honest call is to keep coverage advisory (tracked
+    # bd_000-projects-n6ueg), not to fake a number or add exclusions.
     continue-on-error: true
     steps:
       - uses: actions/checkout@v6
