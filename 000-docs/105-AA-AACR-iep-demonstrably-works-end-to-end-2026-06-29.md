@@ -4,7 +4,7 @@
 - **Date**: 2026-06-29
 - **Author**: Jeremy Longshore (intentsolutions.io)
 - **Epic (bd)**: `bd_000-projects-h08j` — "Make the Intent Eval Platform demonstrably work end-to-end on real skills and publish real results"
-- **Status**: Phases 0–2 landed (PRs open, CI green); Phase 3 partially executed + boundary documented; Phases 3 (full batch) / 4 (publish) / 5 (hardening) = follow-on.
+- **Status**: Phases 0–2 + reasoning-model fixes landed and **merged** to main; Phase 3 partially executed + boundary documented. Continuation (§ 8, 2026-06-30 → 07-01): **13 PRs merged ecosystem-wide**, lab CI hardened, a per-repo GitHub Actions outage weathered + reported. Phases 3 (full batch) / 4 (publish) / 5 (per-repo hardening) = follow-on.
 
 ---
 
@@ -145,6 +145,100 @@ completion" classification.
 4. **Honest boundaries beat fake depth.** A generated baseline spec grades trigger +
    safety; tool-dependent skills aren't fully gradeable by single-turn completion —
    say so rather than ship a confident-but-meaningless grade.
+
+## 8. Continuation — merge, CI hardening, and a GitHub Actions outage (2026-06-30 → 07-01)
+
+The Phase 0–2 PRs above were merged (with every AI-reviewer comment addressed in code
+first), and the effort widened into repo-health + CI hardening. Net: **13 PRs merged
+across the ecosystem; every repo's `main` is green.**
+
+### 8.1 Merging the six PRs — reviewer comments addressed, not waved through
+
+Before merge, 8 Gemini comments + 2 CodeQL alerts were resolved in-place:
+
+- **j-rig#172 (HIGH):** `gate_id` sanitized the model but not the skill name — a
+  non-kebab SKILL.md `name` could make `composeStatement` throw. Generalized to
+  `sanitizeSegment(raw, fallback)` for both segments.
+- **j-rig#174 (2 CodeQL):** TOCTOU file race (`existsSync`→`writeFileSync`) → atomic
+  `wx` write; polynomial-ReDoS trim → linear; plus cross-platform `basename`, an
+  explicit `models` field, and a kernel-safe `skill_name`.
+- **j-rig#173:** execution `max_tokens` made overridable via `JRIG_MAX_OUTPUT_TOKENS`.
+- **rollout-gate#46:** corrected the de-lie text itself (the action's `predicate-uri`
+  _input_ blocks; a bundle row's differing `predicateType` is skipped, not rejected).
+- **core#75:** entity count 15→16 (added `HumanReview`) to match the v0.9.0 CHANGELOG.
+- **j-rig#171:** clarified which `package.json` each release flow uses.
+
+### 8.2 A per-repo GitHub Actions event-delivery outage
+
+For 3+ hours, `intent-eval-lab` stopped delivering `push`/`pull_request` events to
+Actions while **cron and `workflow_dispatch` kept firing**. Config was healthy
+(Actions enabled, workflows active, no path filters, no stuck queue). Every
+client-side remedy was exhausted: 6 force-pushes, close/reopen, a fresh branch, an
+**API** Actions toggle, and a **UI** toggle. A controlled empty-commit probe in a
+sibling repo (`intent-rollout-gate`) fired instantly — proving the fault was
+**isolated to one repo and GitHub-side**, not account-wide. Reported officially at
+GitHub Community Discussions
+[#200604](https://github.com/orgs/community/discussions/200604) (there is no support
+email, and Free-tier support tickets exclude Actions). Delivery recovered on its own
+hours later; the queued PRs were then finished the normal way (real CI, no bypass).
+
+### 8.3 Repo-health fixes surfaced along the way (#211)
+
+A `[skip ci]` capture commit had left `main` red on three gates once a PR re-ran them:
+
+- **SAK dashboard** was stale vs `coverage-map.json` → regenerated (the generator
+  owns the bytes; `--check` + `--self-test` pass).
+- **typos** tripped on captured external content (an Anthropic web-page snapshot plus
+  Claude Code changelog/release bodies) → excluded `**/_vendor/**` + `archive/raw/**`
+  (captured HTML is not ours to spell-fix).
+- **markdownlint MD026** flagged the `104-RR-LAND` doc's `?`-ending section heading →
+  rephrased to statement form (**not** by loosening the rule); the doc was also
+  prettier-formatted with the pinned CI version (3.8.4).
+- Doc-number collision resolved: `104-RR-LAND` keeps 104; this AAR renumbered to
+  **105** ([#210](https://github.com/jeremylongshore/intent-eval-lab/pull/210),
+  [#211](https://github.com/jeremylongshore/intent-eval-lab/pull/211)).
+
+### 8.4 The two advisory Python gates (mypy, pytest)
+
+- **mypy 64 → 0** — real type fixes: an `LLMProvider` Protocol instead of bare
+  `object`, an accurate `EditProposal | None` return type, and 10 stale `# type:
+ignore` removed. Now green in CI.
+  ([#212](https://github.com/jeremylongshore/intent-eval-lab/pull/212))
+- **pytest coverage 59.5% → 66.1% (local)** via real smoke tests (`build-fixtures.py`
+  0%→97.4%, driven with a stub-injected `--score-script`) — no threshold lowering, no
+  exclusions.
+- **Root cause of the CI-vs-local coverage gap** (the code comment guessed "subprocess
+  timing" — wrong): **CI lacks the external dependencies the integration tests need.**
+  `score-fixture.py` shells out to a validator that lives in another repo not checked
+  out in CI (0% there), and `run-arm-b`'s deep paths need real model keys. CI runs
+  only the hermetic subset (42%) while the dev box runs the full suite (66%), so the
+  gate is **correctly advisory** (`continue-on-error`) and the tests — the real signal
+  — all pass. Forcing 60% would mean mocking out the real validator + providers, a
+  different kind of shortcut.
+- **A HIGH review finding fixed**
+  ([#213](https://github.com/jeremylongshore/intent-eval-lab/pull/213)): `json.loads`
+  accepts `null`/arrays/scalars without raising, so a `null` model response crashed
+  `run-arm-b`'s dry-run path. Extracted a testable `_extract_json_object` (requires a
+  JSON object), replaced a fragile `assert` with a defensive check, and added **9
+  regression tests** (importlib-loaded so the hyphenated script is testable
+  in-process). 79 tests pass.
+
+### 8.5 Lessons from the continuation
+
+Three more, continuing § 7:
+
+1. **A single `[skip ci]` capture commit can rot `main` invisibly.** It looks green
+   because CI never ran on it; the next PR inherits the breakage. Derived/generated
+   artifacts (the SAK dashboard) and captured external content (typos/prettier scope)
+   both need explicit CI-scope discipline.
+2. **"No shortcuts" cuts both ways.** Fixing a lint failure means fixing the artifact,
+   not loosening the rule; making a coverage gate green means adding real tests, not
+   lowering the floor or excluding files — _and_ it means being honest when a gate is
+   correctly advisory rather than mocking reality to hit a number.
+3. **Diagnose the platform, don't trust the comment.** The pytest coverage comment
+   blamed subprocess timing; the real cause was missing external deps. A controlled
+   cross-repo probe (an empty-commit PR) is what proved the Actions outage was
+   per-repo and GitHub-side.
 
 ---
 
