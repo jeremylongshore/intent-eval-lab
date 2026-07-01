@@ -117,6 +117,9 @@ def test_build_fixtures_stages_all_strata(tmp_path: Path) -> None:
     assert label(a["sha256"]) == "global-pass-marketplace"
     assert label(b["sha256"]) == "marketplace-corpus-pass"
     assert label(c["sha256"]) == "marketplace-corpus-fail"
+    # held_out group is keyed by letter "A", so build-fixtures calls
+    # label_for("A", ...) for it -> the same global-pass label as stratum A.
+    assert label(h["sha256"]) == "global-pass-marketplace"
 
     # A staged fixture carries the four expected artifacts + provenance.
     fixture_dir = out / a["sha256"][:8]
