@@ -1,8 +1,8 @@
 {
   "_generated": "GENERATED-DO-NOT-EDIT \u2014 derived projection of the append-only lineage log (specs/lineage/log.jsonl). Regenerate: python3 scripts/lineage-log.py project-coverage. Normative spec: 000-docs/054-AT-SPEC-lineage-log-and-derived-coverage-map-2026-06-12.md",
   "derived_from": {
-    "last_event_id": 76,
-    "line_count": 76,
+    "last_event_id": 83,
+    "line_count": 83,
     "log": "specs/lineage/log.jsonl"
   },
   "projection_version": "lineage-coverage/v1",
@@ -74,9 +74,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-07-01T10:26:17Z",
-        "event_id": 76,
-        "upstream_version": "3495d7d82c26429f214380da925834afb6161fc3afb4f067cd72581385b183d3"
+        "at": "2026-07-02T10:07:23Z",
+        "event_id": 83,
+        "upstream_version": "29c112500a7877b43543de719d10e721adf56403e1e89563d4023ddf419d9306"
       }
     },
     "claude-code-changelog": {
@@ -87,9 +87,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-07-01T10:26:17Z",
-        "event_id": 73,
-        "upstream_version": "79eec8467289b57f0ce1d02e25ba365c1e1d4cc81ee2f2202b7813a5eec69055"
+        "at": "2026-07-02T10:07:23Z",
+        "event_id": 80,
+        "upstream_version": "4ea67223ff68c6467ab8078dc9bf32bac3bfc8f7a512b29df84f59fcd02a6e80"
       }
     },
     "claude-code-npm": {
@@ -100,9 +100,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-07-01T10:26:17Z",
-        "event_id": 74,
-        "upstream_version": "6bb43b9e5a2b107286ec39969f857fe467b0f1e71269b25574cae9f1f4253eb0"
+        "at": "2026-07-02T10:07:23Z",
+        "event_id": 81,
+        "upstream_version": "f1cb6a4be0c089ef809a9910bb419432e379c2d5603f1324f9c83085136b7569"
       }
     },
     "claude-code-releases": {
@@ -113,9 +113,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-07-01T10:26:17Z",
-        "event_id": 75,
-        "upstream_version": "dad3bb19c72894483250c8c03615abc4f58e1edbb99fa2c71ebed0730747ce78"
+        "at": "2026-07-02T10:07:23Z",
+        "event_id": 82,
+        "upstream_version": "bc2a3d5b61f603c8919c9d28fd7fa7d59360100095da4f7dbd123c7133964fe0"
       }
     },
     "claude-hooks": {
@@ -152,9 +152,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-07-01T10:26:17Z",
-        "event_id": 70,
-        "upstream_version": "62a394c4a1235f5658f1af4c0bfdc12e73e4e5ceea5cbbba84fd009be15f191e"
+        "at": "2026-07-02T10:07:23Z",
+        "event_id": 79,
+        "upstream_version": "13ba47d0d2dc3466ae9d3a629b508f8b4eb02d427ad85c418987f8ec69585b6b"
       }
     },
     "claude-slash-commands": {
@@ -220,9 +220,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-07-01T10:26:17Z",
-        "event_id": 68,
-        "upstream_version": "e69226202dba16692b4c26ecf0115f6a10708e0c997e722936e9cc9d6bec19bf"
+        "at": "2026-07-02T10:07:23Z",
+        "event_id": 78,
+        "upstream_version": "1f8f40bce751eaa5476d84a63d5920b16a6a88c575aba0c7bd9b2080092ce878"
       }
     },
     "platform-skills-overview": {
@@ -298,9 +298,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-07-01T10:26:17Z",
-        "event_id": 67,
-        "upstream_version": "a67d0114f64742582537302571764c4e00379ee82264f188c3f95e2cd32d5cb1"
+        "at": "2026-07-02T10:07:23Z",
+        "event_id": 77,
+        "upstream_version": "e3a24378d0b61e2ab1e627486f883da1322b31600d7e2ba4ede82d5ac364d89c"
       }
     },
     "sub-agents": {
