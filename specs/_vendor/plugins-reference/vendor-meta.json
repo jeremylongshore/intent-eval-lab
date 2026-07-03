@@ -1,7 +1,7 @@
 {
   "surface_id": "plugins-reference",
-  "sha256": "72099a2abb47caf51e34da30cec9dd97c42c89947d7d8e2e6deba2ab931b9950",
-  "bytes": 79682,
-  "updated_at": "2026-06-30T10:18:14Z",
-  "source_raw_record": "archive/raw/plugins-reference/20260630T101814Z.meta.json"
+  "sha256": "931b787ea4627bbaa9bd6a5ff9792683e25b2085087ca8047822dc8d80df96f3",
+  "bytes": 79815,
+  "updated_at": "2026-07-03T10:05:24Z",
+  "source_raw_record": "archive/raw/plugins-reference/20260703T100524Z.meta.json"
 }
