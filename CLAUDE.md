@@ -20,8 +20,8 @@ This repo is the **methodology + specs umbrella** in the five-repo convergence v
 
 ### Phase A landed (this repo)
 
-- **Evidence Bundle spec module** at `specs/evidence-bundle/v0.1.0-draft/` (skeleton — `SPEC.md` section headers only; normative content gates to Phase B per `IEL-3`)
-- **Cross-CLI discovery module** stub at `specs/cross-cli-discovery/v0.1.0-draft/` (Phase B per `IEL-5`)
+- **Evidence Bundle spec module** at `specs/evidence-bundle/v0.1.0-draft/` — the Phase A skeleton has since been elevated to a **NORMATIVE DRAFT** (`SPEC.md` self-declares `Status: NORMATIVE DRAFT` at Phase B Milestone 1). The canonical `gate-result/v1` JSON Schema now lives in the kernel `@intentsolutions/core`; this module's schema file is a redirect stub.
+- **Phase B spec-module stubs** live under `specs/` (e.g. `validator-contract-reliability/`, `forecasting-drift-detection/`, `decentralized-crypto-evaluation/`) — placeholders for Phase B work per `IEL-5`. (The originally-planned `cross-cli-discovery/` module was never created under that name.)
 - **OpenTelemetry RFC draft** at `000-docs/001-DR-RFC-otel-agent-rollout-gate-signals-draft.md` — full RFC text proposing `agent.rollout.gate.*` and `agent.evidence_bundle.*` signal conventions. **Drafted, NOT filed.** Filing is a Phase B deliverable per `IEL-CONV-7`.
 - **Partner-consent discipline** enforced (see § Brand-name policy below)
 
