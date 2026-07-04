@@ -10,7 +10,9 @@ A research umbrella for vendor-neutral evaluation methodology around AI plugins,
 - Productizable harnesses → contributions to `j-rig-skill-binary-eval` (sister project)
 - Public reference content → this repo's `000-docs/` (Apache 2.0)
 
-## Five-repo convergence (Phase A complete 2026-05-10; intent-rollout-gate added 2026-05-12)
+> **State (updated 2026-07-03):** SAK Class-1 charter RATIFIED (docs 049/081); Skill Refiner PUBLISHED to npm 2026-06-21 (`@intentsolutions/refiner@0.1.0`); the SSoT/spec-compliance machinery (doc 045 + `SAK-INDEX.md` + `scripts/spec-drift-check.sh` / `spec-projection-diff.py` + `.github/workflows/spec-drift-watch.yml`) is the dominant active surface. 000-docs runs through 106+. Any "Skill Refiner" or "Phase B/C gate" block below is a 2026-05-27 snapshot — trust the DRs + `SAK-INDEX.md` + the umbrella CLAUDE.md over them.
+
+## Five-repo convergence (Phase A complete 2026-05-13; intent-rollout-gate added 2026-05-12)
 
 This repo is the **methodology + specs umbrella** in the five-repo convergence vision: the canonical contracts kernel (`intent-eval-core`) + `intent-eval-lab` + `audit-harness` + `j-rig-skill-binary-eval` + `intent-rollout-gate`. The architectural insight: the repos compose via a shared schema (the **Evidence Bundle**), not via package consolidation. Convergence happens at the schema layer. (`intent-eval-dashboard` is the 6th platform repo — the reports hub at `labs.intentsolutions.io` — separate from the 5-repo convergence taxonomy.) See the umbrella `~/000-projects/intent-eval-platform/CLAUDE.md` § "5-repo target" for the full taxonomy.
 
@@ -18,14 +20,14 @@ This repo is the **methodology + specs umbrella** in the five-repo convergence v
 
 ### Phase A landed (this repo)
 
-- **Evidence Bundle spec module** at `specs/evidence-bundle/v0.1.0-draft/` (skeleton — `SPEC.md` section headers only; normative content gates to Phase B per `IEL-3`)
-- **Cross-CLI discovery module** stub at `specs/cross-cli-discovery/v0.1.0-draft/` (Phase B per `IEL-5`)
+- **Evidence Bundle spec module** at `specs/evidence-bundle/v0.1.0-draft/` — the Phase A skeleton has since been elevated to a **NORMATIVE DRAFT** (`SPEC.md` self-declares `Status: NORMATIVE DRAFT` at Phase B Milestone 1). The canonical `gate-result/v1` JSON Schema now lives in the kernel `@intentsolutions/core`; this module's schema file is a redirect stub.
+- **Phase B spec-module stubs** live under `specs/` (e.g. `validator-contract-reliability/`, `forecasting-drift-detection/`, `decentralized-crypto-evaluation/`) — placeholders for Phase B work per `IEL-5`. (The originally-planned `cross-cli-discovery/` module was never created under that name.)
 - **OpenTelemetry RFC draft** at `000-docs/001-DR-RFC-otel-agent-rollout-gate-signals-draft.md` — full RFC text proposing `agent.rollout.gate.*` and `agent.evidence_bundle.*` signal conventions. **Drafted, NOT filed.** Filing is a Phase B deliverable per `IEL-CONV-7`.
 - **Partner-consent discipline** enforced (see § Brand-name policy below)
 
 ### Phase B/C gate
 
-Phase A is documentation + skeleton ONLY. **Phase B is bandwidth-gated, not customer-signal-gated** — the customer-signal gate was REMOVED per DR-010 § 13.5 (acting-head-of-board override; see `000-docs/010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md`). When Phase B work is scheduled, next-session entry point: `bd-sync status` across the convergence repos → begin `IEL-3` SPEC.md normative content.
+Phase A is documentation + skeleton ONLY. **Phase B is bandwidth-gated, not customer-signal-gated** — the customer-signal gate was REMOVED per DR-010 § 13.5 (acting-head-of-board override; see `000-docs/010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md`). When Phase B work is scheduled, next-session entry point: `bd-sync status` across the convergence repos → begin `IEL-3` SPEC.md normative content. (Note: end-to-end platform operation was demonstrated 2026-06-29 per `000-docs/105-AA-AACR-iep-demonstrably-works-end-to-end-2026-06-29.md`; the "documentation + skeleton only" framing predates that.)
 
 ### Brand-name policy (partner-consent discipline)
 
@@ -94,6 +96,8 @@ Numbered + dated + category-coded (the `/doc-filing` standard).
 
 Filing-code crib: `RR` = research/recon, `PP` = plan, `AA` = after-action, `DR` = draft, `RA` = ready-to-publish.
 
+Key normative anchors added since Phase A: doc 045 (SSoT + continuous spec-compliance), `SAK-INDEX.md` (Spec Authority Kernel index), docs 049/081 (ISEDC Class-1 SAK charter ratifications), doc 076 (state-machine single-source + drift gate).
+
 ### Sandboxes
 
 Per-experiment subdirs under `sandboxes/`. Naming: `YYYY-MM-DD-<short-experiment-id>/`. Each contains its own `REPORT.md`, infrastructure config (`docker-compose.yml` if applicable), `prompts/`, `fixtures/`, and an `evidence/` cross-link to lab-level `evidence/<experiment-id>/`.
@@ -127,7 +131,7 @@ Keep this scoped. The lab's value is rigor + cross-project synthesis, not buildi
 
 ## Skill Refiner — plan + audit + ratification (2026-05-27)
 
-The Skill Refiner buildout is the active multi-week effort under this lab umbrella. Plan is RATIFIED 2026-05-27; first `bd claim` permitted; recommended first claim is the Phase A.0 null-hypothesis baseline.
+Skill Refiner is RATIFIED (DR-028, 2026-05-27) and PUBLISHED to npm 2026-06-21 (`@intentsolutions/refiner-core` + `@intentsolutions/refiner@0.1.0`, SLSA provenance). The docs below are the ratification-era record; for current SAK/charter state see docs 044/049/081 + `SAK-INDEX.md`.
 
 **Canonical docs (read in order):**
 
@@ -193,12 +197,12 @@ This project uses **bd (beads)** for issue tracking. Run `bd prime` to see full 
 
 ### Quick Reference
 
-````bash
+```bash
 bd ready              # Find available work
 bd show <id>          # View issue details
 bd update <id> --claim  # Claim work
 bd close <id>         # Complete work
-```text
+```
 
 ### Rules
 
@@ -222,11 +226,11 @@ bd close <id>         # Complete work
    bd dolt push
    git push
    git status  # MUST show "up to date with origin"
-````
+   ```
 
-1. **Clean up** - Clear stashes, prune remote branches
-2. **Verify** - All changes committed AND pushed
-3. **Hand off** - Provide context for next session
+5. **Clean up** - Clear stashes, prune remote branches
+6. **Verify** - All changes committed AND pushed
+7. **Hand off** - Provide context for next session
 
 **CRITICAL RULES:**
 
