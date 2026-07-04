@@ -1,8 +1,8 @@
 {
   "_generated": "GENERATED-DO-NOT-EDIT \u2014 derived projection of the append-only lineage log (specs/lineage/log.jsonl). Regenerate: python3 scripts/lineage-log.py project-coverage. Normative spec: 000-docs/054-AT-SPEC-lineage-log-and-derived-coverage-map-2026-06-12.md",
   "derived_from": {
-    "last_event_id": 94,
-    "line_count": 94,
+    "last_event_id": 103,
+    "line_count": 103,
     "log": "specs/lineage/log.jsonl"
   },
   "projection_version": "lineage-coverage/v1",
@@ -74,9 +74,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-07-03T10:05:24Z",
-        "event_id": 94,
-        "upstream_version": "f0478144c304f9c7348f1fa4a1d7b913cac5e2ff1b827545e7e4b3458234dee1"
+        "at": "2026-07-04T09:47:00Z",
+        "event_id": 103,
+        "upstream_version": "29cc382b3d9d253102e9ada1eacfd08ab798a789bb9162b32d473ed3120c8a39"
       }
     },
     "claude-code-changelog": {
@@ -87,9 +87,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-07-03T10:05:24Z",
-        "event_id": 91,
-        "upstream_version": "98c2774229938c11b802334817be996b8629e3961e5b68fe603a04614af500a7"
+        "at": "2026-07-04T09:47:00Z",
+        "event_id": 100,
+        "upstream_version": "13d45c66a3a1b0689e31db8a09158c034081bb985e4fe36c5043e3291247fbc2"
       }
     },
     "claude-code-npm": {
@@ -100,9 +100,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-07-03T10:05:24Z",
-        "event_id": 92,
-        "upstream_version": "be4980676487f2e324dbd546621857facb60f2819659f179e11727357a75fe40"
+        "at": "2026-07-04T09:47:00Z",
+        "event_id": 101,
+        "upstream_version": "1aae8c64314a18ef75ba6aa237b67c9b415102d6969e3248e80cdf326cc1461e"
       }
     },
     "claude-code-releases": {
@@ -113,9 +113,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-07-03T10:05:24Z",
-        "event_id": 93,
-        "upstream_version": "b92f3e34991623dab7dda56c9e51230adad65c8e29f63da081d6076e48c12a02"
+        "at": "2026-07-04T09:47:00Z",
+        "event_id": 102,
+        "upstream_version": "e29626a75e65d7b11ee7ce0411b17a0aff883281098da9e22267bd209971deb3"
       }
     },
     "claude-hooks": {
@@ -136,9 +136,9 @@
       ],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-07-03T10:05:24Z",
-        "event_id": 86,
-        "upstream_version": "e8de034bc91890c0ece6fea871683b92840ea9e6e3c5aa2ff8039b80d6574142"
+        "at": "2026-07-04T09:47:00Z",
+        "event_id": 97,
+        "upstream_version": "8a3c8c70e598964885777d13c39cad8e41f0055ab4c8d27d163d42d00a759eb0"
       }
     },
     "claude-settings": {
@@ -152,9 +152,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-07-03T10:05:24Z",
-        "event_id": 87,
-        "upstream_version": "6d3e870aacd67762547d0b42f9a4a9f977824f192457126666b3119714292b6a"
+        "at": "2026-07-04T09:47:00Z",
+        "event_id": 98,
+        "upstream_version": "fe5fd5f24f0e667be73c8dc25c8498afcf8de64833b202cff65759a2ec6bbfae"
       }
     },
     "claude-slash-commands": {
@@ -220,9 +220,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-07-03T10:05:24Z",
-        "event_id": 85,
-        "upstream_version": "8374d3bf551f5e7422954ff66afcf22274869a50c0fa883fe37d0d8bfef040c0"
+        "at": "2026-07-04T09:47:00Z",
+        "event_id": 96,
+        "upstream_version": "620be396628e73e2bcdf93be0fdc00f2f0f7d767e97c34a6d748959b573c0efe"
       }
     },
     "platform-skills-overview": {
@@ -298,9 +298,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-07-03T10:05:24Z",
-        "event_id": 84,
-        "upstream_version": "8e8da73990b702c8dd0ee51cf095e27a189581aea0579d852cde8c1afa6e829d"
+        "at": "2026-07-04T09:47:00Z",
+        "event_id": 95,
+        "upstream_version": "89e37a27eecf8117f0fde4731299c2563264dacd2cfe0150ba69921a826cb776"
       }
     },
     "sub-agents": {
@@ -321,9 +321,9 @@
       ],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-07-03T10:05:24Z",
-        "event_id": 90,
-        "upstream_version": "4cd6e047abf6f0075089e195aa5238539654a61c4251ca04261e9e7be28a5db0"
+        "at": "2026-07-04T09:47:00Z",
+        "event_id": 99,
+        "upstream_version": "504eb9c31bfa496c04b19577cd3503182ffc37572813da4326c7d59af56e49d4"
       }
     }
   }
