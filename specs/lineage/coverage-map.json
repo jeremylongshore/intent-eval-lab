@@ -1,8 +1,8 @@
 {
   "_generated": "GENERATED-DO-NOT-EDIT \u2014 derived projection of the append-only lineage log (specs/lineage/log.jsonl). Regenerate: python3 scripts/lineage-log.py project-coverage. Normative spec: 000-docs/054-AT-SPEC-lineage-log-and-derived-coverage-map-2026-06-12.md",
   "derived_from": {
-    "last_event_id": 103,
-    "line_count": 103,
+    "last_event_id": 106,
+    "line_count": 106,
     "log": "specs/lineage/log.jsonl"
   },
   "projection_version": "lineage-coverage/v1",
@@ -74,9 +74,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-07-04T09:47:00Z",
-        "event_id": 103,
-        "upstream_version": "29cc382b3d9d253102e9ada1eacfd08ab798a789bb9162b32d473ed3120c8a39"
+        "at": "2026-07-05T09:52:51Z",
+        "event_id": 106,
+        "upstream_version": "77500c565b33c80349a31d0ff6a814ce091f45e316abf91b64a308cbe7951478"
       }
     },
     "claude-code-changelog": {
@@ -220,9 +220,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-07-04T09:47:00Z",
-        "event_id": 96,
-        "upstream_version": "620be396628e73e2bcdf93be0fdc00f2f0f7d767e97c34a6d748959b573c0efe"
+        "at": "2026-07-05T09:52:51Z",
+        "event_id": 105,
+        "upstream_version": "88b68499c596e702a3c7eb664faeb902dc3de9a79e2eae9b9626871daeb75915"
       }
     },
     "platform-skills-overview": {
@@ -298,9 +298,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-07-04T09:47:00Z",
-        "event_id": 95,
-        "upstream_version": "89e37a27eecf8117f0fde4731299c2563264dacd2cfe0150ba69921a826cb776"
+        "at": "2026-07-05T09:52:51Z",
+        "event_id": 104,
+        "upstream_version": "4c81e53dc92f8e066aec0ddaf3554d44ba43b8d6f13f84a1b2f3db9e775dac60"
       }
     },
     "sub-agents": {
