@@ -1,0 +1,109 @@
+name: sign-dogfood-bundle
+
+# Signs ONE committed gate-result/v1 Evidence Bundle with cosign keyless (Fulcio
+# OIDC -> production Rekor), so a dogfood verdict can be cited on the public
+# labs.intentsolutions.io scorecard with a verifiable transparency-log index.
+#
+# ONE-WAY DOOR: the cosign upload to rekor.sigstore.dev is a permanent, public,
+# non-deletable transparency-log entry. It is gated two ways:
+#   1. manual `workflow_dispatch` only (never on push/PR);
+#   2. the `sign` job runs in the `evidence-prod` environment, which has a
+#      REQUIRED REVIEWER (jeremylongshore) — the job HOLDS until a human approves
+#      in the Actions UI before any cosign step runs. The environment must exist
+#      with that protection (created via the environments API); a bare reference
+#      would NOT protect it (ISEDC panel finding).
+#
+# The bundle is eval'd + reviewed OFFLINE and committed first; this workflow only
+# SIGNS the committed bytes. The signature attests integrity + this workflow's
+# identity + time — not that the verdict is "correct" (the science stands on the
+# eval, not the signature).
+
+on:
+  workflow_dispatch:
+    inputs:
+      bundle:
+        description: 'repo-relative path to the committed gate-result/v1 bundle to sign'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write # cosign keyless (Fulcio OIDC)
+
+jobs:
+  sign:
+    name: cosign keyless sign-blob -> production Rekor (reviewer-gated)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: evidence-prod # HOLDS for jeremylongshore's required-reviewer approval
+    env:
+      # Explicit production endpoint — never rely on cosign's implicit default
+      # (ISEDC panel finding: a missing --rekor-url silently uploads to prod).
+      REKOR_URL: https://rekor.sigstore.dev
+      BUNDLE: ${{ inputs.bundle }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Validate the input is a non-empty gate-result/v1 bundle
+        run: |
+          set -euo pipefail
+          test -f "$BUNDLE" || { echo "::error::bundle not found: $BUNDLE"; exit 1; }
+          node -e '
+            const fs = require("fs");
+            const b = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+            if (!Array.isArray(b) || b.length === 0) throw new Error("not a non-empty JSON array");
+            for (const r of b) {
+              if (r.predicateType !== "https://evals.intentsolutions.io/gate-result/v1")
+                throw new Error("row predicateType is not gate-result/v1");
+            }
+            console.log("OK: " + b.length + " gate-result/v1 row(s)");
+          ' "$BUNDLE"
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: cosign sign-blob (keyless -> production Rekor)
+        run: |
+          set -euo pipefail
+          SIG="${BUNDLE%.json}.sigstore.json"
+          # --new-bundle-format emits the sigstore protobuf Bundle the dashboard's
+          # sigstore-js verify() (and cosign verify-blob) consume.
+          cosign sign-blob --yes --new-bundle-format \
+            --rekor-url "$REKOR_URL" \
+            --bundle "$SIG" "$BUNDLE"
+          echo "SIG=$SIG" >> "$GITHUB_ENV"
+
+      - name: cosign verify-blob self-check (identity = this workflow)
+        run: |
+          set -euo pipefail
+          cosign verify-blob \
+            --new-bundle-format --bundle "$SIG" \
+            --certificate-identity "https://github.com/${GITHUB_REPOSITORY}/.github/workflows/sign-dogfood-bundle.yml@${GITHUB_REF}" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            "$BUNDLE"
+
+      - name: Extract Rekor log index + write summary
+        run: |
+          set -euo pipefail
+          IDX=$(jq -r '.verificationMaterial.tlogEntries[0].logIndex // empty' "$SIG")
+          if [ -z "$IDX" ]; then echo "::error::could not read Rekor logIndex from $SIG"; exit 1; fi
+          echo "$IDX" > rekor-index.txt
+          {
+            echo "## Signed dogfood bundle"
+            echo ""
+            echo "- **bundle:** \`$BUNDLE\`"
+            echo "- **signature:** \`$SIG\`"
+            echo "- **Rekor log index:** [\`$IDX\`](https://rekor.sigstore.dev/api/v1/log/entries?logIndex=$IDX)"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload signed bundle + index (artifact for review/commit)
+        uses: actions/upload-artifact@v4
+        with:
+          name: signed-dogfood-evidence
+          path: |
+            ${{ env.SIG }}
+            rekor-index.txt
+          if-no-files-found: error
