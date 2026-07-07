@@ -1,6 +1,6 @@
 <!-- GENERATED-DO-NOT-EDIT — SAK dashboard derived from committed state (SAK-STATE.json + leading-indicators registry + lineage coverage map). Regenerate: python3 scripts/render-sak-dashboard.py. Normative spec: 000-docs/033-PP-PLAN-skill-refiner-sak-amendment-v7-2026-05-28.md § 14.13.1 -->
 
-# SAK Dashboard — generated 2026-07-04T12:00:00Z
+# SAK Dashboard — generated 2026-07-07T05:10:25Z
 
 State as of 2026-06-20. This file is DERIVED — never hand-edit it.
 
