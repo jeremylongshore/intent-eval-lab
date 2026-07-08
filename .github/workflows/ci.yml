@@ -125,6 +125,19 @@ jobs:
       - name: Classifier-walls self-test
         run: python3 scripts/classifier-walls.py --self-test
 
+      # Offline + deterministic (DR-028 P0-RATIFY-4): the Skill-Refiner bd-claim
+      # hard gate. `--self-test` builds temp STATUS fixtures + a stub bd-text
+      # provider and asserts every gate class — RATIFIED allows a refiner bead,
+      # a non-RATIFIED state (OPEN / unknown) REFUSES it (exit 1),
+      # RATIFIED-WITH-DELTAS allows only DR-028-authorized refiner work, a
+      # non-refiner bead is ungated, and a missing STATUS file / failed bd
+      # lookup / bad bead id fail closed (exit 2). This is the
+      # external-contributor path: it verifies STATUS-file integrity + the
+      # refusal logic WITHOUT bd/dolt on the runner (the umbrella bd workspace
+      # is not present in CI). A regression that WEAKENS the gate turns this red.
+      - name: bd-claim-precheck hard-gate self-test
+        run: bash scripts/bd-claim-precheck.sh --self-test
+
       # Offline + deterministic (056-AT-SPEC): the mcp-config deep capture.
       # --check re-extracts the normative projection from the vendored
       # snapshots (specs/_vendor/upstream/mcp-config/) and fails if the
