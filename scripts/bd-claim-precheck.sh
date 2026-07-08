@@ -143,13 +143,13 @@ decide() {
       for shorthand in "${DR_028_AUTHORIZED_SHORTHANDS[@]}"; do
         # Match shorthand tokens loosely against title + description text.
         # Token boundaries are dashes; case-insensitive.
-        if echo "$bead_text" | grep -qiF "$shorthand"; then
+        if printf '%s\n' "$bead_text" | grep -qiF "$shorthand"; then
           echo "OK: STATUS = RATIFIED-WITH-DELTAS; bead matches DR-028 authorized work '$shorthand'; claim permitted."
           return 0
         fi
       done
       # Also permit beads explicitly noted as DR-028-authorized in their description
-      if echo "$bead_text" | grep -qiE 'DR-028.{0,40}authorized|authorized.{0,40}DR-028'; then
+      if printf '%s\n' "$bead_text" | grep -qiE 'DR-028.{0,40}authorized|authorized.{0,40}DR-028'; then
         echo "OK: STATUS = RATIFIED-WITH-DELTAS; bead description references DR-028 authorization; claim permitted."
         return 0
       fi
@@ -219,7 +219,9 @@ cmd_self_test() {
     return 2
   }
   # shellcheck disable=SC2064
-  trap "rm -rf '$tmp'" RETURN
+  # Clean up on normal return AND on interrupt/termination so the temp dir never
+  # leaks if the self-test is killed mid-run.
+  trap "rm -rf '$tmp'" RETURN INT TERM
 
   # --- fixture STATUS files ---
   local status_ratified="$tmp/STATUS-ratified.md"
