@@ -10,7 +10,7 @@ A research umbrella for vendor-neutral evaluation methodology around AI plugins,
 - Productizable harnesses → contributions to `j-rig-skill-binary-eval` (sister project)
 - Public reference content → this repo's `000-docs/` (Apache 2.0)
 
-> **State (updated 2026-07-03):** SAK Class-1 charter RATIFIED (docs 049/081); Skill Refiner PUBLISHED to npm 2026-06-21 (`@intentsolutions/refiner@0.1.0`); the SSoT/spec-compliance machinery (doc 045 + `SAK-INDEX.md` + `scripts/spec-drift-check.sh` / `spec-projection-diff.py` + `.github/workflows/spec-drift-watch.yml`) is the dominant active surface. 000-docs runs through 106+. Any "Skill Refiner" or "Phase B/C gate" block below is a 2026-05-27 snapshot — trust the DRs + `SAK-INDEX.md` + the umbrella CLAUDE.md over them.
+> **State (updated 2026-07-10):** SAK Class-1 charter RATIFIED (docs 049/081); Skill Refiner PUBLISHED to npm (initial `@intentsolutions/refiner@0.1.0` 2026-06-21; now **`@intentsolutions/refiner`+`refiner-core@0.3.0`** — provider-agnostic `refine score/propose --provider` over free/cheap models — with `@intentsolutions/jrig-cli@0.2.0`, 2026-07-10); the SSoT/spec-compliance machinery (doc 045 + `SAK-INDEX.md` + `scripts/spec-drift-check.sh` / `spec-projection-diff.py` + `.github/workflows/spec-drift-watch.yml`) is the dominant active surface. 000-docs runs through 106+. Any "Skill Refiner" or "Phase B/C gate" block below is a 2026-05-27 snapshot — trust the DRs + `SAK-INDEX.md` + the umbrella CLAUDE.md over them.
 
 ## Five-repo convergence (Phase A complete 2026-05-13; intent-rollout-gate added 2026-05-12)
 
@@ -131,7 +131,7 @@ Keep this scoped. The lab's value is rigor + cross-project synthesis, not buildi
 
 ## Skill Refiner — plan + audit + ratification (2026-05-27)
 
-Skill Refiner is RATIFIED (DR-028, 2026-05-27) and PUBLISHED to npm 2026-06-21 (`@intentsolutions/refiner-core` + `@intentsolutions/refiner@0.1.0`, SLSA provenance). The docs below are the ratification-era record; for current SAK/charter state see docs 044/049/081 + `SAK-INDEX.md`.
+Skill Refiner is RATIFIED (DR-028, 2026-05-27) and PUBLISHED to npm (initial `@intentsolutions/refiner-core` + `@intentsolutions/refiner@0.1.0` 2026-06-21, SLSA provenance; now at **`0.3.0`** — provider-agnostic `refine score/propose --provider` over free/cheap OpenAI-compatible models — shipped in `@intentsolutions/jrig-cli@0.2.0`, 2026-07-10). The docs below are the ratification-era record; for current SAK/charter state see docs 044/049/081 + `SAK-INDEX.md`.
 
 **Canonical docs (read in order):**
 
