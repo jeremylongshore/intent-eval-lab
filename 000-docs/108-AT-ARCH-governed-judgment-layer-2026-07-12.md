@@ -292,8 +292,12 @@ non-technical firm operator), 2026-07-12:
 The build bead `iel-25a.4` is "done" when, on the reference agent (watcher → Bob):
 
 1. Judgment is **grounded** (qmd retrieval) and **cites** the `qmd://` nuggets used.
-2. The composed stack runs: golden set with reported **κ/α**; groundedness + ALCE citation scores;
-   **PoLL panel** validated against the golden set; **JRig ship/block** gate on the composed signal.
+2. The composed stack runs: golden set with reported inter-annotator agreement — **κ/α** where ≥2
+   annotators exist, else **single-labeler reported honestly** (the ratified single-operator
+   flexibility, `109-AT-DECR` Q4 CFO binding: resolve κ/α with a free second-judge annotator-2 or
+   drop it and report single-labeler — never claim a "validated golden set" on a κ/α that one person
+   cannot produce); groundedness + ALCE citation scores; **PoLL panel** validated against the golden
+   set; **JRig ship/block** gate on the composed signal.
 3. Every verdict is **journaled with the cross-chain pointer** (GSB receipt tip-hash + `correlation_id`).
 4. `agp verify` + `ico audit verify` both green **and** the pointer reconstructs "what it knew at
    action X."
