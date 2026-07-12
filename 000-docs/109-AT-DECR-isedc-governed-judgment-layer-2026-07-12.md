@@ -82,6 +82,7 @@ design-in-from-day-one invariant.
 **Primary tension:** CMO (category leads the headline) vs CTO/GC (architecture-accurate wording; "complement" as a controlled phrase).
 
 Verbatim highlights:
+
 - **CTO:** *"The Slice-0 watcher drift is REAL — `daemon.runMediated()` driving the plane is correct; a hand-rolled turn-loop / tool-dispatch / context-manager inside an intendant is the failure mode. The `intendant-adapter` frozen contract IS the boundary that keeps us a plane."* Binds: **an intendant delegates agent execution to an external harness SDK — no in-tree turn-loop; gate it with a contract test; if Bob grows its own runtime, that is a bead+ADR event.**
 - **CISO:** *"The plane-above framing is the correct threat boundary… we govern the actions, we don't vouch for the model's cognition."* Binds: never harden "complement" into "secures/hardens your harness."
 - **DevRel:** *"'Governs YOUR existing agent' lets them keep everything and add a gate… the single most adoptable framing on the board."* Binds: README H1 says "governs the Claude Code / Codex agent you already run," never "an agent framework."
@@ -96,6 +97,7 @@ Verbatim highlights:
 **Primary tension:** CMO/DevRel (publish to realize the moat) vs GC/CISO/CSO (the flip is the maximum-liability instant; discipline must RISE).
 
 Verbatim highlights:
+
 - **GC:** *"I do not contest the decision; I contest any version of it that lands silently… A build agent — or a future reader — encountering 030 (dark) and this DECR (public) with no supersession chain inherits a self-contradicting record, which is a defective instrument."* Binds: **explicit "Supersedes in part" header naming `030`-D3 + `001`; `030` gets a recorded amendment note (body preserved verbatim); the holstered Rhys reply does NOT auto-fire and its no-endorser bind survives.**
 - **CISO:** *"Going public does NOT waive extraction-gate condition #3 (signing trust root provisioned); it makes it a prerequisite."* Binds: **NEVER commit real GSB brain / personal data to the public repo — synthetic fixtures only, enforced by a PII/secret pre-commit + CI scanner that lands before the first public commit; THREAT-MODEL.md is honest but scrubbed of unpatched-hole detail; signing trust root + npm scope provisioned before flip.**
 - **CSO:** *"Build-in-public inverts my only protection… discipline must RISE, not relax."* Binds: **no empty storefront** (flip only with a runnable Layer-1 slice + populated `MARKETING_CLAIMS.md` + working `claim-scan`); first public contracts immutable-in-community-memory.
@@ -115,6 +117,7 @@ precondition. The `030`-D3 holstered Rhys reply and its no-partner-as-endorser b
 **Primary tension:** CFO/GC (Layer-2 is net-new cost + implied-capability exposure) vs CTO (reserve Layer-2 substrate now) vs CMO (narrate the whole).
 
 Verbatim highlights:
+
 - **CFO:** *"Layer 2 is NOT cheap and the doc undersells it: weak-signal maps (Yoon/BERTopic) are net-new build, not compose; Brier/U-calibration is a deferred loop whose first real signal is months of calendar away."* Binds: **zero Layer-2 code, zero forward-looking scoring, until Layer 1 is green on the watcher AND Bob AND passes "would Jeremy keep Bob running?"; Layer 2 is a scope commitment, not a current bead.**
 - **CTO:** Binds: **reserve Layer-2 schema slots NOW, present-but-null at Layer 1** (`resolution_horizon`, `forecast_probability`, `resolved_outcome`) — "a null slot costs minutes; retrofitting costs the chain."
 - **GC:** Binds: public docs mark Layer 2 **unshipped/experimental**; no present-tense README verb for an unshipped capability.
@@ -133,6 +136,7 @@ unshipped/experimental; the Layer-2 nugget store is signed from day one.
 **Primary tension:** CISO (a data-poisoning pipeline without a commit gate) + CFO (recurring labeling tax; κ/α with one operator) vs CTO/CMO (maximal automation / market it).
 
 Verbatim highlights:
+
 - **CISO (sharpest security finding on the board):** *"The loop re-feeds production judgments — made on attacker-controlled external events — back into the golden set. If a production judgment auto-promotes into the trusted golden set without a commit gate, anyone who can emit an event can drift the judge and launder a bad label into the ground truth."* Binds: **golden-set refresh requires a human/deterministic commit gate; no production judgment enters the trusted golden set without an explicit signed label event carrying provenance (source judgment, correlation_id, labeler, time); the golden set is a signed, hash-chained artifact.**
 - **CFO:** *"A live golden-set pipeline with κ/α inter-annotator agreement structurally requires ≥2 annotators, and we have one operator."* Binds: **the loop is sampled and time-boxed (a fixed weekly Jeremy-minutes budget); resolve the κ/α problem explicitly (a cheap free second judge as annotator-2, or drop κ/α and report single-labeler honestly) before any "validated golden set" claim.**
 - **CTO:** Binds: resolutions/refreshes write back **through the same cross-chain pointer**; "self-improving" is **not claimable until the loop provably closes at least once.**
@@ -153,6 +157,7 @@ public-claimable until the loop **provably closes once** through the cross-chain
 **Primary tension:** the defining tension of the session — CMO/DevRel (own the category via the benchmark) vs CSO (a canonical benchmark is normative-by-adoption = a de-facto spec) vs GC (a comparative scorecard naming competitors is a Lanham-Act surface) vs CFO (the paper is real solo-founder spend).
 
 Verbatim highlights:
+
 - **CSO (defining bind):** *"The spec risk is NOT a document labeled 'RFC.' It is the scorecard becoming canonical… A benchmark that invites submissions is normative-by-adoption; it is a de-facto spec even with no document labeled 'RFC.'"* Binds: **scorecard/paper carry zero normative language (no MUST/SHALL/conformant-to-ours); cite upstream benchmarks by their real names — never re-badge RAGAS-faithfulness as "Bob-faithfulness"; "governed judgment" ships as a described category, never a claimed standard name; "Evidence-Bench scorecard" (a result) is fine, "The Governed-Judgment Benchmark" (an institution) crosses the line.**
 - **GC:** *"Publishing comparative capability claims about named, well-funded companies is a Lanham Act §43(a) false-advertising / trade-libel surface."* Binds: **every comparative claim about a named competitor must be factual, dated, and sourced to that party's own public statement/roadmap — never our characterization — and pass a pre-publish GC review; the citation ledger's integrity note is binding (re-verify any specific result/number before it reaches the paper/scorecard).**
 - **CISO:** Binds: scorecard signed with the **provisioned trust root**; **predicate URIs at `evals.intentsolutions.io` only — never `labs.`**; reproducible-by-a-stranger; **pin judge provider/model versions** in provenance.
@@ -178,6 +183,7 @@ production data, not a concurrent workstream.
 **Primary tension:** CMO (maximal honest *capability* copy) vs CISO/GC/CTO (a claim doesn't exist until its enforcing primitive ships).
 
 Verbatim highlights:
+
 - **CISO (sets the exact wording; veto authority):** allowed v0 wording for `bob-the-intendant` public surfaces —
   - carries over: **"signed audit log of every tool call."**
   - allowed (mechanism-only): **"every judgment is cited to the brain context it used and recorded on a signed, hash-chained journal"**; **"judgment quality is measured against a human-labeled golden set"** (process, never a standing accuracy number).
@@ -200,6 +206,7 @@ copy; each claim registers in the same PR that ships its enforcing primitive.
 **Primary tension:** CTO/CMO (more surface in flight) vs CFO/CSO (one workstream at a time).
 
 Verbatim highlights:
+
 - **CFO:** *"The minimum that lands the moat in the window is the Layer-1 grounded-judgment loop on the watcher — already the ratified Slice-0 agent, the lowest-net-new-cost path to a demonstrable loop."* Binds: **one green-lit build bead only (`iel-25a.4`), then Bob; no parallel Layer-2/paper/forward-looking beads open concurrently; no net-new paid dependency on the provable path; keep the free-provider judge panel free.**
 - **CTO:** Binds: reversible knobs (panel providers, rubric weights, JRig thresholds) iterate fast; immutable artifacts (journal schema, cross-chain pointer, frozen contracts, scorecard methodology) get deliberation in the free window; frozen-contract + claim-surface changes always get their own PR+ADR+bead.
 - **CISO:** Binds: Layer-1 DoD additionally hard-gates PII-scrub, judge-provider egress boundary, golden-set commit gate, **cross-chain pointer signed-in.**
@@ -215,6 +222,7 @@ move fast; immutable artifacts get the free-window deliberation and their own PR
 **Primary tension:** CMO (author the idea NOW; the clock is real) vs CFO (window = ship-fast, not spend-now) vs CTO (first-mover = a provable-lineage artifact, not a rushed claim).
 
 Verbatim highlights:
+
 - **CTO:** *"The EU AI Act ask — lineage-backed auditability + reasoning-trace provenance — IS the cross-chain journal↔receipt pointer."* Binds: **first build action = freeze the journal↔receipt contract + `correlation_id` + GSB tip-hash before any judgment run.**
 - **CMO:** Binds: **author the category idea now** (thesis + Evidence-Bench-in-progress + dated public build-log = the first-mover evidence); no spec, no assurance overclaim, no partner named as endorser.
 - **CFO:** Binds: **first-mover is defended by shipping the Layer-1 loop into public view, not by publishing ahead of the primitive**; no dated public promise about Layer 2.
@@ -236,7 +244,8 @@ THREAT-MODEL.md.
 **Primary tension:** GC (personal-data leak + trademark) + CTO (frozen contract IDs must not rename) vs CMO/DevRel (Bob-as-brand).
 
 Verbatim highlights:
-- **GC (the costliest item on the board):** *"GSB is a brain of real people, places, things… Putting GSB nuggets into a public repo's examples writes third-party personal data into an immutable public git history — unrecoverable."* Binds: **(1) trademark clearance + a designated fallback name recorded before the repo flips public; (2) ZERO real GSB personal data in any public surface — synthetic/fixture brains only, no real partner/client name (Rhys, Nixtla, any person) as nugget/example/endorser without prior written consent; (3) the `030`-D1 naming amendment is recorded, not silent.**
+
+- **GC (the costliest item on the board):** *"GSB is a brain of real people, places, things… Putting GSB nuggets into a public repo's examples writes third-party personal data into an immutable public git history — unrecoverable."* Binds: **(1) trademark clearance + a designated fallback name recorded before the repo flips public; (2) ZERO real GSB personal data in any public surface — synthetic/fixture brains only, no real partner/client name (any person or organization) as nugget/example/endorser without prior written consent; (3) the `030`-D1 naming amendment is recorded, not silent.**
 - **CTO:** *"This is the SECOND reinterpretation of 'intendant'… GC's binding condition was 'never a silent reinterpretation.'"* Binds: **the product rename touches marketing/repo/wordmark ONLY; the frozen contract identifiers `intendant-adapter`, `intendant-manifest`, and the `src/intendants/` layer stay UNCHANGED (renaming a frozen contract is an ADR event); AGP stays untouched.**
 - **CMO:** *"Bob is a mascot/hero, not a category."* Binds: three separated layers — **Bob** = flagship hero product; **"governed judgment"** = category; **Evidence-Bench** = authorship artifact; **do not expose "v3" publicly** — the public repo ships as v0/v1.
 - **CSO:** Binds: clear the public slug (`bob-the-intendant` exact-GH + npm scope + visible trademark) before flip; **do NOT publish `bob-the-intendant@3.0.0` as the first tag** — public release train starts at its first signed release (v0.x).

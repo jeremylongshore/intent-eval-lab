@@ -156,7 +156,7 @@ This is what nobody else ships. Every relevance verdict is:
 
 Two hash chains, one run: AGP's journal ("what it did") and GSB's receipt ("what it knew"). The
 cross-chain pointer binds them so the pair reconstructs *knowledge → action* provenance. `agp verify`
-+ `ico audit verify` must both be green **and** the pointer must reconstruct "what it knew at action
+plus `ico audit verify` must both be green **and** the pointer must reconstruct "what it knew at action
 X" — this is the Slice-0-style acceptance proof for the judgment layer.
 
 **Three design-in-from-day-one invariants (cheap now, unrecoverable later):**
