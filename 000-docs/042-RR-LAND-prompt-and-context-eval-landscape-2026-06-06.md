@@ -254,6 +254,32 @@ turns these into a concrete (gated) recommendation: `EvalTarget = skill | prompt
 
 ---
 
+## 7.1 Downstream / active work (added 2026-07-19)
+
+Forward pointers — where this landscape's three conclusions are now being acted on. These are
+research/reminder issues, not committed builds; recorded here so the execution stays anchored to
+the landscape rather than re-deriving it.
+
+- **The optimization school (§ 5, § 6.3) instantiated as a live self-improvement loop.**
+  A GEPA-based _collect traces → score → optimize prompt → deploy winner → repeat_ loop is tracked
+  in **[intent-eval-lab#228](https://github.com/jeremylongshore/intent-eval-lab/issues/228)** (the
+  eval + GEPA-optimizer half) and **[iam-bob-pydantic#42](https://github.com/jeremylongshore/iam-bob-pydantic/issues/42)**
+  (the agent-side Logfire-traces → governed-deploy half). Consistent with § 6.3: **GEPA is a
+  backend, not the moat** — it runs _behind the acceptance gate_ (`intent-rollout-gate`, against the
+  `intent-eval-core` Evidence Bundle), which is the durable asset. The Skill Refiner (`027`) is the
+  same school; reconcile GEPA as one of its swappable optimizers rather than forking a parallel one.
+- **The `agent` EvalTarget (§ 7 / RFC `043`) realized by the Bob / IAM family.** The runtimes
+  (`iam-bob-pydantic`, `iam-bob-eino`, …) are the concrete `agent` unit-under-test; scored by
+  `j-rig-binary-eval`, promoted via `intent-rollout-gate`.
+- **The open context-engineering frontier (§ 4.4, § 6.4) has external reference doctrine to mine.**
+  [`lopopolo/harness-engineering`](https://github.com/lopopolo/harness-engineering) (CC-BY-4.0) — an
+  anthology on shaping context/tools/constraints — is tracked as input in
+  **[iam-bob-eino#12](https://github.com/intent-solutions-io/iam-bob-eino/issues/12)**. Honest
+  boundary (per § 6): it is **reference/landscape input, not a peer standard or an IEP dependency** —
+  cite it here, do not vendor it into the eval kernel.
+
+---
+
 ## 8. Source register
 
 > Every URL below was fetched or surfaced via live search on 2026-06-06. Verification status:
