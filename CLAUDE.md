@@ -172,22 +172,47 @@ Skill Refiner is RATIFIED (DR-028, 2026-05-27) and PUBLISHED to npm (initial `@i
 
 Detailed operational state (active engagements, sock-puppet observations, partner-specific notes, patent-sensitive cross-refs) lives in `.private/CLAUDE-private.md` — gitignored, local-only. Read that file in addition to this one when working in this dir on operational tasks.
 
-## AI code review (Greptile + Gemini)
+## AI code review — BOTH REVIEWERS ARE DARK (do not wait for one)
 
-Two AI reviewers run on PRs here, **both advisory** — neither is a branch-protection
-required check. The deterministic merge gate is this repo's own CI (the partner-name guard + schema-drift gate + doc gates) plus CodeQL.
+**As of 2026-07-22 no AI reviewer runs on this repo.** Verified by surveying the
+last four PRs across all six Intent Eval Platform repos: `gemini-code-assist`
+now posts only a sunset notice, and `greptile` has zero activity anywhere.
 
-- **Gemini Code Assist** (`.gemini/config.yaml` + `.gemini/styleguide.md`) is the
-  **active** reviewer. Re-instated 2026-06-24 as the fallback after the Greptile
-  review quota was exhausted. Workhorse for design / logic / correctness /
-  cross-artifact consistency; CodeQL owns security.
-- **Greptile** (`.greptile/config.json` + `rules.md` + `files.json`) is configured to
-  the platform-unified schema (`strictness: 3`, `commentTypes: ["logic","syntax"]`,
-  `statusCheck: false`, a universal `no-gate-weakening` rule, plus this repo's scoped
-  invariant rules). It stays in place and resumes when the Greptile quota resets.
+- **Gemini Code Assist** — **SUNSET, permanently.** The consumer version on
+  GitHub has ceased all review activity; the bot says so verbatim on live PRs.
+  `.gemini/config.yaml` + `.gemini/styleguide.md` are retained but INERT. This
+  is a vendor decision — it is not a quota that resets and it is not coming back.
+- **Greptile** (`.greptile/config.json` + `rules.md` + `files.json`) — configured
+  to the platform-unified schema (`strictness: 3`, `commentTypes:
+["logic","syntax"]`, `statusCheck: false`, a universal `no-gate-weakening`
+  rule, plus this repo's scoped invariant rules) but **not observed reviewing
+  any PR**. The config stays so the App works if it is reinstalled; do not treat
+  it as an expected reviewer today.
 
-Read either review when present; the required gate is CI. Re-installing/uninstalling
-the GitHub Apps is an admin (UI) action — the in-repo config here does not install them.
+**Operationally: never block a merge waiting for an AI review.** Check whether
+one arrived, read it if so, and otherwise proceed on CI. The deterministic merge gate is this repo's own CI (the partner-name guard + schema-drift gate + doc gates) plus CodeQL. That was
+always the required gate; it is now the only one. Installing or uninstalling the
+GitHub Apps is an admin (UI) action — the in-repo config here does not do it.
+
+**Replacement (decided 2026-07-22, not yet activated):** stand up the advisory
+lane we already run on the marketplace repo —
+`claude-code-plugins/.github/workflows/minimax-review.yml`. The action is
+[`tarmojussila/minimax-code-review`](https://github.com/tarmojussila/minimax-code-review)
+(the upstream mechanism), consumed via our own fork
+`jeremylongshore/minimax-code-review` **pinned to an immutable SHA** — the right
+supply-chain posture for a small single-maintainer action: we do not auto-track
+upstream. It is fork-safe by construction (`pull_request`, not
+`pull_request_target`, plus a same-repo guard, so a forked PR never receives the
+API key) and kill-switched by repo variable.
+
+**Do not copy CCPI's prompts.** The mechanism is generic; the value is prompts
+grounded in the consuming repo's own invariants — CCPI's three lanes are written
+against its validators and its A-grade bar and would be noise here. For this
+repo the reviewer should be pointed at spec + governance discipline — DR/Blueprint authority order, the partner-name guard, schema-drift into `specs/`, and the verbatim-preservation rule for AT-DECR council records.
+
+Activation needs owner secret actions: repo secret `MINIMAX_API_KEY` + repo
+variable `ENABLE_MINIMAX_REVIEW=true` (+ `MINIMAX_MODEL`). Until then this repo
+is CI-only, deliberately.
 
 <!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:ca08a54f -->
 
