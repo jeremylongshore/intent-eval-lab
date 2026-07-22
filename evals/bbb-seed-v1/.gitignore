@@ -1,0 +1,22 @@
+# NEVER COMMIT THE CANDIDATE SET.
+#
+# `scripts/derive-corpus.ts` writes `.candidate/` from the LIVE governed brain. Every document in
+# it carries `source_sensitivity: internal` — the brain classifies all 17,321 of its memories that
+# way, and none as public (see ../ALLOWLIST.md).
+#
+# intent-eval-lab is a PUBLIC Apache-2.0 repository. Committing `.candidate/` would publish
+# internally-classified content by accident, in a repo whose history is world-readable and whose
+# force-push-to-scrub story is bad. This ignore is the last line of defence behind the script's
+# own refusal to write into `corpus/`.
+#
+# Documents reach `corpus/` ONLY by a human reading them and recording sign-off in
+# `corpus/PROVENANCE.md`. That promotion is a deliberate, reviewed `git add` of specific files —
+# never a bulk add of this directory.
+.candidate/
+
+# The person_name marker's terms — NEVER tracked.
+# intent-eval-lab is a PUBLIC repo, so a committed list of real individuals would itself be the
+# disclosure the marker exists to prevent; and some terms are partner names, which
+# .github/workflows/partner-name-guard.yml refuses outright (DR-004 S1Q2). derive-corpus.ts
+# fails closed (exit 2) when this file is absent rather than silently skipping the rule.
+.person-names.local
