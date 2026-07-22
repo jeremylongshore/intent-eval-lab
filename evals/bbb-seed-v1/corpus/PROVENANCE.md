@@ -17,14 +17,14 @@ entry never existed. Getting this wrong is not a rollback, it is a disclosure.
 
 ## Sign-off record
 
-| Field | Value |
-|---|---|
-| Status | **NOT SIGNED OFF** |
-| Reviewer | — |
-| Date | — |
-| Candidate set reviewed | — (derivation decision-set sha256: `3bdd76b436156435206059ac1f76c285ddfd4aac3c2f73ccaa0e1834da828837`) |
-| Documents promoted | 0 |
-| Escalations adjudicated | 0 of 5 |
+| Field                   | Value                                                                                                  |
+| ----------------------- | ------------------------------------------------------------------------------------------------------ |
+| Status                  | **NOT SIGNED OFF**                                                                                     |
+| Reviewer                | —                                                                                                      |
+| Date                    | —                                                                                                      |
+| Candidate set reviewed  | — (derivation decision-set sha256: `3bdd76b436156435206059ac1f76c285ddfd4aac3c2f73ccaa0e1834da828837`) |
+| Documents promoted      | 0                                                                                                      |
+| Escalations adjudicated | 0 of 5                                                                                                 |
 
 ### What sign-off attests
 
@@ -41,13 +41,13 @@ Documents that are gold-cited but were refused by `ALLOWLIST.md` Rule 2. Each ne
 decision. `secret_kw` fires on subject matter here, not on a leaked value — but that judgement has
 to be made by a person looking at the actual text, which is exactly why the script refuses to make it.
 
-| Document | Refused by | Decision | Justification | Dependent queries |
-|---|---|---|---|---|
-| Compile-Then-Govern Architecture | `secret_kw` | *pending* | | q02, q13 |
-| Token Passthrough | `secret_kw` | *pending* | | q28, q34 |
-| Spool Boundary Threat Model | `secret_kw` | *pending* | | q36 |
-| Double-Gate Pattern | `secret_kw` | *pending* | | q41 |
-| Team mode is member-proposes / server-disposes | `private_host` | *pending* | | q14 |
+| Document                                       | Refused by     | Decision  | Justification | Dependent queries |
+| ---------------------------------------------- | -------------- | --------- | ------------- | ----------------- |
+| Compile-Then-Govern Architecture               | `secret_kw`    | _pending_ |               | q02, q13          |
+| Token Passthrough                              | `secret_kw`    | _pending_ |               | q28, q34          |
+| Spool Boundary Threat Model                    | `secret_kw`    | _pending_ |               | q36               |
+| Double-Gate Pattern                            | `secret_kw`    | _pending_ |               | q41               |
+| Team mode is member-proposes / server-disposes | `private_host` | _pending_ |               | q14               |
 
 Decision must be `ADMIT` (with justification) or `REFUSE` (dependent queries move to `blocked`
 permanently, or the corpus gains a hand-written public substitute).

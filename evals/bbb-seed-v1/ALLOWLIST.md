@@ -2,14 +2,14 @@
 
 **Status:** NORMATIVE for `scripts/derive-corpus.ts`. The script reads this file's rules as code
 (they are mirrored in `derive-corpus.ts` as `ALLOWLIST`); this document is the human-readable
-statement of *why* each rule exists. If the two disagree, that is a bug — the script fails closed.
+statement of _why_ each rule exists. If the two disagree, that is a bug — the script fails closed.
 
 ## The refusal that shapes everything
 
 The live brain (`~/.teamkb/teamkb.db`) holds **17,321 curated memories, and every single one is
 classified `sensitivity: 'internal'`**. Not one is `'public'`. Verified 2026-07-22:
 
-```
+```text
 sensitivity | lifecycle   | count
 internal    | active      | 10128
 internal    | superseded  |  6501
@@ -31,13 +31,13 @@ emits a report. Promoting that output into `corpus/` (and therefore onto
 
 Only these `category` values are eligible:
 
-| Category | Pool (active) | Why eligible |
-|---|---|---|
-| `pattern` | 580 | Generic engineering patterns — "Confused Deputy Problem", "Multi-Stage Docker Build", "pgvector Extension". Textbook-adjacent. |
-| `architecture` | 94 | Design-shape notes about our own systems, already described publicly in the BBB READMEs. |
-| `convention` | 34 | Team conventions — already public in `CONTRIBUTING.md` / commit standards. |
-| `decision` | 48 | ADR-shaped records; the corresponding DRs are already public in `000-docs/`. |
-| `onboarding` | 15 | Written for outsiders by definition. |
+| Category       | Pool (active) | Why eligible                                                                                                                   |
+| -------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `pattern`      | 580           | Generic engineering patterns — "Confused Deputy Problem", "Multi-Stage Docker Build", "pgvector Extension". Textbook-adjacent. |
+| `architecture` | 94            | Design-shape notes about our own systems, already described publicly in the BBB READMEs.                                       |
+| `convention`   | 34            | Team conventions — already public in `CONTRIBUTING.md` / commit standards.                                                     |
+| `decision`     | 48            | ADR-shaped records; the corresponding DRs are already public in `000-docs/`.                                                   |
+| `onboarding`   | 15            | Written for outsiders by definition.                                                                                           |
 
 **`reference` (16,219 memories — 94% of the brain) is REFUSED wholesale.** It is the session-note
 and scratch bulk: the highest-volume, lowest-curation, highest-risk stratum. No content-level scan
@@ -54,15 +54,15 @@ A memory is refused if its `title` or `content` matches **any** pattern below. T
 rules, not redaction rules: the script does **not** attempt to scrub a match and keep the document.
 Redaction invites the "we thought we caught it" failure; refusal cannot partially fail.
 
-| Marker | Regex intent | Why refuse |
-|---|---|---|
-| `ip_address` | dotted quad | VPS / tailnet addressing. |
-| `email` | address form | PII. |
-| `abs_home_path` | `/home/<user>` | Leaks operator username + local layout. |
-| `secret_kw` | `api[_-]?key`, `token`, `passphrase`, `password`, `secret`, `credential` | Refuse the *neighbourhood* of a secret, not just a matched secret — the words co-occur with the values. |
-| `long_hex_or_b64` | `[A-Za-z0-9+/]{32,}={0,2}` | Shape of a key, hash, or token. |
-| `person_name` | named individuals | PII; also partner-name discipline (DR-004 S1Q2). |
-| `private_host` | internal hostnames, tailnet CIDR, hosting vendor | Infrastructure topology. |
+| Marker            | Regex intent                                                             | Why refuse                                                                                              |
+| ----------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| `ip_address`      | dotted quad                                                              | VPS / tailnet addressing.                                                                               |
+| `email`           | address form                                                             | PII.                                                                                                    |
+| `abs_home_path`   | `/home/<user>`                                                           | Leaks operator username + local layout.                                                                 |
+| `secret_kw`       | `api[_-]?key`, `token`, `passphrase`, `password`, `secret`, `credential` | Refuse the _neighbourhood_ of a secret, not just a matched secret — the words co-occur with the values. |
+| `long_hex_or_b64` | `[A-Za-z0-9+/]{32,}={0,2}`                                               | Shape of a key, hash, or token.                                                                         |
+| `person_name`     | named individuals                                                        | PII; also partner-name discipline (DR-004 S1Q2).                                                        |
+| `private_host`    | internal hostnames, tailnet CIDR, hosting vendor                         | Infrastructure topology.                                                                                |
 
 Measured against the 733-memory eligible pool (2026-07-22): **608 carry zero markers**;
 refusals are `secret_kw` 87, `private_host` 28, `long_hex_or_b64` 11, `person_name` 11,

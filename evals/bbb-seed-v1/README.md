@@ -9,10 +9,10 @@ that has not been made. `verify-manifest.mjs` correctly refuses to report green 
 
 ## The two-corpus split
 
-| Arm | Runs against | Rows publish to | Purpose |
-|---|---|---|---|
-| **public** | this frozen, pinned, sanitized corpus | `labs.intentsolutions.io` | reproducible by outsiders |
-| **internal** | the live `~/.teamkb` (245 MB, real memories) | `site-internal/internal/results/` **only** | catches regressions on the *actual* brain |
+| Arm          | Runs against                                 | Rows publish to                            | Purpose                                   |
+| ------------ | -------------------------------------------- | ------------------------------------------ | ----------------------------------------- |
+| **public**   | this frozen, pinned, sanitized corpus        | `labs.intentsolutions.io`                  | reproducible by outsiders                 |
+| **internal** | the live `~/.teamkb` (245 MB, real memories) | `site-internal/internal/results/` **only** | catches regressions on the _actual_ brain |
 
 Public numbers stay reproducible; private data never leaves the box. The dashboard's
 `scripts/lint-arm-symmetry.ts` enforces that both arms are present or neither — so publish the pair
@@ -31,7 +31,7 @@ writes to `corpus/`**. See `ALLOWLIST.md` for the full rule set and its rational
 
 ## What the derivation currently produces
 
-```
+```text
 eligible pool 733          Rule 1: lifecycle=active + category in
                            pattern/architecture/convention/decision/onboarding
                            (`reference` — 16,219 memories, 94% of the brain — refused wholesale)
@@ -47,16 +47,16 @@ against the same database produce a byte-identical report (verified).
 
 ### The five escalations, and why they matter
 
-Rule 2 refuses the *neighbourhood* of a secret, not just a secret. Its known cost is that a document
+Rule 2 refuses the _neighbourhood_ of a secret, not just a secret. Its known cost is that a document
 **about** tokens trips the same marker as a document **containing** one:
 
-| Document | Refused by | Why the match is subject matter |
-|---|---|---|
-| Compile-Then-Govern Architecture | `secret_kw` | The platform's signature architecture doc |
-| Token Passthrough | `secret_kw` | The pattern is *named* for the word |
-| Spool Boundary Threat Model | `secret_kw` | Threat models discuss credentials by necessity |
-| Double-Gate Pattern | `secret_kw` | ditto |
-| Team mode is member-proposes / server-disposes | `private_host` | names our own hostname |
+| Document                                       | Refused by     | Why the match is subject matter                |
+| ---------------------------------------------- | -------------- | ---------------------------------------------- |
+| Compile-Then-Govern Architecture               | `secret_kw`    | The platform's signature architecture doc      |
+| Token Passthrough                              | `secret_kw`    | The pattern is _named_ for the word            |
+| Spool Boundary Threat Model                    | `secret_kw`    | Threat models discuss credentials by necessity |
+| Double-Gate Pattern                            | `secret_kw`    | ditto                                          |
+| Team mode is member-proposes / server-disposes | `private_host` | names our own hostname                         |
 
 These are **not** auto-admitted — that would be the default-accept path `ALLOWLIST.md` Rule 3
 forbids. They are written to `.candidate/escalated/` for one-at-a-time adjudication. Until then the
@@ -71,11 +71,11 @@ it in would understate the system.
 public** (`bobs-big-brain-registrar` is a public repo), so restating them publishes nothing new —
 only the corpus they are answered against is subject to the sanitization question.
 
-| Status | Count | Meaning |
-|---|---|---|
-| `active` | 34 | gold present in the candidate corpus; scoreable |
-| `blocked` | 7 | gold escalated; unanswerable until adjudicated |
-| `unlabelled` | 1 | q39 has no gold labels in the source dataset; not scoreable for recall |
+| Status       | Count | Meaning                                                                |
+| ------------ | ----- | ---------------------------------------------------------------------- |
+| `active`     | 34    | gold present in the candidate corpus; scoreable                        |
+| `blocked`    | 7     | gold escalated; unanswerable until adjudicated                         |
+| `unlabelled` | 1     | q39 has no gold labels in the source dataset; not scoreable for recall |
 
 Recorded BM25 misses (q15, q29) are **kept**, not relabelled away — a miss on a valid semantic query
 is evidence about the retrieval wall, which is the whole point of the semantic stratum.
@@ -87,16 +87,16 @@ hand). Labelling those is follow-on work.
 
 ## Files
 
-| Path | Role |
-|---|---|
-| `ALLOWLIST.md` | NORMATIVE derivation rules + why each exists |
-| `scripts/derive-corpus.ts` | read-only sanitizer; writes `.candidate/`, never `corpus/` |
-| `scripts/verify-manifest.mjs` | fail-closed pin verifier (exit 1 drift, 2 structural) |
-| `questions.yaml` | the 42-query golden bank with per-query status |
-| `gold-ids.txt` | the 38 unique gold document ids, so derivation can prioritise them |
-| `corpus/` | **empty** — populated only by reviewed promotion |
-| `MANIFEST.json` | **absent** — created at freeze time |
-| `.candidate/` | git-ignored derivation output; contains internal-classified content |
+| Path                          | Role                                                                |
+| ----------------------------- | ------------------------------------------------------------------- |
+| `ALLOWLIST.md`                | NORMATIVE derivation rules + why each exists                        |
+| `scripts/derive-corpus.ts`    | read-only sanitizer; writes `.candidate/`, never `corpus/`          |
+| `scripts/verify-manifest.mjs` | fail-closed pin verifier (exit 1 drift, 2 structural)               |
+| `questions.yaml`              | the 42-query golden bank with per-query status                      |
+| `gold-ids.txt`                | the 38 unique gold document ids, so derivation can prioritise them  |
+| `corpus/`                     | **empty** — populated only by reviewed promotion                    |
+| `MANIFEST.json`               | **absent** — created at freeze time                                 |
+| `.candidate/`                 | git-ignored derivation output; contains internal-classified content |
 
 ## Reproducing
 
