@@ -52,3 +52,9 @@ def srq() -> ModuleType:
 def wb() -> ModuleType:
     """The sak-wave-b-durability module (loaded by path)."""
     return _load_by_path("sak-wave-b-durability.py", "sak_wave_b_durability")
+
+
+@pytest.fixture(scope="session")
+def spd() -> ModuleType:
+    """The spec-projection-diff module — Fitness Function #2 (loaded by path)."""
+    return _load_by_path("spec-projection-diff.py", "spec_projection_diff")
