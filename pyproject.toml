@@ -98,8 +98,13 @@ parallel = true
 concurrency = ["multiprocessing"]
 
 [tool.coverage.report]
-# Floor starts at 60% (current measured: 20% with subprocess gap fixed will
-# rise toward 80+). Ratchet up in follow-up PRs as un-tested branches land tests.
+# LOCAL floor. Locally the suite measures ~66-68% because the cross-repo IS
+# validator + fixtures and the model-provider keys are both present, so the
+# arm-runner subprocesses actually execute. CI cannot reach either, measures
+# ~40%, and therefore passes `--fail-under=0` to switch this off for CI only
+# (see .github/workflows/python-tests.yml). Do NOT lower this number to make CI
+# green — that would weaken the local gate to paper over an environment limit.
+# Ratchet UP in follow-up PRs as un-tested branches land tests.
 fail_under = 60
 precision = 1
 show_missing = true
