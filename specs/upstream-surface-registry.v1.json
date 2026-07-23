@@ -92,7 +92,7 @@
       "extractor": "fetch_mcp_schema_ts",
       "semantic_coverage": {
         "status": "byte-hash-only",
-        "reason": "extract-mcp-projection.py parses a vendored JSON schema (mcp-schema-2025-11-25.json); this surface publishes schema.ts — a different artifact. Repointing needs a ts-to-json derivation step in the capture stage first."
+        "reason": "Deliberately frozen, and correctly so - this is NOT a repointing gap. The vendored mcp-schema-2025-11-25.json is the RELEASED 2025-11-25 revision, fetched from a pinned upstream commit (1304c8fe). This surface monitors schema/DRAFT/schema.ts, which is a different artifact on purpose: the draft is an early-change SIGNAL, the pinned release is the normative baseline. Repointing a pinned released schema at a moving draft would be a downgrade, not a repair. mcp-config's real freshness gap is its OTHER parsed input, the claude-code-mcp.md doc - see the claude-code-mcp-doc entry under unmonitored_candidates."
       },
       "capture": {
         "kind": "http",
@@ -202,7 +202,7 @@
       "extractor": "fetch_claude_slash_commands",
       "semantic_coverage": {
         "status": "byte-hash-only",
-        "reason": "The honest gap: the slash-commands contract has NO extractor, NO deep capture and NO committed projection at all. A 7th contract at zero semantic coverage, and this surface is byte-drifted. Not a design choice - unbuilt work."
+        "reason": "The sharpest gap in the estate, and NOT merely unbuilt. Verified 2026-07-23: the kernel (@intentsolutions/core schemas/authoring/v1/index.json) models exactly SIX authoring contracts - skill-frontmatter, plugin-manifest, agent-definition, mcp-config, hook-config, marketplace-catalog - and slash-commands is not among them. Yet claude-code-plugins' validate-skills-schema.py DOES grade commands/*.md (--commands-only, rglob('commands/*.md'), its own category list). So a live marketplace validator judges this artifact class against a hand-rolled rubric with NO kernel SSoT behind it and NO semantic drift detection in front of it - the exact failure mode the Spec Authority Kernel exists to prevent, still fully open on this one contract. And this surface IS byte-drifted. Byte-hash is therefore all the coverage that is even possible today: a projection needs a committed normative baseline, and there is none to diff against. Promoting slash-commands to contract #7 is a CHARTER decision, not an engineering one - DR-044 D8 lands the remaining contracts on-demand behind an explicit bandwidth sign-off - so it is named here rather than silently built."
       },
       "capture": {
         "kind": "http",
