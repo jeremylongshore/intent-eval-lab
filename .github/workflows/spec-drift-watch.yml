@@ -52,6 +52,7 @@ on:
       - 'specs/upstream-surface-registry.v1.json'
       - 'specs/lineage/**'
       - 'specs/snapshots/.sha/**'
+      - 'specs/_vendor/**'
       - '_vendor/upstream/**'
   push:
     branches: [main]
@@ -66,63 +67,104 @@ on:
       - 'specs/upstream-surface-registry.v1.json'
       - 'specs/lineage/**'
       - 'specs/snapshots/.sha/**'
+      - 'specs/_vendor/**'
       - '_vendor/upstream/**'
 
 permissions:
-  contents: write  # archive commit-back (tier-1 raw + tier-2 vendored, append-only)
-  issues: write    # for auto-opening drift issues
+  contents: write        # push the bot promotion branch (NOT main — main stays protected)
+  issues: write          # for auto-opening drift issues
+  pull-requests: write   # open/update the promotion PR that carries every commit-back
 
 jobs:
   spec-drift-check:
     name: Poll spec sources + field-diff + liveness
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    env:
+      # Single long-lived bot branch carrying every commit-back. Not protected, so
+      # the default GITHUB_TOKEN can write it; merged into main via the promotion PR.
+      PROMO_BRANCH: spec-drift/auto-promotion
     steps:
+      # L1 fix, second cut (supersedes the SPEC_DRIFT_PUSH_TOKEN approach).
+      #
+      # History: every commit-back used to push straight at main and be rejected
+      # GH006 ("9 of 9 required status checks are expected"), so the watcher could
+      # detect drift but never persist it. The first fix added an admin/bypass PAT
+      # (SPEC_DRIFT_PUSH_TOKEN). It WORKED — bot heartbeats landed daily from
+      # 2026-06-29 to 2026-07-06 — and then silently stopped when the PAT expired,
+      # taking the spec-currency loop down for 16 days with no alert, on green runs.
+      #
+      # Chose the PR route over repairing the bypass token because the token is both
+      # a supply-chain hole (a durable bot write path past main's required checks, on
+      # the repo that DEFINES what a correct artifact is) and operationally fragile
+      # (it decays on a credential clock nobody watches — proven above). A PR-opening
+      # watcher needs no elevated privilege, never expires, and fails VISIBLY: an
+      # unmerged PR is an object you can see, not a ::warning:: on a green run.
+      #
+      # So: the default GITHUB_TOKEN is deliberate. It cannot push to main, and it
+      # does not need to.
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          fetch-depth: 1
-          # L1 fix (692-AA-AACR § 0.5): the daily commit-backs (SSoT snapshots,
-          # liveness .state.json, lineage, currency evidence) must push past main's
-          # required status checks. The default GITHUB_TOKEN is the github-actions
-          # bot — NOT an admin — so its direct push is rejected and every commit-back
-          # silently falls back to an ephemeral artifact (the watcher can detect drift
-          # but never persist it). With enforce_admins:false, a push authenticated as
-          # an admin bypasses the status-check gate, so we use an admin/bypass PAT
-          # (secret SPEC_DRIFT_PUSH_TOKEN). Falls back to GITHUB_TOKEN when the secret
-          # is unset — i.e. NO regression: until you mint the PAT, behavior is exactly
-          # as today (push fails → artifact fallback).
-          token: ${{ secrets.SPEC_DRIFT_PUSH_TOKEN || github.token }}
+          fetch-depth: 0   # promotion branch is rebuilt from prior state; needs history
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
+      # Cumulative bookkeeping. The promotion branch (below) is the durable home for
+      # everything the watcher appends between merges: tier-1 archive records, the
+      # lineage log, the currency evidence row, the liveness .state.json, and the
+      # detector-health dashboard. Restoring it here — BEFORE fetch-capture appends —
+      # is what makes those artifacts accumulate across runs instead of each run
+      # starting from whatever main happens to hold.
+      #
+      # This is also the `.state.json` durability fix: the GH cache below is
+      # evictable, so on eviction liveness used to fall back to the committed
+      # bootstrap seed and read `last_run_utc: null` forever ("bootstrap (OK)"
+      # every run — an inert dead-man). The branch survives eviction. The cache
+      # restore that follows is now just the fast path; on a cache hit it overwrites
+      # .state.json with a copy of equal freshness, since the same run writes both.
+      - name: Restore prior bookkeeping from the promotion branch
+        id: restore_promo
+        shell: bash
+        run: |
+          set -uo pipefail
+          if ! git fetch --no-tags origin "${PROMO_BRANCH}" 2>/dev/null; then
+            echo "No promotion branch yet (${PROMO_BRANCH}) — first run, starting from main."
+            echo "restored=false" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+          # If the last promotion PR was merged, main already carries this content and
+          # is strictly newer. Restoring the branch tip over it would REGRESS the very
+          # baseline the merge just advanced — the one bug this whole mechanism exists
+          # to prevent. Skip the restore and let main be the base.
+          if git merge-base --is-ancestor FETCH_HEAD "origin/${GITHUB_REF_NAME}" 2>/dev/null; then
+            echo "Promotion branch is already merged into ${GITHUB_REF_NAME} — main is the fresher base, nothing to restore."
+            echo "restored=false" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+          # Restore only the bookkeeping paths. specs/_vendor/ is included so a
+          # tier-2 promotion that has not been merged yet is not re-proposed as if
+          # it were new, and so lineage stays consistent with the snapshot it
+          # describes.
+          git checkout FETCH_HEAD -- \
+            archive/ \
+            specs/_vendor/ \
+            specs/lineage/ \
+            evidence/snapshot-currency/ \
+            specs/snapshots/.state.json \
+            specs/detector-health.json \
+            docs/detector-health.md 2>/dev/null || true
+          git reset --quiet
+          echo "Restored bookkeeping from ${PROMO_BRANCH}."
+          echo "restored=true" >> "${GITHUB_OUTPUT}"
+
       # Field-level extract-then-diff (Fitness Function #2). Offline: operates on
       # the vendored firewall snapshot + committed projection. --self-test proves
       # the differ is sound (detects every drift class, no false positive);
       # --check proves the snapshot and the committed projection still agree.
-      - name: Field-level projection diff (skill-frontmatter)
-        id: projection
-        shell: bash
-        continue-on-error: true
-        run: |
-          set -uo pipefail
-          # --self-test (differ soundness) and --check (snapshot↔projection
-          # consistency) are both OFFLINE + deterministic — they gate every event.
-          if python3 scripts/spec-projection-diff.py --self-test; then
-            echo "selftest=pass" >> "${GITHUB_OUTPUT}"
-          else
-            echo "selftest=fail" >> "${GITHUB_OUTPUT}"
-          fi
-          if python3 scripts/spec-projection-diff.py --check > /tmp/projection-report.txt 2>&1; then
-            echo "drift=false" >> "${GITHUB_OUTPUT}"
-          else
-            echo "drift=true" >> "${GITHUB_OUTPUT}"
-          fi
-          cat /tmp/projection-report.txt
-
       # Persist liveness state (per-surface fetch-error streaks + last_run) across
       # scheduled runs. Cache (not commit-back) avoids branch-protection friction;
       # the committed specs/snapshots/.state.json is the bootstrap seed. Eviction
@@ -239,13 +281,58 @@ jobs:
           fi
           cat /tmp/capture-log.txt
 
+      # Fitness Function #2 — field-level extract-then-diff.
+      #
+      # STEP ORDER IS LOAD-BEARING. This must run AFTER the capture above, and it
+      # did not used to. The differ reads specs/_vendor/<surface>/snapshot<ext>;
+      # running it first meant it only ever saw last run's committed bytes. Combined
+      # with its old default of a snapshot hand-vendored on 2026-05-28 that the
+      # capture pipeline never writes, BOTH sides of the diff were frozen and
+      # "NO semantic drift (0 findings)" was a structural certainty rather than a
+      # finding. Capture-then-diff is what makes this check able to fire at all.
+      #
+      # The FETCH_OK firewall is untouched: fetch-capture.py promotes into
+      # specs/_vendor/ only on a good fetch, and the differ still performs no
+      # network I/O of its own. On a PR (no capture) this degrades to a consistency
+      # check of the committed snapshot↔projection pair, which is the right meaning
+      # there.
+      - name: Field-level projection diff (skill-frontmatter)
+        id: projection
+        shell: bash
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          # --self-test proves differ soundness (every drift class detected, no
+          # false positive). Offline + deterministic — it gates every event.
+          if python3 scripts/spec-projection-diff.py --self-test; then
+            echo "selftest=pass" >> "${GITHUB_OUTPUT}"
+          else
+            echo "selftest=fail" >> "${GITHUB_OUTPUT}"
+          fi
+          python3 scripts/spec-projection-diff.py --check > /tmp/projection-report.txt 2>&1
+          rc=$?
+          cat /tmp/projection-report.txt
+          # Distinguish "the shape changed" (1) from "the differ could not run" (2).
+          # Collapsing them would report a missing snapshot or a broken registry as
+          # semantic drift, and reconciling a phantom drift is worse than no signal.
+          case "${rc}" in
+            0) echo "drift=false" >> "${GITHUB_OUTPUT}"; echo "error=false" >> "${GITHUB_OUTPUT}" ;;
+            1) echo "drift=true"  >> "${GITHUB_OUTPUT}"; echo "error=false" >> "${GITHUB_OUTPUT}" ;;
+            *) echo "drift=false" >> "${GITHUB_OUTPUT}"; echo "error=true"  >> "${GITHUB_OUTPUT}"
+               echo "::error::spec-projection-diff --check could not run (exit ${rc}) — the semantic gate did NOT execute this run." ;;
+          esac
+
       # Persist the appended archive records + any tier-2 promotion, plus the
       # lineage log + its derived coverage map (a tier-2 promotion appends a
       # snapshot-updated event and regenerates the projection — 054-AT-SPEC).
       # Append-only by construction: fetch-capture.py never deletes or rewrites
       # an existing record, and lineage-log.py append refuses any prefix change.
-      # [skip ci] keeps the bot commit from re-triggering doc/CI workflows.
-      - name: Commit archive tiers back (append-only)
+      # That property is enforced by the SCRIPTS, not by git history, which is why
+      # the promotion branch below can be force-updated without weakening it.
+      #
+      # Commit only — the single push happens once, at the end, onto the promotion
+      # branch. [skip ci] keeps the bot commit from re-triggering doc/CI workflows.
+      - name: Commit archive tiers (append-only)
         id: archive_commit
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         shell: bash
@@ -259,21 +346,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add archive/ specs/_vendor/ specs/lineage/ evidence/snapshot-currency/
           git commit -m "chore(spec-archive): capture $(date -u +%Y-%m-%dT%H:%MZ) raw fetches + currency row [skip ci]"
-          if ! git push origin "HEAD:${GITHUB_REF_NAME}"; then
-            echo "::warning::archive commit-back push failed (branch protection?) — delta preserved as a workflow artifact."
-            echo "push_failed=true" >> "${GITHUB_OUTPUT}"
-          fi
-
-      - name: Upload archive delta artifact (push-failure fallback)
-        if: steps.archive_commit.outputs.push_failed == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: spec-archive-delta-${{ github.run_id }}
-          path: |
-            archive/
-            specs/_vendor/
-            specs/lineage/
-            evidence/snapshot-currency/
+          echo "committed=true" >> "${GITHUB_OUTPUT}"
 
       # Dead-man heartbeat (true, external): ping an uptime monitor so absence of
       # a daily ping alerts even when the cron itself stops firing. Optional
@@ -328,15 +401,18 @@ jobs:
 
       # Durable liveness (L1 fix, 692-AA-AACR § 0.5). The cache above is ephemeral:
       # on GH-cache eviction the restore falls back to the committed bootstrap seed,
-      # which has stayed `last_run_utc: null` because no commit-back ever landed — so
-      # `watcher-liveness.py --heartbeat-check` reads null and prints "bootstrap …
-      # (OK)" forever, the dead-man heartbeat is inert, and the dashboard reads
-      # DEGRADED even while the watcher is live. Commit the freshly-recorded
-      # .state.json back so the committed seed ADVANCES each run: the heartbeat then
-      # survives eviction, and the committed last_run_utc is the provable
-      # proof-of-life. Needs the SPEC_DRIFT_PUSH_TOKEN admin push (Checkout step) to
-      # land past branch protection; without it this push fails-soft like the others.
-      - name: Commit liveness heartbeat back (durable dead-man)
+      # which stayed `last_run_utc: null` because no commit-back ever landed — so
+      # `watcher-liveness.py --heartbeat-check` read null and printed "bootstrap …
+      # (OK)" forever, the dead-man heartbeat was inert, and the dashboard read
+      # DEGRADED even while the watcher was live. Committing the freshly-recorded
+      # .state.json makes the seed ADVANCE each run, so the heartbeat survives
+      # eviction and the committed last_run_utc is provable proof-of-life.
+      #
+      # Durability now comes from the promotion BRANCH (restored at the top of this
+      # job), not from an admin push at main. That is what lets a persistence-based
+      # alert — "drifted N consecutive runs with no baseline advance" — have a
+      # counter that does not reset to zero on every cache eviction.
+      - name: Commit liveness heartbeat (durable dead-man)
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         shell: bash
         run: |
@@ -349,9 +425,6 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add specs/snapshots/.state.json
           git commit -m "chore(spec-drift): liveness heartbeat $(date -u +%Y-%m-%dT%H:%MZ) [skip ci]"
-          if ! git push origin "HEAD:${GITHUB_REF_NAME}"; then
-            echo "::warning::liveness heartbeat push failed — set SPEC_DRIFT_PUSH_TOKEN (admin/bypass PAT) to enable durable liveness; cache still holds state."
-          fi
 
       - name: Summarize
         if: always()
@@ -489,10 +562,15 @@ jobs:
         if: >-
           steps.projection.outputs.selftest == 'fail' ||
           steps.projection.outputs.drift == 'true' ||
+          steps.projection.outputs.error == 'true' ||
           steps.capture_selftest.outputs.selftest == 'fail' ||
           steps.emit_currency_selftest.outputs.selftest == 'fail'
         run: |
-          echo "::error::Offline gate failed (projection self-test/consistency, fetch-capture taxonomy self-test, or snapshot-currency emitter self-test)."
+          # `projection.outputs.error` is in this list deliberately: a differ that
+          # CANNOT RUN must be as red as a differ that found drift. Treating an
+          # inoperable gate as a pass is the precise shape of the six-week silence
+          # this workflow is being repaired from.
+          echo "::error::Offline gate failed (projection self-test/consistency/executability, fetch-capture taxonomy self-test, or snapshot-currency emitter self-test)."
           exit 1
 
       # Live / stateful monitoring gates fail only on the scheduled run (a PR
@@ -532,6 +610,102 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add specs/detector-health.json docs/detector-health.md specs/snapshots/.state.json
           git commit -m "chore(detector-health): refresh composite dashboard $(date -u +%Y-%m-%dT%H:%MZ) [skip ci]"
-          if ! git push origin "HEAD:${GITHUB_REF_NAME}"; then
-            echo "::warning::detector-health commit-back push failed (branch protection?) — dashboard preserved in the run workspace only."
+
+      # ---------------------------------------------------------------------------
+      # The single persistence point. Everything above COMMITS; nothing above
+      # PUSHES. Here we publish those commits on an unprotected bot branch and
+      # open/refresh one PR against main.
+      #
+      # Why a branch + PR rather than a push at main (see the Checkout comment for
+      # the token history):
+      #   - main stays protected; no bot ever writes past a required check.
+      #   - every spec advance becomes reviewable, which the human field-level
+      #     reconciliation gate requires anyway before anything reaches the kernel.
+      #   - it fails VISIBLY. An unmerged PR is an object; the old failure mode was
+      #     a ::warning:: annotation on a green run, which is how 11 drifted
+      #     surfaces went unreported for six weeks.
+      #
+      # Force-push is correct here and does not weaken the append-only guarantee:
+      # the branch is rebuilt each run from main + the bookkeeping restored at the
+      # top of this job, so its CONTENT is strictly cumulative, and append-only is
+      # enforced by fetch-capture.py / lineage-log.py refusing to rewrite records —
+      # not by the immutability of a bot branch's history. Only this workflow ever
+      # writes this ref.
+      #
+      # PR creation is best-effort. If the repo forbids Actions from opening PRs,
+      # the branch push still persisted everything — strictly better than the old
+      # artifact fallback — and we say so loudly instead of going quietly green.
+      - name: Publish promotion branch + open/update the promotion PR
+        id: promote
+        if: >-
+          always() &&
+          (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -uo pipefail
+          if [[ -z "$(git log --oneline "origin/${GITHUB_REF_NAME}..HEAD" 2>/dev/null)" ]]; then
+            echo "Nothing to promote — no commit-backs this run."
+            echo "promoted=false" >> "${GITHUB_OUTPUT}"
+            exit 0
           fi
+
+          git branch --force "${PROMO_BRANCH}" HEAD
+          if ! git push --force origin "${PROMO_BRANCH}"; then
+            echo "::error::promotion branch push FAILED — this run's capture, lineage, currency row and liveness heartbeat did not persist."
+            echo "promoted=false" >> "${GITHUB_OUTPUT}"
+            echo "push_failed=true" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+          echo "promoted=true" >> "${GITHUB_OUTPUT}"
+
+          existing="$(gh pr list --head "${PROMO_BRANCH}" --base "${GITHUB_REF_NAME}" \
+                        --state open --json number --jq '.[0].number' 2>/dev/null || true)"
+          if [[ -n "${existing}" ]]; then
+            echo "Promotion PR #${existing} already open — branch updated in place."
+            echo "pr=${existing}" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+
+          body_file="$(mktemp)"
+          {
+            echo "Automated spec-currency promotion opened by \`spec-drift-watch\`."
+            echo
+            echo "Carries the watcher's commit-backs: tier-1 archive records, any tier-2"
+            echo "vendored-snapshot promotion, the append-only lineage log, the"
+            echo "snapshot-currency evidence row, the liveness heartbeat, and the"
+            echo "detector-health dashboard."
+            echo
+            echo "**Review this as a spec advance, not as bookkeeping.** Merging it moves the"
+            echo "baseline that every downstream validator treats as normative. Check what"
+            echo "actually changed shape before merging; prefer under-folding to over-folding."
+            echo
+            echo "The branch is force-updated by each scheduled run, so this PR stays current"
+            echo "until it is merged. Do not push to it by hand."
+            echo
+            echo "Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            echo
+            echo "- Jeremy Longshore"
+            echo "intentsolutions.io"
+          } > "${body_file}"
+
+          if pr_url="$(gh pr create --base "${GITHUB_REF_NAME}" --head "${PROMO_BRANCH}" \
+                --title "chore(spec-drift): promote captured upstream snapshots + watcher state" \
+                --body-file "${body_file}" 2>&1)"; then
+            echo "Opened promotion PR: ${pr_url}"
+          else
+            echo "::warning::promotion branch pushed, but opening the PR failed — review and merge ${PROMO_BRANCH} by hand. Detail: ${pr_url}"
+          fi
+
+      - name: Upload promotion delta artifact (branch-push failure fallback)
+        if: always() && steps.promote.outputs.push_failed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: spec-archive-delta-${{ github.run_id }}
+          path: |
+            archive/
+            specs/_vendor/
+            specs/lineage/
+            evidence/snapshot-currency/
+            specs/snapshots/.state.json
