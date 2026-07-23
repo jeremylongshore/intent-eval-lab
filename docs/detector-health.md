@@ -32,3 +32,5 @@ Lineage: 11 surfaces adopted, 12 divergences outstanding, 0 convergence triggers
 | plugins-reference | plugin-manifest | yes | `bbb4618ec8b1…` | 0 | yes | 1 |
 | skills-releases | skill-frontmatter | yes | `8ab0fc2a54fa…` | 0 | yes | 0 |
 | sub-agents | agent-definition | yes | `824162201ae4…` | 0 | yes | 1 |
+
+<!-- CI re-run kick after rebase onto main (lab#243) -->
