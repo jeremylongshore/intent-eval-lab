@@ -174,8 +174,28 @@ jobs:
             specs/snapshots/.state.json \
             specs/detector-health.json \
             docs/detector-health.md 2>/dev/null || true
+
+          # ...but NOT specs/_vendor/upstream/. That subtree is the hand-vendored,
+          # HUMAN-OWNED capture (reference docs + the projections derived from
+          # them). The watcher never writes it — fetch-capture.py promotes into
+          # specs/_vendor/<surface>/ and `upstream` is not a surface id — so the
+          # bot branch can only ever hold a STALER copy, and restoring a
+          # human-owned tree from a bot branch can only ever regress it.
+          #
+          # This is the same baseline regression the merge-base guard above
+          # prevents, reached by a different route: that guard covers "the branch
+          # was merged, so main is newer wholesale", but not "main advanced these
+          # specific files independently of the branch" — which is exactly what a
+          # human reconciliation is.
+          #
+          # Reproduced before fixing (branch a6ba36e, main 2c7a2e0): the bulk
+          # restore reverted all three reconciled projections to spec_version
+          # unversioned-2026-06-12, turning the ENFORCED sub-agents gate red
+          # (permissionMode.enum reappears against a capture documenting `manual`)
+          # and making the next promotion PR propose undoing main's reconciliation.
+          git checkout HEAD -- specs/_vendor/upstream/ 2>/dev/null || true
           git reset --quiet
-          echo "Restored bookkeeping from ${PROMO_BRANCH}."
+          echo "Restored bookkeeping from ${PROMO_BRANCH} (hand-vendored specs/_vendor/upstream/ kept at HEAD)."
           echo "restored=true" >> "${GITHUB_OUTPUT}"
 
       # Field-level extract-then-diff (Fitness Function #2). Offline: operates on
