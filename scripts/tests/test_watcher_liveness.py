@@ -7,7 +7,6 @@ import json
 import sys
 from pathlib import Path
 
-import pytest
 
 REPO = Path(__file__).resolve().parents[2]
 MOD_PATH = REPO / "scripts" / "watcher-liveness.py"
