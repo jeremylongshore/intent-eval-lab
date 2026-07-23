@@ -137,23 +137,77 @@ def test_samples_are_never_repointed(extractors: dict[str, ModuleType], contract
 # ── Can it still fire? (a green result must mean agreement, not an unreachable check) ──
 
 
-@pytest.mark.parametrize("contract", ["hook-config", "plugin-manifest"])
+@pytest.mark.parametrize("contract", ["hook-config", "plugin-manifest", "agent-definition"])
 def test_reconciled_contracts_are_clean(extractors: dict[str, ModuleType], contract: str) -> None:
-    """The control. These two were reconciled against the current capture."""
+    """The control. These three were reconciled against the current capture."""
     assert extractors[contract].cmd_check_fresh(_vendor_dir(contract)) == CLEAN
 
 
-@pytest.mark.parametrize("contract", ["agent-definition", "marketplace-catalog"])
+@pytest.mark.parametrize("contract", ["marketplace-catalog"])
 def test_undispositioned_contracts_still_report_their_known_drift(
     extractors: dict[str, ModuleType], contract: str
 ) -> None:
     """Proves --check-fresh is not vacuous on REAL captured content.
 
-    These two carry findings that are recorded in the registry as awaiting human
-    disposition. If this ever goes green without the registry flipping to
+    marketplace-catalog carries findings recorded in the registry as awaiting a
+    kernel fold-in. If this ever goes green without the registry flipping to
     `failing`, either the finding was silently reconciled or the check went blind.
     """
     assert extractors[contract].cmd_check_fresh(_vendor_dir(contract)) == DRIFT
+
+
+# ── Open-clause value recording (the permissionMode class of loss) ────────────
+
+
+def test_open_value_clause_records_every_documented_value(extractors: dict[str, ModuleType]) -> None:
+    """`manual` must survive, on the REAL page, not just a fixture.
+
+    Upstream added a 7th permissionMode value phrased as
+    "…, `plan`, or {/* min-version: 2.1.200 */}`manual` as an alias for `default`."
+    Two independent parse defects each dropped it while still producing a
+    plausible-looking list: the clause stop cut INSIDE the version number
+    "2.1.200", and the alias phrasing duplicated `default`. A fixture proves the
+    rules; this proves they still line up with the page as published.
+    """
+    mod = extractors["agent-definition"]
+    fields = mod.build_projection(_vendor_dir("agent-definition"))["frontmatter"]["fields"]
+    pm = fields["permissionMode"]
+
+    assert "enum" not in pm, "the clause is open — `enum` must stay honest about closedness"
+    assert pm["enum_clause_open"] is True
+    assert pm["enum_candidates"] == [
+        "default",
+        "acceptEdits",
+        "auto",
+        "dontAsk",
+        "bypassPermissions",
+        "plan",
+        "manual",
+    ], "a documented permission mode was dropped or duplicated by the value-clause parse"
+
+
+def test_closed_clauses_still_produce_enums_and_no_candidates(extractors: dict[str, ModuleType]) -> None:
+    """The change must not loosen the closed-set rule it sits beside.
+
+    `enum` and `enum_candidates` are mutually exclusive by construction; a field
+    carrying both would mean the projection is asserting a set is closed AND open.
+    """
+    mod = extractors["agent-definition"]
+    fields = mod.build_projection(_vendor_dir("agent-definition"))["frontmatter"]["fields"]
+    assert fields["color"]["enum"] == [
+        "red", "blue", "green", "yellow", "purple", "orange", "pink", "cyan",
+    ]
+    for name, entry in fields.items():
+        assert not ("enum" in entry and "enum_candidates" in entry), f"{name} claims both closed and open"
+        if "enum_candidates" in entry:
+            assert entry.get("enum_clause_open") is True, f"{name} has candidates without the openness marker"
+
+
+def test_mdx_version_comments_never_reach_the_projection(extractors: dict[str, ModuleType]) -> None:
+    """MDX markup is doc-SOURCE noise, not a value. It must not leak into a token."""
+    mod = extractors["agent-definition"]
+    rendered = mod.render(mod.build_projection(_vendor_dir("agent-definition")))
+    assert "{/*" not in rendered and "min-version" not in rendered
 
 
 @pytest.mark.parametrize("contract", CONTRACTS)
