@@ -9,6 +9,15 @@
     "release-feed                    (a GH releases.atom) — earliest material-change signal, ahead of any page edit",
     "changelog                       (a CHANGELOG / npm version) — detects that change happened; the reference page is the spec"
   ],
+  "section_coverage_floor": {
+    "_why": "Per-contract floors on how many page sections each extractor addresses BY NAME (scripts/section-coverage.py). Set 2026-07-23 at the then-measured values, so they ratchet: coverage may only grow silently, never shrink silently. These are floors, not targets — and they are deliberately LOW, because they record where extraction actually stands rather than where it should. Only 32 of 277 sections across the four heading-slice contracts are anchored, so the normative majority of every page (body prose, budgets, precedence chains, denylists, behaviour tables) is currently outside every projection and therefore invisible to FF#2. Raising a floor is the unit of progress here. Lowering one is a deliberate coverage reduction and must be reviewed in the same change. mcp-config is absent on purpose: it anchors on a sentence rather than a heading, so a heading count would be a category error, not a low score.",
+    "per_contract": {
+      "agent-definition": 3,
+      "hook-config": 10,
+      "marketplace-catalog": 14,
+      "plugin-manifest": 5
+    }
+  },
   "semantic_coverage_floor": {
     "field_level": 5,
     "_why": "A floor, not a target. Shrinking semantic coverage must be an explicit edit reviewed in the same change, because downstream 'the map got smaller' and 'the map is clean' are the same green. Raise it when a surface is promoted to field-level; lowering it is a deliberate coverage reduction."
