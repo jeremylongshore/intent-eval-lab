@@ -458,9 +458,13 @@ jobs:
             echo "stale=true" >> "${GITHUB_OUTPUT}"
           fi
 
-      # Update per-surface fetch-error streaks + last_run timestamp; fails loud if
-      # any surface has errored >= 3 consecutive runs (effectively unmonitored).
-      - name: Record run + check fetch-error streaks
+      # Update per-surface fetch-error + baseline-stale streaks + last_run
+      # timestamp; fails loud if any surface has fetch_error_streak >= 3
+      # (effectively unmonitored) OR baseline_stale_streak >= 3 (byte-drift
+      # persisted N consecutive successful captures without a baseline advance
+      # — IEP #15 / 1jn0.1.5). Single-run byte-drift stays non-alerting
+      # (c875cf1); *persistence* of that drift is the alert signal.
+      - name: Record run + check fetch-error and baseline-stale streaks
         id: streak
         shell: bash
         continue-on-error: true
@@ -520,7 +524,7 @@ jobs:
             echo "| field-level projection drift (skill-frontmatter) | ${{ steps.projection.outputs.drift }} |"
             echo "| field-level projection freshness (enforced surfaces) | drift=${{ steps.freshness.outputs.drift }} inoperable=${{ steps.freshness.outputs.error }} |"
             echo "| dead-man heartbeat stale | ${{ steps.heartbeat.outputs.stale }} |"
-            echo "| fetch-error streak exceeded | ${{ steps.streak.outputs.exceeded }} |"
+            echo "| fetch-error / baseline-stale streak exceeded | ${{ steps.streak.outputs.exceeded }} |"
             echo "| capture self-test | ${{ steps.capture_selftest.outputs.selftest }} |"
             echo "| capture bad fetch (taxonomy) | ${{ steps.capture.outputs.bad_fetch }} |"
             echo "| snapshot-currency emitter self-test | ${{ steps.emit_currency_selftest.outputs.selftest }} |"
