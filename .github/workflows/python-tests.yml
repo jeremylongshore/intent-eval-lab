@@ -57,8 +57,15 @@ jobs:
   pytest:
     name: pytest + coverage (research/phase-a-0-baseline)
     runs-on: ubuntu-latest
-    # Coverage here is ADVISORY BY DESIGN (continue-on-error), not a gate, and
-    # there is deliberately no --fail-under. The smoke tests shell out via
+    # Coverage here is ADVISORY BY DESIGN (continue-on-error), not a gate. The
+    # floor lives in pyproject.toml ([tool.coverage.report] fail_under = 60) and
+    # applies to LOCAL runs, where the real ~66-68% is measurable; the CI step
+    # below passes --fail-under=0 to switch it off HERE ONLY. Without that, the
+    # config floor applied to CI's environment-limited ~40% and the job failed on
+    # every single PR — a permanently-red lane nobody reads, which is worse than
+    # no lane. (bd_000-projects-n6ueg closed this as "documented advisory-by-
+    # design", but only the comment landed; the config was never reconciled, so
+    # the contradiction shipped.) The smoke tests shell out via
     # subprocess to the arm-runner scripts (run-arm-a.py / run-arm-b.py /
     # analyze.py); in CI those children short-circuit early because the two
     # external dependencies they need are absent:
@@ -91,9 +98,15 @@ jobs:
           # Make sitecustomize.py findable by child Pythons via PYTHONPATH
           PYTHONPATH: ${{ github.workspace }}
         run: |
+          # A test FAILURE still fails this step — `coverage run -m pytest`
+          # propagates pytest's exit code, and that pass/fail is the real signal.
           coverage run -m pytest research/phase-a-0-baseline/tests/ -v --tb=short
           coverage combine
-          coverage report
+          # --fail-under=0 overrides pyproject's fail_under=60 for CI only; see
+          # the job comment. The percentage is still printed and still uploaded
+          # to Codecov, so the number remains visible — it just stops asserting a
+          # floor this environment is structurally unable to reach.
+          coverage report --fail-under=0
       - name: Upload coverage to Codecov
         if: always()
         uses: codecov/codecov-action@v6

@@ -192,7 +192,7 @@ Adoption is **advisory and only ever DEPRECATES, never PROMOTES**; the determini
 2. **`tenant_id` mandatory-vs-reserved** — RESOLVED to _reserved_ by DR-085 D5. If metering genuinely needs a mandatory tenant, that's a documented divergence requiring its own ISEDC nod, not a unilateral ship.
 3. **Adoption threshold calibration** — `halfLifeDays`/`minVolume`/floors need empirical tuning from real event distributions, possibly tied to model-release cadence (skills rot fastest right after a frontier bump). Ship conservative defaults + a back-test; don't let bare literals become load-bearing.
 4. **Block interaction effects** (slice-utility) — LOBO is a first-order approximation; two blocks that only matter together each look inert when ablated singly. True Shapley is 2^K — out of scope. Document LOBO as first-order, pairwise as a wave-2 opt-in flag.
-5. **The missed 3rd gap** — the skill-to-skill dependency graph (`bv` applied to the skill catalog) is the highest-leverage un-scoped finding. File it as a follow-on bead under #206; it is genuinely new, most-shippable, and not in the current six.
+5. **The missed 3rd gap** — the skill-to-skill dependency graph (`bv` applied to the skill catalog) is the highest-impact un-scoped finding. File it as a follow-on bead under #206; it is genuinely new, most-shippable, and not in the current six.
 6. **`human-review/v1` permanent-staging** — non-reproducible predicates can never meet `rekor_production`'s reproduce-the-hash bar; the authorizing DR must state staging-is-permanent (or define a different promotion criterion).
 
 ### Build order (bottom-up — dependencies first, fail-closed)
