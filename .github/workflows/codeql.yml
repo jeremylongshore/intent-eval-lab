@@ -1,8 +1,13 @@
 name: CodeQL
 
 # Security scanning ONLY (security-extended query suite — no quality/maintainability
-# queries). Code-quality, design, and correctness review is CodeRabbit's job (see
-# .coderabbit.yaml); the two are intentionally non-overlapping. Free on public repos.
+# queries). Free on public repos.
+#
+# The counterpart this comment used to name (CodeRabbit) is retired, and as of
+# 2026-07-22 NO AI reviewer runs on this repo — Gemini Code Assist is sunset and
+# Greptile is dark. CodeQL owns security; correctness and design review is the
+# repo's own CI (partner-name guard, spec-drift gates, projection freshness,
+# vendor-meta provenance, scripts/tests) plus human review.
 
 on:
   push:
@@ -39,6 +44,10 @@ jobs:
           languages: ${{ matrix.language }}
           build-mode: none
           queries: security-extended
+          # Scopes analysis to code this repo authors and executes. The captured
+          # upstream trees are third-party bytes retained as evidence and must
+          # never be edited — see .github/codeql-config.yml for the full reasoning.
+          config-file: ./.github/codeql-config.yml
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
