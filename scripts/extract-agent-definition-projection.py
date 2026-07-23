@@ -274,7 +274,13 @@ def extract_reference_doc(doc_path: str) -> dict[str, Any]:
         if field == "model":
             model_full_id = "a full model ID" in desc
             model_default_inherit = "Defaults to `inherit`" in desc
-        if field == "tools" and "Inherits all tools if omitted" in desc:
+        # Upstream phrasing has drifted: historical "Inherits all tools if
+        # omitted" vs current "Inherits every tool available to subagents if
+        # omitted" (same semantics — tools field optional ⇒ inherit pool).
+        if field == "tools" and (
+            "Inherits all tools if omitted" in desc
+            or ("Inherits every tool" in desc and "if omitted" in desc)
+        ):
             tools_inherit_all = True
 
     example = _example_frontmatter(_section(lines, _EXAMPLE_HEADING, ("## ", "### ")))
