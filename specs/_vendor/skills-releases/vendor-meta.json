@@ -1,7 +1,7 @@
 {
   "surface_id": "skills-releases",
-  "sha256": "31b642d241544ad3c6aad00ba0922ca0f7a655237de3e3ae22c6540a0e24bc68",
-  "bytes": 25105,
-  "updated_at": "2026-07-06T10:42:04Z",
-  "source_raw_record": "archive/raw/skills-releases/20260706T104204Z.meta.json"
+  "sha256": "010e8fc5710b672358540a06f254c9384866736c15c679d6c3eb2370a0a2454d",
+  "bytes": 28683,
+  "updated_at": "2026-07-23T00:18:48Z",
+  "source_raw_record": "archive/raw/skills-releases/20260723T001848Z.meta.json"
 }
