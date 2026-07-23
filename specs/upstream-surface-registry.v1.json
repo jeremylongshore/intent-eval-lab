@@ -197,7 +197,7 @@
     },
     {
       "name": "claude-slash-commands",
-      "contract": "slash-commands",
+      "contract": "skill-frontmatter",
       "url": "https://code.claude.com/docs/en/slash-commands.md",
       "machine_readable": false,
       "wave": 1,
@@ -206,7 +206,7 @@
       "extractor": "fetch_claude_slash_commands",
       "semantic_coverage": {
         "status": "byte-hash-only",
-        "reason": "The sharpest gap in the estate, and NOT merely unbuilt. Verified 2026-07-23: the kernel (@intentsolutions/core schemas/authoring/v1/index.json) models exactly SIX authoring contracts - skill-frontmatter, plugin-manifest, agent-definition, mcp-config, hook-config, marketplace-catalog - and slash-commands is not among them. Yet claude-code-plugins' validate-skills-schema.py DOES grade commands/*.md (--commands-only, rglob('commands/*.md'), its own category list). So a live marketplace validator judges this artifact class against a hand-rolled rubric with NO kernel SSoT behind it and NO semantic drift detection in front of it - the exact failure mode the Spec Authority Kernel exists to prevent, still fully open on this one contract. And this surface IS byte-drifted. Byte-hash is therefore all the coverage that is even possible today: a projection needs a committed normative baseline, and there is none to diff against. Promoting slash-commands to contract #7 is a CHARTER decision, not an engineering one - DR-044 D8 lands the remaining contracts on-demand behind an explicit bandwidth sign-off - so it is named here rather than silently built."
+        "reason": "CORRECTED 2026-07-23 (supersedes the contract-#7 framing this entry previously carried). The URL still reads slash-commands.md, but upstream WHOLLY REPLACED the document: it now serves the H1 'Extend Claude with skills' and its subject is SKILL.md. Verified against a raw fetch, and the committed snapshot is byte-identical to it - so the capture already pulled the replacement and nothing flagged it, because expect_regex '(?m)^#{1,3} ' matches any heading on any page. That is the FETCH_OK-on-a-replaced-page hole, tracked separately via capture.expect_title. The page states 'Custom commands have been merged into skills' and that .claude/commands/ files 'support the same frontmatter'. The contract governing this surface is therefore skill-frontmatter - kernel contract #1, already PUBLISHED - and NOT a prospective #7. There is nothing to charter here: the previous entry reasoned from the URL and the surface name rather than from the document, and concluded a charter decision was open when the artifact class had simply been folded into an existing contract. What remains true and unfixed: claude-code-plugins' validate-skills-schema.py grades commands/*.md against its own hand-rolled category list rather than the kernel's skill-frontmatter schema. That is a consumer-conformance gap on contract #1, not a missing contract. Coverage stays byte-hash-only because this page presents skill-frontmatter in a different shape than the agentskills.io frontmatter table FF#2's row regex is written against - the same reason platform-skills-overview is byte-hash-only - so covering it needs its own extractor and projection."
       },
       "capture": {
         "kind": "http",

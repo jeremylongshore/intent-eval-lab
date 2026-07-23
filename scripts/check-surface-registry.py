@@ -42,6 +42,41 @@ _CAPTURE_KINDS = {"http", "command"}
 _COVERAGE_STATUSES = {"field-level", "byte-hash-only"}
 _ENFORCEMENTS = {"failing", "report-only"}
 
+# Every surface declares the CONTRACT it informs. That value is only meaningful
+# if it names a contract the kernel actually models, so it is validated against
+# @intentsolutions/core schemas/authoring/v1/index.json rather than a list
+# hand-copied into this file — a hand-copy is the same DRY-duplication failure
+# this gate exists to catch one level up.
+#
+# Why this check exists: `claude-slash-commands` sat in the registry declaring
+# contract "slash-commands", which the kernel has never modelled. Nothing
+# objected, so the unmatched value read as a real seventh contract awaiting
+# charter for weeks. It was not one — upstream had folded custom commands into
+# skills, and the correct contract was skill-frontmatter, already published.
+# An unrecognised contract must be a loud error, not a silent placeholder.
+_KERNEL_INDEX = os.path.join(
+    os.path.dirname(REPO_ROOT), "intent-eval-core", "schemas", "authoring", "v1", "index.json"
+)
+
+# Registry rows that deliberately inform NO authoring contract: early-warning
+# feeds whose value is the signal itself, not a field shape to project.
+_SIGNAL_CONTRACTS = {"version-signal", "cross-cutting-signal"}
+
+
+def _kernel_contracts() -> set[str] | None:
+    """Contract names the kernel models, or None when the kernel is unavailable.
+
+    Returns None rather than an empty set so a missing checkout degrades to
+    "skip this check" instead of "every contract is invalid".
+    """
+    try:
+        with open(_KERNEL_INDEX, encoding="utf-8") as fh:
+            schemas = json.load(fh).get("schemas") or {}
+    except (OSError, ValueError):
+        return None
+    names = {n for n, v in schemas.items() if (v or {}).get("kind") == "authoring-contract"}
+    return names or None
+
 # Which flag makes each checker compare against the CAPTURED tree, i.e. which flag
 # actually performs a FRESHNESS check rather than a self-consistency one.
 #
@@ -210,6 +245,25 @@ def main() -> int:
         if reg_surfaces[name].get("monitored"):
             _check_capture(name, reg_surfaces[name], problems)
             _check_semantic_coverage(name, reg_surfaces[name], problems)
+
+    # Every surface's `contract` must name a kernel authoring contract, or be an
+    # explicitly-declared signal feed. Skipped (not failed) when the sibling
+    # kernel checkout is absent, so this gate stays runnable standalone.
+    kernel_contracts = _kernel_contracts()
+    if kernel_contracts is not None:
+        allowed = kernel_contracts | _SIGNAL_CONTRACTS
+        for name in sorted(reg_surfaces):
+            contract = reg_surfaces[name].get("contract")
+            if not isinstance(contract, str) or not contract:
+                problems.append(f"{name}: contract must be a non-empty string (got {contract!r})")
+            elif contract not in allowed:
+                problems.append(
+                    f"{name}: contract '{contract}' is not a kernel authoring contract "
+                    f"({', '.join(sorted(kernel_contracts))}) and is not a declared signal feed "
+                    f"({', '.join(sorted(_SIGNAL_CONTRACTS))}). Either the surface informs an "
+                    f"existing contract and should say so, or the kernel genuinely needs a new "
+                    f"one — which is a charter decision, not a registry edit."
+                )
 
     if problems:
         print(f"surface-registry consistency: {len(problems)} PROBLEM(S):")
