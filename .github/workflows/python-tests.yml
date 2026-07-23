@@ -147,3 +147,5 @@ jobs:
       - run: pip install --no-cache-dir 'pytest>=8' pyyaml jsonschema
       - name: Run scripts/ unit tests
         run: pytest scripts/tests/ -v --tb=short
+      - name: Vendored capture provenance integrity
+        run: python3 scripts/check-vendor-meta-integrity.py

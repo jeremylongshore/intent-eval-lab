@@ -306,7 +306,10 @@ def test_identical_projections_report_no_drift(captured_source: ModuleType) -> N
         ({"a": 1}, {"a": 1, "b": 2}, "ADDED_KEY: b"),
         ({"a": 1, "b": 2}, {"a": 1}, "REMOVED_KEY: b"),
         ({"a": {"n": 1}}, {"a": {"n": 2}}, "CHANGED_VALUE: a.n"),
-        ({"a": ["x"]}, {"a": ["x", "y"]}, "CHANGED_VALUE: a"),
+        # Scalar lists now diff ELEMENT-WISE (LIST_CHANGED), not as whole rendered
+        # values. A 30-entry enum gaining one member used to render two sides that
+        # were byte-identical for every visible character before truncation.
+        ({"a": ["x"]}, {"a": ["x", "y"]}, "LIST_CHANGED: a"),
         ({"a": {"b": {"c": 1}}}, {"a": {"b": {}}}, "REMOVED_KEY: a.b.c"),
     ],
 )

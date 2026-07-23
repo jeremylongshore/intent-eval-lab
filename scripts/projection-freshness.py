@@ -126,6 +126,31 @@ def main() -> int:
         return cmd_list(registry)
 
     surfaces = field_level_surfaces(registry)
+
+    # An empty or shrunken map must be INOPERABLE, never a clean board.
+    #
+    # Without this the loop body simply never runs, `worst` stays CLEAN, and the
+    # driver prints "CLEAN (exit 0) over 0 field-level surface(s)" — flatly
+    # contradicting this module's own rule that a gate which could not run is not
+    # a gate that passed. "The map got smaller" and "the map is clean" were the
+    # same green, which is the failure this whole file exists to end, one level up.
+    floor = (registry.get("semantic_coverage_floor") or {}).get("field_level")
+    if not surfaces:
+        print(
+            "projection-freshness: INOPERABLE — the registry declares ZERO field-level surfaces, so this "
+            "gate compared nothing. An empty map is not a clean map.",
+            file=sys.stderr,
+        )
+        return INOPERABLE
+    if isinstance(floor, int) and not isinstance(floor, bool) and len(surfaces) < floor:
+        print(
+            f"projection-freshness: INOPERABLE — {len(surfaces)} field-level surface(s) is below the "
+            f"registry's declared floor of {floor}. Semantic coverage shrank without the floor being "
+            "lowered in the same change, so this run checked less than it is supposed to.",
+            file=sys.stderr,
+        )
+        return INOPERABLE
+
     if args.surface:
         surfaces = [s for s in surfaces if s["name"] == args.surface]
         if not surfaces:

@@ -104,7 +104,13 @@ _FM_KEY = re.compile(r"^([A-Za-z][A-Za-z0-9_-]*):(.*)$")
 # never a value, and their embedded version number contains periods — which
 # silently truncated the permissionMode value clause mid-list and dropped the
 # very value this projection needs to record. Stripped before clause analysis.
-_MDX_COMMENT = re.compile(r"\{/\*.*?\*/\}", re.DOTALL)
+# NOT re.DOTALL, deliberately. Applied only to a single table-cell description,
+# where every observed marker is a one-line min-version/max-version note. An
+# unbalanced `{/*` opening a 16-line commented-out block exists in the wild
+# (specs/_vendor/upstream/mcp-config/claude-code-mcp.md), so if this is ever
+# lifted to document scope DOTALL + non-greedy would silently swallow real
+# content. Keeping it line-bounded fails visibly instead.
+_MDX_COMMENT = re.compile(r"\{/\*[^\n]*?\*/\}")
 
 
 # ── Extraction: the reference doc (the spec — there is no machine schema) ───
@@ -180,7 +186,8 @@ def _enum_from_description(desc: str) -> tuple[list[str] | None, list[str] | Non
         if idx == -1:
             continue
         clause = desc[idx + len(marker) :]
-        stop = min((j for j in (clause.find(s) for s in stops) if j != -1), default=-1)
+        candidates = [captured_source.clause_end(clause) if s == "." else clause.find(s) for s in stops]
+        stop = min((j for j in candidates if j != -1), default=-1)
         if stop != -1:
             clause = clause[:stop]
         # Order-preserving dedupe: a value list is a SET, and an alias clause
@@ -475,7 +482,23 @@ def cmd_check_fresh(vendor_dir: str, surface: str | None = None) -> int:
         print(f"{label}: INOPERABLE — cannot read {committed_path}: {exc}", file=sys.stderr)
         return 2
 
-    fresh = build_projection(vendor_dir, reference_doc_path=snapshot)
+    try:
+        fresh = build_projection(vendor_dir, reference_doc_path=snapshot)
+    except SystemExit as exc:
+        # A deliberate anchor failure already exits 2; keep that code.
+        return exc.code if isinstance(exc.code, int) else 2
+    except Exception as exc:  # noqa: BLE001 - any parse breakage is INOPERABLE, never drift
+        # Bare next()/json.loads() inside the extractors raise StopIteration /
+        # JSONDecodeError on a malformed capture. Uncaught, python exits 1, which
+        # the driver reads as DRIFT — so the watcher would open a RECONCILIATION
+        # issue for a PARSER breakage. Reconciling a phantom drift is worse than
+        # no signal, which is the distinction the 0/1/2 split exists to protect.
+        print(
+            f"{label}: INOPERABLE — the extractor could not parse the captured page "
+            f"({os.path.relpath(snapshot, REPO_ROOT)}): {type(exc).__name__}: {exc}",
+            file=sys.stderr,
+        )
+        return 2
     context = (
         f"committed projection vs the captured '{surface}' page "
         f"({os.path.relpath(snapshot, REPO_ROOT)}, standing in for {doc_file})"
@@ -806,6 +829,12 @@ def main() -> int:
         "(default: the reference-doc's own surface, per vendor-meta.json)",
     )
     args = parser.parse_args()
+
+    # --surface only means anything in --check-fresh. Accepting and IGNORING it
+    # in another mode is what let a registry entry name `--check --surface X` and
+    # still exit 0 with an authoritative "OK", comparing frozen against frozen.
+    if args.surface is not None and not args.check_fresh:
+        parser.error("--surface applies only to --check-fresh; in any other mode it would be silently ignored")
 
     if args.self_test:
         return cmd_self_test(args.vendor_dir)
