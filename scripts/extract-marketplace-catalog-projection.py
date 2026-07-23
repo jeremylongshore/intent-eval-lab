@@ -670,13 +670,20 @@ EXPECTED_AGREEMENTS = [
     "plugin-entry-minimum-name-plus-source-both-sides",
     "samples-corroborate:top-level-keys-entry-fields-and-source-types-within-documented-sets",
 ]
+# Updated 2026-07-23 with the re-vendor to the 2026-07-23 capture. The shifts are
+# the reconciliation itself, not a loosening: `renames` and `relevance` join the
+# doc-fields-not-in-kernel lists (both OPTIONAL, and the kernel's upstream-base is a
+# required-set FLOOR that models no optional entry fields at all, so no authoring/v1
+# edit is implied), and the reserved-name count moves 14 -> 16. These sets are pinned
+# precisely so a re-capture that shifts a finding fails LOUD and a human reconciles —
+# which is exactly what happened here.
 EXPECTED_DIVERGENCES = [
     "plugins-min-items:kernel-requires-minItems-1;doc-states-no-minimum",
-    "doc-top-level-optional-fields-not-in-kernel:$schema,allowCrossMarketplaceDependenciesOn,description,version",
+    "doc-top-level-optional-fields-not-in-kernel:$schema,allowCrossMarketplaceDependenciesOn,description,renames,version",
     "doc-plugin-entry-optional-fields-not-in-kernel:agents,author,category,commands,defaultEnabled,description,"
-    "displayName,homepage,hooks,keywords,license,lspServers,mcpServers,repository,skills,strict,tags,version",
+    "displayName,homepage,hooks,keywords,license,lspServers,mcpServers,relevance,repository,skills,strict,tags,version",
     "source-forms:doc-documents-relative-path-string-plus-4-object-types;kernel-leaves-source-unmodeled",
-    "name-constraints:kernel-adds-maxLength-64-and-kebab-regex;doc-prose-kebab-case-plus-14-reserved-names-not-encoded",
+    "name-constraints:kernel-adds-maxLength-64-and-kebab-regex;doc-prose-kebab-case-plus-16-reserved-names-not-encoded",
     "samples:tolerances-outside-documented-surface:github:commit,url:path,plugin-name:wordpress.com",
 ]
 
@@ -1055,13 +1062,13 @@ def cmd_self_test(vendor_dir: str) -> int:
     top = projection["catalog"]["top_level_fields"]
     entry_fields = projection["plugin_entry"]["fields"]
     samples = projection["samples"]
-    check("real capture: 8 documented top-level fields (3 required)", len(top) == 8 and len([f for f, e in top.items() if e["required"]]) == 3)
-    check("real capture: 14 reserved marketplace names", len(projection["catalog"]["reserved_names"]) == 14)
+    check("real capture: 9 documented top-level fields (3 required)", len(top) == 9 and len([f for f, e in top.items() if e["required"]]) == 3)
+    check("real capture: 16 reserved marketplace names", len(projection["catalog"]["reserved_names"]) == 16)
     check(
-        "real capture: 20 documented plugin-entry fields (2 required, 12 standard-metadata, 6 component-config)",
-        len(entry_fields) == 20
+        "real capture: 21 documented plugin-entry fields (2 required, 13 standard-metadata, 6 component-config)",
+        len(entry_fields) == 21
         and len([f for f, e in entry_fields.items() if e["required"]]) == 2
-        and len([f for f, e in entry_fields.items() if e["scope"] == "standard-metadata"]) == 12
+        and len([f for f, e in entry_fields.items() if e["scope"] == "standard-metadata"]) == 13
         and len([f for f, e in entry_fields.items() if e["scope"] == "component-config"]) == 6,
     )
     check(

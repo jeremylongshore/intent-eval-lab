@@ -137,23 +137,23 @@ def test_samples_are_never_repointed(extractors: dict[str, ModuleType], contract
 # ── Can it still fire? (a green result must mean agreement, not an unreachable check) ──
 
 
-@pytest.mark.parametrize("contract", ["hook-config", "plugin-manifest", "agent-definition"])
+@pytest.mark.parametrize("contract", CONTRACTS)
 def test_reconciled_contracts_are_clean(extractors: dict[str, ModuleType], contract: str) -> None:
-    """The control. These three were reconciled against the current capture."""
-    assert extractors[contract].cmd_check_fresh(_vendor_dir(contract)) == CLEAN
+    """The control. All four are now reconciled against the current capture.
 
+    RETIRED alongside this: a companion test asserting marketplace-catalog still
+    reported DRIFT. Its premise was "this contract carries findings awaiting
+    disposition", and it was written to fail if that ever went green WITHOUT the
+    registry flipping to `failing` — because that would mean the finding was
+    silently reconciled or the check went blind. The registry did flip, so the
+    premise retired honestly rather than being deleted to make a suite pass.
 
-@pytest.mark.parametrize("contract", ["marketplace-catalog"])
-def test_undispositioned_contracts_still_report_their_known_drift(
-    extractors: dict[str, ModuleType], contract: str
-) -> None:
-    """Proves --check-fresh is not vacuous on REAL captured content.
-
-    marketplace-catalog carries findings recorded in the registry as awaiting a
-    kernel fold-in. If this ever goes green without the registry flipping to
-    `failing`, either the finding was silently reconciled or the check went blind.
+    The anti-vacuity property it guarded is not lost: it lives in
+    test_check_fresh_fires_on_a_perturbed_capture (per contract, on real captured
+    bytes) and in test_the_real_coverage_map_runs_and_agrees_with_the_registry
+    (every surface the registry marks `failing` must actually be clean).
     """
-    assert extractors[contract].cmd_check_fresh(_vendor_dir(contract)) == DRIFT
+    assert extractors[contract].cmd_check_fresh(_vendor_dir(contract)) == CLEAN
 
 
 # ── Open-clause value recording (the permissionMode class of loss) ────────────

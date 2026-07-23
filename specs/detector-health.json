@@ -223,7 +223,7 @@
     "specs/snapshots/.sha/skills-releases.sha": "698ed71afca22f55068c34b7d92ea5b6551f6bd4ce8a126a5b1b4c68de349668",
     "specs/snapshots/.sha/sub-agents.sha": "bd8f915ad666f53f6d1b914ffc5e931d502c65d645803d6cc4be22dfe52ceea9",
     "specs/snapshots/.state.json": "aac77de79ac529eea3a6ea50ee7e6488a6c751ddc525dd0effc323130c48dc6e",
-    "specs/upstream-surface-registry.v1.json": "bd114fe8667e6089dda01d622289b3b651ffb36d3e1caed71520922c55b3fceb"
+    "specs/upstream-surface-registry.v1.json": "0609789f44bc03b4183001802353f50ef383f971e624ebb0674197ea8af2f814"
   },
   "lineage": {
     "convergence_triggers_fired": 0,
