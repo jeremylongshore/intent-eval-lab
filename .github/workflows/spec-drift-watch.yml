@@ -13,7 +13,12 @@ name: Spec drift watch
 #
 # Four layers (the deterministic detection backbone — never replaced by an LLM):
 #   1. byte-hash drift   (spec-drift-check.sh) — "did the page change?"
-#   2. field-level diff   (spec-projection-diff.py) — "did the normative SHAPE change?"
+#   2. field-level diff   — "did the normative SHAPE change?" Two checkers:
+#        - spec-projection-diff.py --check           (skill-frontmatter / FF#2)
+#        - projection-freshness.py                   (all field-level surfaces, driven by
+#          `semantic_coverage` in specs/upstream-surface-registry.v1.json; each surface's
+#          extractor runs --check-fresh against the CAPTURED page, and the registry says
+#          which surfaces can fail the run)
 #   3. liveness guards    (watcher-liveness.py) — so it cannot fail silent-green:
 #        - fetch_error_streak >= 3  → a surface is effectively unmonitored → fail loud
 #        - dead-man heartbeat       → external ping (true dead-man) + retrospective gap check on resume
@@ -49,6 +54,12 @@ on:
       - 'scripts/fetch-capture.py'
       - 'scripts/lineage-log.py'
       - 'scripts/emit-snapshot-currency.py'
+      - 'scripts/projection-freshness.py'
+      - 'scripts/lib/**'
+      - 'scripts/extract-agent-definition-projection.py'
+      - 'scripts/extract-hook-config-projection.py'
+      - 'scripts/extract-marketplace-catalog-projection.py'
+      - 'scripts/extract-plugin-manifest-projection.py'
       - 'specs/upstream-surface-registry.v1.json'
       - 'specs/lineage/**'
       - 'specs/snapshots/.sha/**'
@@ -64,6 +75,12 @@ on:
       - 'scripts/fetch-capture.py'
       - 'scripts/lineage-log.py'
       - 'scripts/emit-snapshot-currency.py'
+      - 'scripts/projection-freshness.py'
+      - 'scripts/lib/**'
+      - 'scripts/extract-agent-definition-projection.py'
+      - 'scripts/extract-hook-config-projection.py'
+      - 'scripts/extract-marketplace-catalog-projection.py'
+      - 'scripts/extract-plugin-manifest-projection.py'
       - 'specs/upstream-surface-registry.v1.json'
       - 'specs/lineage/**'
       - 'specs/snapshots/.sha/**'
@@ -322,6 +339,50 @@ jobs:
                echo "::error::spec-projection-diff --check could not run (exit ${rc}) — the semantic gate did NOT execute this run." ;;
           esac
 
+      # The other four deep-capture contracts. STEP ORDER IS LOAD-BEARING for the
+      # same reason as the step above: this must run AFTER the capture.
+      #
+      # Those four contracts have had extractors wired into ci.yml since
+      # 2026-06-12, under steps titled "…projection freshness", all green. They
+      # were never freshness checks. `--check` re-extracts from
+      # specs/_vendor/upstream/<contract>/ — a hand-vendored tree fetch-capture.py
+      # cannot write (`upstream` is not a surface id) — and compares against the
+      # projection derived from those same bytes. Frozen vs frozen is green by
+      # construction. The design always said otherwise; the extractors' own
+      # comments read "ongoing freshness is the watcher's job". This is that job,
+      # finally wired: --check-fresh repoints ONLY the parsed reference doc at
+      # specs/_vendor/<surface>/snapshot<ext>. `--check` in ci.yml is untouched and
+      # keeps its (correct, narrower) self-consistency meaning.
+      #
+      # Which surfaces run, and which of them can fail this step, is read from
+      # semantic_coverage in specs/upstream-surface-registry.v1.json — so a
+      # surface is promoted from report-only to enforced by a one-line registry
+      # edit that shows up in review, not by editing CI. Surfaces still carrying
+      # undispositioned findings stay report-only deliberately: a permanently-red
+      # lane gets ignored, which is how byte-drift alerting ended up gated off in
+      # the first place.
+      #
+      # The driver re-runs the skill-frontmatter checker above so its report covers
+      # all five field-level surfaces rather than four; the dedicated step above
+      # remains the one whose outputs drive the issue / notification machinery.
+      - name: Field-level projection freshness (all contracts, registry-driven)
+        id: freshness
+        shell: bash
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          python3 scripts/projection-freshness.py > /tmp/freshness-report.txt 2>&1
+          rc=$?
+          cat /tmp/freshness-report.txt
+          # 0 clean / 1 drift / 2 inoperable — kept distinct. An inoperable gate is
+          # as red as a failing one: a gate that did not run is not a gate that passed.
+          case "${rc}" in
+            0) echo "drift=false" >> "${GITHUB_OUTPUT}"; echo "error=false" >> "${GITHUB_OUTPUT}" ;;
+            1) echo "drift=true"  >> "${GITHUB_OUTPUT}"; echo "error=false" >> "${GITHUB_OUTPUT}" ;;
+            *) echo "drift=false" >> "${GITHUB_OUTPUT}"; echo "error=true"  >> "${GITHUB_OUTPUT}"
+               echo "::error::projection-freshness could not run (exit ${rc}) — the multi-contract semantic gate did NOT execute this run." ;;
+          esac
+
       # Persist the appended archive records + any tier-2 promotion, plus the
       # lineage log + its derived coverage map (a tier-2 promotion appends a
       # snapshot-updated event and regenerates the projection — 054-AT-SPEC).
@@ -436,7 +497,8 @@ jobs:
             echo "| Layer | Status |"
             echo "|---|---|"
             echo "| byte-hash drift | ${{ steps.check.outputs.drift }} |"
-            echo "| field-level projection drift | ${{ steps.projection.outputs.drift }} |"
+            echo "| field-level projection drift (skill-frontmatter) | ${{ steps.projection.outputs.drift }} |"
+            echo "| field-level projection freshness (enforced surfaces) | drift=${{ steps.freshness.outputs.drift }} inoperable=${{ steps.freshness.outputs.error }} |"
             echo "| dead-man heartbeat stale | ${{ steps.heartbeat.outputs.stale }} |"
             echo "| fetch-error streak exceeded | ${{ steps.streak.outputs.exceeded }} |"
             echo "| capture self-test | ${{ steps.capture_selftest.outputs.selftest }} |"
@@ -454,9 +516,13 @@ jobs:
             echo '```'
             cat /tmp/drift-report.txt
             echo '```'
-            echo "### Field-level projection report"
+            echo "### Field-level projection report (skill-frontmatter)"
             echo '```'
             cat /tmp/projection-report.txt 2>/dev/null || true
+            echo '```'
+            echo "### Field-level projection freshness (all contracts, registry-driven)"
+            echo '```'
+            cat /tmp/freshness-report.txt 2>/dev/null || echo "(freshness driver did not produce a report)"
             echo '```'
             echo "### Capture report (tier-1/tier-2)"
             echo '```'
@@ -471,6 +537,8 @@ jobs:
         if: >-
           github.event_name == 'schedule' &&
           (steps.projection.outputs.drift == 'true' ||
+           steps.freshness.outputs.drift == 'true' ||
+           steps.freshness.outputs.error == 'true' ||
            steps.heartbeat.outputs.stale == 'true' ||
            steps.streak.outputs.exceeded == 'true' ||
            steps.capture.outputs.bad_fetch == 'true')
@@ -481,8 +549,9 @@ jobs:
             exit 0
           fi
           {
-            echo "byte-drift=${{ steps.check.outputs.drift }} field-drift=${{ steps.projection.outputs.drift }} heartbeat-stale=${{ steps.heartbeat.outputs.stale }} streak-exceeded=${{ steps.streak.outputs.exceeded }} bad-fetch=${{ steps.capture.outputs.bad_fetch }}"
+            echo "byte-drift=${{ steps.check.outputs.drift }} field-drift=${{ steps.projection.outputs.drift }} freshness-drift=${{ steps.freshness.outputs.drift }} freshness-error=${{ steps.freshness.outputs.error }} heartbeat-stale=${{ steps.heartbeat.outputs.stale }} streak-exceeded=${{ steps.streak.outputs.exceeded }} bad-fetch=${{ steps.capture.outputs.bad_fetch }}"
             head -10 /tmp/drift-report.txt
+            sed -n '/─── Summary/,$p' /tmp/freshness-report.txt 2>/dev/null | head -12 || true
             grep -v FETCH_OK /tmp/capture-log.txt 2>/dev/null | head -6 || true
           } > /tmp/ntfy-body.txt
           curl -fsSL \
@@ -498,6 +567,7 @@ jobs:
         if: >-
           github.event_name == 'schedule' &&
           (steps.projection.outputs.drift == 'true' ||
+           steps.freshness.outputs.drift == 'true' ||
            steps.heartbeat.outputs.stale == 'true' ||
            steps.streak.outputs.exceeded == 'true')
         shell: bash
@@ -563,13 +633,24 @@ jobs:
           steps.projection.outputs.selftest == 'fail' ||
           steps.projection.outputs.drift == 'true' ||
           steps.projection.outputs.error == 'true' ||
+          steps.freshness.outputs.drift == 'true' ||
+          steps.freshness.outputs.error == 'true' ||
           steps.capture_selftest.outputs.selftest == 'fail' ||
           steps.emit_currency_selftest.outputs.selftest == 'fail'
         run: |
-          # `projection.outputs.error` is in this list deliberately: a differ that
-          # CANNOT RUN must be as red as a differ that found drift. Treating an
-          # inoperable gate as a pass is the precise shape of the six-week silence
-          # this workflow is being repaired from.
+          # `projection.outputs.error` and `freshness.outputs.error` are in this
+          # list deliberately: a differ that CANNOT RUN must be as red as a differ
+          # that found drift. Treating an inoperable gate as a pass is the precise
+          # shape of the six-week silence this workflow is being repaired from.
+          #
+          # `freshness.outputs.drift` fails on EVERY event, not only on schedule,
+          # and that is the point: it can only be true for a surface the registry
+          # marks `failing`, and on a PR both operands are committed files. So the
+          # red lands on the promotion PR that introduces the drifted capture —
+          # attached to the change that caused it, where a human either reconciles
+          # it or flips that surface to report-only with a disposition note. main
+          # therefore never carries a red freshness state, which is what keeps this
+          # from becoming a lane people learn to ignore.
           echo "::error::Offline gate failed (projection self-test/consistency/executability, fetch-capture taxonomy self-test, or snapshot-currency emitter self-test)."
           exit 1
 
