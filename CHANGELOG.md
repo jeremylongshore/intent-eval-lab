@@ -11,6 +11,22 @@ Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skelet
 
 ### Added
 
+#### Spec-currency loop repair (2026-07-22/23) — residual closed
+
+Platform epics intent-solutions-io/intent-eval-platform#10 / #17 closed after:
+
+- Freshness-mode extractors, fail-closed surface contracts, baseline stale-streak
+  alert ([#237](https://github.com/jeremylongshore/intent-eval-lab/pull/237)–[#244](https://github.com/jeremylongshore/intent-eval-lab/pull/244)).
+- Wave-1 kernel fold disposition: agent-definition `tools_inherit` phrasing =
+  extractor fix only ([#243](https://github.com/jeremylongshore/intent-eval-lab/pull/243));
+  no bulk authoring/v1 re-vendor (platform #16 closed as process established).
+- Reviewer posture: both AI reviewers dark; CI is the only merge gate
+  ([#233](https://github.com/jeremylongshore/intent-eval-lab/pull/233)).
+- Kernel skew documented as by design for the shadow detector
+  ([#231](https://github.com/jeremylongshore/intent-eval-lab/pull/231)).
+
+Downstream: CCPI required `skill-conform` (#1118); j-rig roster 14 (#234).
+
 #### Cross-repo CI/CD remediation — the stranded j-rig-cli release + gate hygiene
 
 Executes `000-docs/106-PP-PLAN-cicd-jrig-cross-repo-remediation-2026-07-01.md`
