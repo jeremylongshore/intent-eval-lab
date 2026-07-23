@@ -147,8 +147,14 @@ jobs:
       # mcp-config expectations — agreements AND divergences are printed, and
       # divergences are findings to report, never kernel edits (tier-3
       # promotion is human, 052-AT-SPEC). CI never refetches: the capture is
-      # a one-time build-time fetch; ongoing freshness is the watcher's job.
-      - name: MCP deep-capture projection freshness + self-test
+      # a one-time build-time fetch.
+      # This step is SELF-CONSISTENCY, not freshness: both operands are
+      # frozen committed files, so it is green by construction with respect
+      # to upstream. Freshness is the watcher's job and is now actually
+      # wired there — scripts/projection-freshness.py runs --check-fresh
+      # after the capture step in spec-drift-watch.yml, repointing the
+      # parsed reference doc at specs/_vendor/<surface>/snapshot<ext>.
+      - name: MCP deep-capture projection self-consistency + self-test
         run: |
           python3 scripts/extract-mcp-projection.py --check
           python3 scripts/extract-mcp-projection.py --self-test
@@ -182,8 +188,14 @@ jobs:
       # expectations — agreements AND divergences are printed, and
       # divergences are findings to report, never kernel edits (tier-3
       # promotion is human, 052-AT-SPEC). CI never refetches: the capture is
-      # a one-time build-time fetch; ongoing freshness is the watcher's job.
-      - name: Plugin-manifest deep-capture projection freshness + self-test
+      # a one-time build-time fetch.
+      # This step is SELF-CONSISTENCY, not freshness: both operands are
+      # frozen committed files, so it is green by construction with respect
+      # to upstream. Freshness is the watcher's job and is now actually
+      # wired there — scripts/projection-freshness.py runs --check-fresh
+      # after the capture step in spec-drift-watch.yml, repointing the
+      # parsed reference doc at specs/_vendor/<surface>/snapshot<ext>.
+      - name: Plugin-manifest deep-capture projection self-consistency + self-test
         run: |
           python3 scripts/extract-plugin-manifest-projection.py --check
           python3 scripts/extract-plugin-manifest-projection.py --self-test
@@ -205,8 +217,14 @@ jobs:
       # expectations — agreements AND divergences are printed, and
       # divergences are findings to report, never kernel edits (tier-3
       # promotion is human, 052-AT-SPEC). CI never refetches: the capture is
-      # a one-time build-time fetch; ongoing freshness is the watcher's job.
-      - name: Agent-definition deep-capture projection freshness + self-test
+      # a one-time build-time fetch.
+      # This step is SELF-CONSISTENCY, not freshness: both operands are
+      # frozen committed files, so it is green by construction with respect
+      # to upstream. Freshness is the watcher's job and is now actually
+      # wired there — scripts/projection-freshness.py runs --check-fresh
+      # after the capture step in spec-drift-watch.yml, repointing the
+      # parsed reference doc at specs/_vendor/<surface>/snapshot<ext>.
+      - name: Agent-definition deep-capture projection self-consistency + self-test
         run: |
           python3 scripts/extract-agent-definition-projection.py --check
           python3 scripts/extract-agent-definition-projection.py --self-test
@@ -232,8 +250,14 @@ jobs:
       # agreements AND divergences are printed, and divergences are findings
       # to report, never kernel edits (tier-3 promotion is human,
       # 052-AT-SPEC). CI never refetches: the capture is a one-time
-      # build-time fetch; ongoing freshness is the watcher's job.
-      - name: Hook-config deep-capture projection freshness + self-test
+      # build-time fetch.
+      # This step is SELF-CONSISTENCY, not freshness: both operands are
+      # frozen committed files, so it is green by construction with respect
+      # to upstream. Freshness is the watcher's job and is now actually
+      # wired there — scripts/projection-freshness.py runs --check-fresh
+      # after the capture step in spec-drift-watch.yml, repointing the
+      # parsed reference doc at specs/_vendor/<surface>/snapshot<ext>.
+      - name: Hook-config deep-capture projection self-consistency + self-test
         run: |
           python3 scripts/extract-hook-config-projection.py --check
           python3 scripts/extract-hook-config-projection.py --self-test
@@ -263,9 +287,14 @@ jobs:
       # marketplace-catalog expectations — agreements AND divergences are
       # printed, and divergences are findings to report, never kernel edits
       # (tier-3 promotion is human, 052-AT-SPEC). CI never refetches: the
-      # capture is a one-time build-time fetch; ongoing freshness is the
-      # watcher's job.
-      - name: Marketplace-catalog deep-capture projection freshness + self-test
+      # capture is a one-time build-time fetch.
+      # This step is SELF-CONSISTENCY, not freshness: both operands are
+      # frozen committed files, so it is green by construction with respect
+      # to upstream. Freshness is the watcher's job and is now actually
+      # wired there — scripts/projection-freshness.py runs --check-fresh
+      # after the capture step in spec-drift-watch.yml, repointing the
+      # parsed reference doc at specs/_vendor/<surface>/snapshot<ext>.
+      - name: Marketplace-catalog deep-capture projection self-consistency + self-test
         run: |
           python3 scripts/extract-marketplace-catalog-projection.py --check
           python3 scripts/extract-marketplace-catalog-projection.py --self-test

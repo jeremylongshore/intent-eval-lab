@@ -114,3 +114,36 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: python
           fail_ci_if_error: false
+
+  # ---------------------------------------------------------------------------
+  # L3 unit tests for the scripts/ gate machinery (the spec-drift detectors, the
+  # SAK state machines, the projection freshness driver).
+  #
+  # These 190 tests existed and ran NOWHERE: pyproject lists scripts/tests in
+  # testpaths, but the only pytest job in CI invoked
+  # `pytest research/phase-a-0-baseline/tests/` explicitly, so scripts/tests was
+  # never collected on any PR — including the tests added with the FF#2 repair
+  # that this machinery's correctness now rests on. A regression lock that does
+  # not run is not a lock, so it gets its own job here.
+  #
+  # NOT continue-on-error, unlike the coverage job above: these are offline,
+  # deterministic, and dependency-light (stdlib + pytest + pyyaml), so there is
+  # no environment limit to excuse a failure. Promoting it to a REQUIRED check in
+  # branch protection is an owner action.
+  # ---------------------------------------------------------------------------
+  scripts-tests:
+    name: pytest (scripts/ gate machinery)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      # jsonschema is load-bearing here, not optional: the SAK modules' own
+      # cmd_self_test() exits 1 with "jsonschema not installed" when it is absent,
+      # and pytest.importorskip only shields the tests that import it directly.
+      # Without it 9 tests fail for an environment reason and the job's signal is
+      # noise. (Caught on this job's first CI run.)
+      - run: pip install --no-cache-dir 'pytest>=8' pyyaml jsonschema
+      - name: Run scripts/ unit tests
+        run: pytest scripts/tests/ -v --tb=short

@@ -56,7 +56,8 @@ Stdlib only. Offline. Exit 0 = ok; 1 = staleness / self-test failure;
 Usage:
   extract-agent-definition-projection.py --extract     # fresh projection to stdout
   extract-agent-definition-projection.py --write       # (re)write projection.json
-  extract-agent-definition-projection.py --check       # fail if committed projection is stale
+  extract-agent-definition-projection.py --check       # fail if committed projection is stale (vs the FROZEN doc)
+  extract-agent-definition-projection.py --check-fresh # fail if it drifted from the CAPTURED upstream page
   extract-agent-definition-projection.py --self-test   # offline fixtures + kernel cross-check
 """
 
@@ -70,9 +71,18 @@ import sys
 import tempfile
 from typing import Any
 
+# The shared captured-snapshot resolver lives in scripts/lib/. Hyphenated script
+# filenames are not importable as modules, so this script puts its OWN directory on
+# sys.path first: it runs as `python3 scripts/<name>.py` in CI (where sys.path[0] is
+# already scripts/) but is loaded by file path under pytest, where it is not.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from lib import captured_source  # noqa: E402
+
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_VENDOR_DIR = os.path.join(REPO_ROOT, "specs", "_vendor", "upstream", "agent-definition")
 
+CONTRACT = "agent-definition"
 PROJECTION_VERSION = "spec-projection/v1"
 
 # Mechanical anchors in the sub-agents doc.
@@ -89,6 +99,12 @@ _CELL_SPLIT = re.compile(r"(?<!\\)\|")
 _BACKTICK = re.compile(r"`([^`]+)`")
 _SET_TO = re.compile(r"^Set to `([^`]+)`")
 _FM_KEY = re.compile(r"^([A-Za-z][A-Za-z0-9_-]*):(.*)$")
+# MDX version annotations leak into the .md capture as literal
+# `{/* min-version: 2.1.200 */}`. They are doc-SOURCE markup, never prose and
+# never a value, and their embedded version number contains periods — which
+# silently truncated the permissionMode value clause mid-list and dropped the
+# very value this projection needs to record. Stripped before clause analysis.
+_MDX_COMMENT = re.compile(r"\{/\*.*?\*/\}", re.DOTALL)
 
 
 # ── Extraction: the reference doc (the spec — there is no machine schema) ───
@@ -134,13 +150,31 @@ def _table(section: list[str]) -> tuple[list[str], list[list[str]]]:
     return header, rows
 
 
-def _enum_from_description(desc: str) -> list[str] | None:
-    """Closed-set value clause -> enum; open clauses (leftover prose) -> None.
+def _enum_from_description(desc: str) -> tuple[list[str] | None, list[str] | None]:
+    """Value clause -> (closed_enum, open_candidates). At most one is non-None.
 
     Clause selection (first match wins): 'Accepts ' to the next '.';
     'Options: ' to the next ';' or '.'; otherwise the first ': ' to the next
-    '. '. The clause becomes an enum ONLY when removing backticked tokens,
-    commas, 'or', and whitespace leaves nothing AND >=2 tokens remain."""
+    '. '. The clause is a CLOSED SET — and becomes an `enum` — only when
+    removing backticked tokens, commas, 'or', and whitespace leaves nothing
+    AND >=2 tokens remain. That conservatism is deliberate and unchanged.
+
+    What IS new: when the same clause carries >=2 backticked tokens but does
+    not reduce to nothing, the tokens are returned as OPEN CANDIDATES instead
+    of being discarded. The threshold is identical (>=2 tokens in the selected
+    clause), so this loosens nothing — it only stops throwing away what the
+    closed-set rule already saw.
+
+    Why it matters, concretely: upstream added `manual` to permissionMode as
+    an alias for `default` (Claude Code v2.1.200+), phrased with an MDX
+    version comment and the words "as an alias for". Residue went from '' to
+    '{/*min-version:2.1.200*/}asanaliasfor', so the rule correctly refused an
+    enum — and the projection silently stopped recording ANY permission-mode
+    values, turning a 7-value addition into a bare absence. Recording
+    candidates keeps the information while keeping `enum` honest about
+    closedness, the same split the projection already makes for `model` via
+    model_full_id_latitude."""
+    desc = _MDX_COMMENT.sub("", desc)
     for marker, stops in (("Accepts ", "."), ("Options: ", ";."), (": ", ".")):
         idx = desc.find(marker)
         if idx == -1:
@@ -149,13 +183,16 @@ def _enum_from_description(desc: str) -> list[str] | None:
         stop = min((j for j in (clause.find(s) for s in stops) if j != -1), default=-1)
         if stop != -1:
             clause = clause[:stop]
-        tokens = _BACKTICK.findall(clause)
+        # Order-preserving dedupe: a value list is a SET, and an alias clause
+        # legitimately names the same value twice ("`manual` as an alias for
+        # `default`"). Applied to both branches so the two carriers agree.
+        tokens = list(dict.fromkeys(_BACKTICK.findall(clause)))
+        if len(tokens) < 2:
+            return None, None
         residue = re.sub(r"`[^`]+`", "", clause)
         residue = re.sub(r"\bor\b|,|\s", "", residue)
-        if len(tokens) >= 2 and not residue:
-            return tokens
-        return None
-    return None
+        return (tokens, None) if not residue else (None, tokens)
+    return None, None
 
 
 def _example_frontmatter(section: list[str]) -> dict[str, str]:
@@ -215,9 +252,12 @@ def extract_reference_doc(doc_path: str) -> dict[str, Any]:
             "required": required_cell == "Yes",
             "source": "documented",
         }
-        enum = _enum_from_description(desc)
+        enum, open_candidates = _enum_from_description(desc)
         if enum:
             entry["enum"] = enum
+        elif open_candidates:
+            entry["enum_candidates"] = open_candidates
+            entry["enum_clause_open"] = True
         set_to = _SET_TO.match(desc)
         if set_to:
             entry["set_to_value"] = set_to.group(1)
@@ -322,7 +362,16 @@ def load_vendor_meta(vendor_dir: str) -> dict[str, Any]:
         return json.load(fh)
 
 
-def build_projection(vendor_dir: str) -> dict[str, Any]:
+def build_projection(vendor_dir: str, reference_doc_path: str | None = None) -> dict[str, Any]:
+    """Extract the normative projection from the vendored capture.
+
+    `reference_doc_path` repoints ONLY the file this extractor parses — used by
+    --check-fresh to read the captured upstream page instead of the frozen
+    hand-vendored copy. Samples and supporting docs are never repointed: being
+    commit-pinned ground truth that corroborates the doc is precisely their value,
+    and the provenance rule (documented vs observed-in-samples, never promoted)
+    depends on them holding still.
+    """
     meta = load_vendor_meta(vendor_dir)
     docs = [f["file"] for f in meta["files"] if f["role"] == "reference-doc"]
     supporting = sorted(f["file"] for f in meta["files"] if f["role"] == "supporting-doc")
@@ -331,7 +380,7 @@ def build_projection(vendor_dir: str) -> dict[str, Any]:
         print("ERROR: vendor-meta.json needs exactly one reference-doc and >=1 sample-agent", file=sys.stderr)
         sys.exit(2)
 
-    frontmatter = extract_reference_doc(os.path.join(vendor_dir, docs[0]))
+    frontmatter = extract_reference_doc(reference_doc_path or os.path.join(vendor_dir, docs[0]))
     sample_facts = extract_samples([os.path.join(vendor_dir, s) for s in samples])
 
     # Cross-corroboration (the provenance rule): documented fields get an
@@ -388,6 +437,50 @@ def cmd_check(vendor_dir: str) -> int:
         return 1
     print("extract-agent-definition-projection --check: OK — committed projection is fresh.")
     return 0
+
+
+def cmd_check_fresh(vendor_dir: str, surface: str | None = None) -> int:
+    """Diff the committed projection against a projection of the CAPTURED page.
+
+    `--check` proves the committed projection still matches the FROZEN vendored doc
+    it was derived from. That is honest self-consistency, and it is green by
+    construction: specs/_vendor/upstream/ is hand-vendored and fetch-capture.py
+    cannot write it, so neither operand can move. This is the missing other half —
+    it repoints the parsed reference doc at specs/_vendor/<surface>/snapshot<ext>,
+    the tier-2 tree the capture stage advances on a FETCH_OK fetch, and reports what
+    actually changed field by field.
+
+    0 = no semantic drift; 1 = drift (a human reconciles); 2 = the comparison could
+    not be set up. Treat 2 as red: a gate that did not run is not a gate that passed.
+    """
+    label = "extract-agent-definition-projection --check-fresh"
+    try:
+        meta = load_vendor_meta(vendor_dir)
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"{label}: INOPERABLE — cannot read vendor-meta.json in {vendor_dir}: {exc}", file=sys.stderr)
+        return 2
+    try:
+        doc_file, doc_surface = captured_source.reference_doc_surface(meta)
+        surface = surface or doc_surface
+        snapshot = captured_source.resolve_captured_snapshot(surface, expected_contract=CONTRACT)
+    except captured_source.InoperableError as exc:
+        print(f"{label}: INOPERABLE — {exc}", file=sys.stderr)
+        return 2
+
+    committed_path = projection_path(vendor_dir)
+    try:
+        with open(committed_path, encoding="utf-8") as fh:
+            base = json.load(fh)
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"{label}: INOPERABLE — cannot read {committed_path}: {exc}", file=sys.stderr)
+        return 2
+
+    fresh = build_projection(vendor_dir, reference_doc_path=snapshot)
+    context = (
+        f"committed projection vs the captured '{surface}' page "
+        f"({os.path.relpath(snapshot, REPO_ROOT)}, standing in for {doc_file})"
+    )
+    return captured_source.report(captured_source.diff_projections(base, fresh), context, label)
 
 
 # ── Kernel cross-check (read-only reference; reported, never fixed here) ────
@@ -532,6 +625,7 @@ The following fields can be used in the YAML frontmatter. Only `name` and `descr
 | `effort` | No | Effort level. Default: inherits from session. Options: `low`, `high`; available levels depend on the model |
 | `isolation` | No | Set to `worktree` to run the subagent in a temporary git worktree |
 | `color` | No | Display color. Accepts `red`, `blue`, or `cyan`. Shown in the task list |
+| `permissionMode` | No | [Permission mode](#permission-modes): `default`, `acceptEdits`, or {/* min-version: 2.1.200 */}`manual` as an alias for `default`. The `manual` alias requires Claude Code v2.1.200 or later |
 
 ### Choose a model
 
@@ -576,6 +670,34 @@ def cmd_self_test(vendor_dir: str) -> int:
         check("fixture doc: 'Options:' enum stops at semicolon (effort)", m["fields"]["effort"].get("enum") == ["low", "high"])
         check("fixture doc: 'Accepts' enum extracted (color)", m["fields"]["color"].get("enum") == ["red", "blue", "cyan"])
         check("fixture doc: open model clause yields NO enum", "enum" not in m["fields"]["model"])
+        # The open-clause half. Without these two, "the enum vanished" and "upstream
+        # added a value in prose-carrying phrasing" are indistinguishable in the
+        # projection — which is exactly how permissionMode's `manual` addition
+        # registered as a bare REMOVED_KEY.
+        check(
+            "fixture doc: open model clause DOES record its candidates",
+            m["fields"]["model"].get("enum_candidates") == ["sonnet", "opus", "claude-opus-4-8", "inherit"]
+            and m["fields"]["model"].get("enum_clause_open") is True,
+        )
+        check(
+            "fixture doc: a CLOSED clause records no candidates (enum is the sole carrier)",
+            "enum_candidates" not in m["fields"]["memory"] and "enum_clause_open" not in m["fields"]["memory"],
+        )
+        check(
+            "fixture doc: a single-token clause yields neither (threshold unchanged at >=2)",
+            "enum" not in m["fields"]["isolation"] and "enum_candidates" not in m["fields"]["isolation"],
+        )
+        # The real permissionMode shape, reduced to a fixture. Two failure modes are
+        # pinned here at once because they compound: without MDX stripping the clause
+        # truncates INSIDE the version number "2.1.200" and silently drops the trailing
+        # value, and without the dedupe an alias clause reports `default` twice. Either
+        # one alone yields a candidate list that looks plausible and is wrong.
+        pm = m["fields"]["permissionMode"]
+        check(
+            "fixture doc: MDX version comment stripped, so the clause is not cut at '2.1.200'",
+            pm.get("enum_candidates") == ["default", "acceptEdits", "manual"],
+        )
+        check("fixture doc: alias clause deduped, `default` recorded once", pm.get("enum_clause_open") is True)
         check("fixture doc: model full-ID latitude + inherit default detected", m["model_full_id_latitude"] and m["model_default_inherit"])
         check("fixture doc: 'Set to' single value recorded (isolation)", m["fields"]["isolation"].get("set_to_value") == "worktree")
         check("fixture doc: tools inherit-all sentence detected", m["tools_inherit_all_if_omitted"] is True)
@@ -665,15 +787,32 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--extract", action="store_true", help="print a fresh projection to stdout")
     mode.add_argument("--write", action="store_true", help="(re)write projection.json")
-    mode.add_argument("--check", action="store_true", help="fail if the committed projection is stale")
+    mode.add_argument(
+        "--check",
+        action="store_true",
+        help="fail if the committed projection is stale vs the FROZEN vendored doc (self-consistency)",
+    )
+    mode.add_argument(
+        "--check-fresh",
+        action="store_true",
+        help="fail if the committed projection has drifted from the CAPTURED upstream page (freshness)",
+    )
     mode.add_argument("--self-test", action="store_true", help="offline fixtures + kernel cross-check")
     parser.add_argument("--vendor-dir", default=DEFAULT_VENDOR_DIR, help="vendored capture directory")
+    parser.add_argument(
+        "--surface",
+        default=None,
+        help="registry surface whose captured snapshot --check-fresh diffs "
+        "(default: the reference-doc's own surface, per vendor-meta.json)",
+    )
     args = parser.parse_args()
 
     if args.self_test:
         return cmd_self_test(args.vendor_dir)
     if args.check:
         return cmd_check(args.vendor_dir)
+    if args.check_fresh:
+        return cmd_check_fresh(args.vendor_dir, args.surface)
     fresh = render(build_projection(args.vendor_dir))
     if args.extract:
         sys.stdout.write(fresh)
