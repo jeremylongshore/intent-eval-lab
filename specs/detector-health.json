@@ -16,8 +16,8 @@
       "surfaces_at_or_over_threshold": []
     },
     "watcher-run-recent": {
-      "detail": "last successful watcher run 2026-07-23T00:18:53Z was 0.0h ago (max gap 26h)",
-      "gap_hours": 0.0,
+      "detail": "last successful watcher run 2026-07-23T00:18:53Z was 6.3h ago (max gap 26h)",
+      "gap_hours": 6.3,
       "last_run_utc": "2026-07-23T00:18:53Z",
       "max_gap_hours": 26.0,
       "pass": true
@@ -105,7 +105,7 @@
       "adopted": false,
       "authority_tier": "reference",
       "baseline_sha256": "d7d367c7d0040ba05b96688511727ff9456a9057f22b417c5e1f279b7f6b08d7",
-      "contract": "slash-commands",
+      "contract": "skill-frontmatter",
       "divergences_outstanding": 0,
       "fetch_error_streak": 0,
       "last_ok_utc": "2026-07-23T00:18:45Z",
@@ -201,7 +201,7 @@
       "surface": "sub-agents"
     }
   ],
-  "evaluated_at": "2026-07-23T00:18:54Z",
+  "evaluated_at": "2026-07-23T06:35:57Z",
   "failing_conditions": [],
   "health_version": "detector-health/v1",
   "inputs": {
@@ -223,7 +223,7 @@
     "specs/snapshots/.sha/skills-releases.sha": "698ed71afca22f55068c34b7d92ea5b6551f6bd4ce8a126a5b1b4c68de349668",
     "specs/snapshots/.sha/sub-agents.sha": "bd8f915ad666f53f6d1b914ffc5e931d502c65d645803d6cc4be22dfe52ceea9",
     "specs/snapshots/.state.json": "aac77de79ac529eea3a6ea50ee7e6488a6c751ddc525dd0effc323130c48dc6e",
-    "specs/upstream-surface-registry.v1.json": "0609789f44bc03b4183001802353f50ef383f971e624ebb0674197ea8af2f814"
+    "specs/upstream-surface-registry.v1.json": "727ae824868173ab02f903921511cfae1d735a8393e75059fc5e5e711f219708"
   },
   "lineage": {
     "convergence_triggers_fired": 0,
