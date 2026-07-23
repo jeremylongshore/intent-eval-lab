@@ -9,6 +9,10 @@
     "release-feed                    (a GH releases.atom) — earliest material-change signal, ahead of any page edit",
     "changelog                       (a CHANGELOG / npm version) — detects that change happened; the reference page is the spec"
   ],
+  "semantic_coverage_floor": {
+    "field_level": 5,
+    "_why": "A floor, not a target. Shrinking semantic coverage must be an explicit edit reviewed in the same change, because downstream 'the map got smaller' and 'the map is clean' are the same green. Raise it when a surface is promoted to field-level; lowering it is a deliberate coverage reduction."
+  },
   "surfaces": [
     {
       "name": "agentskills-spec",

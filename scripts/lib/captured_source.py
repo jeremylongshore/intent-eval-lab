@@ -54,6 +54,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from typing import Any
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -65,6 +66,21 @@ SURFACE_REGISTRY = os.path.join(REPO_ROOT, "specs", "upstream-surface-registry.v
 # Longest rendered value kept verbatim in a CHANGED_VALUE finding. Enums like the
 # 30-event hook list would otherwise bury the finding they are attached to.
 _VALUE_RENDER_LIMIT = 400
+
+
+# A period is a sentence end UNLESS a digit follows it — then it is inside a
+# version number. Upstream writes version-gated values inline ("`command`
+# (Claude Code v2.1.200+), `http`, or `mcp_tool`"), and stopping a value clause
+# at the first bare "." truncated it mid-enumeration. That produced a SHORT list
+# which one extractor then asserted as a closed enum and another discarded
+# entirely — a wrong answer and a silent one from the same root cause.
+_SENTENCE_END = re.compile(r"\.(?!\d)")
+
+
+def clause_end(clause: str) -> int:
+    """Index of the first sentence-ending period in `clause`, or -1 if none."""
+    match = _SENTENCE_END.search(clause)
+    return match.start() if match else -1
 
 
 class InoperableError(RuntimeError):
@@ -174,6 +190,11 @@ def _render(value: Any) -> str:
     return text
 
 
+def _scalar_list(value: Any) -> bool:
+    """A list of hashable scalars — the shape an enum / name list actually takes."""
+    return isinstance(value, list) and all(isinstance(v, (str, int, float, bool, type(None))) for v in value)
+
+
 def _walk(prefix: str, base: Any, fresh: Any, out: list[str]) -> None:
     if isinstance(base, dict) and isinstance(fresh, dict):
         for key in sorted(set(base) | set(fresh)):
@@ -185,8 +206,44 @@ def _walk(prefix: str, base: Any, fresh: Any, out: list[str]) -> None:
             else:
                 _walk(path, base[key], fresh[key], out)
         return
-    if base != fresh:
-        out.append(f"CHANGED_VALUE: {prefix or '<root>'}: {_render(base)} -> {_render(fresh)}")
+
+    # A type change is ALWAYS a finding, even when Python calls the values equal.
+    # `True == 1` and `1 == 1.0`, so a bool silently becoming an int — exactly what
+    # a schema-shape change looks like — would otherwise diff to nothing. Today's
+    # five projection shapes cannot trigger it; this differ is deliberately generic
+    # and meant to outlive them.
+    if type(base) is not type(fresh):
+        out.append(f"TYPE_CHANGED: {prefix or '<root>'}: {_render(base)} -> {_render(fresh)}")
+        return
+
+    if base == fresh:
+        return
+
+    # Element-wise for scalar lists. Rendering two 30-entry enums whole and
+    # truncating them at 400 chars produced findings whose two sides were
+    # byte-identical for every visible character — the reader saw a differing byte
+    # COUNT and nothing else. A new hook event landing in the 30-entry
+    # `events.enum` is the single most likely real drift on `claude-hooks`, an
+    # ENFORCED surface, so that was the case most likely to be unreadable exactly
+    # when it mattered.
+    if _scalar_list(base) and _scalar_list(fresh):
+        added = [v for v in fresh if v not in base]
+        removed = [v for v in base if v not in fresh]
+        if added or removed:
+            parts = []
+            if added:
+                parts.append(f"+{_render(added)}")
+            if removed:
+                parts.append(f"-{_render(removed)}")
+            out.append(f"LIST_CHANGED: {prefix or '<root>'}: {' '.join(parts)}")
+        else:
+            # Same members, different order. Order IS meaningful here: the
+            # extractors already sort what should be sorted, so a reordering is a
+            # finding a human should look at rather than a diff artefact.
+            out.append(f"LIST_REORDERED: {prefix or '<root>'}: {_render(base)} -> {_render(fresh)}")
+        return
+
+    out.append(f"CHANGED_VALUE: {prefix or '<root>'}: {_render(base)} -> {_render(fresh)}")
 
 
 def diff_projections(base: dict[str, Any], fresh: dict[str, Any]) -> list[str]:

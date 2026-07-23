@@ -42,6 +42,35 @@ _CAPTURE_KINDS = {"http", "command"}
 _COVERAGE_STATUSES = {"field-level", "byte-hash-only"}
 _ENFORCEMENTS = {"failing", "report-only"}
 
+# Which flag makes each checker compare against the CAPTURED tree, i.e. which flag
+# actually performs a FRESHNESS check rather than a self-consistency one.
+#
+# Validating only that `checker[0]` is an existing file is not enough, and the gap
+# is not theoretical: swapping `--check-fresh` for `--check` on any extractor
+# re-arms the exact frozen-vs-frozen bug this machinery exists to end, and the
+# driver then prints an authoritative all-green board — including for surfaces
+# with real outstanding findings. `--surface` is a top-level arg, so the wrong
+# mode accepts it and silently ignores it; nothing else in the chain objects.
+#
+# The registry is precisely the file humans are told to edit ("flipping a surface
+# to `failing` is a one-line registry edit"), so the next person who sees red and
+# "fixes" the flag would get a green board. Hence: pin the SEMANTICS of the argv,
+# not just its head. A checker absent from this table is an error — adding one is
+# a deliberate, reviewed act.
+_FRESH_MODE_FLAG = {
+    # spec-projection-diff's --check reads specs/_vendor/<surface>/snapshot<ext>
+    # (repointed in #234); it has no separate --check-fresh.
+    "scripts/spec-projection-diff.py": "--check",
+    "scripts/extract-agent-definition-projection.py": "--check-fresh",
+    "scripts/extract-hook-config-projection.py": "--check-fresh",
+    "scripts/extract-marketplace-catalog-projection.py": "--check-fresh",
+    "scripts/extract-plugin-manifest-projection.py": "--check-fresh",
+}
+
+# Mode flags a checker must never carry instead of (or in addition to) its fresh
+# mode. `--write` would have the gate MUTATE the baseline it is meant to guard.
+_MODE_FLAGS = {"--check", "--check-fresh", "--extract", "--write", "--self-test", "--diff", "--list", "--strict"}
+
 
 def _check_semantic_coverage(name: str, surface: dict, problems: list[str]) -> None:
     """Validate one surface's semantic_coverage block (projection-freshness.py contract)."""
@@ -74,11 +103,30 @@ def _check_semantic_coverage(name: str, surface: dict, problems: list[str]) -> N
         problems.append(f"{name}: field-level coverage needs `checker` as a non-empty list of argv strings")
     elif not os.path.isfile(os.path.join(REPO_ROOT, checker[0])):
         problems.append(f"{name}: semantic_coverage.checker script not found: {checker[0]}")
-    if cov.get("enforcement") not in _ENFORCEMENTS:
+    elif checker[0] not in _FRESH_MODE_FLAG:
         problems.append(
-            f"{name}: semantic_coverage.enforcement '{cov.get('enforcement')}' not one of {sorted(_ENFORCEMENTS)}"
+            f"{name}: '{checker[0]}' is not a registered freshness checker. Add it to _FRESH_MODE_FLAG in "
+            "this script, naming the flag that makes it read the CAPTURED tree — a checker whose mode is "
+            "unpinned can silently compare frozen against frozen."
         )
-    if cov.get("enforcement") == "report-only" and not isinstance(cov.get("note"), str):
+    else:
+        required = _FRESH_MODE_FLAG[checker[0]]
+        supplied = [a for a in checker[1:] if a in _MODE_FLAGS]
+        if supplied != [required]:
+            problems.append(
+                f"{name}: checker must run '{checker[0]}' in its freshness mode '{required}', got mode flag(s) "
+                f"{supplied or 'none'}. A checker in the wrong mode compares frozen against frozen and reports "
+                "an authoritative green — the exact failure this gate exists to detect."
+            )
+
+    enforcement = cov.get("enforcement")
+    # str() first: a list/dict here is unhashable and `in` would raise TypeError,
+    # killing the gate with a traceback instead of naming the problem.
+    if not isinstance(enforcement, str) or enforcement not in _ENFORCEMENTS:
+        problems.append(
+            f"{name}: semantic_coverage.enforcement {enforcement!r} not one of {sorted(_ENFORCEMENTS)}"
+        )
+    if enforcement == "report-only" and not isinstance(cov.get("note"), str):
         problems.append(f"{name}: report-only coverage needs a `note` saying what is pending and when it flips")
 
 
@@ -173,6 +221,24 @@ def main() -> int:
     field_level = sum(
         1 for s in reg_surfaces.values() if (s.get("semantic_coverage") or {}).get("status") == "field-level"
     )
+    # A floor, so shrinking semantic coverage is a visible edit rather than a
+    # quietly smaller green board. Without it, "the map got smaller" and "the map
+    # is clean" look identical downstream.
+    floor = (reg.get("semantic_coverage_floor") or {}).get("field_level")
+    if not isinstance(floor, int) or isinstance(floor, bool) or floor < 1:
+        problems.append("registry: semantic_coverage_floor.field_level must be a positive integer")
+    elif field_level < floor:
+        problems.append(
+            f"registry: {field_level} field-level surfaces is below the declared floor of {floor}. "
+            "Semantic coverage SHRANK. If that is intended, lower the floor in the same change so the "
+            "reduction is reviewed."
+        )
+    if problems:
+        print(f"surface-registry consistency: {len(problems)} PROBLEM(S):")
+        for problem in problems:
+            print(f"  - {problem}")
+        print("\nFix: edit BOTH spec-drift-check.sh SOURCES and the registry in the same change.")
+        return 1
     print(
         f"surface-registry consistency: OK — {len(reg_surfaces)} surfaces, registry == watcher "
         f"SOURCES, all extractors defined, all capture configs valid, all semantic-coverage levels "

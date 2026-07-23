@@ -1,0 +1,29 @@
+# CodeQL configuration for intent-eval-lab.
+#
+# WHY THIS FILE EXISTS
+#
+# This repo deliberately commits THIRD-PARTY BYTES it did not write and must not
+# edit: the spec-drift capture tiers. `specs/_vendor/<surface>/snapshot.*` and
+# `archive/raw/**` are verbatim upstream pages fetched by scripts/fetch-capture.py
+# — HTML with bundled/minified JS, atom feeds, JSON schemas — retained as the
+# EVIDENCE that a spec said what we claim it said on a given date.
+#
+# CodeQL analysing them produces high-severity alerts about other people's
+# bundled JavaScript (e.g. js/incomplete-sanitization in
+# specs/_vendor/mcp-spec-docs/snapshot.html, a captured modelcontextprotocol.io
+# page). Those alerts are unactionable by construction, and worse than
+# unactionable: the only way to "fix" one is to edit a capture, which corrupts the
+# provenance record every drift comparison and every re-vendor decision depends on
+# — and scripts/check-vendor-meta-integrity.py exists precisely to make such an
+# edit fail loudly.
+#
+# So this is not weakening the scanner. It is scoping it to code this repo
+# AUTHORS and EXECUTES. Nothing under these paths is imported, executed, packaged
+# or served; the extractors read them as text.
+#
+# Deliberately NOT excluded: scripts/, research/, and every workflow — the code we
+# actually write stays fully in scope, on the security-extended suite.
+paths-ignore:
+  - specs/_vendor/**
+  - archive/**
+  - _vendor/**

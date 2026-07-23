@@ -91,10 +91,25 @@ jobs:
           fi
 
       # Offline + deterministic: the surface registry must equal the watcher's
-      # SOURCES array, every extractor must exist, and every monitored surface
-      # must carry a valid capture config (kind, expect_regex, min_bytes, ext).
+      # SOURCES array, every extractor must exist, every monitored surface must
+      # carry a valid capture config (kind, expect_regex, min_bytes, ext), and
+      # every surface must state its semantic-coverage level — including, for
+      # field-level surfaces, that the declared checker runs in its FRESHNESS
+      # mode. Pinning the mode is the point: a checker named with `--check`
+      # instead of `--check-fresh` compares frozen against frozen and prints an
+      # authoritative green, which is precisely the failure this gate exists for.
       - name: Upstream-surface registry consistency
         run: python3 scripts/check-surface-registry.py
+
+      # Offline + deterministic: every vendor-meta.json must describe the bytes
+      # actually on disk. Nothing else checks this — `--check` proves the
+      # projection derives from the FILES and never reads sha256/bytes at all, so
+      # a hand re-vendor that recorded a wrong hash passed every gate while the
+      # provenance quietly described a file that was not there. Three reference
+      # docs were re-vendored by hand during the freshness work, so this is the
+      # concrete shape of the risk, not a theoretical one.
+      - name: Vendored capture provenance integrity
+        run: python3 scripts/check-vendor-meta-integrity.py
 
       # Offline + deterministic: fixtures exercise all 6 fetch-taxonomy statuses
       # (FETCH_OK|UNREACHABLE|MOVED|RATELIMITED|SHAPE_CHANGED|TRUNCATED) plus the
