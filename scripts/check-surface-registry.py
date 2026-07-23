@@ -12,6 +12,13 @@ It also validates each surface's `capture` config — the per-surface fetch kind
 expected extractor pattern (shape hint) and min-bytes floor that drive the
 raw-fetch capture stage (scripts/fetch-capture.py; 000-docs/052-AT-SPEC-...md).
 
+And each surface's `semantic_coverage` block — whether the surface has a
+field-level projection checker (and which, and whether it is enforced) or is
+byte-hash-only with a named reason. That block is the coverage map the freshness
+driver (scripts/projection-freshness.py) executes, so it must be present and
+well-formed on EVERY surface: an unstated coverage level is how "no extractor"
+gets quietly mistaken for "not covered by design".
+
 Stdlib only, offline. Exit 0 = consistent; exit 1 = drift; exit 2 = usage/parse.
 
 Usage: check-surface-registry.py
@@ -31,6 +38,48 @@ SCRIPT = os.path.join(REPO_ROOT, "scripts", "spec-drift-check.sh")
 _SOURCE_ROW = re.compile(r'^\s*"([a-z0-9-]+)\|[^|]*\|([a-z_]+)"\s*$')
 
 _CAPTURE_KINDS = {"http", "command"}
+
+_COVERAGE_STATUSES = {"field-level", "byte-hash-only"}
+_ENFORCEMENTS = {"failing", "report-only"}
+
+
+def _check_semantic_coverage(name: str, surface: dict, problems: list[str]) -> None:
+    """Validate one surface's semantic_coverage block (projection-freshness.py contract)."""
+    cov = surface.get("semantic_coverage")
+    if not isinstance(cov, dict):
+        problems.append(
+            f"{name}: missing semantic_coverage block. Every surface must state whether it has a "
+            "field-level projection checker or is byte-hash-only, and why."
+        )
+        return
+
+    status = cov.get("status")
+    if status not in _COVERAGE_STATUSES:
+        problems.append(f"{name}: semantic_coverage.status '{status}' not one of {sorted(_COVERAGE_STATUSES)}")
+        return
+
+    if status == "byte-hash-only":
+        reason = cov.get("reason")
+        if not isinstance(reason, str) or len(reason) < 20:
+            problems.append(
+                f"{name}: byte-hash-only coverage needs a substantive `reason` — an unexplained gap "
+                "reads as a design choice."
+            )
+        if "checker" in cov:
+            problems.append(f"{name}: byte-hash-only coverage must not declare a checker")
+        return
+
+    checker = cov.get("checker")
+    if not isinstance(checker, list) or not checker or not all(isinstance(a, str) for a in checker):
+        problems.append(f"{name}: field-level coverage needs `checker` as a non-empty list of argv strings")
+    elif not os.path.isfile(os.path.join(REPO_ROOT, checker[0])):
+        problems.append(f"{name}: semantic_coverage.checker script not found: {checker[0]}")
+    if cov.get("enforcement") not in _ENFORCEMENTS:
+        problems.append(
+            f"{name}: semantic_coverage.enforcement '{cov.get('enforcement')}' not one of {sorted(_ENFORCEMENTS)}"
+        )
+    if cov.get("enforcement") == "report-only" and not isinstance(cov.get("note"), str):
+        problems.append(f"{name}: report-only coverage needs a `note` saying what is pending and when it flips")
 
 
 def _check_capture(name: str, surface: dict, problems: list[str]) -> None:
@@ -107,10 +156,12 @@ def main() -> int:
         if src_fn not in defined_fns:
             problems.append(f"{name}: extractor function '{src_fn}' not defined in the script")
 
-    # Every monitored surface must carry a valid capture config (fetch-capture.py).
+    # Every monitored surface must carry a valid capture config (fetch-capture.py)
+    # and a stated semantic-coverage level (projection-freshness.py).
     for name in sorted(reg_surfaces):
         if reg_surfaces[name].get("monitored"):
             _check_capture(name, reg_surfaces[name], problems)
+            _check_semantic_coverage(name, reg_surfaces[name], problems)
 
     if problems:
         print(f"surface-registry consistency: {len(problems)} PROBLEM(S):")
@@ -119,9 +170,13 @@ def main() -> int:
         print("\nFix: edit BOTH spec-drift-check.sh SOURCES and the registry in the same change.")
         return 1
 
+    field_level = sum(
+        1 for s in reg_surfaces.values() if (s.get("semantic_coverage") or {}).get("status") == "field-level"
+    )
     print(
         f"surface-registry consistency: OK — {len(reg_surfaces)} surfaces, registry == watcher "
-        "SOURCES, all extractors defined, all capture configs valid."
+        f"SOURCES, all extractors defined, all capture configs valid, all semantic-coverage levels "
+        f"stated ({field_level} field-level, {len(reg_surfaces) - field_level} byte-hash-only)."
     )
     return 0
 

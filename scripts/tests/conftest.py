@@ -58,3 +58,36 @@ def wb() -> ModuleType:
 def spd() -> ModuleType:
     """The spec-projection-diff module — Fitness Function #2 (loaded by path)."""
     return _load_by_path("spec-projection-diff.py", "spec_projection_diff")
+
+
+# The four deep-capture extractors that carry --check-fresh. Loaded by path for the
+# same reason as the others (hyphenated filenames); each puts scripts/ on sys.path
+# itself so `from lib import captured_source` resolves under pytest too.
+
+
+@pytest.fixture(scope="session")
+def extractors() -> dict[str, ModuleType]:
+    """contract -> extractor module, for the four contracts with a captured surface."""
+    return {
+        contract: _load_by_path(
+            f"extract-{contract}-projection.py", f"extract_{contract.replace('-', '_')}_projection"
+        )
+        for contract in ("agent-definition", "hook-config", "marketplace-catalog", "plugin-manifest")
+    }
+
+
+@pytest.fixture(scope="session")
+def captured_source(extractors: dict[str, ModuleType]) -> ModuleType:
+    """The shared captured-snapshot resolver (scripts/lib/captured_source.py).
+
+    Deliberately reached THROUGH an extractor rather than loaded by path again:
+    a second load would be a distinct module object, so monkeypatching it would
+    not affect the copy the extractors actually call.
+    """
+    return extractors["hook-config"].captured_source
+
+
+@pytest.fixture(scope="session")
+def freshness() -> ModuleType:
+    """The projection-freshness driver (loaded by path)."""
+    return _load_by_path("projection-freshness.py", "projection_freshness")

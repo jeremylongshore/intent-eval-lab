@@ -19,6 +19,15 @@
       "authority_tier": "official-spec",
       "monitored": true,
       "extractor": "fetch_agentskills_spec",
+      "semantic_coverage": {
+        "status": "field-level",
+        "checker": [
+          "scripts/spec-projection-diff.py",
+          "--check"
+        ],
+        "enforcement": "failing",
+        "note": "Fitness Function #2. Also runs as its own dedicated watcher step, which is what drives the drift-issue / notification outputs; the freshness driver re-runs it so the coverage report is complete rather than partial."
+      },
       "capture": {
         "kind": "http",
         "urls": ["https://agentskills.io/specification.md"],
@@ -36,6 +45,10 @@
       "authority_tier": "anthropic-doc",
       "monitored": true,
       "extractor": "fetch_platform_skills_overview",
+      "semantic_coverage": {
+        "status": "byte-hash-only",
+        "reason": "Declares contract skill-frontmatter but has NO extractor and NO committed projection of its own. FF#2's row regex is written against the agentskills.io frontmatter table specifically; this Anthropic page presents the same contract in a different shape. Covering it needs its own extractor + projection."
+      },
       "capture": {
         "kind": "http",
         "urls": ["https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview.md"],
@@ -53,6 +66,10 @@
       "authority_tier": "release-feed",
       "monitored": true,
       "extractor": "fetch_skills_releases_atom",
+      "semantic_coverage": {
+        "status": "byte-hash-only",
+        "reason": "Release/commit atom feed. It signals THAT something changed, earlier than any page edit; it carries no normative field shape to project."
+      },
       "capture": {
         "kind": "http",
         "urls": [
@@ -73,6 +90,10 @@
       "authority_tier": "official-spec-machine-readable",
       "monitored": true,
       "extractor": "fetch_mcp_schema_ts",
+      "semantic_coverage": {
+        "status": "byte-hash-only",
+        "reason": "extract-mcp-projection.py parses a vendored JSON schema (mcp-schema-2025-11-25.json); this surface publishes schema.ts — a different artifact. Repointing needs a ts-to-json derivation step in the capture stage first."
+      },
       "capture": {
         "kind": "http",
         "urls": ["https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/schema/draft/schema.ts"],
@@ -90,6 +111,10 @@
       "authority_tier": "official-spec",
       "monitored": true,
       "extractor": "fetch_mcp_spec_docs",
+      "semantic_coverage": {
+        "status": "byte-hash-only",
+        "reason": "HTML spec docs; no extractor. The machine-readable schema is the higher authority for this contract."
+      },
       "capture": {
         "kind": "http",
         "urls": ["https://modelcontextprotocol.io/specification/draft"],
@@ -107,6 +132,10 @@
       "authority_tier": "release-feed",
       "monitored": true,
       "extractor": "fetch_mcp_releases_atom",
+      "semantic_coverage": {
+        "status": "byte-hash-only",
+        "reason": "Release atom feed — a change signal, not a normative shape."
+      },
       "capture": {
         "kind": "http",
         "urls": ["https://github.com/modelcontextprotocol/modelcontextprotocol/releases.atom"],
@@ -124,6 +153,15 @@
       "authority_tier": "reference",
       "monitored": true,
       "extractor": "fetch_claude_hooks",
+      "semantic_coverage": {
+        "status": "field-level",
+        "checker": [
+          "scripts/extract-hook-config-projection.py",
+          "--check-fresh"
+        ],
+        "enforcement": "failing",
+        "note": "Reconciled 2026-07-23: the reference doc was re-vendored from this capture, zero semantic findings."
+      },
       "capture": {
         "kind": "http",
         "urls": ["https://code.claude.com/docs/en/hooks.md"],
@@ -141,6 +179,10 @@
       "authority_tier": "reference",
       "monitored": true,
       "extractor": "fetch_claude_settings",
+      "semantic_coverage": {
+        "status": "byte-hash-only",
+        "reason": "Vendored into the hook-config capture as supporting-doc only. It defines NO hook-handler fields, so the extractor does not consume it and there is nothing to project. Kept monitored because a change there can still move hooks-block placement."
+      },
       "capture": {
         "kind": "http",
         "urls": ["https://code.claude.com/docs/en/settings.md"],
@@ -158,6 +200,10 @@
       "authority_tier": "reference",
       "monitored": true,
       "extractor": "fetch_claude_slash_commands",
+      "semantic_coverage": {
+        "status": "byte-hash-only",
+        "reason": "The honest gap: the slash-commands contract has NO extractor, NO deep capture and NO committed projection at all. A 7th contract at zero semantic coverage, and this surface is byte-drifted. Not a design choice - unbuilt work."
+      },
       "capture": {
         "kind": "http",
         "urls": ["https://code.claude.com/docs/en/slash-commands.md"],
@@ -175,6 +221,15 @@
       "authority_tier": "reference",
       "monitored": true,
       "extractor": "fetch_plugins_reference",
+      "semantic_coverage": {
+        "status": "field-level",
+        "checker": [
+          "scripts/extract-plugin-manifest-projection.py",
+          "--check-fresh"
+        ],
+        "enforcement": "failing",
+        "note": "Reconciled 2026-07-23: the reference doc was re-vendored from this capture, zero semantic findings."
+      },
       "capture": {
         "kind": "http",
         "urls": ["https://code.claude.com/docs/en/plugins-reference.md"],
@@ -192,6 +247,15 @@
       "authority_tier": "reference",
       "monitored": true,
       "extractor": "fetch_sub_agents",
+      "semantic_coverage": {
+        "status": "field-level",
+        "checker": [
+          "scripts/extract-agent-definition-projection.py",
+          "--check-fresh"
+        ],
+        "enforcement": "report-only",
+        "note": "Report-only pending human disposition of one open finding: frontmatter.fields.permissionMode.enum is no longer extracted. INVESTIGATED 2026-07-23 and it is NOT a moved anchor: upstream added a 7th value `manual` (an alias for `default`, gated at Claude Code v2.1.200+), and in doing so turned a closed-set value clause into an OPEN one carrying an MDX version comment. _enum_from_description is closed-set-only by design and correctly declined to emit an enum. So the finding is real upstream change surfaced as an absence, and the extractor behaved correctly. Kernel impact is nil: permissionMode is already recorded in the agent-definition self-test's EXPECTED_DIVERGENCES as doc-fields-not-in-kernel, so there is no kernel enum to fold `manual` into. The remaining OPEN decision is whether to accept the information loss (re-vendor, projection simply stops recording any permission-mode values) or to teach the extractor to record open-clause tokens under a distinct key alongside enum_clause_open - the arrangement it already uses for model_full_id_latitude. That is an extractor change touching every contract's projection shape, so it gets its own reviewable PR. Flip this row to `failing` once that lands."
+      },
       "capture": {
         "kind": "http",
         "urls": ["https://code.claude.com/docs/en/sub-agents.md"],
@@ -209,6 +273,15 @@
       "authority_tier": "reference",
       "monitored": true,
       "extractor": "fetch_plugin_marketplaces",
+      "semantic_coverage": {
+        "status": "field-level",
+        "checker": [
+          "scripts/extract-marketplace-catalog-projection.py",
+          "--check-fresh"
+        ],
+        "enforcement": "report-only",
+        "note": "Report-only pending human disposition of two newly documented upstream fields. VERIFIED 2026-07-23 as genuine spec additions, each with its own table row AND its own doc section on the captured page and absent from the frozen one: catalog.renames (object; former-name to current-name migration map; Claude Code v2.1.193+) and plugin_entry.relevance (object; org-allowlisted plugin suggestion signals; Claude Code v2.1.152+); `relevance` also joins the documented marketplace_specific_fields list. Both are kernel authoring/v1 fold-in candidates and route through the one-surface-per-PR fold-in discipline, never a bulk re-baseline - re-baselining unexamined upstream turns a detector failure into a contract rewrite. Flip this row to `failing` once folded in."
+      },
       "capture": {
         "kind": "http",
         "urls": ["https://code.claude.com/docs/en/plugin-marketplaces.md"],
@@ -226,6 +299,10 @@
       "authority_tier": "changelog",
       "monitored": true,
       "extractor": "fetch_cc_changelog",
+      "semantic_coverage": {
+        "status": "byte-hash-only",
+        "reason": "version-signal contract: detects that a release happened. The reference pages are the spec; there is no shape here to project."
+      },
       "capture": {
         "kind": "http",
         "urls": ["https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md"],
@@ -243,6 +320,10 @@
       "authority_tier": "changelog",
       "monitored": true,
       "extractor": "fetch_cc_npm_version",
+      "semantic_coverage": {
+        "status": "byte-hash-only",
+        "reason": "version-signal contract: the published npm version string. No shape to project."
+      },
       "capture": {
         "kind": "command",
         "argv": ["npm", "view", "@anthropic-ai/claude-code", "version"],
@@ -260,6 +341,10 @@
       "authority_tier": "release-feed",
       "monitored": true,
       "extractor": "fetch_cc_releases_atom",
+      "semantic_coverage": {
+        "status": "byte-hash-only",
+        "reason": "version-signal contract: release atom feed. No shape to project."
+      },
       "capture": {
         "kind": "http",
         "urls": ["https://github.com/anthropics/claude-code/releases.atom"],
@@ -277,6 +362,10 @@
       "authority_tier": "release-feed",
       "monitored": true,
       "extractor": "fetch_anthropic_engineering",
+      "semantic_coverage": {
+        "status": "byte-hash-only",
+        "reason": "cross-cutting-signal contract: narrative engineering posts, deliberately not a normative surface. Byte-hash is the whole intended coverage."
+      },
       "capture": {
         "kind": "http",
         "urls": ["https://www.anthropic.com/engineering"],
@@ -287,6 +376,7 @@
     }
   ],
   "unmonitored_candidates": [
-    { "name": "claude-plugins-official",  "contract": "marketplace-catalog", "url": "https://github.com/anthropics/claude-plugins-official", "reason": "marketplace.json manifests; the plugin-marketplaces.md reference page is the spec and IS monitored. Add the repo's marketplace manifest if a sampleable raw file is identified (Wave 3)." }
+    { "name": "claude-plugins-official",  "contract": "marketplace-catalog", "url": "https://github.com/anthropics/claude-plugins-official", "reason": "marketplace.json manifests; the plugin-marketplaces.md reference page is the spec and IS monitored. Add the repo's marketplace manifest if a sampleable raw file is identified (Wave 3)." },
+    { "name": "claude-code-mcp-doc", "contract": "mcp-config", "url": "https://code.claude.com/docs/en/mcp.md", "reason": "Parsed by extract-mcp-projection.py (vendored as claude-code-mcp.md with surface null) but NOT a registered surface, so that half of the mcp-config capture cannot be repointed at a captured snapshot and mcp-config stays byte-hash-only. Registering it is the prerequisite for field-level mcp-config coverage." }
   ]
 }
