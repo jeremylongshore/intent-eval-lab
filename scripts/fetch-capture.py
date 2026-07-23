@@ -126,9 +126,30 @@ def classify_fetch(raw: RawFetch, capture: dict) -> str:
     body = raw.body if raw.body is not None else b""
     if len(body) < int(capture.get("min_bytes", 1)):
         return TRUNCATED
+    text = body.decode("utf-8", errors="replace")
     pattern = capture.get("expect_regex")
-    if pattern and not re.search(pattern, body.decode("utf-8", errors="replace")):
+    if pattern and not re.search(pattern, text):
         return SHAPE_CHANGED
+
+    # expect_title: the page must still be the DOCUMENT we registered.
+    #
+    # expect_regex alone cannot answer that. Every surface's pattern is
+    # effectively "(?m)^#{1,3} " — any heading — so a page that upstream replaces
+    # wholesale still matches and still classifies FETCH_OK. That is not
+    # hypothetical: slash-commands.md was replaced by a document titled "Extend
+    # Claude with skills", the capture promoted it as the last-good snapshot, and
+    # nothing anywhere went red. A shape hint answers "is this still a document";
+    # expect_title answers "is this still THAT document".
+    #
+    # Mapped onto the existing SHAPE_CHANGED rather than a seventh status: the
+    # six statuses are normative in 052-AT-SPEC, and "the document I expected is
+    # not what I got" is already what SHAPE_CHANGED means. Adding a status to
+    # express a subtype would widen a normative taxonomy for no new handling.
+    title = capture.get("expect_title")
+    if title:
+        heading = next((l for l in text.splitlines() if l.startswith("# ")), None)
+        if heading is None or not re.search(title, heading[2:].strip()):
+            return SHAPE_CHANGED
     return FETCH_OK
 
 

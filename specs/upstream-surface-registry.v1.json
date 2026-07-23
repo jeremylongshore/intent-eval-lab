@@ -2,15 +2,15 @@
   "registry_version": "upstream-surface-registry/v1",
   "description": "The canonical registry of upstream spec surfaces the spec-drift watcher monitors for the kernel authoring family (@intentsolutions/core schemas/authoring/v1). One row per surface. Authored 2026-06-11. Companion docs: 000-docs/050-AT-SPEC-upstream-surface-registry-2026-06-11.md (the registry) + 000-docs/052-AT-SPEC-fetch-failure-taxonomy-and-three-tier-archive-2026-06-12.md (the per-surface `capture` config: fetch kind, expected extractor pattern, min-bytes floor). The byte-hash extractors that consume this list live in scripts/spec-drift-check.sh (today the SOURCES array is the executable copy; wiring the script to read this JSON directly is a tracked follow-up). The raw-fetch capture stage (scripts/fetch-capture.py) reads this JSON directly.",
   "authority_precedence": [
-    "official-spec-machine-readable  (e.g. MCP schema.ts) — exact field-level diff possible",
-    "official-spec                   (e.g. agentskills.io for skills, modelcontextprotocol.io for MCP) — the normative source",
-    "anthropic-doc                   (a Claude/Anthropic doc page ABOUT a spec) — beaten by the official spec it describes",
-    "reference                       (a Claude Code reference page — the spec for Claude-Code-only contracts that have no separate open standard)",
-    "release-feed                    (a GH releases.atom) — earliest material-change signal, ahead of any page edit",
-    "changelog                       (a CHANGELOG / npm version) — detects that change happened; the reference page is the spec"
+    "official-spec-machine-readable  (e.g. MCP schema.ts) \u2014 exact field-level diff possible",
+    "official-spec                   (e.g. agentskills.io for skills, modelcontextprotocol.io for MCP) \u2014 the normative source",
+    "anthropic-doc                   (a Claude/Anthropic doc page ABOUT a spec) \u2014 beaten by the official spec it describes",
+    "reference                       (a Claude Code reference page \u2014 the spec for Claude-Code-only contracts that have no separate open standard)",
+    "release-feed                    (a GH releases.atom) \u2014 earliest material-change signal, ahead of any page edit",
+    "changelog                       (a CHANGELOG / npm version) \u2014 detects that change happened; the reference page is the spec"
   ],
   "section_coverage_floor": {
-    "_why": "Per-contract floors on how many page sections each extractor addresses BY NAME (scripts/section-coverage.py). Set 2026-07-23 at the then-measured values, so they ratchet: coverage may only grow silently, never shrink silently. These are floors, not targets — and they are deliberately LOW, because they record where extraction actually stands rather than where it should. Only 32 of 277 sections across the four heading-slice contracts are anchored, so the normative majority of every page (body prose, budgets, precedence chains, denylists, behaviour tables) is currently outside every projection and therefore invisible to FF#2. Raising a floor is the unit of progress here. Lowering one is a deliberate coverage reduction and must be reviewed in the same change. mcp-config is absent on purpose: it anchors on a sentence rather than a heading, so a heading count would be a category error, not a low score.",
+    "_why": "Per-contract floors on how many page sections each extractor addresses BY NAME (scripts/section-coverage.py). Set 2026-07-23 at the then-measured values, so they ratchet: coverage may only grow silently, never shrink silently. These are floors, not targets \u2014 and they are deliberately LOW, because they record where extraction actually stands rather than where it should. Only 32 of 277 sections across the four heading-slice contracts are anchored, so the normative majority of every page (body prose, budgets, precedence chains, denylists, behaviour tables) is currently outside every projection and therefore invisible to FF#2. Raising a floor is the unit of progress here. Lowering one is a deliberate coverage reduction and must be reviewed in the same change. mcp-config is absent on purpose: it anchors on a sentence rather than a heading, so a heading count would be a category error, not a low score.",
     "per_contract": {
       "agent-definition": 3,
       "hook-config": 10,
@@ -43,10 +43,13 @@
       },
       "capture": {
         "kind": "http",
-        "urls": ["https://agentskills.io/specification.md"],
+        "urls": [
+          "https://agentskills.io/specification.md"
+        ],
         "expect_regex": "(?m)^#{1,3} ",
         "min_bytes": 2048,
-        "ext": ".md"
+        "ext": ".md",
+        "expect_title": "(?i)^Specification$"
       }
     },
     {
@@ -64,10 +67,13 @@
       },
       "capture": {
         "kind": "http",
-        "urls": ["https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview.md"],
+        "urls": [
+          "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview.md"
+        ],
         "expect_regex": "(?m)^#{1,3} ",
         "min_bytes": 4096,
-        "ext": ".md"
+        "ext": ".md",
+        "expect_title": "(?i)^Agent Skills$"
       }
     },
     {
@@ -109,7 +115,9 @@
       },
       "capture": {
         "kind": "http",
-        "urls": ["https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/schema/draft/schema.ts"],
+        "urls": [
+          "https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/schema/draft/schema.ts"
+        ],
         "expect_regex": "export (interface|type) ",
         "min_bytes": 16384,
         "ext": ".ts"
@@ -130,7 +138,9 @@
       },
       "capture": {
         "kind": "http",
-        "urls": ["https://modelcontextprotocol.io/specification/draft"],
+        "urls": [
+          "https://modelcontextprotocol.io/specification/draft"
+        ],
         "expect_regex": "(?i)model context protocol",
         "min_bytes": 16384,
         "ext": ".html"
@@ -147,11 +157,13 @@
       "extractor": "fetch_mcp_releases_atom",
       "semantic_coverage": {
         "status": "byte-hash-only",
-        "reason": "Release atom feed — a change signal, not a normative shape."
+        "reason": "Release atom feed \u2014 a change signal, not a normative shape."
       },
       "capture": {
         "kind": "http",
-        "urls": ["https://github.com/modelcontextprotocol/modelcontextprotocol/releases.atom"],
+        "urls": [
+          "https://github.com/modelcontextprotocol/modelcontextprotocol/releases.atom"
+        ],
         "expect_regex": "<id>tag:github\\.com,",
         "min_bytes": 256,
         "ext": ".atom"
@@ -177,10 +189,13 @@
       },
       "capture": {
         "kind": "http",
-        "urls": ["https://code.claude.com/docs/en/hooks.md"],
+        "urls": [
+          "https://code.claude.com/docs/en/hooks.md"
+        ],
         "expect_regex": "(?m)^#{1,3} ",
         "min_bytes": 8192,
-        "ext": ".md"
+        "ext": ".md",
+        "expect_title": "(?i)^Hooks reference$"
       }
     },
     {
@@ -198,10 +213,13 @@
       },
       "capture": {
         "kind": "http",
-        "urls": ["https://code.claude.com/docs/en/settings.md"],
+        "urls": [
+          "https://code.claude.com/docs/en/settings.md"
+        ],
         "expect_regex": "(?m)^#{1,3} ",
         "min_bytes": 8192,
-        "ext": ".md"
+        "ext": ".md",
+        "expect_title": "(?i)^Claude Code settings$"
       }
     },
     {
@@ -219,10 +237,13 @@
       },
       "capture": {
         "kind": "http",
-        "urls": ["https://code.claude.com/docs/en/slash-commands.md"],
+        "urls": [
+          "https://code.claude.com/docs/en/slash-commands.md"
+        ],
         "expect_regex": "(?m)^#{1,3} ",
         "min_bytes": 4096,
-        "ext": ".md"
+        "ext": ".md",
+        "expect_title": "(?i)^Extend Claude with skills$"
       }
     },
     {
@@ -245,10 +266,13 @@
       },
       "capture": {
         "kind": "http",
-        "urls": ["https://code.claude.com/docs/en/plugins-reference.md"],
+        "urls": [
+          "https://code.claude.com/docs/en/plugins-reference.md"
+        ],
         "expect_regex": "(?m)^#{1,3} ",
         "min_bytes": 4096,
-        "ext": ".md"
+        "ext": ".md",
+        "expect_title": "(?i)^Plugins reference$"
       }
     },
     {
@@ -271,10 +295,13 @@
       },
       "capture": {
         "kind": "http",
-        "urls": ["https://code.claude.com/docs/en/sub-agents.md"],
+        "urls": [
+          "https://code.claude.com/docs/en/sub-agents.md"
+        ],
         "expect_regex": "(?m)^#{1,3} ",
         "min_bytes": 4096,
-        "ext": ".md"
+        "ext": ".md",
+        "expect_title": "(?i)^Create custom subagents$"
       }
     },
     {
@@ -297,10 +324,13 @@
       },
       "capture": {
         "kind": "http",
-        "urls": ["https://code.claude.com/docs/en/plugin-marketplaces.md"],
+        "urls": [
+          "https://code.claude.com/docs/en/plugin-marketplaces.md"
+        ],
         "expect_regex": "(?m)^#{1,3} ",
         "min_bytes": 4096,
-        "ext": ".md"
+        "ext": ".md",
+        "expect_title": "(?i)^Create and distribute a plugin marketplace$"
       }
     },
     {
@@ -318,10 +348,13 @@
       },
       "capture": {
         "kind": "http",
-        "urls": ["https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md"],
+        "urls": [
+          "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md"
+        ],
         "expect_regex": "(?m)^#{1,2} ",
         "min_bytes": 32768,
-        "ext": ".md"
+        "ext": ".md",
+        "expect_title": "(?i)^Changelog$"
       }
     },
     {
@@ -339,7 +372,12 @@
       },
       "capture": {
         "kind": "command",
-        "argv": ["npm", "view", "@anthropic-ai/claude-code", "version"],
+        "argv": [
+          "npm",
+          "view",
+          "@anthropic-ai/claude-code",
+          "version"
+        ],
         "expect_regex": "^\\d+\\.\\d+\\.\\d+",
         "min_bytes": 5,
         "ext": ".txt"
@@ -360,7 +398,9 @@
       },
       "capture": {
         "kind": "http",
-        "urls": ["https://github.com/anthropics/claude-code/releases.atom"],
+        "urls": [
+          "https://github.com/anthropics/claude-code/releases.atom"
+        ],
         "expect_regex": "<id>tag:github\\.com,",
         "min_bytes": 256,
         "ext": ".atom"
@@ -381,7 +421,9 @@
       },
       "capture": {
         "kind": "http",
-        "urls": ["https://www.anthropic.com/engineering"],
+        "urls": [
+          "https://www.anthropic.com/engineering"
+        ],
         "expect_regex": "href=\"/engineering/[a-z0-9-]+\"",
         "min_bytes": 16384,
         "ext": ".html"
@@ -389,7 +431,17 @@
     }
   ],
   "unmonitored_candidates": [
-    { "name": "claude-plugins-official",  "contract": "marketplace-catalog", "url": "https://github.com/anthropics/claude-plugins-official", "reason": "marketplace.json manifests; the plugin-marketplaces.md reference page is the spec and IS monitored. Add the repo's marketplace manifest if a sampleable raw file is identified (Wave 3)." },
-    { "name": "claude-code-mcp-doc", "contract": "mcp-config", "url": "https://code.claude.com/docs/en/mcp.md", "reason": "Parsed by extract-mcp-projection.py (vendored as claude-code-mcp.md with surface null) but NOT a registered surface, so that half of the mcp-config capture cannot be repointed at a captured snapshot and mcp-config stays byte-hash-only. Registering it is the prerequisite for field-level mcp-config coverage." }
+    {
+      "name": "claude-plugins-official",
+      "contract": "marketplace-catalog",
+      "url": "https://github.com/anthropics/claude-plugins-official",
+      "reason": "marketplace.json manifests; the plugin-marketplaces.md reference page is the spec and IS monitored. Add the repo's marketplace manifest if a sampleable raw file is identified (Wave 3)."
+    },
+    {
+      "name": "claude-code-mcp-doc",
+      "contract": "mcp-config",
+      "url": "https://code.claude.com/docs/en/mcp.md",
+      "reason": "Parsed by extract-mcp-projection.py (vendored as claude-code-mcp.md with surface null) but NOT a registered surface, so that half of the mcp-config capture cannot be repointed at a captured snapshot and mcp-config stays byte-hash-only. Registering it is the prerequisite for field-level mcp-config coverage."
+    }
   ]
 }

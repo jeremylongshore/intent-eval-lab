@@ -200,6 +200,19 @@ def _check_capture(name: str, surface: dict, problems: list[str]) -> None:
     ext = cap.get("ext")
     if not isinstance(ext, str) or not ext.startswith("."):
         problems.append(f"{name}: capture.ext must be a string starting with '.' (got {ext!r})")
+    # expect_title is optional (feeds and raw .ts/.json surfaces have no H1),
+    # but when present it must compile — an uncompilable pattern would raise
+    # inside classify_fetch and take the whole capture down rather than
+    # classifying one surface.
+    expect_title = cap.get("expect_title")
+    if expect_title is not None:
+        if not isinstance(expect_title, str) or not expect_title:
+            problems.append(f"{name}: capture.expect_title must be a non-empty string (got {expect_title!r})")
+        else:
+            try:
+                re.compile(expect_title)
+            except re.error as exc:
+                problems.append(f"{name}: capture.expect_title does not compile: {exc}")
 
 
 def main() -> int:

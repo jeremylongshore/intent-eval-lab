@@ -52,6 +52,73 @@ NOT_CAPTURE_INPUTS = {"vendor-meta.json", "projection.json", "projection.v1.json
 
 REQUIRED_META_KEYS = ("contract", "spec_version", "files")
 
+REGISTRY = os.path.join(REPO_ROOT, "specs", "upstream-surface-registry.v1.json")
+
+# Roles that carry SPEC AUTHORITY — a page or schema the extractor treats as
+# normative. Every one of these must correspond to a registered, monitored
+# surface, because an unregistered spec input is a document we parse and depend
+# on but never re-fetch, never diff, and never notice changing.
+#
+# This is not hypothetical: claude-code-mcp.md is vendored with role
+# claude-code-doc and parsed by extract-mcp-projection.py, yet no surface in the
+# registry points at code.claude.com/docs/en/mcp.md. It has been an
+# unmonitored normative input the whole time.
+#
+# `sample-*` roles are deliberately exempt. Samples are commit-pinned
+# real-world artifacts that CORROBORATE the doc; they are supposed to be frozen,
+# and monitoring them for drift would be meaningless.
+_SPEC_BEARING_ROLES = {"reference-doc", "supporting-doc", "machine-schema", "claude-code-doc"}
+
+
+def _registered_surfaces() -> set[str] | None:
+    """Names of every monitored surface, or None if the registry is unreadable.
+
+    None (rather than an empty set) so a missing registry degrades to skipping
+    this check instead of declaring every vendored input unregistered.
+    """
+    try:
+        with open(REGISTRY, encoding="utf-8") as fh:
+            reg = json.load(fh)
+    except (OSError, ValueError):
+        return None
+    names = {s["name"] for s in reg.get("surfaces", []) if s.get("monitored") and s.get("name")}
+    return names or None
+
+
+def check_registered_surfaces(capture_dir: str, advisories: list[str], registered: set[str]) -> None:
+    """Every spec-bearing vendored input must name a monitored surface.
+
+    Matched on the vendor-meta `surface` field rather than by comparing URLs.
+    The vendored record already declares which surface each file came from, so
+    that declaration is the link to verify; re-deriving it from URL strings
+    would introduce a second, weaker matcher that disagrees with the first the
+    moment a URL is written two ways.
+    """
+    name = os.path.basename(capture_dir)
+    try:
+        with open(os.path.join(capture_dir, "vendor-meta.json"), encoding="utf-8") as fh:
+            meta = json.load(fh)
+    except (OSError, ValueError):
+        return  # already reported by check_capture
+    for entry in meta.get("files", []):
+        role = entry.get("role")
+        if role not in _SPEC_BEARING_ROLES:
+            continue
+        surface = entry.get("surface")
+        origin = entry.get("source_url") or entry.get("source_url_canonical") or "(no source_url recorded)"
+        if not surface:
+            advisories.append(
+                f"{name}/{entry.get('file')}: parsed as '{role}' from {origin}, but declares NO surface. "
+                f"An extractor treats this document as normative while nothing re-fetches it, diffs it, or "
+                f"notices it change. Register it in specs/upstream-surface-registry.v1.json (and the watcher "
+                f"SOURCES) and set `surface` here — or change the role if it is corroborating sample data."
+            )
+        elif surface not in registered:
+            advisories.append(
+                f"{name}/{entry.get('file')}: declares surface '{surface}', which is not a monitored surface "
+                f"in the registry. Either the surface was renamed or removed, or this input is unmonitored."
+            )
+
 
 def _sha256(path: str) -> tuple[str, int]:
     digest = hashlib.sha256()
@@ -126,6 +193,11 @@ def check_capture(capture_dir: str, problems: list[str]) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Verify vendored capture provenance against the bytes on disk.")
     parser.add_argument("--vendor-root", default=DEFAULT_VENDOR_ROOT, help="root holding <contract>/ capture dirs")
+    parser.add_argument(
+        "--enforce-surfaces",
+        action="store_true",
+        help="fail when a spec-bearing vendored input is not a registered surface (advisory by default)",
+    )
     args = parser.parse_args()
 
     if not os.path.isdir(args.vendor_root):
@@ -146,6 +218,28 @@ def main() -> int:
     problems: list[str] = []
     total = sum(check_capture(c, problems) for c in captures)
 
+    # Kept SEPARATE from `problems` on purpose. Provenance mismatches are
+    # integrity failures and fail the build. "This normative input is not a
+    # registered surface" is a real finding but a PRE-EXISTING one — two inputs
+    # are unregistered today — and turning a new check into a merge-blocking
+    # error in the change that introduces it breaks CI for everyone and teaches
+    # people to route around the gate. It reports loudly and exits 0 until
+    # --enforce-surfaces is passed, which is how it will be turned on once the
+    # two are registered.
+    advisories: list[str] = []
+    registered = _registered_surfaces()
+    if registered is None:
+        print("WARNING: surface registry unreadable — skipping the registered-surface check.", file=sys.stderr)
+    else:
+        for capture in captures:
+            check_registered_surfaces(capture, advisories, registered)
+
+    if advisories:
+        print(f"vendor-meta integrity: {len(advisories)} UNREGISTERED SPEC INPUT(S) [advisory]:")
+        for advisory in advisories:
+            print(f"  ! {advisory}")
+        print()
+
     if problems:
         print(f"vendor-meta integrity: {len(problems)} PROBLEM(S):")
         for problem in problems:
@@ -154,6 +248,10 @@ def main() -> int:
             "\nFix: re-derive the record from the bytes, never the other way round. "
             "After replacing a vendored file, recompute sha256 + bytes and re-run the extractor's --write."
         )
+        return 1
+
+    if advisories and args.enforce_surfaces:
+        print("Failing because --enforce-surfaces was requested.")
         return 1
 
     print(
