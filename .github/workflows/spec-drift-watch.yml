@@ -646,19 +646,42 @@ jobs:
         run: |
           set -uo pipefail
           if [[ -z "$(git log --oneline "origin/${GITHUB_REF_NAME}..HEAD" 2>/dev/null)" ]]; then
-            echo "Nothing to promote — no commit-backs this run."
+            echo "No new commit-backs this run."
             echo "promoted=false" >> "${GITHUB_OUTPUT}"
-            exit 0
+          else
+            git branch --force "${PROMO_BRANCH}" HEAD
+            if ! git push --force origin "${PROMO_BRANCH}"; then
+              echo "::error::promotion branch push FAILED — this run's capture, lineage, currency row and liveness heartbeat did not persist."
+              echo "promoted=false" >> "${GITHUB_OUTPUT}"
+              echo "push_failed=true" >> "${GITHUB_OUTPUT}"
+              exit 0
+            fi
+            echo "promoted=true" >> "${GITHUB_OUTPUT}"
           fi
 
-          git branch --force "${PROMO_BRANCH}" HEAD
-          if ! git push --force origin "${PROMO_BRANCH}"; then
-            echo "::error::promotion branch push FAILED — this run's capture, lineage, currency row and liveness heartbeat did not persist."
-            echo "promoted=false" >> "${GITHUB_OUTPUT}"
-            echo "push_failed=true" >> "${GITHUB_OUTPUT}"
+          # Ensuring the PR exists is INDEPENDENT of whether this run produced
+          # commits, and that separation is load-bearing.
+          #
+          # These are two different failure modes: the push can succeed while
+          # `gh pr create` fails (it did — "GitHub Actions is not permitted to
+          # create or approve pull requests", a repo setting). When PR creation
+          # lived inside the has-new-commits branch, that left the content
+          # persisted on a branch with no PR, and the NEXT quiet run — nothing new
+          # to capture — took the early exit and never retried. The promotion would
+          # sit unreviewed and unmerged until someone happened to look at the
+          # branch list, which is the same silent-stall this whole mechanism exists
+          # to remove.
+          #
+          # So: retry on every run for as long as the branch is ahead of the base.
+          git fetch --no-tags origin "${PROMO_BRANCH}" 2>/dev/null || true
+          if ! git rev-parse --verify --quiet FETCH_HEAD >/dev/null; then
+            echo "No promotion branch on the remote — nothing to open a PR for."
             exit 0
           fi
-          echo "promoted=true" >> "${GITHUB_OUTPUT}"
+          if git merge-base --is-ancestor FETCH_HEAD "origin/${GITHUB_REF_NAME}" 2>/dev/null; then
+            echo "Promotion branch is not ahead of ${GITHUB_REF_NAME} — nothing to review."
+            exit 0
+          fi
 
           existing="$(gh pr list --head "${PROMO_BRANCH}" --base "${GITHUB_REF_NAME}" \
                         --state open --json number --jq '.[0].number' 2>/dev/null || true)"
