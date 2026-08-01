@@ -551,7 +551,7 @@ closures, quality gates, and pushed revision.
 - Follow-on PR: [j-rig-skill-binary-eval#251](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/251) (draft; stacked on #250)
 - Follow-on bead: `bd_000-projects-htjt.5`
 - Dashboard branch: `feat/eval-substrate-dashboard-report` in `intent-eval-dashboard`
-- Dashboard commit: `37f6a2e`
+- Dashboard commit: `062bfb8` (rebased onto current `origin/main` `9306311`)
 - Dashboard PR: [intent-eval-dashboard#68](https://github.com/jeremylongshore/intent-eval-dashboard/pull/68) (draft; consumes the J-Rig report contract from #251)
 - Dashboard bead: `bd_000-projects-htjt.5` under epic `bd_000-projects-htjt.14`
 - Status: balanced target-N planner, raw-run sampling joins, selected-Grader uncertainty metrics, `sample-plan`, local unified JSON/Markdown report projection, and a tailnet-only dashboard consumer are delivered; suite/batch execution, verified ingest/provenance, live static publication, and human-gated route remain
