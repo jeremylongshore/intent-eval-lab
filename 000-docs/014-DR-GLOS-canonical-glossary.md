@@ -414,6 +414,39 @@ This index points each term to its primary section in this glossary and to the 2
 > per DR-010 § 13.5. They are listed here so the vocabulary is discoverable while remaining
 > clearly out of the canonical surface (intentionally absent from the § 9 index).
 
+The following execution-substrate terms are proposed by blueprint
+`112-PP-PLAN-eval-platform-evolution-smevals-parity-and-superiority-2026-08-01.md`.
+They remain non-normative until a contract decision record promotes them into
+the canonical entity model; they must not be treated as replacements for the
+existing `EvalSpec` or `EvalRun` definitions.
+
+**Config (proposed).** A named, versioned binding of a task suite to the model,
+provider, runtime limits, runner parameters, and other execution choices. A
+Config selects how a Task is run; it does not redefine the Task's assertions.
+
+**Runner (proposed).** The executable adapter that receives a Task and Config,
+invokes the target system, captures stdout/stderr, exit status, timing, and
+artifacts, and emits a durable raw execution record. A Runner is harness- and
+model-neutral at the substrate boundary.
+
+**Raw Run (proposed).** An immutable execution record for one Task/Config/
+model/sample invocation, including lineage, lifecycle status, outputs,
+diagnostics, artifacts, and runtime metadata. It is the execution substrate's
+portable record and is distinct from a later `Grade`.
+
+**Grader (proposed).** A named, versioned deterministic checker or judge that
+reads immutable Runs and produces Grades. A Grader can be replaced or rerun
+without rerunning the model invocation.
+
+**Grade (proposed).** A versioned judgment attached to an immutable Run, with
+grader identity, inputs, verdict/score, uncertainty or disagreement metadata,
+and evidence references. Multiple Grades may coexist for one Run.
+
+**SkillEvalSpec (proposed).** The skill-specific profile and adapter over the
+canonical `EvalSpec` surface. It makes J-Rig's skill criteria explicit without
+allowing a second unrelated `EvalSpec` contract to become a competing source of
+truth.
+
 **Intent-bearing artifact (proposed).** A frozen, content-addressed thing that encodes an
 intent and can be evaluated for whether it realizes that intent. The proposed generalization of
 the platform's unit-under-test: today the only intent-bearing artifact the platform names is a
