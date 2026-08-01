@@ -1,7 +1,7 @@
 # Master Blueprint: Evaluation Platform Evolution
 
 **Plan ID:** IEP-EVAL-EVOLUTION-001
-**Status:** PROPOSED FOR EXECUTION
+**Status:** ACTIVE — PHASE 1 IN EXECUTION
 **Date:** 2026-08-01
 **Owner:** Intent Solutions
 **Master bead:** `bd_000-projects-htjt`
@@ -313,9 +313,9 @@ umbrella and repo epics.
 **Repos:** `intent-eval-core`, `intent-eval-lab`, `j-rig-binary-eval`
 **Branches:**
 
-- `feat/eval-substrate-contracts` in `intent-eval-core`;
-- `feat/eval-substrate-contracts` in `intent-eval-lab` if additional normative
-  docs are required;
+- `feat/iec-E10-eval-substrate-contracts` in `intent-eval-core`;
+- `feat/iep-eval-evolution-blueprint` in `intent-eval-lab` for the current
+  normative blueprint and any follow-up authority changes;
 - `feat/eval-substrate-skill-profile` in `j-rig-binary-eval`.
 
 **Deliverables:** SkillEvalSpec identity, canonical adapter/profile, current
@@ -516,12 +516,17 @@ closures, quality gates, and pushed revision.
 - Branch: `feat/iep-eval-evolution-blueprint`
 - Bead: `bd_000-projects-htjt`
 - Artifact: `112-PP-PLAN-eval-platform-evolution-smevals-parity-and-superiority-2026-08-01.md`
+- Commit: `0217b32`
+- PR: [intent-eval-lab#258](https://github.com/jeremylongshore/intent-eval-lab/pull/258) (draft)
 - Status: blueprint authored; repo-epic decomposition and dependency wiring complete
 
 ### Phase 1
 
-- Branches: pending contract beads
-- Status: not started
+- Branches: `feat/iec-E10-eval-substrate-contracts` in `intent-eval-core`; `feat/eval-substrate-skill-profile` in `j-rig-binary-eval`
+- Commits: `de41909` (core); `62ae01d` (J-Rig)
+- PRs: [intent-eval-core#84](https://github.com/jeremylongshore/intent-eval-core/pull/84); [j-rig-skill-binary-eval#247](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/247) (draft)
+- Beads: `bd_000-projects-htjt.1`, `bd_000-projects-htjt.2`
+- Status: identity and version-currency slice complete; explicit adapter, compatibility fixtures, and drift gate remain in progress
 
 ### Phase 2
 
