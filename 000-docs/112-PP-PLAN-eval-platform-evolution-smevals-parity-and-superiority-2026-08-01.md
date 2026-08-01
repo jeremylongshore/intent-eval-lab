@@ -542,8 +542,11 @@ closures, quality gates, and pushed revision.
 
 ### Phase 3
 
-- Branches: pending sampling/report beads
-- Status: not started
+- Branch: `feat/eval-substrate-sampling` in `j-rig-binary-eval`
+- Commit: `df5b43e`
+- PR: [j-rig-skill-binary-eval#250](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/250) (draft; stacked on #249)
+- Bead: `bd_000-projects-htjt.3`
+- Status: balanced target-N planner, raw-run sampling joins, selected-Grader uncertainty metrics, and `sample-plan` CLI delivered; suite/batch execution and unified report/serve/static publication remain
 
 ### Phase 4
 
