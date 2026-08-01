@@ -339,8 +339,8 @@ changes only the selected Grade; raw bytes/hashes remain unchanged.
 **Repos:** `j-rig-binary-eval`, `intent-eval-dashboard`
 **Branches:**
 
-- `feat/eval-substrate-sampling-report` in J-Rig;
-- `feat/eval-substrate-report-surface` in the dashboard.
+- `feat/eval-substrate-sampling` and `feat/eval-substrate-report` in J-Rig;
+- `feat/eval-substrate-dashboard-report` in the dashboard.
 
 **Deliverables:** balanced target-N execution sampling, uncertainty metrics,
   suite/batch workflow, terminal JSON/Markdown, live serving, static build, and
@@ -550,7 +550,11 @@ closures, quality gates, and pushed revision.
 - Follow-on commit: `09adb6e`
 - Follow-on PR: [j-rig-skill-binary-eval#251](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/251) (draft; stacked on #250)
 - Follow-on bead: `bd_000-projects-htjt.5`
-- Status: balanced target-N planner, raw-run sampling joins, selected-Grader uncertainty metrics, `sample-plan`, and local unified JSON/Markdown report projection delivered; suite/batch execution, live/static publication, dashboard adapter, and verified ingest remain
+- Dashboard branch: `feat/eval-substrate-dashboard-report` in `intent-eval-dashboard`
+- Dashboard commit: `37f6a2e`
+- Dashboard PR: [intent-eval-dashboard#68](https://github.com/jeremylongshore/intent-eval-dashboard/pull/68) (draft; consumes the J-Rig report contract from #251)
+- Dashboard bead: `bd_000-projects-htjt.5` under epic `bd_000-projects-htjt.14`
+- Status: balanced target-N planner, raw-run sampling joins, selected-Grader uncertainty metrics, `sample-plan`, local unified JSON/Markdown report projection, and a tailnet-only dashboard consumer are delivered; suite/batch execution, verified ingest/provenance, live static publication, and human-gated route remain
 
 ### Phase 4
 
