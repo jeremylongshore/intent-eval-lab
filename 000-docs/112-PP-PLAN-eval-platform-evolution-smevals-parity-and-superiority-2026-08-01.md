@@ -546,7 +546,11 @@ closures, quality gates, and pushed revision.
 - Commit: `df5b43e`
 - PR: [j-rig-skill-binary-eval#250](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/250) (draft; stacked on #249)
 - Bead: `bd_000-projects-htjt.3`
-- Status: balanced target-N planner, raw-run sampling joins, selected-Grader uncertainty metrics, and `sample-plan` CLI delivered; suite/batch execution and unified report/serve/static publication remain
+- Follow-on branch: `feat/eval-substrate-report` in `j-rig-binary-eval`
+- Follow-on commit: `09adb6e`
+- Follow-on PR: [j-rig-skill-binary-eval#251](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/251) (draft; stacked on #250)
+- Follow-on bead: `bd_000-projects-htjt.5`
+- Status: balanced target-N planner, raw-run sampling joins, selected-Grader uncertainty metrics, `sample-plan`, and local unified JSON/Markdown report projection delivered; suite/batch execution, live/static publication, dashboard adapter, and verified ingest remain
 
 ### Phase 4
 
