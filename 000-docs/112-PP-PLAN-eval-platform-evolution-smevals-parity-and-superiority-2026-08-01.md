@@ -516,7 +516,7 @@ closures, quality gates, and pushed revision.
 - Branch: `feat/iep-eval-evolution-blueprint`
 - Bead: `bd_000-projects-htjt`
 - Artifact: `112-PP-PLAN-eval-platform-evolution-smevals-parity-and-superiority-2026-08-01.md`
-- Commit: `0217b32`
+- Commits: `0217b32`, `57bc597`
 - PR: [intent-eval-lab#258](https://github.com/jeremylongshore/intent-eval-lab/pull/258) (draft)
 - Status: blueprint authored; repo-epic decomposition and dependency wiring complete
 
@@ -530,8 +530,11 @@ closures, quality gates, and pushed revision.
 
 ### Phase 2
 
-- Branch: pending J-Rig substrate bead
-- Status: not started
+- Branch: `feat/eval-substrate-run-grade` in `j-rig-binary-eval`
+- Commit: `e9e51ce`
+- PR: [j-rig-skill-binary-eval#248](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/248) (draft; stacked on #247)
+- Bead: `bd_000-projects-htjt.6`
+- Status: raw-run foundation delivered; named Graders, regrade, and downstream sampling/report work remain gated on review
 
 ### Phase 3
 
