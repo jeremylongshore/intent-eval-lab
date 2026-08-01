@@ -534,7 +534,11 @@ closures, quality gates, and pushed revision.
 - Commit: `e9e51ce`
 - PR: [j-rig-skill-binary-eval#248](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/248) (draft; stacked on #247)
 - Bead: `bd_000-projects-htjt.6`
-- Status: raw-run foundation delivered; named Graders, regrade, and downstream sampling/report work remain gated on review
+- Follow-on branch: `feat/eval-substrate-graders` in `j-rig-binary-eval`
+- Follow-on commit: `14da36a`
+- Follow-on PR: [j-rig-skill-binary-eval#249](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/249) (draft; stacked on #248)
+- Follow-on bead: `bd_000-projects-htjt.7`
+- Status: raw-run foundation plus deterministic named Graders, immutable snapshots, and explicit regrade are delivered; the full phase gate remains pending review and the later external-judge, sampling, suite, and report slices
 
 ### Phase 3
 
