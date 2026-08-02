@@ -7,12 +7,6 @@ versioning follows [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-### Changed
-
-- Refresh the neutral end-to-end convergence harness to validate against the
-  published `@intentsolutions/core@0.10.0` kernel while preserving the same
-  five-repository seam assertions.
-
 Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skeleton, the 6-contract upstream deep-capture program, the spec-drift upstream-surface registry, governance hash-chaining, the IEP PR-review-gate policy, CI-integrity false-green fixes, the tag-triggered release evidence lane, and the end-to-end 5-repo integration test framework.
 
 ### Added
@@ -128,6 +122,9 @@ skill evals still hit the judge-truncation (#175) + reasoning-model
 
 ### Changed
 
+- Refresh the neutral end-to-end convergence harness to validate against the
+  published `@intentsolutions/core@0.10.0` kernel while preserving the same
+  five-repository seam assertions.
 - Blueprint B § 7 — add Parallel Change discipline (expand-contract for kernel schema additions) (#148)
 - Scope advisory doc-lint to exclude machine-generated research results (#157)
 
