@@ -27,7 +27,7 @@
  *   - Does NOT sign, push to Rekor, run a paid LLM judge, or deploy the dashboard.
  *
  * Run:
- *   npm i --no-save @intentsolutions/core@0.7.0
+ *   npm i --no-save @intentsolutions/core@0.10.0
  *   npm i --no-save @intentsolutions/rollout-gate@latest   # optional (real decider)
  *   node e2e/run-e2e.mjs
  *
@@ -42,7 +42,7 @@ import { createHash } from 'node:crypto';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const FIX = join(HERE, 'fixtures');
-const KERNEL_PIN = '@intentsolutions/core@0.7.0';
+const KERNEL_PIN = '@intentsolutions/core@0.10.0';
 const GATE_RESULT_V1_URI = 'https://evals.intentsolutions.io/gate-result/v1';
 const IN_TOTO_STATEMENT_V1 = 'https://in-toto.io/Statement/v1';
 
