@@ -24,6 +24,9 @@ forward_refs:
   - PREDICATE-TYPES.md (specs/ registry — this section flips the skill-refiner-pass/v1 row RESERVED→ACTIVE on merge)
 ---
 
+| Beads | `bd_000-projects-rqwk`, `bd_000-projects-0r8m.3` |
+| GitHub | `jeremylongshore/intent-eval-lab#78` |
+
 # `skill-refiner-pass/v1` — Normative Predicate Spec
 
 > **State label: NORMATIVE.** This is the SPEC.md normative section for the
