@@ -885,7 +885,7 @@ Keep the 3 product-epics as **umbrella beads**; add **per-repo Skill Refiner coo
 | `DIAG-D1` | 3-product agent-rig stack                               | `iel/096-AT-ARCH-skill-refiner-3-layer-hooks-2026-06-21.md` § 1 (current successor; historical 029 path absent)        | `RC-IEL`  |
 | `DIAG-D2` | 5-repo IEP ecosystem                                    | `iel/011-AT-ARCH-ecosystem-master-blueprint.md` (append § 12)                                                          | `RC-IEL`  |
 | `DIAG-D3` | 3-layer hook architecture (hook/line/sinker)            | `iel/096-AT-ARCH-skill-refiner-3-layer-hooks-2026-06-21.md` § 4 (current successor; historical 029 path absent)        | `RC-IEL`  |
-| `DIAG-D4` | Skill Refiner data flow                                 | `iaj/021-AT-SPEC-refiner-core-api.md` § 2                                                                              | `RC-IAJ`  |
+| `DIAG-D4` | Skill Refiner data flow                                 | `iaj/026-AT-SPEC-refiner-core-api-2026-06-20.md` § 2 (current maintained successor; historical 021 target absent)      | `RC-IAJ`  |
 | `DIAG-D5` | SkillVersion ER diagram                                 | `iec/002-AT-ARCH-repo-blueprint-2026-05-18.md` (replace existing § ER)                                                 | `RC-IEC`  |
 | `DIAG-D6` | Bead dependency graph                                   | `iel/096-AT-ARCH-skill-refiner-3-layer-hooks-2026-06-21.md` Appendix A (current successor; historical 029 path absent) | `RC-IEL`  |
 | `DIAG-D7` | Doc ↔ bead ↔ GH-issue tri-link topology                 | `iel/030-AT-STND-tri-linkage-discipline.md` § 2                                                                        | `TL-EPIC` |
@@ -1073,7 +1073,7 @@ Nine canonical diagrams. Each has a corresponding bead (DIAG-D1..D9 in § 5.5) t
 
 ### D4 — Skill Refiner data flow
 
-**Lives in:** `j-rig-binary-eval/000-docs/021-AT-SPEC-refiner-core-api.md` § 2
+**Lives in:** `j-rig-binary-eval/000-docs/026-AT-SPEC-refiner-core-api-2026-06-20.md` § 2 (current maintained successor; historical 021 target absent)
 **Bead:** `DIAG-D4`
 
 ```text
