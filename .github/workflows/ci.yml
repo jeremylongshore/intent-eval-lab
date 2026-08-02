@@ -153,6 +153,16 @@ jobs:
       - name: bd-claim-precheck hard-gate self-test
         run: bash scripts/bd-claim-precheck.sh --self-test
 
+      # Offline + deterministic (DR-028 T3): bd is the canonical writer and
+      # the generated GitHub/document blocks must fail closed on mutation.
+      # This lane deliberately needs no bd workspace, GitHub auth, Plane, or
+      # provider credentials.
+      - name: bd-sync projection self-test
+        run: |
+          bash -n scripts/bd-sync.sh
+          bash scripts/bd-sync.sh projection-self-test
+          bash scripts/tests/test-bd-sync-project.sh
+
       # Offline + deterministic (056-AT-SPEC): the mcp-config deep capture.
       # --check re-extracts the normative projection from the vendored
       # snapshots (specs/_vendor/upstream/mcp-config/) and fails if the

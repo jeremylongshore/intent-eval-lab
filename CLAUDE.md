@@ -160,7 +160,7 @@ Skill Refiner is RATIFIED (DR-028, 2026-05-27) and PUBLISHED to npm (initial `@i
 
 **Enforcement (machine, not honor):** `intent-eval-lab/scripts/bd-claim-precheck.sh` reads `000-docs/audit/2026-05-26-plan-audit/STATUS.md`; blocks `bd claim` against refiner-labeled beads unless STATUS=RATIFIED (or RATIFIED-WITH-DELTAS for explicitly-authorized work). Tested + working.
 
-**Tri-link verifier:** `intent-eval-lab/scripts/validate-trilink.sh` enforces bead↔doc↔GH-issue cross-refs for refiner-labeled artifacts. Runs in CI per repo (planned). Currently PASS.
+**Tri-link verifier:** `intent-eval-lab/scripts/validate-trilink.sh` keeps bead-side Doc/GitHub presence blocking for refiner-labeled artifacts and reports document/GitHub projection observations as advisory. Run `bd-sync project <bead>` from the umbrella workspace to generate the guarded v1 cross-reference blocks; do not hand-edit text between those markers. Authority: DR-028 T3 in `000-docs/028-AT-DECR-isedc-council-session-7-skill-refiner-plan-ratification-2026-05-27.md`. Currently PASS.
 
 **Bead workspace:** ALL Skill Refiner beads (50 open as of 2026-05-27) live in the umbrella `~/000-projects/.beads/` (NOT per-repo workspaces). Per-repo distinguishability via mandatory `repo:<short>` labels (`repo:iel`, `repo:iec`, `repo:iaj`, `repo:iah`, `repo:iar`, `repo:iep`). Query example: `bd list --label repo:iec --label refiner --status open`.
 
