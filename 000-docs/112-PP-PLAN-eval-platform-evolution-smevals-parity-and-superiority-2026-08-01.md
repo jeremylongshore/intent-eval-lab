@@ -628,3 +628,24 @@ closures, quality gates, and pushed revision.
 - Status: dogfood evidence, release-hardening implementation, and tri-link
   cleanup are complete; the broader shortlist, PR merges/CI, and human-gated
   route remain release work.
+
+### Phase 6 — stacked merge/CI reconciliation (2026-08-02)
+
+- Bead: `bd_000-projects-htjt.15`; GitHub issue
+  [intent-eval-lab#283](https://github.com/jeremylongshore/intent-eval-lab/issues/283);
+  Plane `LAB-129`.
+- Canonical order remains: J-Rig #247 → #248 → #249 → #250 → #251, then
+  downstream report/static/serve consumers. J-Rig #251 was reconciled against
+  `feat/eval-substrate-sampling` at `b099c09` with merge commit
+  `d518ffe38feeed3b02803359ca29ca9c17a8d803` on
+  `feat/eval-substrate-report`.
+- The reconciliation preserves the newer batch runner and sampled
+  model-judge metadata from #250 while retaining both the sampling-manifest
+  report and `j-rig/unified-report/v1` JSON/Markdown projection. Local gates:
+  `pnpm run check` (97 files / 1,465 tests), `pnpm run build`, harness-hash,
+  escape-scan, Markdownlint, and `git diff --check` all pass.
+- GitHub reports #251 `MERGEABLE/CLEAN`; #248 and #251 report no branch checks,
+  so they remain owner/branch-policy receipts rather than green-check claims.
+  Dashboard #68 remains tailnet-only and has one actionable Vale/Reviewdog
+  vocabulary finding (`rollout`) awaiting explicit CI-fix approval. No public
+  promotion or merge-complete claim is made by this phase.
