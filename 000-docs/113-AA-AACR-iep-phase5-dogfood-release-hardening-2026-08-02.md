@@ -138,9 +138,10 @@ Validation notes:
 - `python3 -m pytest -q`: 322 passed, 1 expected failure.
 - `scripts/audit-harness verify`: pass.
 - JSON/YAML syntax checks and the vendor-generic partner-name guard: pass.
-- Ruff was not installed in this checkout; `uvx ruff` exposed 35 pre-existing
-  findings in untouched Python files, so no unrelated lint cleanup was folded
-  into this slice.
+- CI-scoped Ruff check/format for `research/phase-a-0-baseline`: pass. A
+  broader optional scan of untouched `scripts/` files still exposes 35
+  pre-existing findings; no unrelated lint cleanup was folded into this
+  slice.
 - `scripts/validate-trilink.sh`: workspace-level pass after the parser fix and
   cross-repo header/footer repairs; zero violations.
 
