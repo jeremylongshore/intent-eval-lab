@@ -158,7 +158,9 @@ Skill Refiner is RATIFIED (DR-028, 2026-05-27) and PUBLISHED to npm (initial `@i
 
 **Tri-link verifier:** `intent-eval-lab/scripts/validate-trilink.sh` enforces bead↔doc↔GH-issue cross-refs for refiner-labeled artifacts. Runs in CI per repo (planned). Currently PASS.
 
-**Bead workspace:** ALL Skill Refiner beads (50 open as of 2026-05-27) live in the umbrella `~/000-projects/.beads/` (NOT per-repo workspaces). Per-repo distinguishability via mandatory `repo:<short>` labels (`repo:iel`, `repo:iec`, `repo:iaj`, `repo:iah`, `repo:iar`, `repo:iep`). Query example: `bd list --label repo:iec --label refiner --status open`.
+**Bead workspace:** ALL Skill Refiner beads (50 open as of 2026-05-27) live in the umbrella `~/000-projects/.beads/` (NOT per-repo workspaces). This checkout's tracked `.beads/redirect` resolves the supported workspace layout to that canonical Dolt store. Per-repo distinguishability is via mandatory `repo:<short>` labels (`repo:iel`, `repo:iec`, `repo:iaj`, `repo:iah`, `repo:iar`, `repo:iep`). Query example: `bd list --label repo:iec --label refiner --status open`.
+
+The former member-store `issues.jsonl`, backups, and Git history remain recovery artifacts; the removed member metadata prevents a second local database from being opened accidentally. Verify with `bd where` and `bd info`, use `bd-sync` for bead↔GitHub↔Plane changes, and do not run `bd init` in this repo.
 
 **Open external blockers (sole-prop-owned):**
 
