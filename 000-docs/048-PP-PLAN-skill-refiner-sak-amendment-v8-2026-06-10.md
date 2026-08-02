@@ -8,6 +8,14 @@ author: Jeremy Longshore (drafter — Claude as acting CTO under CEO-mode delega
 beads: bd_000-projects-3kye (SAK epic), bd_000-projects-8vq0 (charter)
 ---
 
+<!-- BEGIN BD-SYNC:cross-ref:v1 -->
+
+Beads: `bd_000-projects-pu35.1`
+GitHub: `jeremylongshore/intent-eval-lab#79`
+Projection-SHA256: c8a78a7bf72087b4ee3d5d53efb451928226dccfe9d0cf949a20c9bc23a6df40
+
+<!-- END BD-SYNC:cross-ref:v1 -->
+
 # Skill Refiner Plan v8 Amendment — Spec Authority Kernel (SAK) — re-audit-closure deltas
 
 ## Tri-link block

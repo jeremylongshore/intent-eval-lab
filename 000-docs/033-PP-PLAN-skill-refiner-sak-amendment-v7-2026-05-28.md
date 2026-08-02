@@ -7,6 +7,14 @@ parent_audit: intent-eval-lab/000-docs/audit/2026-05-28-sak-incremental-audit/sy
 audit_verdict_being_remediated: NEEDS-AMENDMENT (12 P0 + 17 P1 + 13 P2 = 42 findings; 3 convergent P0 themes C1/C2/C3; 2 convergent P1 themes C4/C5; 4 cross-seat tensions T1-T4)
 ---
 
+<!-- BEGIN BD-SYNC:cross-ref:v1 -->
+
+Beads: `bd_000-projects-pu35.1`
+GitHub: `jeremylongshore/intent-eval-lab#79`
+Projection-SHA256: c8a78a7bf72087b4ee3d5d53efb451928226dccfe9d0cf949a20c9bc23a6df40
+
+<!-- END BD-SYNC:cross-ref:v1 -->
+
 # Skill Refiner Plan v7 Amendment — Spec Authority Kernel (SAK) — audit-closure deltas
 
 ## Tri-link block (per § 3.5 PR-1)
