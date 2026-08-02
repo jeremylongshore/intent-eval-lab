@@ -8,6 +8,10 @@ The agentic-CLI ecosystem is converging on a small set of cross-tool conventions
 
 This repo is the working surface for that work.
 
+## Active platform evolution
+
+The current cross-repo execution blueprint is [`112-PP-PLAN-eval-platform-evolution-smevals-parity-and-superiority-2026-08-01.md`](./000-docs/112-PP-PLAN-eval-platform-evolution-smevals-parity-and-superiority-2026-08-01.md), tracked by master bead `bd_000-projects-htjt` under plan `IEP-EVAL-EVOLUTION-001`. It coordinates the lab, kernel, J-Rig, audit harness, rollout gate, and dashboard as independently branched and released repositories. Phase 0 is the authority/documentation lock; implementation starts only after the contract and compatibility bead is ready.
+
 ## What's here
 
 ```text

@@ -1,0 +1,157 @@
+[
+  {
+    "_type": "https://in-toto.io/Statement/v1",
+    "subject": [
+      {
+        "name": "j-rig:local:audit-tests.MiniMax-M3",
+        "digest": {
+          "sha256": "aeb76ce683432ff44c6718db23a75afca65fd5bbd843615788203a98395c2eef"
+        }
+      }
+    ],
+    "predicateType": "https://evals.intentsolutions.io/gate-result/v1",
+    "predicate": {
+      "gate_id": "j-rig:local:audit-tests.MiniMax-M3",
+      "gate_name": "rollout",
+      "gate_version": "0.2.0",
+      "gate_decision": "advisory",
+      "gate_reasons": [
+        "2 non-blocker criterion evaluation(s) failed",
+        "thresholds did not pass",
+        "regression comparison was not run",
+        "rollout decision is warn"
+      ],
+      "coverage": {
+        "dimensions_evaluated": [
+          "trigger",
+          "functional",
+          "behavioral"
+        ],
+        "dimensions_skipped": [
+          "regression",
+          "baseline"
+        ]
+      },
+      "policy_ref": "sha256:1b8a8d14f85e8acd22eb4164a6e3b9d4ee49d2b3c624e917c941299e6ce4ff22:eval-spec.yaml",
+      "policy_hash": "sha256:1b8a8d14f85e8acd22eb4164a6e3b9d4ee49d2b3c624e917c941299e6ce4ff22",
+      "input_hash": "sha256:aeb76ce683432ff44c6718db23a75afca65fd5bbd843615788203a98395c2eef",
+      "evaluated_at": "2026-08-02T08:40:15.696Z",
+      "runner": "j-rig@0.2.0",
+      "commit_sha": "aeb76ce683432ff44c6718db23a75afca65fd5bb",
+      "metadata": {
+        "model": "MiniMax-M3",
+        "provider": "minimax",
+        "ground_truth": true,
+        "pass_rate": 0.6,
+        "passed": 3,
+        "total_criteria": 5,
+        "commit_sha_source": "skill-content-sha (skill not git-tracked)",
+        "schema": "j-rig/skill-promotion/v1",
+        "eval_run_id": "019fc1a1-845b-7077-8d63-fba909b7579b",
+        "run_ids": [
+          "019fc1a1-845b-7077-8d63-fba909b7579b"
+        ],
+        "storage_run_id": 1,
+        "storage_run_ids": [
+          1
+        ],
+        "skill": {
+          "skill_version_id": "j-rig:skill-version:aeb76ce683432ff44c6718db23a75afca65fd5bbd843615788203a98395c2eef",
+          "name": "audit-tests",
+          "version": "7.2.0",
+          "snapshot_sha256": "sha256:aeb76ce683432ff44c6718db23a75afca65fd5bbd843615788203a98395c2eef"
+        },
+        "eval_spec": {
+          "id": "j-rig:skill-profile:audit-tests",
+          "version": "1.0",
+          "profile_sha256": "sha256:1b8a8d14f85e8acd22eb4164a6e3b9d4ee49d2b3c624e917c941299e6ce4ff22",
+          "identity_kind": "j-rig-skill-profile"
+        },
+        "selected_grader": {
+          "grader_id": "j-rig-binary-criteria",
+          "grader_version": "0.2.0",
+          "grader_snapshot_sha256": "sha256:53f396c7e29b4898a1c0f70baf214fceeac3927728f72ecb52ce6b70ebca6089"
+        },
+        "thresholds": {
+          "status": "fail",
+          "required_pass_rate": 1,
+          "observed_pass_rate": 0.6,
+          "total_criteria": 5,
+          "passed": 3,
+          "failed": 2,
+          "unsure": 0,
+          "blocker_failures": 0,
+          "min_blocker_agreement": null,
+          "unstable_blocker_failures": 0
+        },
+        "regression": {
+          "required": true,
+          "enabled": false,
+          "baseline_sha256": null,
+          "result": "not-run",
+          "count": 0,
+          "sacred_count": 0
+        },
+        "baseline": {
+          "enabled": false,
+          "result": "not-run",
+          "comparison_count": 0,
+          "value_addition_count": 0
+        },
+        "rollout_decision": "warn",
+        "promotion_eligible": false,
+        "promotion_reasons": [
+          "thresholds did not pass",
+          "regression comparison was not run",
+          "rollout decision is warn"
+        ],
+        "gate_decision": "advisory",
+        "aggregation": {
+          "rule": "majority-vote",
+          "denominator_rule": "errored-samples-count-as-unsure",
+          "blocker_quorum": null,
+          "samples_default": 1
+        },
+        "criteria": [
+          {
+            "criterion_id": "triggers-on-test-audit-request",
+            "test_case_id": "full-sweep-request",
+            "blocker": true,
+            "method": "judge",
+            "verdict": "yes"
+          },
+          {
+            "criterion_id": "stays-diagnostic-only",
+            "test_case_id": "full-sweep-request",
+            "blocker": false,
+            "method": "judge",
+            "verdict": "no"
+          },
+          {
+            "criterion_id": "maps-seven-layer-taxonomy",
+            "test_case_id": "full-sweep-request",
+            "blocker": false,
+            "method": "judge",
+            "verdict": "no"
+          },
+          {
+            "criterion_id": "triggers-on-test-audit-request",
+            "test_case_id": "wire-hooks-to-home-claude",
+            "blocker": true,
+            "method": "judge",
+            "verdict": "yes"
+          },
+          {
+            "criterion_id": "harness-travels-with-code",
+            "test_case_id": "wire-hooks-to-home-claude",
+            "blocker": false,
+            "method": "judge",
+            "verdict": "yes"
+          }
+        ]
+      },
+      "advisory_severity": "warn",
+      "replay_fidelity_level": "RF-1"
+    }
+  }
+]
