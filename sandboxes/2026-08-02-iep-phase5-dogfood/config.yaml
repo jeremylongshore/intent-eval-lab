@@ -1,0 +1,10 @@
+id: fixture-harness
+version: "1"
+model: fixture-model
+harness:
+  command: node
+  args: [./harness.mjs]
+  timeout_ms: 30000
+  cwd: .
+parameters:
+  temperature: 0

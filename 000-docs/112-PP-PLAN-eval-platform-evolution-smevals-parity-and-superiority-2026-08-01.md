@@ -355,9 +355,11 @@ version.
 **Repos:** `audit-harness`, `intent-rollout-gate`, `intent-eval-dashboard`
 **Branches:**
 
-- `feat/eval-substrate-integration-gates` in audit-harness;
-- `feat/eval-substrate-bundle-compat` in intent-rollout-gate;
-- dashboard branch from Phase 3.
+- `feat/iep-audit-report-promotion-metadata` in audit-harness;
+- `feat/iep-rollout-report-promotion` and stacked
+  `feat/iep-rollout-skill-promotion` in intent-rollout-gate;
+- `feat/eval-substrate-dashboard-report` and stacked
+  `fix/eval-report-cli-separator` in intent-eval-dashboard.
 
 **Deliverables:** contract/drift gates, generic-to-bundle adapter where
 appropriate, rollout compatibility tests, verified public/internal rendering,
@@ -365,6 +367,13 @@ and no new signing claims beyond the current contract.
 
 **Gate:** a real J-Rig skill Grade produces a kernel-valid bundle, rollout-gate
 consumes it, and the dashboard renders only the verified result.
+
+**Status:** implementation slices are delivered on draft PRs and have passed
+their local gates. Audit-harness #145 adds the promotion metadata contract;
+rollout-gate #57/#59 consumes report and skill-promotion rows with fail-closed
+validation; dashboard #68/#70 renders the verified report and fixes the
+documented pnpm argument-separator invocation. Merge/review and the separate
+human-gated public route remain release controls.
 
 ### Phase 5 — Dogfood and release
 
@@ -378,6 +387,16 @@ runbook, release notes, package/version updates, and PRs.
 
 **Gate:** all quality checks pass; evidence artifacts are attached to PRs;
 branches are merged through normal CI; each repo is pushed and clean.
+
+**Status:** the generic and real-provider dogfood receipts are complete. The
+generic fixture exercised Run → Grade → unified report with idempotent Run
+reuse. A pinned MiniMax M3 `audit-tests` run produced a kernel-valid
+`j-rig/skill-promotion/v1` bundle; its 3/5 result is intentionally advisory and
+the updated rollout consumer blocked promotion. The dashboard rendered the
+generic report in an internal destination, refused the public destination, and
+the existing signed J-Rig ingest/deploy receipts remain green. The remaining
+release controls are PR merge/CI, a broader real-skill shortlist, and the
+human-approved tailnet/public route.
 
 ## 9. Branch, commit, PR, and note discipline
 
@@ -558,10 +577,52 @@ closures, quality gates, and pushed revision.
 
 ### Phase 4
 
-- Branches: pending integration beads
-- Status: not started
+- Branches: `feat/iep-audit-report-promotion-metadata` (audit-harness),
+  `feat/iep-rollout-report-promotion` plus
+  `feat/iep-rollout-skill-promotion` (intent-rollout-gate), and
+  `feat/eval-substrate-dashboard-report` plus
+  `fix/eval-report-cli-separator` (intent-eval-dashboard)
+- PRs: [audit-harness#145](https://github.com/jeremylongshore/intent-audit-harness/pull/145),
+  [intent-rollout-gate#57](https://github.com/jeremylongshore/intent-rollout-gate/pull/57),
+  [intent-rollout-gate#59](https://github.com/jeremylongshore/intent-rollout-gate/pull/59),
+  [intent-eval-dashboard#68](https://github.com/jeremylongshore/intent-eval-dashboard/pull/68),
+  [intent-eval-dashboard#70](https://github.com/jeremylongshore/intent-eval-dashboard/pull/70)
+- Beads: `bd_000-projects-htjt.13.2`, `bd_000-projects-htjt.13.4`,
+  `bd_000-projects-htjt.14.5`, `bd_000-projects-htjt.4.2`
+- Status: local quality gates and pushed revisions complete; draft PR review,
+  merge order, and the public-route approval are still outstanding.
 
 ### Phase 5
 
-- Branches: pending dogfood/release beads
-- Status: not started
+- Branch: `feat/iep-eval-evolution-blueprint` in intent-eval-lab
+- Bead: `bd_000-projects-htjt.4`; GitHub issue
+  [intent-eval-lab#260](https://github.com/jeremylongshore/intent-eval-lab/issues/260);
+  Plane `LAB-105`
+- Tracking follow-up: child bead `bd_000-projects-htjt.4.3`, GitHub issue
+  [intent-eval-lab#261](https://github.com/jeremylongshore/intent-eval-lab/issues/261),
+  Plane `LAB-107`, for the pre-existing refiner tri-link debt exposed by the
+  release-hardening verifier.
+- Generic receipt: raw Run
+  `raw_14a6b85edcc974734b0fbaeecf7968a58fc47df76ca06f4c1df6720a866b79dd`
+  was reused on the repeat invocation; Grade
+  `grade_8be8c72bd182c2a1044ea0906ca66e51d5dc7bebdac0346e354a36172b9b070d`
+  passed at `1.0` using grader snapshot
+  `sha256:5aaacc8f48da3d2728defc5d57f1445f179de1c4d17a34816f0b25a6d6ad2200`.
+  The unified report had one attempted/completed/graded cell and no harness
+  failures.
+- Real-provider receipt: pinned source
+  `claude-code-plugins-plus-skills@a9dd5c02a3793412ed35525efd460b399554be13`
+  produced `evidence/phase5-dogfood/audit-tests-minimax-m3.bundle.json`
+  (SHA-256 `a3b409f7534d2b33c1d21b1df1086c5c2851ca1454a388ceb8ac3cfdbe2e0344`).
+  MiniMax-M3 scored `3/5` (`0.6`), with zero provider failures; the bundle is
+  advisory, not promotion-eligible, and rollout-gate blocked it for that
+  reason. No key, transcript, or local database is committed.
+- Dashboard receipt: the internal render consumed the unified report and the
+  signed ingest/deploy receipts are workflow runs
+  [30734349474](https://github.com/jeremylongshore/intent-eval-dashboard/actions/runs/30734349474)
+  and
+  [30734361333](https://github.com/jeremylongshore/intent-eval-dashboard/actions/runs/30734361333);
+  the public destination remains refused by policy.
+- Status: dogfood evidence and release-hardening implementation are complete;
+  the broader shortlist, PR merges/CI, and human-gated route remain release
+  work.
