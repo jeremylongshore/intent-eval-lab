@@ -99,6 +99,30 @@ temporary internal destination.
 Each implementation branch was kept isolated, committed with a conventional
 message and plan/bead/repo/evidence footer, pushed, and opened as a draft PR.
 
+## Tri-link cleanup receipt
+
+The initial release-hardening run printed 76 tri-link findings. Investigation
+showed that 54 of those were false positives caused by the verifier grepping
+the wrapped human `bd show` display; three open bead descriptions were
+genuinely missing the required fields. The cleanup completed the actual debt:
+
+- lab verifier fix: [PR #262](https://github.com/jeremylongshore/intent-eval-lab/pull/262),
+  commit `1663ddae2ab317efbab8943cd87665917135bc55`;
+- J-Rig document headers: [PR #267](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/267),
+  commit `060bb2ce465836f72e07cf1801b06afe09c523af`;
+- three genuinely incomplete bead descriptions received Doc/GitHub fields
+  and were pushed to Dolt;
+- eight open spec-drift issues (#250–#257) received Bead/Doc footers and
+  comments, while the older tri-link umbrella issue #79 was read first and
+  left intact;
+- six legacy Skill-Refiner documents received the required `Beads:` headers;
+- the workspace-level `scripts/validate-trilink.sh` run with both feature
+  worktrees mounted at their canonical sibling paths returned `PASS — zero
+  tri-linkage violations`.
+
+The cleanup child is `bd_000-projects-htjt.4.3`, GitHub [#261](https://github.com/jeremylongshore/intent-eval-lab/issues/261),
+and Plane `LAB-107`.
+
 ## Acceptance and remaining release controls
 
 Accepted for the cross-repo hardening bead:
@@ -117,11 +141,8 @@ Validation notes:
 - Ruff was not installed in this checkout; `uvx ruff` exposed 35 pre-existing
   findings in untouched Python files, so no unrelated lint cleanup was folded
   into this slice.
-- `scripts/validate-trilink.sh` exposed 76 pre-existing refiner tracking
-  violations (27 bead descriptions, 6 legacy docs, and 9 GitHub issues). That
-  debt is now tracked separately as child bead `bd_000-projects-htjt.4.3`,
-  GitHub [#261](https://github.com/jeremylongshore/intent-eval-lab/issues/261),
-  and Plane `LAB-107`; it is not silently counted as a dogfood pass.
+- `scripts/validate-trilink.sh`: workspace-level pass after the parser fix and
+  cross-repo header/footer repairs; zero violations.
 
 Still release-gated:
 

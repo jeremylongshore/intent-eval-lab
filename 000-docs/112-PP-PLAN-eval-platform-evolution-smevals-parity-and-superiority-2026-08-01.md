@@ -598,10 +598,12 @@ closures, quality gates, and pushed revision.
 - Bead: `bd_000-projects-htjt.4`; GitHub issue
   [intent-eval-lab#260](https://github.com/jeremylongshore/intent-eval-lab/issues/260);
   Plane `LAB-105`
-- Tracking follow-up: child bead `bd_000-projects-htjt.4.3`, GitHub issue
+- Tracking follow-up completed: child bead `bd_000-projects-htjt.4.3`, GitHub issue
   [intent-eval-lab#261](https://github.com/jeremylongshore/intent-eval-lab/issues/261),
   Plane `LAB-107`, for the pre-existing refiner tri-link debt exposed by the
-  release-hardening verifier.
+  release-hardening verifier. Lab PR #262 (`1663dda`) fixed the false-positive
+  parser; J-Rig PR #267 (`060bb2c`) restored its three headers; the workspace
+  verifier now returns zero violations.
 - Generic receipt: raw Run
   `raw_14a6b85edcc974734b0fbaeecf7968a58fc47df76ca06f4c1df6720a866b79dd`
   was reused on the repeat invocation; Grade
@@ -623,6 +625,6 @@ closures, quality gates, and pushed revision.
   and
   [30734361333](https://github.com/jeremylongshore/intent-eval-dashboard/actions/runs/30734361333);
   the public destination remains refused by policy.
-- Status: dogfood evidence and release-hardening implementation are complete;
-  the broader shortlist, PR merges/CI, and human-gated route remain release
-  work.
+- Status: dogfood evidence, release-hardening implementation, and tri-link
+  cleanup are complete; the broader shortlist, PR merges/CI, and human-gated
+  route remain release work.
