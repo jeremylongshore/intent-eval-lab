@@ -25,6 +25,11 @@ Thanks for your interest in contributing. This repo is currently maintained by a
 4. **Open a PR** referencing the issue. Keep it focused — one logical change per PR.
 5. **Expect feedback within ~7 business days.** A solo maintainer means slower turnaround. Patience appreciated.
 
+External-contributor PRs should include the exact line
+`contributor-acknowledgment: bd-claim-precheck` in the PR body. The claim
+precheck workflow reports a missing acknowledgment as a warning for maintainer
+review; it does not hard-block fork contributions.
+
 ## Conventions
 
 - **Branch naming**: `feat/...`, `fix/...`, `docs/...`, `research/...`, `chore/...` — kebab-case description

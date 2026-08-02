@@ -11,6 +11,14 @@ Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skelet
 
 ### Added
 
+#### P0-RATIFY-4 claim-precheck CI wiring
+
+- Added a pinned reusable `bd-claim-precheck` workflow for the five-repo
+  convergence set.
+- Internal pushes and same-repository PRs hard-fail on gate regressions;
+  fork PRs receive the ratified advisory warning and acknowledgment contract.
+- Documented the immutable source-pin and contributor acknowledgment rules.
+
 #### Spec-currency loop repair (2026-07-22/23) — residual closed
 
 Platform epics intent-solutions-io/intent-eval-platform#10 / #17 closed after:
