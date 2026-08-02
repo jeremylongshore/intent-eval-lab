@@ -5,6 +5,14 @@ supersedes_relationship: AMENDS plan 027 v5 (does NOT supersede). Plan 027 v5 bo
 author: Jeremy Longshore (executor: Claude as drafting CTO; CTO-mode delegation 2026-05-28)
 ---
 
+<!-- BEGIN BD-SYNC:cross-ref:v1 -->
+
+Beads: `bd_000-projects-pu35.1`
+GitHub: `jeremylongshore/intent-eval-lab#79`
+Projection-SHA256: c8a78a7bf72087b4ee3d5d53efb451928226dccfe9d0cf949a20c9bc23a6df40
+
+<!-- END BD-SYNC:cross-ref:v1 -->
+
 # Skill Refiner Plan v6 Amendment — Spec Authority Kernel (SAK)
 
 ## Tri-link block (per § 3.5 PR-1)

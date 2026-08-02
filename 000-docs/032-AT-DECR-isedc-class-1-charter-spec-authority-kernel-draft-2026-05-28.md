@@ -7,6 +7,14 @@ parent_plan: intent-eval-lab/000-docs/031-PP-PLAN-skill-refiner-sak-amendment-v6
 beads: bd_000-projects-8vq0 (charter), bd_000-projects-3kye (SAK epic)
 ---
 
+<!-- BEGIN BD-SYNC:cross-ref:v1 -->
+
+Beads: `bd_000-projects-pu35.1`
+GitHub: `jeremylongshore/intent-eval-lab#79`
+Projection-SHA256: c8a78a7bf72087b4ee3d5d53efb451928226dccfe9d0cf949a20c9bc23a6df40
+
+<!-- END BD-SYNC:cross-ref:v1 -->
+
 # ISEDC Class-1 Charter — Spec Authority Kernel (SAK) — kernel v0.4.0 authoring/v1
 
 ## Tri-link block (per § 3.5 PR-1)
