@@ -20,9 +20,9 @@ forward_refs:
 
 <!-- BEGIN BD-SYNC:cross-ref:v1 -->
 
-Beads: `bd_000-projects-rqwk.7.1, bd_000-projects-rqwk.6.1`
-GitHub: `jeremylongshore/intent-eval-lab#268, jeremylongshore/intent-eval-lab#270`
-Projection-SHA256: 02bb0430bc86debda209b7d093cbd1813fa7ee6d99336c77d8bc495ec8f3f3b7
+Beads: `bd_000-projects-rqwk.7.1, bd_000-projects-rqwk.6.1, bd_000-projects-rqwk.4.1`
+GitHub: `jeremylongshore/intent-eval-lab#268, jeremylongshore/intent-eval-lab#270, jeremylongshore/intent-eval-lab#274`
+Projection-SHA256: b8e698824c4dfffea9416804010314bd45a3f094b080d579f52d357e17ba33b2
 
 <!-- END BD-SYNC:cross-ref:v1 -->
 
@@ -74,7 +74,7 @@ This document carries:
 
 ---
 
-## 1. Where the hooks sit — the 3-product agent-rig stack
+## 1. D1 — Where the hooks sit — the 3-product agent-rig stack
 
 The Skill Refiner is the middle product. The hooks are how its refine loop runs inside Claude Code
 without the user invoking anything; the explicit CLI (§ 5) is the manual escape hatch.
