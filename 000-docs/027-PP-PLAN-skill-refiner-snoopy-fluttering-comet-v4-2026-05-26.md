@@ -52,7 +52,7 @@ This block is the canonical pointer to the v5 deltas. The full underlying decisi
 - This plan: `027-PP-PLAN-skill-refiner-snoopy-fluttering-comet-v4-2026-05-26.md` (was tentatively unreserved)
 - Future doc — skill-refiner-pass/v1 predicate spec: `028-AT-SPEC-skill-refiner-pass-v1-predicate.md` (was 027 in draft)
 - Historical filing target — skill-refiner 3-layer hooks architecture: `029-AT-ARCH-skill-refiner-3-layer-hooks.md` (was 028 in draft; absent from current history; maintained successor: `096-AT-ARCH-skill-refiner-3-layer-hooks-2026-06-21.md`)
-- Future doc — tri-linkage discipline standard: `030-AT-STND-tri-linkage-discipline.md` (was 029 in draft)
+- Future doc — tri-linkage discipline standard: `115-AT-STND-tri-linkage-discipline-2026-08-02.md` (maintained successor; historical 030 target absent and filing slot occupied)
 
 **Scope**: Design + roadmap the **Skill Refiner** product — the second product in the Intent Solutions 3-product agent-rig stack (J-Rig Skill Binary Eval → Skill Refiner → Rollout Gate). Eval-guided improvement loop that proposes safe, minimal SKILL.md edits and accepts only on strict score improvement. Delivered as a Claude Code plugin with 3-layer hooks (sinker/line/hook); emits signed evidence reports (md + HTML); integrates as the 14th canonical kernel entity (SkillVersion) + new predicate URI (skill-refiner-pass/v1). Folds additively into the existing 5-repo IEP ecosystem.
 
@@ -742,7 +742,7 @@ Binds Skill Refiner phases to in-flight P0/P1 chains so the Refiner work is addi
 - NEW docs to create (driven by leaf-task beads in § 5.5):
   - `000-docs/028-AT-SPEC-skill-refiner-pass-v1-predicate.md` (normative predicate spec)
   - Historical filing target `000-docs/029-AT-ARCH-skill-refiner-3-layer-hooks.md` (architecture ref + D1/D3/D6 ASCII diagrams; absent from current history; maintained successor: `000-docs/096-AT-ARCH-skill-refiner-3-layer-hooks-2026-06-21.md`)
-  - `000-docs/030-AT-STND-tri-linkage-discipline.md` (D7 tri-link standard)
+  - `000-docs/115-AT-STND-tri-linkage-discipline-2026-08-02.md` (D7 tri-link standard; maintained successor; historical 030 target absent and filing slot occupied)
 
 ### `intent-eval-platform/j-rig-binary-eval/` (Phase A + Phase C)
 
@@ -880,17 +880,17 @@ Keep the 3 product-epics as **umbrella beads**; add **per-repo Skill Refiner coo
 
 ### Diagram inventory (9 NEW beads — one per canonical diagram in § 6.5)
 
-| New bead  | Diagram                                                 | Lives in (doc)                                                                                                         | Parent    |
-| --------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------- |
-| `DIAG-D1` | 3-product agent-rig stack                               | `iel/096-AT-ARCH-skill-refiner-3-layer-hooks-2026-06-21.md` § 1 (current successor; historical 029 path absent)        | `RC-IEL`  |
-| `DIAG-D2` | 5-repo IEP ecosystem                                    | `iel/011-AT-ARCH-ecosystem-master-blueprint.md` (append § 12)                                                          | `RC-IEL`  |
-| `DIAG-D3` | 3-layer hook architecture (hook/line/sinker)            | `iel/096-AT-ARCH-skill-refiner-3-layer-hooks-2026-06-21.md` § 4 (current successor; historical 029 path absent)        | `RC-IEL`  |
-| `DIAG-D4` | Skill Refiner data flow                                 | `iaj/026-AT-SPEC-refiner-core-api-2026-06-20.md` § 2 (current maintained successor; historical 021 target absent)      | `RC-IAJ`  |
-| `DIAG-D5` | SkillVersion ER diagram                                 | `iec/002-AT-ARCH-repo-blueprint-2026-05-18.md` (replace existing § ER)                                                 | `RC-IEC`  |
-| `DIAG-D6` | Bead dependency graph                                   | `iel/096-AT-ARCH-skill-refiner-3-layer-hooks-2026-06-21.md` Appendix A (current successor; historical 029 path absent) | `RC-IEL`  |
-| `DIAG-D7` | Doc ↔ bead ↔ GH-issue tri-link topology                 | `iel/030-AT-STND-tri-linkage-discipline.md` § 2                                                                        | `TL-EPIC` |
-| `DIAG-D8` | Refiner library architecture (core vs adapter)          | `iaj/026-AT-SPEC-refiner-core-api-2026-06-20.md` § 3 (current maintained successor; historical 021 target absent)      | `RC-IAJ`  |
-| `DIAG-D9` | Evidence bundle row lifecycle for skill-refiner-pass/v1 | `iah/001-DR-DESIGN-evidence-bundle-envelope-design-notes.md` (append § 9)                                              | `RC-IAH`  |
+| New bead  | Diagram                                                 | Lives in (doc)                                                                                                                                   | Parent    |
+| --------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | --------- |
+| `DIAG-D1` | 3-product agent-rig stack                               | `iel/096-AT-ARCH-skill-refiner-3-layer-hooks-2026-06-21.md` § 1 (current successor; historical 029 path absent)                                  | `RC-IEL`  |
+| `DIAG-D2` | 5-repo IEP ecosystem                                    | `iel/011-AT-ARCH-ecosystem-master-blueprint.md` (append § 12)                                                                                    | `RC-IEL`  |
+| `DIAG-D3` | 3-layer hook architecture (hook/line/sinker)            | `iel/096-AT-ARCH-skill-refiner-3-layer-hooks-2026-06-21.md` § 4 (current successor; historical 029 path absent)                                  | `RC-IEL`  |
+| `DIAG-D4` | Skill Refiner data flow                                 | `iaj/026-AT-SPEC-refiner-core-api-2026-06-20.md` § 2 (current maintained successor; historical 021 target absent)                                | `RC-IAJ`  |
+| `DIAG-D5` | SkillVersion ER diagram                                 | `iec/002-AT-ARCH-repo-blueprint-2026-05-18.md` (replace existing § ER)                                                                           | `RC-IEC`  |
+| `DIAG-D6` | Bead dependency graph                                   | `iel/096-AT-ARCH-skill-refiner-3-layer-hooks-2026-06-21.md` Appendix A (current successor; historical 029 path absent)                           | `RC-IEL`  |
+| `DIAG-D7` | Doc ↔ bead ↔ GH-issue tri-link topology                 | `iel/115-AT-STND-tri-linkage-discipline-2026-08-02.md` § 2 (current maintained successor; historical 030 target absent and filing slot occupied) | `TL-EPIC` |
+| `DIAG-D8` | Refiner library architecture (core vs adapter)          | `iaj/026-AT-SPEC-refiner-core-api-2026-06-20.md` § 3 (current maintained successor; historical 021 target absent)                                | `RC-IAJ`  |
+| `DIAG-D9` | Evidence bundle row lifecycle for skill-refiner-pass/v1 | `iah/001-DR-DESIGN-evidence-bundle-envelope-design-notes.md` (append § 9)                                                                        | `RC-IAH`  |
 
 ### Total bead count
 
@@ -1194,7 +1194,7 @@ Nine canonical diagrams. Each has a corresponding bead (DIAG-D1..D9 in § 5.5) t
 
 ### D7 — Doc ↔ bead ↔ GH-issue tri-link topology
 
-**Lives in:** `intent-eval-lab/000-docs/030-AT-STND-tri-linkage-discipline.md` (NEW) § 2
+**Lives in:** `intent-eval-lab/000-docs/115-AT-STND-tri-linkage-discipline-2026-08-02.md` § 2 (current maintained successor; historical 030 target absent and filing slot occupied)
 **Bead:** `DIAG-D7`
 
 ```text
