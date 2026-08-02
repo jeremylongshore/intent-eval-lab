@@ -884,7 +884,7 @@ Keep the 3 product-epics as **umbrella beads**; add **per-repo Skill Refiner coo
 | --------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------- |
 | `DIAG-D1` | 3-product agent-rig stack                               | `iel/029-AT-ARCH-skill-refiner-3-layer-hooks.md` § 1                                                                   | `RC-IEL`  |
 | `DIAG-D2` | 5-repo IEP ecosystem                                    | `iel/011-AT-ARCH-ecosystem-master-blueprint.md` (append § 12)                                                          | `RC-IEL`  |
-| `DIAG-D3` | 3-layer hook architecture (hook/line/sinker)            | `iel/029-AT-ARCH-skill-refiner-3-layer-hooks.md` § 3                                                                   | `RC-IEL`  |
+| `DIAG-D3` | 3-layer hook architecture (hook/line/sinker)            | `iel/096-AT-ARCH-skill-refiner-3-layer-hooks-2026-06-21.md` § 4 (current successor; historical 029 path absent)        | `RC-IEL`  |
 | `DIAG-D4` | Skill Refiner data flow                                 | `iaj/021-AT-SPEC-refiner-core-api.md` § 2                                                                              | `RC-IAJ`  |
 | `DIAG-D5` | SkillVersion ER diagram                                 | `iec/002-AT-ARCH-repo-blueprint-2026-05-18.md` (replace existing § ER)                                                 | `RC-IEC`  |
 | `DIAG-D6` | Bead dependency graph                                   | `iel/096-AT-ARCH-skill-refiner-3-layer-hooks-2026-06-21.md` Appendix A (current successor; historical 029 path absent) | `RC-IEL`  |
@@ -1027,7 +1027,7 @@ Nine canonical diagrams. Each has a corresponding bead (DIAG-D1..D9 in § 5.5) t
 
 ### D3 — 3-layer hook architecture (hook · line · sinker)
 
-**Lives in:** `intent-eval-lab/000-docs/029-AT-ARCH-skill-refiner-3-layer-hooks.md` § 3
+**Lives in:** `intent-eval-lab/000-docs/096-AT-ARCH-skill-refiner-3-layer-hooks-2026-06-21.md` § 4 (current successor; historical 029 path absent)
 **Bead:** `DIAG-D3`
 
 ```text
@@ -1052,7 +1052,7 @@ Nine canonical diagrams. Each has a corresponding bead (DIAG-D1..D9 in § 5.5) t
                                                    │ proposal accepted?
                                                    ▼ (candidate surfaced next turn)
 
-   PostToolUse: Bash matches            →   ┌─────────────┐
+   PreToolUse: Bash matches             →   ┌─────────────┐
    git commit | git push                    │  HOOK   L3  │       $$          Opus
    on staged SKILL.md diff                  │  agentic gate  rate-limited
                                             │  + rejected-   sets the catch
@@ -1066,6 +1066,10 @@ Nine canonical diagrams. Each has a corresponding bead (DIAG-D1..D9 in § 5.5) t
                                           │  + Rekor log    │  + HTML projection
                                           └─────────────────┘
 ```
+
+> **D3 mechanism correction:** L3 is `PreToolUse:Bash`, not `PostToolUse:Bash`. The former can
+> block the commit/push; the latter fires too late. The maintained rendering lives in document 096
+> § 4 and is the canonical diagram for this catalog entry.
 
 ### D4 — Skill Refiner data flow
 

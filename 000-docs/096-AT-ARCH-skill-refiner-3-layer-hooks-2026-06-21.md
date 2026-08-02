@@ -20,9 +20,9 @@ forward_refs:
 
 <!-- BEGIN BD-SYNC:cross-ref:v1 -->
 
-Beads: `bd_000-projects-rqwk.7.1`
-GitHub: `jeremylongshore/intent-eval-lab#268`
-Projection-SHA256: 7447e165b02a8dabd1454d9f9377d14594d43d3db08ccedc312988a21743cf5e
+Beads: `bd_000-projects-rqwk.7.1, bd_000-projects-rqwk.6.1`
+GitHub: `jeremylongshore/intent-eval-lab#268, jeremylongshore/intent-eval-lab#270`
+Projection-SHA256: 02bb0430bc86debda209b7d093cbd1813fa7ee6d99336c77d8bc495ec8f3f3b7
 
 <!-- END BD-SYNC:cross-ref:v1 -->
 
@@ -202,7 +202,7 @@ L3-class gate are, in order of preference:
 
 ---
 
-## 4. End-to-end flow — skill edit → hooks → eval / evidence
+## 4. D3 — End-to-end flow — skill edit → hooks → eval / evidence
 
 This is plan 027 § 6.5 diagram D3, **corrected** so the L3 row reads `PreToolUse: Bash` per § 3
 above (the plan's catalog rendering of this diagram still showed the pre-fix `PostToolUse: Bash`
