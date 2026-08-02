@@ -1,13 +1,13 @@
 # 112 · AT · SPEC — Public-surface PII and secret scrub gate
 
-| Field | Value |
-| --- | --- |
-| **Date** | 2026-08-02 |
-| **Status** | **NORMATIVE IMPLEMENTATION SPEC** |
+| Field         | Value                                                                               |
+| ------------- | ----------------------------------------------------------------------------------- |
+| **Date**      | 2026-08-02                                                                          |
+| **Status**    | **NORMATIVE IMPLEMENTATION SPEC**                                                   |
 | **Authority** | `109-AT-DECR-isedc-governed-judgment-layer-2026-07-12.md` §7 conditions 2–4 and §10 |
-| **Bead** | `iel-25a.5.2` |
-| **GitHub** | `intent-eval-lab#289` |
-| **Plane** | `LAB-135` |
+| **Bead**      | `iel-25a.5.2`                                                                       |
+| **GitHub**    | `intent-eval-lab#289`                                                               |
+| **Plane**     | `LAB-135`                                                                           |
 
 ## Decision
 
@@ -40,7 +40,7 @@ diff errors.
 
 ## Enforcement surfaces
 
-- `lefthook.yml` runs the staged scan for contributors using Lefthook.
+- `lefthook.yml` runs the staged scan for contributors using the hook runner.
 - `.pre-commit-config.yaml` runs the same command for the repository's
   pre-commit framework.
 - `.github/workflows/public-surface-scrub.yml` scans pull-request and main-push
