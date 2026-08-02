@@ -889,7 +889,7 @@ Keep the 3 product-epics as **umbrella beads**; add **per-repo Skill Refiner coo
 | `DIAG-D5` | SkillVersion ER diagram                                 | `iec/002-AT-ARCH-repo-blueprint-2026-05-18.md` (replace existing § ER)                                                 | `RC-IEC`  |
 | `DIAG-D6` | Bead dependency graph                                   | `iel/096-AT-ARCH-skill-refiner-3-layer-hooks-2026-06-21.md` Appendix A (current successor; historical 029 path absent) | `RC-IEL`  |
 | `DIAG-D7` | Doc ↔ bead ↔ GH-issue tri-link topology                 | `iel/030-AT-STND-tri-linkage-discipline.md` § 2                                                                        | `TL-EPIC` |
-| `DIAG-D8` | Refiner library architecture (core vs adapter)          | `iaj/021-AT-SPEC-refiner-core-api.md` § 3                                                                              | `RC-IAJ`  |
+| `DIAG-D8` | Refiner library architecture (core vs adapter)          | `iaj/026-AT-SPEC-refiner-core-api-2026-06-20.md` § 3 (current maintained successor; historical 021 target absent)      | `RC-IAJ`  |
 | `DIAG-D9` | Evidence bundle row lifecycle for skill-refiner-pass/v1 | `iah/001-DR-DESIGN-evidence-bundle-envelope-design-notes.md` (append § 9)                                              | `RC-IAH`  |
 
 ### Total bead count
@@ -1229,7 +1229,7 @@ Nine canonical diagrams. Each has a corresponding bead (DIAG-D1..D9 in § 5.5) t
 
 ### D8 — Refiner library architecture (core vs adapter)
 
-**Lives in:** `j-rig-binary-eval/000-docs/021-AT-SPEC-refiner-core-api.md` § 3
+**Lives in:** `j-rig-binary-eval/000-docs/026-AT-SPEC-refiner-core-api-2026-06-20.md` § 3 (current maintained successor; historical 021 target absent)
 **Bead:** `DIAG-D8`
 
 ```text
