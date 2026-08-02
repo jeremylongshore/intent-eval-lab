@@ -118,7 +118,7 @@ genuinely missing the required fields. The cleanup completed the actual debt:
 - six legacy Skill-Refiner documents received the required `Beads:` headers;
 - the workspace-level `scripts/validate-trilink.sh` run with both feature
   worktrees mounted at their canonical sibling paths returned `PASS — zero
-  tri-linkage violations`.
+tri-linkage violations`.
 
 The cleanup child is `bd_000-projects-htjt.4.3`, GitHub [#261](https://github.com/jeremylongshore/intent-eval-lab/issues/261),
 and Plane `LAB-107`.
