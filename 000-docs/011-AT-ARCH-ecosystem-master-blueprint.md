@@ -20,6 +20,14 @@ forward_refs:
   - 014-DR-GLOS-canonical-glossary.md (canonical glossary)
 ---
 
+<!-- BEGIN BD-SYNC:cross-ref:v1 -->
+
+Beads: `bd_000-projects-rqwk.5.1`
+GitHub: `jeremylongshore/intent-eval-lab#272`
+Projection-SHA256: b81735af438840820ca24ede36bbcf09fb9f986be2f615f81ec404286fbd7ce8
+
+<!-- END BD-SYNC:cross-ref:v1 -->
+
 # Ecosystem Master Blueprint — Intent Eval Platform
 
 > **State label: NORMATIVE.** Applied retroactively per the State-Labeling Standard (`069-DR-STND-state-labeling-standard-2026-06-18.md`, bead iel-E13d). In force; amendments route per § 2.3.
@@ -359,6 +367,49 @@ This document is signed by the acting head of board against the following author
 5. **v2.1 epic plan** — `iel-E01` acceptance criteria mapping to the five sections of this document (§ 1 mission + principles; § 2 taxonomy + governance; § 3 anti-goals; § 4 terminology + standards; § 5 diagrams).
 
 The blueprint inherits the override addenda from DR-010 § 13.5 and § 13.6 in full: customer-signal gate removed, marketing-customer framing removed, internal-tool-shared-with-the-world framing applied, external-pattern non-borrow discipline applied across all forward-deployed work.
+
+## 12. D2 — Five-repo IEP ecosystem with Skill Refiner integration points
+
+This is the direct rendering of Plan 027 § 6.5 D2. It is appended as § 12 so the existing
+constitution and Mermaid diagrams remain unchanged. The diagram names the five-repository target,
+the Skill Refiner touch-points, the Evidence Bundle convergence layer, and the rollout-gate
+consumer; it does not add a repository or dependency beyond the plan.
+
+```text
+                       ┌─────────────────────────────┐
+                       │   intent-eval-lab  (iel)    │
+                       │   methodology + specs       │
+                       │   ★ skill-refiner-pass/v1   │  ← new normative spec
+                       │     predicate spec          │
+                       └──────────────┬──────────────┘
+                                      │ governs
+                ┌─────────────────────┼─────────────────────┐
+                ▼                     ▼                     ▼
+   ┌────────────────────┐  ┌────────────────────┐  ┌────────────────────┐
+   │ intent-eval-core   │  │ j-rig-binary-eval  │  │ intent-audit-      │
+   │       (iec)        │  │       (iaj)        │  │ harness    (iah)   │
+   │                    │  │                    │  │                    │
+   │ ★ SkillVersion     │◀─│ ★ @j-rig/refiner   │  │ ★ refiner-pass     │
+   │   (14th entity)    │  │   pkg + /j-rig     │  │   gate-result row  │
+   │ ★ Zod validator    │  │   plugin + 3-layer │  │   schema           │
+   │ ★ release v0.3.0   │  │   hooks            │  │                    │
+   └─────────┬──────────┘  └─────────┬──────────┘  └─────────┬──────────┘
+             │                       │                       │
+             │  schema dep           │  emits                │  emits
+             ▼                       ▼                       ▼
+   ┌──────────────────────────────────────────────────────────────────┐
+   │              Evidence Bundle  (the schema-layer convergence)     │
+   └──────────────────────────────┬───────────────────────────────────┘
+                                  │ consumed by
+                                  ▼
+                       ┌─────────────────────────────┐
+                       │ intent-rollout-gate  (iar)  │
+                       │ ★ consume refiner-pass row  │
+                       │   → ship/no-ship verdict    │
+                       └─────────────────────────────┘
+
+   ★ = new touch-point for Skill Refiner buildout
+```
 
 ---
 
