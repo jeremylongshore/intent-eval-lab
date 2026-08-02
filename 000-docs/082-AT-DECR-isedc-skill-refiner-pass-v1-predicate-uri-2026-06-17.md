@@ -1,5 +1,8 @@
 # ISEDC Decision Record — Minting the `skill-refiner-pass/v1` Predicate URI (Class-1)
 
+| Beads | `bd_000-projects-rqwk`, `bd_000-projects-0r8m.3` |
+| GitHub | `jeremylongshore/intent-eval-lab#78` |
+
 |                          |                                                                                                                                                  |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Date**                 | 2026-06-17                                                                                                                                       |

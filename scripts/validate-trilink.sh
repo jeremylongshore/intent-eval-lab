@@ -65,8 +65,10 @@ check_beads() {
     [[ "$id" =~ ^bd_000-projects-[a-z0-9]+(\.[0-9]+)?$ ]] || { report "MISS-BEAD-ID  $id  (rejected — not a valid bd id format)"; continue; }
     n=$((n+1))
     local desc
-    # Strip CR to defend against Windows line-endings in description content.
-    desc=$(bd show "$id" 2>/dev/null | tr -d '\r')
+    # Read the machine-readable description. The human `bd show` renderer
+    # wraps and indents long fields, so grepping its display falsely reported
+    # every otherwise-valid Doc:/GitHub: line as missing.
+    desc=$(bd show "$id" --json 2>/dev/null | jq -r '.[0].description // ""' | tr -d '\r')
     if ! printf '%s\n' "$desc" | grep -qE '^Doc:[[:space:]]+'; then
       report "MISS-DOC  $id  (no 'Doc:' line in description)"
     fi

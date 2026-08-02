@@ -11,6 +11,13 @@ Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skelet
 
 ### Added
 
+#### Tri-link verifier correctness (2026-08-02)
+
+- Read bead descriptions through `bd show --json` so wrapped human output
+  cannot create false `MISS-DOC` / `MISS-GH` findings.
+- Restored the missing `Beads:` front-matter rows on the six legacy
+  Skill-Refiner documents covered by the verifier.
+
 #### Spec-currency loop repair (2026-07-22/23) — residual closed
 
 Platform epics intent-solutions-io/intent-eval-platform#10 / #17 closed after:
