@@ -117,7 +117,7 @@ measurement loop is less cohesive.
   unrelated dimensions.
 - No model output treated as a harness failure merely because the answer is
   poor; non-zero runner exit is infrastructure evidence, while a real bad
-  response remains gradeable evidence.
+  response remains gradable evidence.
 - No regrading that mutates the raw Run.
 - No public dashboard path that bypasses verified ingest.
 - No production-Rekor or signed-decision claim where the existing contract
@@ -127,22 +127,22 @@ measurement loop is less cohesive.
 
 The following names are normative for the new substrate.
 
-| Term | Meaning | Owner |
-|---|---|---|
-| Suite | A directory or manifest containing one or more Evals | J-Rig |
-| Eval | A capability being measured; has tasks and metadata | Core contract + J-Rig |
-| EvalSpec | Canonical platform contract for an Eval | `intent-eval-core` |
-| SkillEvalSpec | J-Rig profile for `SKILL.md` criteria/test cases | J-Rig |
-| Task | One challenge/exercise within an Eval | J-Rig profile/runtime |
-| Config | One complete execution setup: model, provider, prompt/context, tools, harness, and limits | J-Rig |
-| Runner | Executable adapter that performs one Task under one Config | J-Rig |
-| Run | Immutable captured execution attempt and artifacts | J-Rig store; kernel-linked identity |
-| Checker | One deterministic or external operation used by a Grader | J-Rig |
-| Grader | Ordered checks plus scoring/outcome rules | J-Rig |
-| Grade | Immutable result of applying one named Grader to one Run | J-Rig store |
-| Evidence Bundle | Signed/validated cross-repo collection of attestations | Core + emitters |
-| Rollout policy | Consumer-side allow/block/advisory rules | Rollout package |
-| Report | Human-readable projection of Runs and Grades | J-Rig/dashboard |
+| Term            | Meaning                                                                                   | Owner                               |
+| --------------- | ----------------------------------------------------------------------------------------- | ----------------------------------- |
+| Suite           | A directory or manifest containing one or more Evals                                      | J-Rig                               |
+| Eval            | A capability being measured; has tasks and metadata                                       | Core contract + J-Rig               |
+| EvalSpec        | Canonical platform contract for an Eval                                                   | `intent-eval-core`                  |
+| SkillEvalSpec   | J-Rig profile for `SKILL.md` criteria/test cases                                          | J-Rig                               |
+| Task            | One challenge/exercise within an Eval                                                     | J-Rig profile/runtime               |
+| Config          | One complete execution setup: model, provider, prompt/context, tools, harness, and limits | J-Rig                               |
+| Runner          | Executable adapter that performs one Task under one Config                                | J-Rig                               |
+| Run             | Immutable captured execution attempt and artifacts                                        | J-Rig store; kernel-linked identity |
+| Checker         | One deterministic or external operation used by a Grader                                  | J-Rig                               |
+| Grader          | Ordered checks plus scoring/outcome rules                                                 | J-Rig                               |
+| Grade           | Immutable result of applying one named Grader to one Run                                  | J-Rig store                         |
+| Evidence Bundle | Signed/validated cross-repo collection of attestations                                    | Core + emitters                     |
+| Rollout policy  | Consumer-side allow/block/advisory rules                                                  | Rollout package                     |
+| Report          | Human-readable projection of Runs and Grades                                              | J-Rig/dashboard                     |
 
 ### 4.1 EvalSpec identity decision
 
@@ -343,12 +343,12 @@ changes only the selected Grade; raw bytes/hashes remain unchanged.
 - `feat/eval-substrate-dashboard-report` in the dashboard.
 
 **Deliverables:** balanced target-N execution sampling, uncertainty metrics,
-  suite/batch workflow, terminal JSON/Markdown, live serving, static build, and
-  a unified report model.
+suite/batch workflow, terminal JSON/Markdown, live serving, static build, and
+a unified report model.
 
 **Gate:** three tasks × two configs × target N produces balanced samples and a
-  static report that exposes per-task results, uncertainty, lineage, and grader
-  version.
+static report that exposes per-task results, uncertainty, lineage, and grader
+version.
 
 ### Phase 4 — Evidence and rollout integration
 
@@ -360,24 +360,24 @@ changes only the selected Grade; raw bytes/hashes remain unchanged.
 - dashboard branch from Phase 3.
 
 **Deliverables:** contract/drift gates, generic-to-bundle adapter where
-  appropriate, rollout compatibility tests, verified public/internal rendering,
-  and no new signing claims beyond the current contract.
+appropriate, rollout compatibility tests, verified public/internal rendering,
+and no new signing claims beyond the current contract.
 
 **Gate:** a real J-Rig skill Grade produces a kernel-valid bundle, rollout-gate
-  consumes it, and the dashboard renders only the verified result.
+consumes it, and the dashboard renders only the verified result.
 
 ### Phase 5 — Dogfood and release
 
 **Repos:** all affected repos
 **Branches:** per-repo `feat/eval-substrate-dogfood` only when a repo needs a
-  final integration patch; no direct main changes.
+final integration patch; no direct main changes.
 
 **Deliverables:** generic benchmark example, real skill shortlist, DeepSeek
-  ground truth where available, regression fixtures, migration guide, operator
-  runbook, release notes, package/version updates, and PRs.
+ground truth where available, regression fixtures, migration guide, operator
+runbook, release notes, package/version updates, and PRs.
 
 **Gate:** all quality checks pass; evidence artifacts are attached to PRs;
-  branches are merged through normal CI; each repo is pushed and clean.
+branches are merged through normal CI; each repo is pushed and clean.
 
 ## 9. Branch, commit, PR, and note discipline
 
@@ -430,18 +430,18 @@ beads, commits, PRs, documentation, and pushes are complete.
 
 ## 10. Documentation update matrix
 
-| Document/surface | Required update |
-|---|---|
-| This blueprint | Normative plan, dependencies, gates, delivery record |
-| `intent-eval-lab/000-docs/014-DR-GLOS-canonical-glossary.md` | Eval/Task/Config/Runner/Run/Grader/Grade terminology |
+| Document/surface                                                     | Required update                                               |
+| -------------------------------------------------------------------- | ------------------------------------------------------------- |
+| This blueprint                                                       | Normative plan, dependencies, gates, delivery record          |
+| `intent-eval-lab/000-docs/014-DR-GLOS-canonical-glossary.md`         | Eval/Task/Config/Runner/Run/Grader/Grade terminology          |
 | `intent-eval-lab/000-docs/012-AT-ARCH-platform-runtime-blueprint.md` | Run/Grade boundary and adapter architecture, if kernel-facing |
-| `intent-eval-core` README/CHANGELOG | Canonical schema/profile/version changes |
-| `j-rig-binary-eval` README/CLI README | Generic quickstart, skill profile, migration, commands |
-| `audit-harness` README/CHANGELOG | Drift/contract gate integration |
-| `intent-rollout-gate` README/CHANGELOG | Bundle compatibility only; preserve reserved signing notes |
-| `intent-eval-dashboard` README/runbooks | Local/static report vs verified public ingest boundary |
-| umbrella `README.md` / `CLAUDE.md` | Phase status, repo ownership, links to this blueprint |
-| Per-repo `AGENTS.md`/`CLAUDE.md` | Branch, test, release, and cross-repo dependency notes |
+| `intent-eval-core` README/CHANGELOG                                  | Canonical schema/profile/version changes                      |
+| `j-rig-binary-eval` README/CLI README                                | Generic quickstart, skill profile, migration, commands        |
+| `audit-harness` README/CHANGELOG                                     | Drift/contract gate integration                               |
+| `intent-rollout-gate` README/CHANGELOG                               | Bundle compatibility only; preserve reserved signing notes    |
+| `intent-eval-dashboard` README/runbooks                              | Local/static report vs verified public ingest boundary        |
+| umbrella `README.md` / `CLAUDE.md`                                   | Phase status, repo ownership, links to this blueprint         |
+| Per-repo `AGENTS.md`/`CLAUDE.md`                                     | Branch, test, release, and cross-repo dependency notes        |
 
 All normative claims must be updated in their owning repo first, then mirrored
 into the umbrella. Historical status notes remain historical; do not rewrite
@@ -494,17 +494,17 @@ EvalSpec/SkillEvalSpec
 
 ## 12. Risks and mitigations
 
-| Risk | Mitigation |
-|---|---|
-| Kernel becomes a dump for J-Rig internals | Keep storage/runtime contracts in J-Rig; add only stable wire contracts to core |
-| Two specs drift again | One canonical name, explicit SkillEvalSpec profile, CI adapter fixtures |
-| Statistical reports imply unsafe rollup | C3-safe grouping model and report tests |
-| Regrade leaks stale artifacts | Grade namespace replacement plus grader snapshot/hash tests |
-| Generic runner permits credential leakage | scoped environment, audit-harness cred-gate, redacted manifests, fixtures |
-| Batch workflow amplifies provider cost | target-N caps, cost ceilings, resume semantics, explicit provider selection |
-| Dashboard exposes internal data | reuse verified ingest and visibility policy; no raw local DB publication |
-| Current user changes are overwritten | status checks, branch isolation, no destructive commands, explicit conflict handoff |
-| Cross-repo release drift | dependency beads, version matrix, CI currency gate, PR dependency links |
+| Risk                                      | Mitigation                                                                          |
+| ----------------------------------------- | ----------------------------------------------------------------------------------- |
+| Kernel becomes a dump for J-Rig internals | Keep storage/runtime contracts in J-Rig; add only stable wire contracts to core     |
+| Two specs drift again                     | One canonical name, explicit SkillEvalSpec profile, CI adapter fixtures             |
+| Statistical reports imply unsafe rollup   | C3-safe grouping model and report tests                                             |
+| Regrade leaks stale artifacts             | Grade namespace replacement plus grader snapshot/hash tests                         |
+| Generic runner permits credential leakage | scoped environment, audit-harness cred-gate, redacted manifests, fixtures           |
+| Batch workflow amplifies provider cost    | target-N caps, cost ceilings, resume semantics, explicit provider selection         |
+| Dashboard exposes internal data           | reuse verified ingest and visibility policy; no raw local DB publication            |
+| Current user changes are overwritten      | status checks, branch isolation, no destructive commands, explicit conflict handoff |
+| Cross-repo release drift                  | dependency beads, version matrix, CI currency gate, PR dependency links             |
 
 ## 13. Execution record
 
