@@ -30,6 +30,11 @@
 pre-commit:
   parallel: true
   jobs:
+    # Public-Flip Gate #3 (109-AT-DECR §7): changed-lines PII/secret scrub.
+    # The scanner withholds matched content and fails closed on policy errors.
+    - name: public-surface-scrub
+      run: python3 scripts/public-surface-scan.py --staged
+
     # The canonical AI-escape gate: refuse a staged diff that lowers a wall.
     # Mirrors the audit-harness lefthook escape-scan job, dispatched through the
     # vendored wrapper so it uses the hash-pinned .audit-harness/scripts copy.

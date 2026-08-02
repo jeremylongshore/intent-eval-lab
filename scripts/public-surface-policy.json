@@ -1,0 +1,168 @@
+{
+  "policy_version": "public-surface-scrub/v1",
+  "public_roots": [
+    ".github/",
+    "README.md",
+    "CLAUDE.md",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "CODE_OF_CONDUCT.md",
+    "SECURITY.md",
+    "SUPPORT.md",
+    "KNOWN-ISSUES.md",
+    "000-docs/",
+    "docs/",
+    "specs/",
+    "research/",
+    "evals/",
+    "site/",
+    "examples/",
+    "fixtures/",
+    "secrets.example.yaml"
+  ],
+  "ignored_prefixes": [
+    ".git/",
+    ".beads/",
+    ".audit-harness/",
+    "archive/",
+    "specs/_vendor/",
+    "research/phase-a-0-baseline/results/raw/",
+    "scripts/tests/",
+    "scripts/public-surface-scan.py",
+    "scripts/public-surface-policy.json"
+  ],
+  "detectors": [
+    {
+      "id": "personal-name",
+      "kind": "literal",
+      "scope": "public",
+      "value": "Jeremy Longshore"
+    },
+    {
+      "id": "personal-handle",
+      "kind": "literal",
+      "scope": "public",
+      "value": "@jeremylongshore"
+    },
+    {
+      "id": "private-brain-path",
+      "kind": "literal",
+      "scope": "public",
+      "value": "~/.teamkb"
+    },
+    {
+      "id": "private-brain-store",
+      "kind": "literal",
+      "scope": "public",
+      "value": "teamkb.db"
+    },
+    {
+      "id": "private-brain-table",
+      "kind": "literal",
+      "scope": "public",
+      "value": "curated_memories"
+    },
+    {
+      "id": "private-brain-writer",
+      "kind": "literal",
+      "scope": "public",
+      "value": "brain_capture"
+    },
+    {
+      "id": "private-brain-acronym",
+      "kind": "literal",
+      "scope": "public",
+      "value": "GSB"
+    },
+    {
+      "id": "private-brain-repo",
+      "kind": "literal",
+      "scope": "public",
+      "value": "bobs-big-brain"
+    },
+    {
+      "id": "partner-name",
+      "kind": "literal",
+      "scope": "public",
+      "value": "Kobiton"
+    },
+    {
+      "id": "partner-name",
+      "kind": "literal",
+      "scope": "public",
+      "value": "Polygon"
+    },
+    {
+      "id": "partner-name",
+      "kind": "literal",
+      "scope": "public",
+      "value": "Nixtla"
+    },
+    {
+      "id": "partner-name",
+      "kind": "literal",
+      "scope": "public",
+      "value": "Lit Protocol"
+    },
+    {
+      "id": "partner-name",
+      "kind": "literal",
+      "scope": "public",
+      "value": "Mudit Gupta"
+    },
+    {
+      "id": "partner-name",
+      "kind": "literal",
+      "scope": "public",
+      "value": "Mudit"
+    },
+    {
+      "id": "email-address",
+      "kind": "regex",
+      "scope": "public",
+      "pattern": "(?i)\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}\\b"
+    },
+    {
+      "id": "us-social-security-number",
+      "kind": "regex",
+      "scope": "public",
+      "pattern": "\\b\\d{3}-\\d{2}-\\d{4}\\b"
+    },
+    {
+      "id": "private-key",
+      "kind": "regex",
+      "scope": "all",
+      "pattern": "-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----"
+    },
+    {
+      "id": "github-token",
+      "kind": "regex",
+      "scope": "all",
+      "pattern": "\\b(?:gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,})\\b"
+    },
+    {
+      "id": "cloud-access-key",
+      "kind": "regex",
+      "scope": "all",
+      "pattern": "\\bAKIA[0-9A-Z]{16}\\b"
+    },
+    {
+      "id": "provider-token",
+      "kind": "regex",
+      "scope": "all",
+      "pattern": "\\b(?:sk-[A-Za-z0-9]{20,}|xox[baprs]-[A-Za-z0-9-]{20,})\\b"
+    },
+    {
+      "id": "credential-assignment",
+      "kind": "regex",
+      "scope": "all",
+      "pattern": "(?i)\\b(?:api[_-]?key|secret|token|password)\\s*[:=]\\s*[\"']?[A-Za-z0-9+/=_-]{16,}"
+    },
+    {
+      "id": "bearer-token",
+      "kind": "regex",
+      "scope": "all",
+      "pattern": "(?i)\\bBearer\\s+[A-Za-z0-9._~+/=-]{24,}"
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+name: Public-surface scrub
+
+# Public-Flip Gate #3 (109-AT-DECR §7). The scanner is deterministic and
+# secretless: it checks added lines only and never prints matched content.
+
+on:
+  pull_request:
+    paths:
+      - '.github/**'
+      - 'README.md'
+      - 'CLAUDE.md'
+      - 'CHANGELOG.md'
+      - 'CONTRIBUTING.md'
+      - 'CODE_OF_CONDUCT.md'
+      - 'SECURITY.md'
+      - 'SUPPORT.md'
+      - 'KNOWN-ISSUES.md'
+      - '000-docs/**'
+      - 'docs/**'
+      - 'specs/**'
+      - 'research/**'
+      - 'evals/**'
+      - 'site/**'
+      - 'examples/**'
+      - 'fixtures/**'
+      - 'scripts/**'
+      - 'lefthook.yml'
+      - '.pre-commit-config.yaml'
+  push:
+    branches: [main]
+    paths:
+      - '.github/**'
+      - 'README.md'
+      - 'CLAUDE.md'
+      - 'CHANGELOG.md'
+      - 'CONTRIBUTING.md'
+      - 'CODE_OF_CONDUCT.md'
+      - 'SECURITY.md'
+      - 'SUPPORT.md'
+      - 'KNOWN-ISSUES.md'
+      - '000-docs/**'
+      - 'docs/**'
+      - 'specs/**'
+      - 'research/**'
+      - 'evals/**'
+      - 'site/**'
+      - 'examples/**'
+      - 'fixtures/**'
+      - 'scripts/**'
+      - 'lefthook.yml'
+      - '.pre-commit-config.yaml'
+
+permissions:
+  contents: read
+
+jobs:
+  scrub:
+    name: PII and secret scrub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Scan added lines
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_SHA: ${{ github.sha }}
+          BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT_NAME" == "pull_request" ]]; then
+            python3 scripts/public-surface-scan.py --diff-range "${BASE_SHA}...${PR_HEAD_SHA}"
+          elif [[ "$BEFORE_SHA" != "0000000000000000000000000000000000000000" ]]; then
+            python3 scripts/public-surface-scan.py --diff-range "${BEFORE_SHA}...${HEAD_SHA}"
+          else
+            python3 scripts/public-surface-scan.py --all
+          fi
