@@ -32,6 +32,14 @@ Thanks for your interest in contributing. This repo is currently maintained by a
 - **Doc filing**: numbered + dated + category-coded under `000-docs/` per the doc-filing standard. See existing docs for examples.
 - **One-sentence-per-line markdown** in body prose where practical (eases review diffs)
 
+### Cross-repository references
+
+Beads is the canonical writer for bead↔document↔GitHub cross-references. When
+an issue and document are linked, run `bd-sync project <bead>` from the shared
+`~/000-projects` beads workspace. The command owns only the marked
+`BD-SYNC:cross-ref:v1` block; edit the bead and re-project rather than editing
+inside that block. A mutated or partial block is a fail-closed anomaly.
+
 ## Local git hooks (optional)
 
 This repo ships a [lefthook](https://lefthook.dev/) config (`lefthook.yml`) that mirrors the cheap, staged-only subset of the CI gates — the partner-name vendor-generic grep, the vendored audit-harness hash-pin verify, the AI-escape scan, and lightweight `ruff` / `markdownlint` / `yamllint` on staged files. It is **opt-in and advisory**: the authoritative gates run in CI, and nothing breaks if you never install the hooks.

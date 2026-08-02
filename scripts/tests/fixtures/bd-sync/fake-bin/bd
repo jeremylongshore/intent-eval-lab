@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+set -euo pipefail
+printf '%s\n' '{"description":"Doc: intent-eval-platform/intent-eval-lab/000-docs/fixture.md\nGitHub: owner/repo#42","notes":""}'

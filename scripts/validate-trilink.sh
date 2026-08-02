@@ -2,11 +2,13 @@
 # validate-trilink.sh — Plan 027 § 5.5 tri-link verifier (AC-12 enforcement)
 #
 # Three checks (label-scoped to `refiner` only — legacy work exempt):
-#   1. MISS-DOC / MISS-GH    — every refiner-labeled bead carries Doc: + GitHub: lines
-#   2. MISS-FRONT             — every 000-docs/*.md citing bd_000-projects-* carries Beads: front-matter row
-#   3. MISS-GH-BEAD / MISS-GH-DOC — every refiner-labeled GH issue carries Bead: + Doc: lines
+#   1. MISS-DOC / MISS-GH    — every refiner-labeled bead carries Doc: + GitHub: lines (blocking)
+#   2. MISS-FRONT             — generated document projection observation (advisory)
+#   3. MISS-GH-BEAD / MISS-GH-DOC — generated GH projection observation (advisory)
 #
-# Exit non-zero on any violation. Used by Step 3 + CI .github/workflows/trilink.yml per repo.
+# Beads is the canonical writer. Checks 2 and 3 observe projections and do
+# not block; `bd-sync project` handles mutated blocks fail-closed. Only
+# bd-side drift is blocking.
 
 set -u
 
@@ -26,15 +28,20 @@ GH_REPOS=(
 )
 
 VIOLATIONS=0
+ADVISORIES=0
 report() {
   echo "$@"
   VIOLATIONS=$((VIOLATIONS+1))
+}
+advisory() {
+  echo "ADVISORY $*"
+  ADVISORIES=$((ADVISORIES+1))
 }
 
 # ---- check 1: bead → Doc/GH presence ----
 check_beads() {
   echo "=== Check 1: bead → Doc/GitHub presence (label:refiner) ==="
-  cd "$UMBRELLA"
+  cd "$UMBRELLA" || return
   # DEFECT GUARD: without a `command -v bd` pre-flight (the gap check_gh closed for
   # gh), a missing/errored bd produces no IDs, the `[ -z "$ids" ]` branch soft-passed
   # ("skipping"), and check 1 returned a FALSE PASS with zero beads checked. Guard
@@ -54,7 +61,7 @@ check_beads() {
     return
   fi
   ids=$(printf '%s' "$ids" | jq -r '.[].id' 2>/dev/null \
-        || bd list --label refiner --status open 2>/dev/null | grep -oE 'bd_000-projects-[a-z0-9]+(\.[0-9]+)?' | sort -u)
+        || bd list --label refiner --status open 2>/dev/null | grep -oE 'bd_000-projects-[a-z0-9]+(\.[0-9]+)*' | sort -u)
   if [ -z "$ids" ]; then
     echo "  (no refiner-labeled open beads found — bd ran clean, genuine empty set; skipping)"
     return
@@ -62,11 +69,17 @@ check_beads() {
   local n=0
   for id in $ids; do
     # Whitelist bead id format — prevents arg-injection if `bd list` output is ever malformed.
-    [[ "$id" =~ ^bd_000-projects-[a-z0-9]+(\.[0-9]+)?$ ]] || { report "MISS-BEAD-ID  $id  (rejected — not a valid bd id format)"; continue; }
+    [[ "$id" =~ ^bd_000-projects-[a-z0-9]+(\.[0-9]+)*$ ]] || { report "MISS-BEAD-ID  $id  (rejected — not a valid bd id format)"; continue; }
     n=$((n+1))
-    local desc
-    # Strip CR to defend against Windows line-endings in description content.
-    desc=$(bd show "$id" 2>/dev/null | tr -d '\r')
+    local desc_json desc
+    # JSON avoids terminal wrapping of long Doc paths. Strip CR to defend
+    # against Windows line-endings in description content.
+    desc_json=$(bd show "$id" --json 2>/dev/null); bd_rc=$?
+    if [ "$bd_rc" -ne 0 ]; then
+      report "MISS-BD-SHOW  $id  (bd show --json exited $bd_rc)"
+      continue
+    fi
+    desc=$(printf '%s' "$desc_json" | jq -r 'if type == "array" then .[0].description else .description end' 2>/dev/null | tr -d '\r')
     if ! printf '%s\n' "$desc" | grep -qE '^Doc:[[:space:]]+'; then
       report "MISS-DOC  $id  (no 'Doc:' line in description)"
     fi
@@ -77,7 +90,7 @@ check_beads() {
   echo "  ($n beads checked)"
 }
 
-# ---- check 2: doc → Bead front-matter row presence ----
+# ---- check 2: doc → Bead front-matter row presence (advisory) ----
 # Scope per plan § 11 non-goal: ONLY Skill Refiner-labeled docs (filename contains
 # 'skill-refiner' or 'refiner', or doc cites a bd ID that is refiner-labeled).
 # Legacy docs citing other bd IDs are exempt.
@@ -88,7 +101,8 @@ check_docs() {
     local repo_path="$IEP_ROOT/$repo/000-docs"
     [ -d "$repo_path" ] || continue
     while IFS= read -r -d '' doc; do
-      local fn=$(basename "$doc")
+      local fn
+      fn=$(basename "$doc")
       # In-scope only if filename matches Skill Refiner pattern
       case "$fn" in
         *skill-refiner*|*refiner*) ;;
@@ -98,28 +112,28 @@ check_docs() {
       n=$((n+1))
       if ! head -50 "$doc" | grep -qE '^\|[[:space:]]*Beads[[:space:]]*\|' && \
          ! head -50 "$doc" | grep -qE '^Beads:[[:space:]]+'; then
-        report "MISS-FRONT  ${doc#$IEP_ROOT/}  (cites bd_000-projects-* but no front-matter Beads row)"
+        advisory "MISS-FRONT  ${doc#"$IEP_ROOT"/}  (cites bd_000-projects-* but no front-matter Beads row)"
       fi
     done < <(find -P "$repo_path" -maxdepth 1 -name '*.md' -print0)
   done
   echo "  ($n Skill-Refiner-scoped docs checked; legacy docs exempt per plan § 11)"
 }
 
-# ---- check 3: GH issue → Bead/Doc presence ----
+# ---- check 3: GH issue → Bead/Doc presence (advisory) ----
 # NOTE: at scale, --limit 100 per repo × 5 repos × 2 calls each = up to 1000 GH API
 # calls per run. GitHub authenticated rate limit is 5000/hour. Raise the limit only
 # when the refiner label regularly exceeds 100 open issues.
 check_gh() {
   echo "=== Check 3: GH issue → Bead/Doc body lines (label:refiner) ==="
   if ! command -v gh >/dev/null 2>&1; then
-    report "MISS-GH-CLI  gh not installed; skipping GH-side check"
+    advisory "MISS-GH-CLI  gh not installed; skipping GH-side check"
     return
   fi
   # P0 — without an explicit auth pre-flight, an unauthenticated `gh` silently
   # produces no output, the `|| echo ''` fallback short-circuits the loop, and
   # check 3 returns a false PASS with zero issues checked.
   if ! gh auth status >/dev/null 2>&1; then
-    report "MISS-GH-AUTH  gh is installed but not authenticated; Check 3 cannot run"
+    advisory "MISS-GH-AUTH  gh is installed but not authenticated; Check 3 cannot run"
     return
   fi
   local n=0
@@ -130,16 +144,16 @@ check_gh() {
     for num in $nums; do
       # Whitelist GH issue number — prevents arg-injection (e.g., a token like `--json` flowing
       # from a corrupted `gh` response would be passed as a flag to `gh issue view`).
-      [[ "$num" =~ ^[0-9]+$ ]] || { report "MISS-GH-NUM  $repo: rejected non-numeric issue token '$num'"; continue; }
+      [[ "$num" =~ ^[0-9]+$ ]] || { advisory "MISS-GH-NUM  $repo: rejected non-numeric issue token '$num'"; continue; }
       n=$((n+1))
       # Fetch body as raw text and strip CR to defend against Windows line-endings.
       local body
       body=$(gh issue view "$num" --repo "$repo" --json body -q .body 2>/dev/null | tr -d '\r' || echo '')
       if ! printf '%s\n' "$body" | grep -qE '^Bead:[[:space:]]+'; then
-        report "MISS-GH-BEAD  $repo#$num  (no 'Bead:' line in body)"
+        advisory "MISS-GH-BEAD  $repo#$num  (no 'Bead:' line in generated projection)"
       fi
       if ! printf '%s\n' "$body" | grep -qE '^Doc:[[:space:]]+'; then
-        report "MISS-GH-DOC   $repo#$num  (no 'Doc:' line in body)"
+        advisory "MISS-GH-DOC   $repo#$num  (no 'Doc:' line in generated projection)"
       fi
     done
   done
@@ -154,7 +168,7 @@ check_gh
 echo ""
 echo "=== Summary ==="
 if [ "$VIOLATIONS" -eq 0 ]; then
-  echo "PASS — zero tri-linkage violations"
+  echo "PASS — zero blocking bd-side tri-linkage violations ($ADVISORIES advisory observation(s))"
   exit 0
 else
   echo "FAIL — $VIOLATIONS violation(s)"
