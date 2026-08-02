@@ -11,12 +11,20 @@ inherits_from: 027-PP-PLAN-skill-refiner-snoopy-fluttering-comet-v4-2026-05-26.m
 filing_standard: Document Filing Standard v4.4
 bead: bd_000-projects-rqwk (RC-IEL)
 related_drs:
-  - 027-PP-PLAN (THE PLAN — § 2 product structure, § 2.5 SkillMD fold-in, § 4 Phase B 3-layer hook table, § 6.5 ASCII catalog D1/D3)
+  - 027-PP-PLAN (THE PLAN — § 2 product structure, § 2.5 SkillMD fold-in, § 4 Phase B 3-layer hook table, § 6.5 ASCII catalog D1/D3/D6)
   - 028-AT-DECR (ISEDC Session 7 — Skill Refiner plan ratification; AC-13 RefinerStrategy interface; Phase D anti-goal)
 forward_refs:
   - 014-DR-GLOS-canonical-glossary.md (Skill Refiner + 3-layer hooks glossary entries)
   - 083-AT-SPEC-skill-refiner-pass-v1-normative-spec-2026-06-17.md (skill-refiner-pass/v1 predicate)
 ---
+
+<!-- BEGIN BD-SYNC:cross-ref:v1 -->
+
+Beads: `bd_000-projects-rqwk.7.1`
+GitHub: `jeremylongshore/intent-eval-lab#268`
+Projection-SHA256: 7447e165b02a8dabd1454d9f9377d14594d43d3db08ccedc312988a21743cf5e
+
+<!-- END BD-SYNC:cross-ref:v1 -->
 
 # Skill Refiner 3-layer hook architecture — sinker / line / hook
 
@@ -52,15 +60,17 @@ This document carries:
   corrected to the ratified L3 mechanism.
 - **§ 5** — the plugin CLI surface the layers sit alongside.
 - **§ 6** — open details the plan does not fully pin (marked, not invented).
+- **Appendix A** — the D6 bead-dependency graph from plan 027 § 6.5, rendered without adding
+  nodes or edges.
 
 **Binding sources** (read these first; this document is downstream of them):
 
-| Source                                                                              | What it binds                                                                 |
-| ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| `027-PP-PLAN-skill-refiner-snoopy-fluttering-comet-v4-2026-05-26.md` § 4 Phase B    | The 3-layer hook table — the normative per-layer mechanism.                   |
-| Plan 027 § 4 revision-history v4.1 entry                                            | The `PostToolUse:Bash` → `PreToolUse:Bash` L3 correction.                     |
-| Plan 027 § 6.5 D1 + D3                                                              | The source ASCII diagrams (D3's L3 label is corrected here per the v4.1 fix). |
-| `028-AT-DECR-isedc-council-session-7-skill-refiner-plan-ratification-2026-05-27.md` | ISEDC Session 7 ratification; AC-13 RefinerStrategy; Phase D anti-goal.       |
+| Source                                                                              | What it binds                                                                                      |
+| ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `027-PP-PLAN-skill-refiner-snoopy-fluttering-comet-v4-2026-05-26.md` § 4 Phase B    | The 3-layer hook table — the normative per-layer mechanism.                                        |
+| Plan 027 § 4 revision-history v4.1 entry                                            | The `PostToolUse:Bash` → `PreToolUse:Bash` L3 correction.                                          |
+| Plan 027 § 6.5 D1 + D3 + D6                                                         | The source ASCII diagrams (D3's L3 label is corrected here per the v4.1 fix; D6 is in Appendix A). |
+| `028-AT-DECR-isedc-council-session-7-skill-refiner-plan-ratification-2026-05-27.md` | ISEDC Session 7 ratification; AC-13 RefinerStrategy; Phase D anti-goal.                            |
 
 ---
 
@@ -292,13 +302,50 @@ the events (`PostToolUse:Edit/Write` / `Stop` / **`PreToolUse:Bash`**), the cost
 single-blocking-layer property, and the human-gated promotion — is RATIFIED and binding per plan 027
 v5 § 4 and DR-028.
 
+## Appendix A — Bead dependency graph (D6)
+
+This is a direct rendering of Plan 027 § 6.5 D6. The plan's original filing named
+`000-docs/029-AT-ARCH-skill-refiner-3-layer-hooks.md`; that historical path is absent from the
+current repository. This maintained successor is the current home for the diagram. The graph below
+preserves the plan's relationships exactly; the diagram shorthand `DIAG-D6` is the plan catalog
+entry, while the current implementation receipt is tracked by the bead and links projected above.
+
+```text
+   PRODUCT EPICS (roll-up)              PER-REPO COORD EPICS (locality)
+   ─────────────────────────            ────────────────────────────────
+   3zol  Refiner lib v0.1.0  ─┐       ┌─ RC-IAJ  j-rig coord
+                              │       │
+   jsy3  /j-rig plugin       ─┤       ├─ RC-IEC  intent-eval-core coord
+         + 3-layer hooks      │       │
+                              ├──────▶├─ RC-IEL  intent-eval-lab coord
+   0r8m  SkillVersion +      ─┘       │
+         Tier-1 kernel               ─┤─ RC-IAH  intent-audit-harness coord
+                                       │
+                                      └─ RC-IAR  intent-rollout-gate coord
+
+   P0 CRITICAL CHAIN  (must close in order)
+   ────────────────────────────────────────
+   uprg ──▶ 9pi3 ──▶ 0r8m.7 (ISEDC-7) ──▶ 0r8m.1..6 ──▶ 0r8m.8 (release)
+   (compat  (OTel    (decision)            (kernel work)    (ceremony)
+    pol)     pin)
+
+   TRI-LINK ROLLOUT (parallel track)
+   ─────────────────────────────────
+   TL-EPIC ──▶ TL-IEL, TL-IEC, TL-IAJ, TL-IAH, TL-IAR  (one per repo, parallel)
+
+   DIAGRAM TRACK (parallel)
+   ─────────────────────────
+   DIAG-D1..D9  (each blocks its parent RC-* epic from closing)
+```
+
 ---
 
 ## Cross-references
 
 - **Plan 027** (`027-PP-PLAN-skill-refiner-snoopy-fluttering-comet-v4-2026-05-26.md`) — § 2 product
   structure, § 2.5 SkillMD open-standard fold-in, § 4 Phase B (the normative 3-layer hook table),
-  § 6.5 ASCII catalog (D1 stack, D3 hook flow). **THE PLAN; this document is downstream of it.**
+  § 6.5 ASCII catalog (D1 stack, D3 hook flow, D6 bead dependency graph). **THE PLAN; this
+  document is downstream of it.**
 - **DR-028** (`028-AT-DECR-isedc-council-session-7-skill-refiner-plan-ratification-2026-05-27.md`) —
   ISEDC Session 7 ratification, AC-13 RefinerStrategy interface, Phase D anti-goal.
 - **DR-010** (`010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md`) — § 13.6

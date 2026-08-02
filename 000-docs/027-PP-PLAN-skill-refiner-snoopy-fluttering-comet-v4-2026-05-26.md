@@ -880,17 +880,17 @@ Keep the 3 product-epics as **umbrella beads**; add **per-repo Skill Refiner coo
 
 ### Diagram inventory (9 NEW beads — one per canonical diagram in § 6.5)
 
-| New bead  | Diagram                                                 | Lives in (doc)                                                            | Parent    |
-| --------- | ------------------------------------------------------- | ------------------------------------------------------------------------- | --------- |
-| `DIAG-D1` | 3-product agent-rig stack                               | `iel/029-AT-ARCH-skill-refiner-3-layer-hooks.md` § 1                      | `RC-IEL`  |
-| `DIAG-D2` | 5-repo IEP ecosystem                                    | `iel/011-AT-ARCH-ecosystem-master-blueprint.md` (append § 12)             | `RC-IEL`  |
-| `DIAG-D3` | 3-layer hook architecture (hook/line/sinker)            | `iel/029-AT-ARCH-skill-refiner-3-layer-hooks.md` § 3                      | `RC-IEL`  |
-| `DIAG-D4` | Skill Refiner data flow                                 | `iaj/021-AT-SPEC-refiner-core-api.md` § 2                                 | `RC-IAJ`  |
-| `DIAG-D5` | SkillVersion ER diagram                                 | `iec/002-AT-ARCH-repo-blueprint-2026-05-18.md` (replace existing § ER)    | `RC-IEC`  |
-| `DIAG-D6` | Bead dependency graph                                   | `iel/029-AT-ARCH-skill-refiner-3-layer-hooks.md` appendix A               | `RC-IEL`  |
-| `DIAG-D7` | Doc ↔ bead ↔ GH-issue tri-link topology                 | `iel/030-AT-STND-tri-linkage-discipline.md` § 2                           | `TL-EPIC` |
-| `DIAG-D8` | Refiner library architecture (core vs adapter)          | `iaj/021-AT-SPEC-refiner-core-api.md` § 3                                 | `RC-IAJ`  |
-| `DIAG-D9` | Evidence bundle row lifecycle for skill-refiner-pass/v1 | `iah/001-DR-DESIGN-evidence-bundle-envelope-design-notes.md` (append § 9) | `RC-IAH`  |
+| New bead  | Diagram                                                 | Lives in (doc)                                                                                                         | Parent    |
+| --------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------- |
+| `DIAG-D1` | 3-product agent-rig stack                               | `iel/029-AT-ARCH-skill-refiner-3-layer-hooks.md` § 1                                                                   | `RC-IEL`  |
+| `DIAG-D2` | 5-repo IEP ecosystem                                    | `iel/011-AT-ARCH-ecosystem-master-blueprint.md` (append § 12)                                                          | `RC-IEL`  |
+| `DIAG-D3` | 3-layer hook architecture (hook/line/sinker)            | `iel/029-AT-ARCH-skill-refiner-3-layer-hooks.md` § 3                                                                   | `RC-IEL`  |
+| `DIAG-D4` | Skill Refiner data flow                                 | `iaj/021-AT-SPEC-refiner-core-api.md` § 2                                                                              | `RC-IAJ`  |
+| `DIAG-D5` | SkillVersion ER diagram                                 | `iec/002-AT-ARCH-repo-blueprint-2026-05-18.md` (replace existing § ER)                                                 | `RC-IEC`  |
+| `DIAG-D6` | Bead dependency graph                                   | `iel/096-AT-ARCH-skill-refiner-3-layer-hooks-2026-06-21.md` Appendix A (current successor; historical 029 path absent) | `RC-IEL`  |
+| `DIAG-D7` | Doc ↔ bead ↔ GH-issue tri-link topology                 | `iel/030-AT-STND-tri-linkage-discipline.md` § 2                                                                        | `TL-EPIC` |
+| `DIAG-D8` | Refiner library architecture (core vs adapter)          | `iaj/021-AT-SPEC-refiner-core-api.md` § 3                                                                              | `RC-IAJ`  |
+| `DIAG-D9` | Evidence bundle row lifecycle for skill-refiner-pass/v1 | `iah/001-DR-DESIGN-evidence-bundle-envelope-design-notes.md` (append § 9)                                              | `RC-IAH`  |
 
 ### Total bead count
 
@@ -1157,7 +1157,7 @@ Nine canonical diagrams. Each has a corresponding bead (DIAG-D1..D9 in § 5.5) t
 
 ### D6 — Bead dependency graph (Skill Refiner work)
 
-**Lives in:** `intent-eval-lab/000-docs/029-AT-ARCH-skill-refiner-3-layer-hooks.md` appendix A
+**Lives in:** `intent-eval-lab/000-docs/096-AT-ARCH-skill-refiner-3-layer-hooks-2026-06-21.md` Appendix A (current successor; historical 029 path absent)
 **Bead:** `DIAG-D6`
 
 ```text
