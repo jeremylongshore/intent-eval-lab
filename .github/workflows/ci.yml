@@ -147,10 +147,11 @@ jobs:
       # RATIFIED-WITH-DELTAS allows only DR-028-authorized refiner work, a
       # non-refiner bead is ungated, and a missing STATUS file / failed bd
       # lookup / bad bead id fail closed (exit 2). This is the
-      # external-contributor path: it verifies STATUS-file integrity + the
-      # refusal logic WITHOUT bd/dolt on the runner (the umbrella bd workspace
-      # is not present in CI). A regression that WEAKENS the gate turns this red.
+      # internal path. Fork PRs use claim-precheck.yml's advisory job instead:
+      # external-contributor policy is warning + acknowledgment, not a hard
+      # block. A regression on an internal PR or push turns this red.
       - name: bd-claim-precheck hard-gate self-test
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         run: bash scripts/bd-claim-precheck.sh --self-test
 
       # Offline + deterministic (056-AT-SPEC): the mcp-config deep capture.

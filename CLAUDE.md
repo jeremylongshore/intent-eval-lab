@@ -158,9 +158,9 @@ Skill Refiner is RATIFIED (DR-028, 2026-05-27) and PUBLISHED to npm (initial `@i
 - **T3 Process discipline:** COLLAPSE — bd is canonical writer; GH/Plane are projections; `bd-sync` becomes generator (20/20 consensus)
 - **T4 Brand:** KEEP Skill Refiner as named product (CMO/CFO/VP DevRel business-axis trio overrode thinker-majority on brand-instability + dev-mental-model grounds); AC-7 + new AC-13 RefinerStrategy interface are the engineering hedge
 
-**Enforcement (machine, not honor):** `intent-eval-lab/scripts/bd-claim-precheck.sh` reads `000-docs/audit/2026-05-26-plan-audit/STATUS.md`; blocks `bd claim` against refiner-labeled beads unless STATUS=RATIFIED (or RATIFIED-WITH-DELTAS for explicitly-authorized work). Tested + working.
+**Enforcement (machine, not honor):** `intent-eval-lab/scripts/bd-claim-precheck.sh` reads `000-docs/audit/2026-05-26-plan-audit/STATUS.md`; blocks `bd claim` against refiner-labeled beads unless STATUS=RATIFIED (or RATIFIED-WITH-DELTAS for explicitly-authorized work). The reusable `.github/workflows/claim-precheck-reusable.yml` runs the hermetic self-test as a hard check for internal pushes/PRs and as a warning-plus-acknowledgment check for fork PRs.
 
-**Tri-link verifier:** `intent-eval-lab/scripts/validate-trilink.sh` enforces bead↔doc↔GH-issue cross-refs for refiner-labeled artifacts. Runs in CI per repo (planned). Currently PASS.
+**Tri-link verifier:** `intent-eval-lab/scripts/validate-trilink.sh` enforces bead↔doc↔GH-issue cross-refs for refiner-labeled artifacts. The five-repo convergence set now has an explicit reusable claim-precheck CI lane; tri-link verification remains the lab's separate workspace-level check. Currently PASS.
 
 **Bead workspace:** ALL Skill Refiner beads (50 open as of 2026-05-27) live in the umbrella `~/000-projects/.beads/` (NOT per-repo workspaces). Per-repo distinguishability via mandatory `repo:<short>` labels (`repo:iel`, `repo:iec`, `repo:iaj`, `repo:iah`, `repo:iar`, `repo:iep`). Query example: `bd list --label repo:iec --label refiner --status open`.
 
