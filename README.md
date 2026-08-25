@@ -8,6 +8,8 @@ The agentic-CLI ecosystem is converging on a small set of cross-tool conventions
 
 This repo is the working surface for that work.
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/U5S225PTME)
+
 ## What's here
 
 ```text
