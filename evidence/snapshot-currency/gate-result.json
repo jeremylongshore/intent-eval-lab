@@ -2,7 +2,7 @@
   "_type": "https://in-toto.io/Statement/v1",
   "predicate": {
     "advisory_severity": "warn",
-    "commit_sha": "a143e8fc7f7ca9799638cf25ba1eb43e5159e8a1",
+    "commit_sha": "3ce4430398cb32c8300a6edde493367c3158e2db",
     "coverage": {
       "dimensions_evaluated": [
         "claude-code-changelog",
@@ -24,7 +24,7 @@
       ],
       "dimensions_skipped": []
     },
-    "evaluated_at": "2026-07-23T09:53:57.000Z",
+    "evaluated_at": "2026-09-05T09:17:43.000Z",
     "gate_decision": "advisory",
     "gate_id": "spec-drift-watch:ci:snapshot-currency",
     "gate_name": "spec-snapshot-currency",
@@ -32,6 +32,7 @@
       "snapshot-drift:claude-code-changelog",
       "snapshot-drift:claude-code-npm",
       "snapshot-drift:platform-skills-overview",
+      "snapshot-drift:agentskills-spec",
       "snapshot-drift:mcp-schema-ts",
       "snapshot-drift:mcp-spec-docs",
       "snapshot-drift:claude-hooks",
@@ -42,10 +43,10 @@
       "snapshot-drift:plugin-marketplaces"
     ],
     "gate_version": "1.0.0",
-    "input_hash": "sha256:e9bec72efbf1a7aa75a490616d7eb5d5c1b779f5ec82fcd038986f4661b218f7",
+    "input_hash": "sha256:d37373dde6ae9e333b25f7bd508d8247288e03aec622e1ea0fe30d5b5e65054f",
     "metadata": {
       "authority": "Blueprint B § 7.4 (gate-result/v1); DR-010 Q3 unification thesis",
-      "checked_at": "2026-07-23T09:53:55Z",
+      "checked_at": "2026-09-05T09:17:41Z",
       "sources_total": 16
     },
     "policy_hash": "sha256:611ea9b0e9c7e07b3405bf8a29332861aad42164b960ab6d0b9dd6d8db072139",
@@ -56,7 +57,7 @@
   "subject": [
     {
       "digest": {
-        "sha256": "e9bec72efbf1a7aa75a490616d7eb5d5c1b779f5ec82fcd038986f4661b218f7"
+        "sha256": "d37373dde6ae9e333b25f7bd508d8247288e03aec622e1ea0fe30d5b5e65054f"
       },
       "name": "spec-drift-watch:ci:snapshot-currency"
     }
