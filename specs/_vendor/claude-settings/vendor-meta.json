@@ -1,7 +1,7 @@
 {
   "surface_id": "claude-settings",
-  "sha256": "064d6e8e90b95cd395fc5f2cc7ee92243a930bdb5594a5444773aa84afd7650a",
-  "bytes": 268693,
-  "updated_at": "2026-07-23T00:14:15Z",
-  "source_raw_record": "archive/raw/claude-settings/20260723T001415Z.meta.json"
+  "sha256": "307cc8f152bc67fbd347bf834f012fe1dbf8774d4ebc9f10b36cb0ea632cc789",
+  "bytes": 59255,
+  "updated_at": "2026-09-05T09:17:44Z",
+  "source_raw_record": "archive/raw/claude-settings/20260905T091744Z.meta.json"
 }
