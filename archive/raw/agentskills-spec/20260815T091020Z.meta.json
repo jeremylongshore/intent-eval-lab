@@ -1,0 +1,12 @@
+{
+  "record": "20260815T091020Z",
+  "surface_id": "agentskills-spec",
+  "url": "https://agentskills.io/specification.md",
+  "fetched_at": "2026-08-15T09:10:20Z",
+  "status": "FETCH_OK",
+  "http_code": 200,
+  "sha256": "2b1dbb4fd80c31748d15812c4ebd3e66c09383d0c792801f617718684489e40d",
+  "bytes": 8157,
+  "body_stored": false,
+  "body_ref": "20260805T095733Z"
+}
