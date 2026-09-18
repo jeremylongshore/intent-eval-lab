@@ -26,7 +26,7 @@ asserts a numbered contract at each seam (S1–S5 in the spec).
 
 ```bash
 cd e2e
-npm install            # pins @intentsolutions/core@0.7.0; rollout-gate optional
+npm install            # pins @intentsolutions/core@0.10.0; rollout-gate optional
 node run-e2e.mjs
 ```
 
@@ -43,7 +43,7 @@ Exit code `0` = the unification thesis holds for the fixtures; `1` = a seam fail
 **Real (not mocked):**
 
 - Rows are validated at S1/S2/S3/S5 against the **published**
-  `@intentsolutions/core@0.7.0` kernel validators — the single source of truth, never
+  `@intentsolutions/core@0.10.0` kernel validators — the single source of truth, never
   a re-declared schema.
 - The dashboard render (S5) is validated against the real kernel `dashboard-render/v1`
   schema.

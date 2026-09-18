@@ -122,6 +122,9 @@ skill evals still hit the judge-truncation (#175) + reasoning-model
 
 ### Changed
 
+- Refresh the neutral end-to-end convergence harness to validate against the
+  published `@intentsolutions/core@0.10.0` kernel while preserving the same
+  five-repository seam assertions.
 - Blueprint B § 7 — add Parallel Change discipline (expand-contract for kernel schema additions) (#148)
 - Scope advisory doc-lint to exclude machine-generated research results (#157)
 
