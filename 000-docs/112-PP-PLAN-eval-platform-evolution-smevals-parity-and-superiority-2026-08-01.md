@@ -1,7 +1,7 @@
 # Master Blueprint: Evaluation Platform Evolution
 
 **Plan ID:** IEP-EVAL-EVOLUTION-001
-**Status:** ACTIVE — PHASE 1 IN EXECUTION
+**Status:** ACTIVE — foundation merged; downstream integration and release open
 **Date:** 2026-08-01
 **Owner:** Intent Solutions
 **Master bead:** `bd_000-projects-htjt`
@@ -649,3 +649,87 @@ closures, quality gates, and pushed revision.
   Dashboard #68 remains tailnet-only and has one actionable Vale/Reviewdog
   vocabulary finding (`rollout`) awaiting explicit CI-fix approval. No public
   promotion or merge-complete claim is made by this phase.
+
+### Phase 7 — foundation integration (2026-09-17)
+
+This receipt supersedes earlier merge-readiness snapshots, not the historical
+execution records above. Bead `bd_000-projects-htjt.15`, GitHub
+[intent-eval-lab#283](https://github.com/jeremylongshore/intent-eval-lab/issues/283),
+and Plane `LAB-129` track the remaining sequence.
+
+#### Delivered foundation
+
+| Repository / PR | Merged revision                            | Verification                                                                                                |
+| --------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| Lab #258        | `42f1921d71382eddaa173a3dc768f0c111f5ebe5` | Plan and glossary refreshed against main; required CI and CodeQL passed.                                    |
+| Core #84        | `94754f2ba6bedd8b9b1a884226993c8cb21dbabe` | Build and full local check: 49 files, 1,412 tests passed, one existing skip; required CI and CodeQL passed. |
+| J-Rig #247      | `2d5607cf14a825728d959788674470dfa39807a9` | Canonical adapter and 0.10.0 currency; 87 files / 1,443 tests passed; required CI and CodeQL passed.        |
+| J-Rig #248      | `84e0143c06fbdb2f90ed39ead3b65189a6c50c6b` | Generic raw-run layer; 90 files / 1,453 tests passed; required CI and CodeQL passed.                        |
+| J-Rig #249      | `db86f69764b54d1a1837fdbcac164bdb8aa01831` | Named graders, reuse and outage fixes; 93 files / 1,468 tests passed; required CI and CodeQL passed.        |
+
+Build precedes checks in a clean workspace so package export declarations
+exist. J-Rig lint, formatting, typecheck, and the complete test set passed;
+local tests used two workers after two timing-sensitive tests failed under
+concurrent host load. No assertion, timeout, coverage floor, or branch
+protection was weakened. Remote CI exercised its normal configuration.
+
+J-Rig #249 is merged after refreshing against the merged runner. Integration fixes resolve
+saved Grade identity and regrade policy **before** provider resolution or model
+calls, and reject an all-samples judge outage without storing a false quality
+failure. All 93 files / 1,468 tests passed locally, including reuse, changed-rule
+policy, unchanged raw Runs, and healthy retry after an outage.
+
+The CLI example in `examples/generic-run/` exercised two configurations, sealed
+Run reuse, initial Grade creation, identical Grade reuse, and an intentional
+version-two regrade. The original raw Run and first Grade remained equal after
+regrading. These are deterministic fixture receipts with zero model calls, not
+evidence of real-model quality or cross-provider equivalence.
+
+#### Remaining dependency sequence
+
+Remote observations below were refreshed on 2026-09-18 UTC. A passing old head
+does not establish current-main compatibility. Feature-base branches must be
+refreshed and checked again after their predecessor merges.
+
+| Repository / PR    | Predecessor                      | Remote observation / next action                                                                                       |
+| ------------------ | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| J-Rig #250         | #249, merged                     | `b099c09`: no checks; conflicts with refreshed predecessor. Reconcile sampling next.                                   |
+| J-Rig #251         | #250                             | `d518ffe`: no checks; refresh report projection after sampling.                                                        |
+| J-Rig #252         | #251                             | `2df598f`: no checks; batch branch conflicts.                                                                          |
+| J-Rig #254         | #252                             | `803972f`: no checks; resumable suite integration remains.                                                             |
+| J-Rig #256         | #254                             | `c125ff4`: no checks; preserve current main's dead-judge handling when reconciling provider failures.                  |
+| J-Rig #258         | #256                             | `c577f49`: no checks; static HTML projection remains.                                                                  |
+| J-Rig #260         | #258                             | `5b626cb`: no checks; batch lineage reports remain.                                                                    |
+| J-Rig #262         | #260                             | `3e1c7e0`: no checks; provider documentation remains.                                                                  |
+| J-Rig #264         | #262                             | `4252fef`: no checks; loopback report server remains.                                                                  |
+| J-Rig #266         | #251                             | `8f71eb6`: no checks; promotion-evidence branch remains.                                                               |
+| Audit-harness #142 | Core #84; current kernel         | `c4811ff`: recorded checks pass, but branch conflicts with main.                                                       |
+| Audit-harness #143 | J-Rig #251; kernel currency      | `a1e191d`: recorded checks pass, but branch conflicts with main.                                                       |
+| Audit-harness #144 | #143; J-Rig #250                 | `6c78932`: actionlint and typos only; full main checks absent.                                                         |
+| Audit-harness #145 | #144                             | `0414ba2`: actionlint and typos only; full main checks absent.                                                         |
+| Rollout-gate #56   | Core #84; kernel 0.10.0          | `8d1a650`: recorded checks pass; refresh currency before integration.                                                  |
+| Rollout-gate #57   | #56; promotion metadata          | `4d1d3a8`: no checks on feature base.                                                                                  |
+| Rollout-gate #59   | #57; J-Rig #266                  | `8029902`: no checks on feature base.                                                                                  |
+| Dashboard #68      | J-Rig #251; verified ingest      | `90788e7`: functional checks pass; Vale advisory fails; refresh against the new public-site main without reverting it. |
+| Dashboard #70      | #68                              | `482ae28`: build/test and partner-name checks only; full main checks absent.                                           |
+| Lab #259           | Kernel currency across consumers | `6dac2fe`: recorded checks pass; revalidate the five-seam convergence fixture after consumers merge.                   |
+
+The merge approach is bottom-up: refresh the next PR against main, preserve
+already-delivered code, run current required checks, then merge. This avoids
+changing CI-trigger policy merely to integrate the current layer. The general
+feature-base CI gap remains tracked by `bd_000-projects-htjt.17` / `LAB-131`.
+
+#### Release boundaries
+
+- No npm package release, hosted upload service, or public report destination
+  was enabled by this integration. The public sites are unchanged.
+- Public/internal report destination remains the owner decision in
+  `bd_000-projects-htjt.16` / `LAB-130`.
+- New release-hardening follow-up `bd_000-projects-htjt.18` /
+  [J-Rig #298](https://github.com/jeremylongshore/j-rig-skill-binary-eval/issues/298)
+  covers unbounded captured output and descendant-process timeout cleanup.
+  The example explicitly permits trusted local harnesses, not untrusted code.
+- A sequential Grade cache hit avoids another judge call; it is not a
+  cross-process single-flight guarantee. Broader real-provider dogfood,
+  downstream evidence checks, package versions, and release receipts remain
+  separate work. The master epic is not complete.
