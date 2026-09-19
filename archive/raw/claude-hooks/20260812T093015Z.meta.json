@@ -1,0 +1,12 @@
+{
+  "record": "20260812T093015Z",
+  "surface_id": "claude-hooks",
+  "url": "https://code.claude.com/docs/en/hooks.md",
+  "fetched_at": "2026-08-12T09:30:15Z",
+  "status": "FETCH_OK",
+  "http_code": 200,
+  "sha256": "8fcf573816cc29605b27b0e72719f7d0ff73ae2f8ea234b78435c2f0c890e5d3",
+  "bytes": 267830,
+  "body_stored": true,
+  "body_ref": "20260812T093015Z"
+}
