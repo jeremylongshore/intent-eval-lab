@@ -126,7 +126,7 @@ jobs:
           fetch-depth: 0   # promotion branch is rebuilt from prior state; needs history
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
@@ -828,7 +828,7 @@ jobs:
 
       - name: Upload promotion delta artifact (branch-push failure fallback)
         if: always() && steps.promote.outputs.push_failed == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: spec-archive-delta-${{ github.run_id }}
           path: |
