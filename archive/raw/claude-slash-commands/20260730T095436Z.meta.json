@@ -1,0 +1,12 @@
+{
+  "record": "20260730T095436Z",
+  "surface_id": "claude-slash-commands",
+  "url": "https://code.claude.com/docs/en/slash-commands.md",
+  "fetched_at": "2026-07-30T09:54:36Z",
+  "status": "FETCH_OK",
+  "http_code": 200,
+  "sha256": "23d035ad222c1a288a0c05cb4202a394f91f1167aa80c522f9011729bab9168a",
+  "bytes": 73907,
+  "body_stored": true,
+  "body_ref": "20260730T095436Z"
+}
