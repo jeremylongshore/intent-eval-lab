@@ -1,7 +1,7 @@
 # Master Blueprint: Evaluation Platform Evolution
 
 **Plan ID:** IEP-EVAL-EVOLUTION-001
-**Status:** ACTIVE — PHASE 1 IN EXECUTION
+**Status:** ACTIVE — foundation merged; downstream integration and release open
 **Date:** 2026-08-01
 **Owner:** Intent Solutions
 **Master bead:** `bd_000-projects-htjt`
@@ -628,3 +628,210 @@ closures, quality gates, and pushed revision.
 - Status: dogfood evidence, release-hardening implementation, and tri-link
   cleanup are complete; the broader shortlist, PR merges/CI, and human-gated
   route remain release work.
+
+### Phase 6 — stacked merge/CI reconciliation (2026-08-02)
+
+- Bead: `bd_000-projects-htjt.15`; GitHub issue
+  [intent-eval-lab#283](https://github.com/jeremylongshore/intent-eval-lab/issues/283);
+  Plane `LAB-129`.
+- Canonical order remains: J-Rig #247 → #248 → #249 → #250 → #251, then
+  downstream report/static/serve consumers. J-Rig #251 was reconciled against
+  `feat/eval-substrate-sampling` at `b099c09` with merge commit
+  `d518ffe38feeed3b02803359ca29ca9c17a8d803` on
+  `feat/eval-substrate-report`.
+- The reconciliation preserves the newer batch runner and sampled
+  model-judge metadata from #250 while retaining both the sampling-manifest
+  report and `j-rig/unified-report/v1` JSON/Markdown projection. Local gates:
+  `pnpm run check` (97 files / 1,465 tests), `pnpm run build`, harness-hash,
+  escape-scan, Markdownlint, and `git diff --check` all pass.
+- GitHub reports #251 `MERGEABLE/CLEAN`; #248 and #251 report no branch checks,
+  so they remain owner/branch-policy receipts rather than green-check claims.
+  Dashboard #68 remains tailnet-only and has one actionable Vale/Reviewdog
+  vocabulary finding (`rollout`) awaiting explicit CI-fix approval. No public
+  promotion or merge-complete claim is made by this phase.
+
+### Phase 7 — foundation integration (2026-09-17)
+
+This receipt supersedes earlier merge-readiness snapshots, not the historical
+execution records above. Bead `bd_000-projects-htjt.15`, GitHub
+[intent-eval-lab#283](https://github.com/jeremylongshore/intent-eval-lab/issues/283),
+and Plane `LAB-129` track the remaining sequence.
+
+#### Delivered foundation
+
+| Repository / PR | Merged revision                            | Verification                                                                                                |
+| --------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| Lab #258        | `42f1921d71382eddaa173a3dc768f0c111f5ebe5` | Plan and glossary refreshed against main; required CI and CodeQL passed.                                    |
+| Core #84        | `94754f2ba6bedd8b9b1a884226993c8cb21dbabe` | Build and full local check: 49 files, 1,412 tests passed, one existing skip; required CI and CodeQL passed. |
+| J-Rig #247      | `2d5607cf14a825728d959788674470dfa39807a9` | Canonical adapter and 0.10.0 currency; 87 files / 1,443 tests passed; required CI and CodeQL passed.        |
+| J-Rig #248      | `84e0143c06fbdb2f90ed39ead3b65189a6c50c6b` | Generic raw-run layer; 90 files / 1,453 tests passed; required CI and CodeQL passed.                        |
+| J-Rig #249      | `db86f69764b54d1a1837fdbcac164bdb8aa01831` | Named graders, reuse and outage fixes; 93 files / 1,468 tests passed; required CI and CodeQL passed.        |
+
+Build precedes checks in a clean workspace so package export declarations
+exist. J-Rig lint, formatting, typecheck, and the complete test set passed;
+local tests used two workers after two timing-sensitive tests failed under
+concurrent host load. No assertion, timeout, coverage floor, or branch
+protection was weakened. Remote CI exercised its normal configuration.
+
+J-Rig #249 is merged after refreshing against the merged runner. Integration fixes resolve
+saved Grade identity and regrade policy **before** provider resolution or model
+calls, and reject an all-samples judge outage without storing a false quality
+failure. All 93 files / 1,468 tests passed locally, including reuse, changed-rule
+policy, unchanged raw Runs, and healthy retry after an outage.
+
+The CLI example in `examples/generic-run/` exercised two configurations, sealed
+Run reuse, initial Grade creation, identical Grade reuse, and an intentional
+version-two regrade. The original raw Run and first Grade remained equal after
+regrading. These are deterministic fixture receipts with zero model calls, not
+evidence of real-model quality or cross-provider equivalence.
+
+#### Remaining dependency sequence
+
+Remote observations below were refreshed on 2026-09-18 UTC. A passing old head
+does not establish current-main compatibility. Feature-base branches must be
+refreshed and checked again after their predecessor merges.
+
+| Repository / PR    | Predecessor                      | Remote observation / next action                                                                                       |
+| ------------------ | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| J-Rig #250         | #249, merged                     | `b099c09`: no checks; conflicts with refreshed predecessor. Reconcile sampling next.                                   |
+| J-Rig #251         | #250                             | `d518ffe`: no checks; refresh report projection after sampling.                                                        |
+| J-Rig #252         | #251                             | `2df598f`: no checks; batch branch conflicts.                                                                          |
+| J-Rig #254         | #252                             | `803972f`: no checks; resumable suite integration remains.                                                             |
+| J-Rig #256         | #254                             | `c125ff4`: no checks; preserve current main's dead-judge handling when reconciling provider failures.                  |
+| J-Rig #258         | #256                             | `c577f49`: no checks; static HTML projection remains.                                                                  |
+| J-Rig #260         | #258                             | `5b626cb`: no checks; batch lineage reports remain.                                                                    |
+| J-Rig #262         | #260                             | `3e1c7e0`: no checks; provider documentation remains.                                                                  |
+| J-Rig #264         | #262                             | `4252fef`: no checks; loopback report server remains.                                                                  |
+| J-Rig #266         | #251                             | `8f71eb6`: no checks; promotion-evidence branch remains.                                                               |
+| Audit-harness #142 | Core #84; current kernel         | `c4811ff`: recorded checks pass, but branch conflicts with main.                                                       |
+| Audit-harness #143 | J-Rig #251; kernel currency      | `a1e191d`: recorded checks pass, but branch conflicts with main.                                                       |
+| Audit-harness #144 | #143; J-Rig #250                 | `6c78932`: actionlint and typos only; full main checks absent.                                                         |
+| Audit-harness #145 | #144                             | `0414ba2`: actionlint and typos only; full main checks absent.                                                         |
+| Rollout-gate #56   | Core #84; kernel 0.10.0          | `8d1a650`: recorded checks pass; refresh currency before integration.                                                  |
+| Rollout-gate #57   | #56; promotion metadata          | `4d1d3a8`: no checks on feature base.                                                                                  |
+| Rollout-gate #59   | #57; J-Rig #266                  | `8029902`: no checks on feature base.                                                                                  |
+| Dashboard #68      | J-Rig #251; verified ingest      | `90788e7`: functional checks pass; Vale advisory fails; refresh against the new public-site main without reverting it. |
+| Dashboard #70      | #68                              | `482ae28`: build/test and partner-name checks only; full main checks absent.                                           |
+| Lab #259           | Kernel currency across consumers | `6dac2fe`: recorded checks pass; revalidate the five-seam convergence fixture after consumers merge.                   |
+
+The merge approach is bottom-up: refresh the next PR against main, preserve
+already-delivered code, run current required checks, then merge. This avoids
+changing CI-trigger policy merely to integrate the current layer. The general
+feature-base CI gap remains tracked by `bd_000-projects-htjt.17` / `LAB-131`.
+
+#### Release boundaries
+
+- No npm package release, hosted upload service, or public report destination
+  was enabled by this integration. The public sites are unchanged.
+- Public/internal report destination remains the owner decision in
+  `bd_000-projects-htjt.16` / `LAB-130`.
+- New release-hardening follow-up `bd_000-projects-htjt.18` /
+  [J-Rig #298](https://github.com/jeremylongshore/j-rig-skill-binary-eval/issues/298)
+  covers unbounded captured output and descendant-process timeout cleanup.
+  The example explicitly permits trusted local harnesses, not untrusted code.
+- A sequential Grade cache hit avoids another judge call; it is not a
+  cross-process single-flight guarantee. Broader real-provider dogfood,
+  downstream evidence checks, package versions, and release receipts remain
+  separate work. The master epic is not complete.
+
+### Phase 8 — stack integration and the infrastructure-failure rule (2026-09-19)
+
+This receipt closes the "Remaining dependency sequence" table in Phase 7; that
+table is retained as the historical plan of record. Bead
+`bd_000-projects-htjt.15`, GitHub
+[intent-eval-lab#283](https://github.com/jeremylongshore/intent-eval-lab/issues/283),
+and Plane `LAB-129`.
+
+#### Delivered
+
+Every J-Rig pull request below merged to `main` on green required CI. Stacked
+branches were reanchored with merge commits only; no branch was force-pushed.
+
+| J-Rig PR | Merged revision | Slice                         | Integration note                                                                                                                                                                                                                                                |
+| -------- | --------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| #250     | `f397c18`       | Balanced sampling             | Run, grade and sampled-judge commits had already landed; net content was sampling, batch and uncertainty.                                                                                                                                                       |
+| #251     | `0426050`       | Unified report                | One stale README paragraph corrected before merge.                                                                                                                                                                                                              |
+| #252     | `a8e279c`       | Skills-root `eval-batch`      | #250 and #252 both added `commands/batch.ts` for different commands; the skills-root command moved to `commands/eval-batch.ts` (CLI name unchanged). First CI run surfaced a CodeQL file-system race in spec generation, fixed with an atomic exclusive create. |
+| #254     | `804c275`       | Resumable generic suite       | Adapted to the asynchronous `runGrade`. Branch coverage fell to 83.96% against the 84% floor; resolved by testing the suite's fail-closed manifest and resume guards. The threshold was not changed.                                                            |
+| #299     | `5565f46`       | Runner resource bounds        | New. Per-stream output ceiling, POSIX process-group termination, bounded completion. The ceiling has no schema default, because the config snapshot is compared byte-for-byte on sealed-run reuse. Host protection, not a sandbox.                              |
+| #300     | `fd06c6d`       | Infrastructure-failure rule   | New. Supersedes #256 (closed). See the decision below.                                                                                                                                                                                                          |
+| #258     | `0ae26a4`       | Static HTML report            | Mechanical.                                                                                                                                                                                                                                                     |
+| #260     | `f5351c3`       | Eval-batch lineage reports    | Branch edits to `batch.ts` were applied to `eval-batch.ts` after the #252 move.                                                                                                                                                                                 |
+| #262     | `de46434`       | Funded-provider operator docs | Keeps the unified failure-boundary text, not the superseded contract.                                                                                                                                                                                           |
+| #264     | `5b09629`       | Loopback report server        | Added in review: `Host` header allowlist against DNS rebinding.                                                                                                                                                                                                 |
+| #266     | `ffa3122`       | Skill-promotion evidence      | Composed under the #300 rule (below). A duplicate `canonicalJson` was removed so one canonicalizer sits behind every content hash in J-Rig core. Spec renumbered 035 to 042.                                                                                    |
+| #302     | `94afd4f`       | Nightly roster                | The nightly now publishes the evaluator's class-first `error` reason instead of a generic one.                                                                                                                                                                  |
+
+Final local verification on the last feature head: build, lint, format check,
+typecheck and harness verify exit zero; 106 files / 1,535 tests pass; global
+branch coverage 84.12%. Two wall-clock tests in files untouched by this work
+fail intermittently on a loaded development host and pass in isolation and on
+hosted runners; local full runs therefore used three workers. No assertion,
+timeout, coverage floor or branch protection was weakened. A test-hygiene bead
+under the master epic tracks making those two tests deterministic.
+
+#### Decision: one rule for evaluator infrastructure failure
+
+Two earlier designs covered evaluator outages and contradicted each other. The
+2026-08 design failed closed on any real-provider failure and emitted **no**
+Evidence Bundle. The 2026-09 design signed a `gate-result/v1` `error` row, but
+only when **every** judged criterion errored, and it ignored execution
+failures. On `main` a judge that died on some criteria still signed a normal
+verdict over the survivors, and a failed provider call was judged as though it
+were the skill's answer.
+
+Blueprint B § 7.4 already decides the question: `error` is "a verdict on the
+gate's own ability to evaluate", `gate_reasons[0]` MUST capture the error
+class, and `metadata.error_detail` SHOULD be structured. The adopted rule
+applies that consistently:
+
+- Any unrecovered provider failure, in the execution or judge phase, in the
+  skill or the naked-baseline pass, partial or total, yields **no verdict** and
+  a **signed `error` row** with the class-first reason and typed,
+  credential-free `metadata.error_detail`. The run is stored as failed and the
+  process exits 2 after every artifact is flushed.
+- A failed test case is never sent to the judge.
+- Partial sample loss is unchanged: an errored sample still votes `unsure`, so
+  multi-sample voting absorbs transient failures in the open. Only a criterion
+  with no surviving sample is an outage. The nightly roster runs five samples.
+- Promotion evidence and the `error` verdict are mutually exclusive on a row.
+  The promotion object carries its own pass/fail/advisory decision; emitting it
+  beside `error` would place two contradictory decisions in one signed
+  predicate.
+
+Signing was chosen over silence because a missing row is indistinguishable
+downstream from a gate that never ran, which conflicts with the unification
+thesis. Any-failure was chosen over all-failure because `advisory` over
+surviving criteria is the ambiguity the 2026-09 conference audit exploited, and
+the rollout gate tolerates `advisory` by default. No kernel schema changed:
+`error` was already in the enum and `metadata` is free-form. The repository-
+level decision record is J-Rig `000-docs/037`; this is an application of an
+existing normative contract, not a new predicate or a new immutable artifact.
+
+#### Estate finding: node20 Actions runtime removal
+
+While integrating, J-Rig's required `actionlint` check began failing on pinned
+actions that run on the node20 Actions runtime, which the hosting provider
+removes on 2026-09-23. An inventory of every `uses:` reference across the six
+repositories, with the runtime read from each action's own manifest at the
+pinned ref, found node20 pins in five of them. All are now on node24 majors:
+J-Rig #301, Lab #343, Core #93, Rollout Gate #65, Dashboard #81. Audit Harness
+was already clean. Where workflow files are hash-pinned policy artifacts, the
+manifest was re-pinned and its diff checked line by line against the files
+edited. The node24 markdown-lint action bundles a linter that adds
+`MD060/table-column-style`; it is disabled with an inline rationale in the
+three repositories that had not yet adopted that estate-wide setting.
+
+#### Open after this phase
+
+- Dashboard #68 (tailnet unified eval surface) remains a draft with its
+  vocabulary finding awaiting an explicit decision; nothing in this phase
+  changes the internal/public report boundary.
+- `j-rig batch` (#250) and `j-rig suite` (#254) both execute balanced target-N
+  jobs. They are documented side by side; whether one should subsume the other
+  is undecided.
+- J-Rig global branch coverage sits 0.12 points above its floor, so the next
+  feature slice must carry its own tests.
+- No package release and no public report promotion has been made. The runner
+  bounds are host protection only; no hosted or untrusted-execution claim is
+  made.
