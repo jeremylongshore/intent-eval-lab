@@ -102,3 +102,8 @@ credentials/
 # It is DURABLE evidence (the latest snapshot-currency verdict), not ephemeral
 # telemetry, so track it explicitly past the evidence/**/*.json ignore above.
 !evidence/snapshot-currency/gate-result.json
+
+# Phase 5 cross-repo dogfood — this is the durable MiniMax M3 promotion
+# compatibility receipt. Raw provider transcripts and local databases remain
+# ignored; only this sanitized bundle is intentionally reviewable.
+!evidence/phase5-dogfood/audit-tests-minimax-m3.bundle.json

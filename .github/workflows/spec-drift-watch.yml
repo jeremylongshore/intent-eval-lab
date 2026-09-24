@@ -126,7 +126,7 @@ jobs:
           fetch-depth: 0   # promotion branch is rebuilt from prior state; needs history
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
@@ -208,7 +208,7 @@ jobs:
       # only resets streaks to the seed (the byte/field drift detection is
       # unaffected) — committed belt-and-suspenders state is a tracked follow-on.
       - name: Restore liveness state
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: specs/snapshots/.state.json
           key: spec-drift-state-${{ github.run_id }}
@@ -479,7 +479,7 @@ jobs:
 
       - name: Save liveness state
         if: always()
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: specs/snapshots/.state.json
           key: spec-drift-state-${{ github.run_id }}
@@ -828,7 +828,7 @@ jobs:
 
       - name: Upload promotion delta artifact (branch-push failure fallback)
         if: always() && steps.promote.outputs.push_failed == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: spec-archive-delta-${{ github.run_id }}
           path: |
