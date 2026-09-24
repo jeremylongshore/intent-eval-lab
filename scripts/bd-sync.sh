@@ -7,7 +7,8 @@
 # all linked layers. The `project` command also renders guarded,
 # versioned cross-reference blocks into GitHub issue bodies and document
 # front-matter. Humans keep ownership of the surrounding prose; bd-sync
-# owns only the marked blocks.
+# owns only the marked blocks. A shared document can carry multiple bead
+# projections in one deterministic block without losing an earlier link.
 #
 # Subcommands:
 #   bd-sync link <bead> --gh OWNER/REPO#N [--plane PROJECT-N]
@@ -215,9 +216,9 @@ render_gh_projection() {
 }
 
 render_doc_projection() {
-  local bead="$1" gh_refs="$2" core digest
+  local beads="$1" gh_refs="$2" core digest
   core=$(printf "Beads: \`%s\`\nGitHub: \`%s\`" \
-    "$bead" "${gh_refs//$'\n'/, }")
+    "$beads" "${gh_refs//$'\n'/, }")
   digest=$(projection_checksum "$core")
   printf '%s\n\n%s\nProjection-SHA256: %s\n\n%s' \
     "$BD_SYNC_PROJECTION_BEGIN" "$core" "$digest" "$BD_SYNC_PROJECTION_END"
@@ -225,6 +226,71 @@ render_doc_projection() {
 
 projection_checksum() {
   printf '%s\n' "$1" | sha256sum | awk '{print $1}'
+}
+
+# Read one comma-separated field from an already-valid document projection.
+# The projection checksum is verified by the caller before these values are
+# trusted. Legacy v1 blocks used `Bead:`; accept that spelling while migrating
+# the block to the current aggregate `Beads:` spelling.
+projection_doc_field_values() {
+  local body="$1" field="$2"
+  awk -v field="$field" '
+    $0 ~ "^" field ": `" {
+      value = $0
+      sub("^" field ": `", "", value)
+      sub("`$", "", value)
+      print value
+      exit
+    }
+  ' <<< "$body" \
+    | tr ',' '\n' \
+    | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//' \
+    | sed '/^$/d'
+}
+
+merge_projection_refs() {
+  local left="$1" right="$2" value
+  local -a merged=()
+  declare -A seen=()
+  while IFS= read -r value; do
+    [ -n "$value" ] || continue
+    if [ -z "${seen[$value]+x}" ]; then
+      seen["$value"]=1
+      merged+=("$value")
+    fi
+  done < <(printf '%s\n%s\n' "$left" "$right" | sed '/^$/d')
+  printf '%s\n' "${merged[@]}"
+}
+
+# Build the deterministic document block for a bead while preserving any
+# valid projection already in that shared document. A mutated/partial block
+# is returned as an anomaly before any merge is attempted.
+projection_expected_doc() {
+  local body="$1" bead="$2" gh_refs="$3" base_expected state=0
+  local existing_beads='' existing_gh='' merged_beads merged_gh
+  base_expected=$(render_doc_projection "$bead" "$gh_refs")
+  projection_state "$body" "$base_expected" || state=$?
+  state="${state:-0}"
+  case "$state" in
+    0)
+      merged_beads="$bead"
+      merged_gh="$gh_refs"
+      ;;
+    1|3)
+      existing_beads=$(projection_doc_field_values "$body" Beads)
+      if [ -z "$existing_beads" ]; then
+        existing_beads=$(projection_doc_field_values "$body" Bead)
+      fi
+      existing_gh=$(projection_doc_field_values "$body" GitHub)
+      [ -n "$existing_beads" ] && [ -n "$existing_gh" ] || return 2
+      merged_beads=$(merge_projection_refs "$existing_beads" "$bead")
+      merged_gh=$(merge_projection_refs "$existing_gh" "$gh_refs")
+      ;;
+    *)
+      return 2
+      ;;
+  esac
+  render_doc_projection "${merged_beads//$'\n'/, }" "$merged_gh"
 }
 
 # Return status:
@@ -445,7 +511,8 @@ cmd_project() {
       || die "ANOMALY: Doc ref does not resolve to a file: $doc_ref"
     DOC_PATHS["$doc_ref"]="$doc_path"
     DOC_OLD["$doc_ref"]=$(<"$doc_path")
-    expected=$(render_doc_projection "$bead" "$gh_refs")
+    expected=$(projection_expected_doc "${DOC_OLD[$doc_ref]}" "$bead" "$gh_refs") || \
+      die "ANOMALY: guarded projection in ${DOC_PATHS[$doc_ref]} was edited or malformed"
     if projection_prepare_doc "${DOC_OLD[$doc_ref]}" "$expected"; then
       DOC_CHANGED["$doc_ref"]=1
       DOC_NEW["$doc_ref"]="$PROJECTION_RESULT"
@@ -616,6 +683,54 @@ cmd_projection_self_test() {
     [ "$state" -eq 1 ] || failures=$((failures + 1))
   fi
   projection_assert 'document projection is idempotent' "$doc_projected" "$PROJECTION_RESULT" || failures=$((failures + 1))
+
+  # Shared-document regression: a second bead must aggregate into the
+  # existing guarded block instead of replacing the first bead's receipt.
+  local doc_second_expected doc_merged doc_second_expected_again edited_shared_doc
+  state=0
+  doc_second_expected=$(projection_expected_doc "$doc_projected" 'bd_fixture_0002' 'owner/repo#99') || state=$?
+  state="${state:-0}"
+  [ "$state" -eq 0 ] || failures=$((failures + 1))
+  if projection_prepare_doc "$doc_projected" "$doc_second_expected"; then
+    doc_merged="$PROJECTION_RESULT"
+  else
+    failures=$((failures + 1))
+    doc_merged=''
+  fi
+  local expected_shared_beads="Beads: \`bd_fixture_0001, bd_fixture_0002\`"
+  local expected_shared_gh="GitHub: \`owner/repo#42, owner/repo#99\`"
+  case "$doc_merged" in
+    *"$expected_shared_beads"*"$expected_shared_gh"*)
+      printf 'projection self-test ok: shared document preserves both bead receipts\n'
+      ;;
+    *)
+      printf 'projection self-test FAIL: shared document lost or reordered a receipt\n' >&2
+      failures=$((failures + 1))
+      ;;
+  esac
+
+  state=0
+  doc_second_expected_again=$(projection_expected_doc "$doc_merged" 'bd_fixture_0002' 'owner/repo#99') || state=$?
+  state="${state:-0}"
+  [ "$state" -eq 0 ] || failures=$((failures + 1))
+  if projection_prepare_doc "$doc_merged" "$doc_second_expected_again"; then
+    failures=$((failures + 1))
+  else
+    state=$?
+    [ "$state" -eq 1 ] || failures=$((failures + 1))
+  fi
+  projection_assert 'shared document projection is idempotent' "$doc_merged" "$PROJECTION_RESULT" || failures=$((failures + 1))
+
+  edited_shared_doc="${doc_merged/Projection-SHA256: /Projection-SHA256: 0000000000000000000000000000000000000000000000000000000000000000 # }"
+  state=0
+  projection_expected_doc "$edited_shared_doc" 'bd_fixture_0003' 'owner/repo#100' >/dev/null || state=$?
+  state="${state:-0}"
+  if [ "$state" -eq 2 ]; then
+    printf 'projection self-test ok: mutated shared document is an anomaly\n'
+  else
+    printf 'projection self-test FAIL: mutated shared document was accepted\n' >&2
+    failures=$((failures + 1))
+  fi
 
   before=$(sha256sum "$fixture_dir/issue-human.md")
   after=$(sha256sum "$fixture_dir/issue-human.md")

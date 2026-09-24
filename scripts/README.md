@@ -32,7 +32,9 @@ renders only the versioned block between:
 ```
 
 The first run appends the GitHub block or inserts the document block after
-YAML front matter. Later runs are idempotent. If either marker is partial,
+YAML front matter. Later runs are idempotent. When several beads share one
+document, the guarded document block aggregates their `Beads:` and `GitHub:`
+refs instead of replacing an earlier receipt. If either marker is partial,
 duplicated, reordered, or the block content differs from the deterministic
 renderer, `bd-sync project` reports an `ANOMALY` and writes neither surface.
 Human-owned prose outside the markers is preserved.
