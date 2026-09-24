@@ -65,7 +65,7 @@ jobs:
           fetch-depth: 1
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
@@ -82,7 +82,7 @@ jobs:
       # friction; the seed is the registry's null last_known_snapshot.
       - name: Restore window state
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: specs/snapshots/.leading-indicator-state.json
           key: leading-indicator-state-${{ github.run_id }}
@@ -110,7 +110,7 @@ jobs:
 
       - name: Save window state
         if: always() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: specs/snapshots/.leading-indicator-state.json
           key: leading-indicator-state-${{ github.run_id }}

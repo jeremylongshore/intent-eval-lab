@@ -6,8 +6,9 @@ on:
   # check is SKIPPED on unrelated PRs and never reports, blocking the PR
   # forever. The push: trigger keeps its path filter (no required-check
   # semantics on push). Vale stays advisory (continue-on-error in its job).
+  # No `branches:` filter on purpose: with `branches: [main]` a stacked PR whose
+  # base is another feature branch gets no checks at all. Push builds stay on main.
   pull_request:
-    branches: [main]
   push:
     branches: [main]
     paths:

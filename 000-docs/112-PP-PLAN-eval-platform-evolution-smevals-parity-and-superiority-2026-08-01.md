@@ -1,0 +1,837 @@
+# Master Blueprint: Evaluation Platform Evolution
+
+**Plan ID:** IEP-EVAL-EVOLUTION-001
+**Status:** ACTIVE — foundation merged; downstream integration and release open
+**Date:** 2026-08-01
+**Owner:** Intent Solutions
+**Master bead:** `bd_000-projects-htjt`
+**Canonical home:** `intent-eval-lab/000-docs/`
+**Scope:** `intent-eval-core`, `intent-eval-lab`, `j-rig-binary-eval`, `audit-harness`, `intent-rollout-gate`, and `intent-eval-dashboard`
+
+## 1. Executive decision
+
+The Intent Eval Platform will evolve from a strong, skill-specific evaluation
+and evidence system into a general evaluation substrate with a first-class
+skill profile.
+
+The platform will adopt the best product primitives demonstrated by `smevals`:
+
+- declarative tasks and configurations;
+- an executable, model- and harness-neutral runner contract;
+- immutable raw run records;
+- separate named graders with grader snapshots;
+- regrading without re-running models;
+- balanced repeated runs per task/config/model combination;
+- uncertainty-aware reports;
+- terminal, live, and static report surfaces.
+
+It will retain and strengthen the capabilities that distinguish the Intent Eval
+Platform:
+
+- skill package, trigger, functional, adversarial, regression, baseline, and
+  rollout-safety evaluation;
+- external evaluator separation;
+- blocker and sacred-regression semantics;
+- coverage honesty and explicit skipped dimensions;
+- cost and runtime telemetry;
+- content-addressed evidence and kernel validation;
+- signed Evidence Bundles and fail-closed rollout decisions;
+- verified dashboard ingestion and C3-safe rendering.
+
+### 1.1 Reference basis
+
+The parity baseline is the public [Prime Radiant SMEvals article](https://primeradiant.com/blog/2026/smevals.html) and the [SMEvals README](https://github.com/prime-radiant-inc/smevals/blob/main/README.md), inspected on 2026-08-01. The comparison is capability-based, not a claim that the projects share an implementation or license. Local IEP findings come from the six sibling repositories and their current schemas, CLIs, evidence paths, and documentation; every implementation phase must replace a planning claim with executable acceptance evidence.
+
+The target is not a copy of `smevals`. The target is a composable substrate in
+which a generic model benchmark and a governed skill-release evaluation share
+the same run/grade/report foundation, while their scoring policies remain
+explicitly separate.
+
+## 2. Current diagnosis
+
+The current platform is technically deeper than a small eval CLI, but its
+measurement loop is less cohesive.
+
+### 2.1 Current strengths to preserve
+
+- J-Rig already has real provider adapters, external judges, blocker criteria,
+  baseline comparison, regression detection, cost accounting, vote evidence,
+  SQLite persistence, and Evidence Bundle emission.
+- The kernel provides content-addressed contracts, validation, state machines,
+  and signed predicate boundaries.
+- The rollout gate is fail-closed and delegates decision semantics to the
+  published rollout package.
+- The dashboard verifies evidence before rendering and protects the public
+  surface from unverified or cross-dimension aggregate claims.
+- The Skill Refiner already provides eval-set lineage, leakage/coverage checks,
+  significance-aware acceptance, and content-addressed proposals.
+
+### 2.2 Current gaps to close
+
+1. J-Rig's public execution model is centered on `SKILL.md`, not an arbitrary
+   executable harness.
+2. J-Rig's `--samples` primarily samples judge votes; it does not provide a
+   balanced target-N workflow for complete task/config/model executions.
+3. Raw execution and grading are coupled in the main CLI path. There is no
+   complete `grade --regrade` workflow over immutable captured runs.
+4. The local report surface is a SQLite run inspector while the richer report
+   surface lives in a separate dashboard ingestion/deployment path.
+5. The name `EvalSpec` currently refers to two different contracts: the
+   platform kernel's canonical entity and J-Rig's skill-specific YAML shape.
+6. The local J-Rig checkout pins `@intentsolutions/core` at `0.9.0` while the
+   platform's current canonical kernel is `0.10.0`.
+7. Existing real-skill dogfood and batch work must be integrated with this
+   substrate rather than duplicated.
+
+## 3. Design principles and non-negotiables
+
+### 3.1 Principles
+
+1. **Raw evidence before judgment.** A model/harness execution is captured once
+   and can be judged many times.
+2. **Configuration is data.** Model, prompt, system instructions, tools,
+   harness, provider, sampling parameters, and resource ceilings belong to a
+   named Config, not hidden CLI state.
+3. **Execution variance and judge variance are different.** The platform must
+   record and report both.
+4. **Policy is not a score.** Numeric reporting may describe a homogeneous
+   population; rollout decisions remain policy-driven and fail-closed.
+5. **The kernel owns stable contracts, not every implementation detail.** J-Rig
+   owns its local run/grade store; the kernel owns cross-repo wire contracts and
+   predicate schemas.
+6. **Adapters are explicit.** A skill-specific profile may compile to a
+   canonical EvalSpec, but it must not silently pretend to be the same shape.
+7. **No silent coverage claims.** Every report and evidence row states what was
+   evaluated, what was skipped, and why.
+8. **Verified data only reaches public surfaces.** The dashboard continues to
+   render only after signature, content, visibility, and policy checks.
+9. **Every improvement must be dogfoodable.** A feature is not complete until
+   the generic example and a real skill example use it.
+
+### 3.2 Hard anti-goals
+
+- No monorepo conversion.
+- No unbounded schema growth in `intent-eval-core` merely to mirror internal
+  SQLite tables.
+- No aggregate PASS percentage across heterogeneous predicate types or
+  unrelated dimensions.
+- No model output treated as a harness failure merely because the answer is
+  poor; non-zero runner exit is infrastructure evidence, while a real bad
+  response remains gradable evidence.
+- No regrading that mutates the raw Run.
+- No public dashboard path that bypasses verified ingest.
+- No production-Rekor or signed-decision claim where the existing contract
+  still marks the operation reserved or deferred.
+
+## 4. Target vocabulary
+
+The following names are normative for the new substrate.
+
+| Term            | Meaning                                                                                   | Owner                               |
+| --------------- | ----------------------------------------------------------------------------------------- | ----------------------------------- |
+| Suite           | A directory or manifest containing one or more Evals                                      | J-Rig                               |
+| Eval            | A capability being measured; has tasks and metadata                                       | Core contract + J-Rig               |
+| EvalSpec        | Canonical platform contract for an Eval                                                   | `intent-eval-core`                  |
+| SkillEvalSpec   | J-Rig profile for `SKILL.md` criteria/test cases                                          | J-Rig                               |
+| Task            | One challenge/exercise within an Eval                                                     | J-Rig profile/runtime               |
+| Config          | One complete execution setup: model, provider, prompt/context, tools, harness, and limits | J-Rig                               |
+| Runner          | Executable adapter that performs one Task under one Config                                | J-Rig                               |
+| Run             | Immutable captured execution attempt and artifacts                                        | J-Rig store; kernel-linked identity |
+| Checker         | One deterministic or external operation used by a Grader                                  | J-Rig                               |
+| Grader          | Ordered checks plus scoring/outcome rules                                                 | J-Rig                               |
+| Grade           | Immutable result of applying one named Grader to one Run                                  | J-Rig store                         |
+| Evidence Bundle | Signed/validated cross-repo collection of attestations                                    | Core + emitters                     |
+| Rollout policy  | Consumer-side allow/block/advisory rules                                                  | Rollout package                     |
+| Report          | Human-readable projection of Runs and Grades                                              | J-Rig/dashboard                     |
+
+### 4.1 EvalSpec identity decision
+
+`EvalSpec` remains the canonical kernel term. The existing J-Rig YAML contract
+will be explicitly named `SkillEvalSpec` in code and documentation, with a
+versioned adapter to the canonical contract. The first adapter may be a
+lossless profile mapping rather than a forced one-to-one field translation.
+
+The adapter must preserve:
+
+- the skill snapshot hash;
+- criteria and test-case identity;
+- model/provider/config identity;
+- runtime limits;
+- scoring and blocker policy;
+- content hash and version;
+- skipped/evaluated coverage;
+- lineage to the resulting Run and Grade records.
+
+If the canonical kernel must change, that change requires the existing
+Class-1/Class-2 governance route and a compatibility fixture in every consumer.
+
+## 5. Target architecture
+
+```text
+                         ┌────────────────────────────┐
+                         │ Eval/Suite definition      │
+                         │ tasks + configs + graders  │
+                         └──────────────┬─────────────┘
+                                        │
+                           scheduler / balanced sampler
+                                        │
+                         ┌──────────────▼─────────────┐
+                         │ Runner contract             │
+                         │ skill | llm | agent | custom│
+                         └──────────────┬─────────────┘
+                                        │
+                         ┌──────────────▼─────────────┐
+                         │ Immutable Raw Run ledger     │
+                         │ output + stderr + artifacts  │
+                         │ config + hashes + lifecycle  │
+                         └──────────────┬─────────────┘
+                                        │ 1..N graders
+                         ┌──────────────▼─────────────┐
+                         │ Named Grader                 │
+                         │ checks + judge + snapshot    │
+                         └──────────────┬─────────────┘
+                                        │
+                         ┌──────────────▼─────────────┐
+                         │ Immutable Grade              │
+                         │ score + metrics + tags       │
+                         │ outcome + artifacts          │
+                         └───────┬───────────┬─────────┘
+                                 │           │
+                    report/serve/build       │ optional policy adapter
+                                 │           │
+                  ┌──────────────▼───┐  ┌────▼────────────────────┐
+                  │ Local/static UI   │  │ Evidence Bundle         │
+                  │ leaderboard/task │  │ kernel validation        │
+                  │ lineage/artifacts │  │ rollout-gate/dashboard  │
+                  └──────────────────┘  └─────────────────────────┘
+```
+
+The skill evaluator becomes a first-class Runner + Grader profile. It retains
+its seven evaluation layers and rollout semantics; it no longer defines the
+only valid shape of an evaluation.
+
+## 6. Proposed on-disk and storage contract
+
+The new suite layout is compatible with the existing skill workflow but can
+represent arbitrary evaluations:
+
+```text
+my-eval/
+├── eval.yaml                 # metadata/profile/version
+├── tasks/*.yaml              # one challenge per file
+├── configs/*.yaml            # model/prompt/harness configurations
+├── graders/*.yaml            # named grading pipelines
+├── runners/*                 # executable runner adapters
+├── fixtures/                 # inputs and expected resources
+└── runs/                     # generated; never edit by hand
+    └── <task>/<config>/<model>/<sample>/
+        ├── run.yaml          # written last; completion marker
+        ├── output.txt
+        ├── stderr.txt
+        ├── manifest.json     # artifact names, sizes, hashes
+        └── artifacts/*
+            └── ...
+```
+
+The SQLite store remains useful for J-Rig query/report workflows, but the
+on-disk Run representation is the portable interchange and recovery format.
+SQLite rows must point to the immutable Run and Grade artifacts rather than
+become the only copy of the evidence.
+
+### 6.1 Raw Run rules
+
+- The runner receives a resolved Task, Config, model, sample ID, run ID, and
+  absolute run directory through a documented contract.
+- Standard output is the candidate response; standard error is diagnostic.
+- Exit zero means a response was produced, even if it is wrong.
+- Non-zero exit means harness/infrastructure failure and is excluded from
+  quality statistics but retained for debugging.
+- `run.yaml` is written last and includes resolved inputs, timing, exit code,
+  runner version, environment-safe metadata, and artifact manifest.
+- The raw Run is immutable after completion. Re-execution creates a new sample.
+
+### 6.2 Grade rules
+
+- A Grade names the Run, Grader, Grader version/hash, and grading timestamp.
+- The Grader definition is snapshotted beside the Grade.
+- A Run can have `default`, `judge`, `security`, or other named Grades.
+- `--regrade` deletes/replaces only the selected Grade namespace; it never
+  changes the Run.
+- Required checks halt later checks and mark them skipped, preserving the
+  reason for the short circuit.
+- Checkers may emit score, metrics, tags, notes, details, and artifacts.
+- The Grade records raw checker output and the normalized result.
+
+## 7. Measurement and statistics protocol
+
+### 7.1 Two sampling layers
+
+**Execution sampling** repeats the complete Task × Config × Model attempt. The
+sampler runs balanced passes and tops each combination up to a target N. Failed
+runner attempts do not count toward N, but remain in the ledger.
+
+**Judge sampling** repeats only an external judge over the same captured output.
+The Grade records each vote, aggregation rule, agreement, and judge identity.
+
+The report must never label judge votes as execution samples.
+
+### 7.2 Reported metrics
+
+For homogeneous populations, reports may show:
+
+- pass rate and sample count;
+- mean score and standard error where a numeric score is meaningful;
+- per-task and per-config breakdowns;
+- failure count and harness-failure count separately;
+- tag shares and metric distributions;
+- judge agreement and calibration where available;
+- execution cost, latency, and token usage;
+- skipped coverage and reasons.
+
+The existing binary rollout decision remains a separate policy output. A high
+mean cannot override a blocker or sacred regression.
+
+### 7.3 C3 protection
+
+The report model must encode grouping keys explicitly. It must not produce one
+rolled score across distinct predicate URIs, meters, tenants, or incompatible
+dimensions. Cross-dimension comparison requires an explicit consumer policy and
+is never inferred by the renderer.
+
+## 8. Repository ownership and delivery order
+
+### Phase 0 — Blueprint and authority lock
+
+**Canonical repo:** `intent-eval-lab`
+**Branch:** `feat/iep-eval-evolution-blueprint`
+**Deliverables:** this blueprint, glossary additions, dependency map, bead
+umbrella and repo epics.
+**Gate:** plan review; no runtime code yet.
+
+### Phase 1 — Contract reconciliation
+
+**Repos:** `intent-eval-core`, `intent-eval-lab`, `j-rig-binary-eval`
+**Branches:**
+
+- `feat/iec-E10-eval-substrate-contracts` in `intent-eval-core`;
+- `feat/iep-eval-evolution-blueprint` in `intent-eval-lab` for the current
+  normative blueprint and any follow-up authority changes;
+- `feat/eval-substrate-skill-profile` in `j-rig-binary-eval`.
+
+**Deliverables:** SkillEvalSpec identity, canonical adapter/profile, current
+kernel pin, compatibility fixtures, schema/version drift gate.
+
+**Gate:** every consumer validates the same contract version; old J-Rig specs
+remain readable through an explicit migration path.
+
+### Phase 2 — Run and Grade substrate
+
+**Primary repo:** `j-rig-binary-eval`
+**Branch:** `feat/eval-substrate-run-grade`
+**Deliverables:** Runner/Config contract, immutable raw Run ledger, artifact
+manifest, named Graders, snapshots, `grade`, `--regrade`, migration tests.
+
+**Gate:** generic non-skill example runs; one Run receives two Grades; regrade
+changes only the selected Grade; raw bytes/hashes remain unchanged.
+
+### Phase 3 — Sampling, suites, and reports
+
+**Repos:** `j-rig-binary-eval`, `intent-eval-dashboard`
+**Branches:**
+
+- `feat/eval-substrate-sampling` and `feat/eval-substrate-report` in J-Rig;
+- `feat/eval-substrate-dashboard-report` in the dashboard.
+
+**Deliverables:** balanced target-N execution sampling, uncertainty metrics,
+suite/batch workflow, terminal JSON/Markdown, live serving, static build, and
+a unified report model.
+
+**Gate:** three tasks × two configs × target N produces balanced samples and a
+static report that exposes per-task results, uncertainty, lineage, and grader
+version.
+
+### Phase 4 — Evidence and rollout integration
+
+**Repos:** `audit-harness`, `intent-rollout-gate`, `intent-eval-dashboard`
+**Branches:**
+
+- `feat/iep-audit-report-promotion-metadata` in audit-harness;
+- `feat/iep-rollout-report-promotion` and stacked
+  `feat/iep-rollout-skill-promotion` in intent-rollout-gate;
+- `feat/eval-substrate-dashboard-report` and stacked
+  `fix/eval-report-cli-separator` in intent-eval-dashboard.
+
+**Deliverables:** contract/drift gates, generic-to-bundle adapter where
+appropriate, rollout compatibility tests, verified public/internal rendering,
+and no new signing claims beyond the current contract.
+
+**Gate:** a real J-Rig skill Grade produces a kernel-valid bundle, rollout-gate
+consumes it, and the dashboard renders only the verified result.
+
+**Status:** implementation slices are delivered on draft PRs and have passed
+their local gates. Audit-harness #145 adds the promotion metadata contract;
+rollout-gate #57/#59 consumes report and skill-promotion rows with fail-closed
+validation; dashboard #68/#70 renders the verified report and fixes the
+documented pnpm argument-separator invocation. Merge/review and the separate
+human-gated public route remain release controls.
+
+### Phase 5 — Dogfood and release
+
+**Repos:** all affected repos
+**Branches:** per-repo `feat/eval-substrate-dogfood` only when a repo needs a
+final integration patch; no direct main changes.
+
+**Deliverables:** generic benchmark example, real skill shortlist, DeepSeek
+ground truth where available, regression fixtures, migration guide, operator
+runbook, release notes, package/version updates, and PRs.
+
+**Gate:** all quality checks pass; evidence artifacts are attached to PRs;
+branches are merged through normal CI; each repo is pushed and clean.
+
+**Status:** the generic and real-provider dogfood receipts are complete. The
+generic fixture exercised Run → Grade → unified report with idempotent Run
+reuse. A pinned MiniMax M3 `audit-tests` run produced a kernel-valid
+`j-rig/skill-promotion/v1` bundle; its 3/5 result is intentionally advisory and
+the updated rollout consumer blocked promotion. The dashboard rendered the
+generic report in an internal destination, refused the public destination, and
+the existing signed J-Rig ingest/deploy receipts remain green. The remaining
+release controls are PR merge/CI, a broader real-skill shortlist, and the
+human-approved tailnet/public route.
+
+## 9. Branch, commit, PR, and note discipline
+
+### 9.1 Branch rules
+
+- Never implement this plan directly on `main`.
+- Use one feature branch per sibling repo and one logical concern per branch.
+- Do not share a branch across repositories.
+- Do not rewrite or delete existing user worktrees, untracked fixtures, or
+  unrelated beads state.
+- Branch from the repo's current main after a read-only status check. If main
+  is behind origin, record that fact and rebase before opening the PR.
+
+### 9.2 Commit rules
+
+Use Conventional Commits with a plan/bead footer:
+
+```text
+feat(eval): add immutable raw Run artifact ledger
+
+Implements the raw-run portion of IEP-EVAL-EVOLUTION-001.
+
+Plan: IEP-EVAL-EVOLUTION-001
+Bead: bd_000-projects-htjt.6
+Repo: j-rig-binary-eval
+Depends-on: htjt.2
+Evidence: pnpm test; pnpm typecheck; generic-runner e2e
+```
+
+Keep commits reviewable and reversible. Separate structural refactors from
+behavior changes. Do not mix documentation currency with runtime changes unless
+the documentation is the acceptance evidence for that same change.
+
+### 9.3 PR rules
+
+Every PR must include:
+
+- bead and blueprint IDs;
+- scope and non-goals;
+- dependency PRs/issues;
+- migration and compatibility impact;
+- tests and exact quality-gate commands;
+- sample report/evidence artifacts;
+- security/privacy notes;
+- explicit statement of any skipped dimensions or deferred signing behavior.
+
+PRs must be opened per repository, linked back to the master umbrella, and
+merged in dependency order. The master umbrella is not closed until all child
+beads, commits, PRs, documentation, and pushes are complete.
+
+## 10. Documentation update matrix
+
+| Document/surface                                                     | Required update                                               |
+| -------------------------------------------------------------------- | ------------------------------------------------------------- |
+| This blueprint                                                       | Normative plan, dependencies, gates, delivery record          |
+| `intent-eval-lab/000-docs/014-DR-GLOS-canonical-glossary.md`         | Eval/Task/Config/Runner/Run/Grader/Grade terminology          |
+| `intent-eval-lab/000-docs/012-AT-ARCH-platform-runtime-blueprint.md` | Run/Grade boundary and adapter architecture, if kernel-facing |
+| `intent-eval-core` README/CHANGELOG                                  | Canonical schema/profile/version changes                      |
+| `j-rig-binary-eval` README/CLI README                                | Generic quickstart, skill profile, migration, commands        |
+| `audit-harness` README/CHANGELOG                                     | Drift/contract gate integration                               |
+| `intent-rollout-gate` README/CHANGELOG                               | Bundle compatibility only; preserve reserved signing notes    |
+| `intent-eval-dashboard` README/runbooks                              | Local/static report vs verified public ingest boundary        |
+| umbrella `README.md` / `CLAUDE.md`                                   | Phase status, repo ownership, links to this blueprint         |
+| Per-repo `AGENTS.md`/`CLAUDE.md`                                     | Branch, test, release, and cross-repo dependency notes        |
+
+All normative claims must be updated in their owning repo first, then mirrored
+into the umbrella. Historical status notes remain historical; do not rewrite
+them to make the present look cleaner.
+
+## 11. Acceptance demonstrations
+
+### 11.1 Generic benchmark
+
+Create a small haiku or structured-output Eval with:
+
+- two Tasks;
+- at least two Configs, including different model or prompt settings;
+- one executable custom Runner;
+- one deterministic Grader and one external-judge Grader;
+- target-N full-run sampling;
+- regrade over existing raw Runs;
+- terminal JSON/Markdown plus a self-contained static report.
+
+The demonstration must show that changing a Grader does not spend model tokens
+again and that runner failures are not counted as model failures.
+
+### 11.2 Skill benchmark
+
+Run a real `SKILL.md` through the J-Rig profile with:
+
+- package and trigger checks;
+- functional and adversarial cases;
+- separate judge provider when configured;
+- execution and judge sample counts shown separately;
+- baseline or regression layer explicitly enabled or explicitly skipped;
+- Evidence Bundle emission;
+- rollout-gate decision;
+- verified dashboard render.
+
+### 11.3 Convergence benchmark
+
+The same report lineage must be traceable across:
+
+```text
+EvalSpec/SkillEvalSpec
+  → Config + Task
+  → Raw Run
+  → Grade
+  → report
+  → optional gate-result/v1 Evidence Bundle
+  → rollout decision
+  → verified dashboard surface
+```
+
+## 12. Risks and mitigations
+
+| Risk                                      | Mitigation                                                                          |
+| ----------------------------------------- | ----------------------------------------------------------------------------------- |
+| Kernel becomes a dump for J-Rig internals | Keep storage/runtime contracts in J-Rig; add only stable wire contracts to core     |
+| Two specs drift again                     | One canonical name, explicit SkillEvalSpec profile, CI adapter fixtures             |
+| Statistical reports imply unsafe rollup   | C3-safe grouping model and report tests                                             |
+| Regrade leaks stale artifacts             | Grade namespace replacement plus grader snapshot/hash tests                         |
+| Generic runner permits credential leakage | scoped environment, audit-harness cred-gate, redacted manifests, fixtures           |
+| Batch workflow amplifies provider cost    | target-N caps, cost ceilings, resume semantics, explicit provider selection         |
+| Dashboard exposes internal data           | reuse verified ingest and visibility policy; no raw local DB publication            |
+| Current user changes are overwritten      | status checks, branch isolation, no destructive commands, explicit conflict handoff |
+| Cross-repo release drift                  | dependency beads, version matrix, CI currency gate, PR dependency links             |
+
+## 13. Execution record
+
+This section is append-only. Each phase records branch, PR, commits, bead
+closures, quality gates, and pushed revision.
+
+### Phase 0
+
+- Branch: `feat/iep-eval-evolution-blueprint`
+- Bead: `bd_000-projects-htjt`
+- Artifact: `112-PP-PLAN-eval-platform-evolution-smevals-parity-and-superiority-2026-08-01.md`
+- Commits: `0217b32`, `57bc597`
+- PR: [intent-eval-lab#258](https://github.com/jeremylongshore/intent-eval-lab/pull/258) (draft)
+- Status: blueprint authored; repo-epic decomposition and dependency wiring complete
+
+### Phase 1
+
+- Branches: `feat/iec-E10-eval-substrate-contracts` in `intent-eval-core`; `feat/eval-substrate-skill-profile` in `j-rig-binary-eval`
+- Commits: `de41909` (core); `62ae01d` (J-Rig)
+- PRs: [intent-eval-core#84](https://github.com/jeremylongshore/intent-eval-core/pull/84); [j-rig-skill-binary-eval#247](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/247) (draft)
+- Beads: `bd_000-projects-htjt.1`, `bd_000-projects-htjt.2`
+- Status: identity and version-currency slice complete; explicit adapter, compatibility fixtures, and drift gate remain in progress
+
+### Phase 2
+
+- Branch: `feat/eval-substrate-run-grade` in `j-rig-binary-eval`
+- Commit: `e9e51ce`
+- PR: [j-rig-skill-binary-eval#248](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/248) (draft; stacked on #247)
+- Bead: `bd_000-projects-htjt.6`
+- Follow-on branch: `feat/eval-substrate-graders` in `j-rig-binary-eval`
+- Follow-on commit: `14da36a`
+- Follow-on PR: [j-rig-skill-binary-eval#249](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/249) (draft; stacked on #248)
+- Follow-on bead: `bd_000-projects-htjt.7`
+- Status: raw-run foundation plus deterministic named Graders, immutable snapshots, and explicit regrade are delivered; the full phase gate remains pending review and the later external-judge, sampling, suite, and report slices
+
+### Phase 3
+
+- Branch: `feat/eval-substrate-sampling` in `j-rig-binary-eval`
+- Commit: `df5b43e`
+- PR: [j-rig-skill-binary-eval#250](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/250) (draft; stacked on #249)
+- Bead: `bd_000-projects-htjt.3`
+- Follow-on branch: `feat/eval-substrate-report` in `j-rig-binary-eval`
+- Follow-on commit: `09adb6e`
+- Follow-on PR: [j-rig-skill-binary-eval#251](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/251) (draft; stacked on #250)
+- Follow-on bead: `bd_000-projects-htjt.5`
+- Dashboard branch: `feat/eval-substrate-dashboard-report` in `intent-eval-dashboard`
+- Dashboard commit: `062bfb8` (rebased onto current `origin/main` `9306311`)
+- Dashboard PR: [intent-eval-dashboard#68](https://github.com/jeremylongshore/intent-eval-dashboard/pull/68) (draft; consumes the J-Rig report contract from #251)
+- Dashboard bead: `bd_000-projects-htjt.5` under epic `bd_000-projects-htjt.14`
+- Status: balanced target-N planner, raw-run sampling joins, selected-Grader uncertainty metrics, `sample-plan`, local unified JSON/Markdown report projection, and a tailnet-only dashboard consumer are delivered; suite/batch execution, verified ingest/provenance, live static publication, and human-gated route remain
+
+### Phase 4
+
+- Branches: `feat/iep-audit-report-promotion-metadata` (audit-harness),
+  `feat/iep-rollout-report-promotion` plus
+  `feat/iep-rollout-skill-promotion` (intent-rollout-gate), and
+  `feat/eval-substrate-dashboard-report` plus
+  `fix/eval-report-cli-separator` (intent-eval-dashboard)
+- PRs: [audit-harness#145](https://github.com/jeremylongshore/intent-audit-harness/pull/145),
+  [intent-rollout-gate#57](https://github.com/jeremylongshore/intent-rollout-gate/pull/57),
+  [intent-rollout-gate#59](https://github.com/jeremylongshore/intent-rollout-gate/pull/59),
+  [intent-eval-dashboard#68](https://github.com/jeremylongshore/intent-eval-dashboard/pull/68),
+  [intent-eval-dashboard#70](https://github.com/jeremylongshore/intent-eval-dashboard/pull/70)
+- Beads: `bd_000-projects-htjt.13.2`, `bd_000-projects-htjt.13.4`,
+  `bd_000-projects-htjt.14.5`, `bd_000-projects-htjt.4.2`
+- Status: local quality gates and pushed revisions complete; draft PR review,
+  merge order, and the public-route approval are still outstanding.
+
+### Phase 5
+
+- Branch: `feat/iep-eval-evolution-blueprint` in intent-eval-lab
+- Bead: `bd_000-projects-htjt.4`; GitHub issue
+  [intent-eval-lab#260](https://github.com/jeremylongshore/intent-eval-lab/issues/260);
+  Plane `LAB-105`
+- Tracking follow-up completed: child bead `bd_000-projects-htjt.4.3`, GitHub issue
+  [intent-eval-lab#261](https://github.com/jeremylongshore/intent-eval-lab/issues/261),
+  Plane `LAB-107`, for the pre-existing refiner tri-link debt exposed by the
+  release-hardening verifier. Lab PR #262 (`1663dda`) fixed the false-positive
+  parser; J-Rig PR #267 (`060bb2c`) restored its three headers; the workspace
+  verifier now returns zero violations.
+- Generic receipt: raw Run
+  `raw_14a6b85edcc974734b0fbaeecf7968a58fc47df76ca06f4c1df6720a866b79dd`
+  was reused on the repeat invocation; Grade
+  `grade_8be8c72bd182c2a1044ea0906ca66e51d5dc7bebdac0346e354a36172b9b070d`
+  passed at `1.0` using grader snapshot
+  `sha256:5aaacc8f48da3d2728defc5d57f1445f179de1c4d17a34816f0b25a6d6ad2200`.
+  The unified report had one attempted/completed/graded cell and no harness
+  failures.
+- Real-provider receipt: pinned source
+  `claude-code-plugins-plus-skills@a9dd5c02a3793412ed35525efd460b399554be13`
+  produced `evidence/phase5-dogfood/audit-tests-minimax-m3.bundle.json`
+  (SHA-256 `a3b409f7534d2b33c1d21b1df1086c5c2851ca1454a388ceb8ac3cfdbe2e0344`).
+  MiniMax-M3 scored `3/5` (`0.6`), with zero provider failures; the bundle is
+  advisory, not promotion-eligible, and rollout-gate blocked it for that
+  reason. No key, transcript, or local database is committed.
+- Dashboard receipt: the internal render consumed the unified report and the
+  signed ingest/deploy receipts are workflow runs
+  [30734349474](https://github.com/jeremylongshore/intent-eval-dashboard/actions/runs/30734349474)
+  and
+  [30734361333](https://github.com/jeremylongshore/intent-eval-dashboard/actions/runs/30734361333);
+  the public destination remains refused by policy.
+- Status: dogfood evidence, release-hardening implementation, and tri-link
+  cleanup are complete; the broader shortlist, PR merges/CI, and human-gated
+  route remain release work.
+
+### Phase 6 — stacked merge/CI reconciliation (2026-08-02)
+
+- Bead: `bd_000-projects-htjt.15`; GitHub issue
+  [intent-eval-lab#283](https://github.com/jeremylongshore/intent-eval-lab/issues/283);
+  Plane `LAB-129`.
+- Canonical order remains: J-Rig #247 → #248 → #249 → #250 → #251, then
+  downstream report/static/serve consumers. J-Rig #251 was reconciled against
+  `feat/eval-substrate-sampling` at `b099c09` with merge commit
+  `d518ffe38feeed3b02803359ca29ca9c17a8d803` on
+  `feat/eval-substrate-report`.
+- The reconciliation preserves the newer batch runner and sampled
+  model-judge metadata from #250 while retaining both the sampling-manifest
+  report and `j-rig/unified-report/v1` JSON/Markdown projection. Local gates:
+  `pnpm run check` (97 files / 1,465 tests), `pnpm run build`, harness-hash,
+  escape-scan, Markdownlint, and `git diff --check` all pass.
+- GitHub reports #251 `MERGEABLE/CLEAN`; #248 and #251 report no branch checks,
+  so they remain owner/branch-policy receipts rather than green-check claims.
+  Dashboard #68 remains tailnet-only and has one actionable Vale/Reviewdog
+  vocabulary finding (`rollout`) awaiting explicit CI-fix approval. No public
+  promotion or merge-complete claim is made by this phase.
+
+### Phase 7 — foundation integration (2026-09-17)
+
+This receipt supersedes earlier merge-readiness snapshots, not the historical
+execution records above. Bead `bd_000-projects-htjt.15`, GitHub
+[intent-eval-lab#283](https://github.com/jeremylongshore/intent-eval-lab/issues/283),
+and Plane `LAB-129` track the remaining sequence.
+
+#### Delivered foundation
+
+| Repository / PR | Merged revision                            | Verification                                                                                                |
+| --------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| Lab #258        | `42f1921d71382eddaa173a3dc768f0c111f5ebe5` | Plan and glossary refreshed against main; required CI and CodeQL passed.                                    |
+| Core #84        | `94754f2ba6bedd8b9b1a884226993c8cb21dbabe` | Build and full local check: 49 files, 1,412 tests passed, one existing skip; required CI and CodeQL passed. |
+| J-Rig #247      | `2d5607cf14a825728d959788674470dfa39807a9` | Canonical adapter and 0.10.0 currency; 87 files / 1,443 tests passed; required CI and CodeQL passed.        |
+| J-Rig #248      | `84e0143c06fbdb2f90ed39ead3b65189a6c50c6b` | Generic raw-run layer; 90 files / 1,453 tests passed; required CI and CodeQL passed.                        |
+| J-Rig #249      | `db86f69764b54d1a1837fdbcac164bdb8aa01831` | Named graders, reuse and outage fixes; 93 files / 1,468 tests passed; required CI and CodeQL passed.        |
+
+Build precedes checks in a clean workspace so package export declarations
+exist. J-Rig lint, formatting, typecheck, and the complete test set passed;
+local tests used two workers after two timing-sensitive tests failed under
+concurrent host load. No assertion, timeout, coverage floor, or branch
+protection was weakened. Remote CI exercised its normal configuration.
+
+J-Rig #249 is merged after refreshing against the merged runner. Integration fixes resolve
+saved Grade identity and regrade policy **before** provider resolution or model
+calls, and reject an all-samples judge outage without storing a false quality
+failure. All 93 files / 1,468 tests passed locally, including reuse, changed-rule
+policy, unchanged raw Runs, and healthy retry after an outage.
+
+The CLI example in `examples/generic-run/` exercised two configurations, sealed
+Run reuse, initial Grade creation, identical Grade reuse, and an intentional
+version-two regrade. The original raw Run and first Grade remained equal after
+regrading. These are deterministic fixture receipts with zero model calls, not
+evidence of real-model quality or cross-provider equivalence.
+
+#### Remaining dependency sequence
+
+Remote observations below were refreshed on 2026-09-18 UTC. A passing old head
+does not establish current-main compatibility. Feature-base branches must be
+refreshed and checked again after their predecessor merges.
+
+| Repository / PR    | Predecessor                      | Remote observation / next action                                                                                       |
+| ------------------ | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| J-Rig #250         | #249, merged                     | `b099c09`: no checks; conflicts with refreshed predecessor. Reconcile sampling next.                                   |
+| J-Rig #251         | #250                             | `d518ffe`: no checks; refresh report projection after sampling.                                                        |
+| J-Rig #252         | #251                             | `2df598f`: no checks; batch branch conflicts.                                                                          |
+| J-Rig #254         | #252                             | `803972f`: no checks; resumable suite integration remains.                                                             |
+| J-Rig #256         | #254                             | `c125ff4`: no checks; preserve current main's dead-judge handling when reconciling provider failures.                  |
+| J-Rig #258         | #256                             | `c577f49`: no checks; static HTML projection remains.                                                                  |
+| J-Rig #260         | #258                             | `5b626cb`: no checks; batch lineage reports remain.                                                                    |
+| J-Rig #262         | #260                             | `3e1c7e0`: no checks; provider documentation remains.                                                                  |
+| J-Rig #264         | #262                             | `4252fef`: no checks; loopback report server remains.                                                                  |
+| J-Rig #266         | #251                             | `8f71eb6`: no checks; promotion-evidence branch remains.                                                               |
+| Audit-harness #142 | Core #84; current kernel         | `c4811ff`: recorded checks pass, but branch conflicts with main.                                                       |
+| Audit-harness #143 | J-Rig #251; kernel currency      | `a1e191d`: recorded checks pass, but branch conflicts with main.                                                       |
+| Audit-harness #144 | #143; J-Rig #250                 | `6c78932`: actionlint and typos only; full main checks absent.                                                         |
+| Audit-harness #145 | #144                             | `0414ba2`: actionlint and typos only; full main checks absent.                                                         |
+| Rollout-gate #56   | Core #84; kernel 0.10.0          | `8d1a650`: recorded checks pass; refresh currency before integration.                                                  |
+| Rollout-gate #57   | #56; promotion metadata          | `4d1d3a8`: no checks on feature base.                                                                                  |
+| Rollout-gate #59   | #57; J-Rig #266                  | `8029902`: no checks on feature base.                                                                                  |
+| Dashboard #68      | J-Rig #251; verified ingest      | `90788e7`: functional checks pass; Vale advisory fails; refresh against the new public-site main without reverting it. |
+| Dashboard #70      | #68                              | `482ae28`: build/test and partner-name checks only; full main checks absent.                                           |
+| Lab #259           | Kernel currency across consumers | `6dac2fe`: recorded checks pass; revalidate the five-seam convergence fixture after consumers merge.                   |
+
+The merge approach is bottom-up: refresh the next PR against main, preserve
+already-delivered code, run current required checks, then merge. This avoids
+changing CI-trigger policy merely to integrate the current layer. The general
+feature-base CI gap remains tracked by `bd_000-projects-htjt.17` / `LAB-131`.
+
+#### Release boundaries
+
+- No npm package release, hosted upload service, or public report destination
+  was enabled by this integration. The public sites are unchanged.
+- Public/internal report destination remains the owner decision in
+  `bd_000-projects-htjt.16` / `LAB-130`.
+- New release-hardening follow-up `bd_000-projects-htjt.18` /
+  [J-Rig #298](https://github.com/jeremylongshore/j-rig-skill-binary-eval/issues/298)
+  covers unbounded captured output and descendant-process timeout cleanup.
+  The example explicitly permits trusted local harnesses, not untrusted code.
+- A sequential Grade cache hit avoids another judge call; it is not a
+  cross-process single-flight guarantee. Broader real-provider dogfood,
+  downstream evidence checks, package versions, and release receipts remain
+  separate work. The master epic is not complete.
+
+### Phase 8 — stack integration and the infrastructure-failure rule (2026-09-19)
+
+This receipt closes the "Remaining dependency sequence" table in Phase 7; that
+table is retained as the historical plan of record. Bead
+`bd_000-projects-htjt.15`, GitHub
+[intent-eval-lab#283](https://github.com/jeremylongshore/intent-eval-lab/issues/283),
+and Plane `LAB-129`.
+
+#### Delivered
+
+Every J-Rig pull request below merged to `main` on green required CI. Stacked
+branches were reanchored with merge commits only; no branch was force-pushed.
+
+| J-Rig PR | Merged revision | Slice                         | Integration note                                                                                                                                                                                                                                                |
+| -------- | --------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| #250     | `f397c18`       | Balanced sampling             | Run, grade and sampled-judge commits had already landed; net content was sampling, batch and uncertainty.                                                                                                                                                       |
+| #251     | `0426050`       | Unified report                | One stale README paragraph corrected before merge.                                                                                                                                                                                                              |
+| #252     | `a8e279c`       | Skills-root `eval-batch`      | #250 and #252 both added `commands/batch.ts` for different commands; the skills-root command moved to `commands/eval-batch.ts` (CLI name unchanged). First CI run surfaced a CodeQL file-system race in spec generation, fixed with an atomic exclusive create. |
+| #254     | `804c275`       | Resumable generic suite       | Adapted to the asynchronous `runGrade`. Branch coverage fell to 83.96% against the 84% floor; resolved by testing the suite's fail-closed manifest and resume guards. The threshold was not changed.                                                            |
+| #299     | `5565f46`       | Runner resource bounds        | New. Per-stream output ceiling, POSIX process-group termination, bounded completion. The ceiling has no schema default, because the config snapshot is compared byte-for-byte on sealed-run reuse. Host protection, not a sandbox.                              |
+| #300     | `fd06c6d`       | Infrastructure-failure rule   | New. Supersedes #256 (closed). See the decision below.                                                                                                                                                                                                          |
+| #258     | `0ae26a4`       | Static HTML report            | Mechanical.                                                                                                                                                                                                                                                     |
+| #260     | `f5351c3`       | Eval-batch lineage reports    | Branch edits to `batch.ts` were applied to `eval-batch.ts` after the #252 move.                                                                                                                                                                                 |
+| #262     | `de46434`       | Funded-provider operator docs | Keeps the unified failure-boundary text, not the superseded contract.                                                                                                                                                                                           |
+| #264     | `5b09629`       | Loopback report server        | Added in review: `Host` header allowlist against DNS rebinding.                                                                                                                                                                                                 |
+| #266     | `ffa3122`       | Skill-promotion evidence      | Composed under the #300 rule (below). A duplicate `canonicalJson` was removed so one canonicalizer sits behind every content hash in J-Rig core. Spec renumbered 035 to 042.                                                                                    |
+| #302     | `94afd4f`       | Nightly roster                | The nightly now publishes the evaluator's class-first `error` reason instead of a generic one.                                                                                                                                                                  |
+
+Final local verification on the last feature head: build, lint, format check,
+typecheck and harness verify exit zero; 106 files / 1,535 tests pass; global
+branch coverage 84.12%. Two wall-clock tests in files untouched by this work
+fail intermittently on a loaded development host and pass in isolation and on
+hosted runners; local full runs therefore used three workers. No assertion,
+timeout, coverage floor or branch protection was weakened. A test-hygiene bead
+under the master epic tracks making those two tests deterministic.
+
+#### Decision: one rule for evaluator infrastructure failure
+
+Two earlier designs covered evaluator outages and contradicted each other. The
+2026-08 design failed closed on any real-provider failure and emitted **no**
+Evidence Bundle. The 2026-09 design signed a `gate-result/v1` `error` row, but
+only when **every** judged criterion errored, and it ignored execution
+failures. On `main` a judge that died on some criteria still signed a normal
+verdict over the survivors, and a failed provider call was judged as though it
+were the skill's answer.
+
+Blueprint B § 7.4 already decides the question: `error` is "a verdict on the
+gate's own ability to evaluate", `gate_reasons[0]` MUST capture the error
+class, and `metadata.error_detail` SHOULD be structured. The adopted rule
+applies that consistently:
+
+- Any unrecovered provider failure, in the execution or judge phase, in the
+  skill or the naked-baseline pass, partial or total, yields **no verdict** and
+  a **signed `error` row** with the class-first reason and typed,
+  credential-free `metadata.error_detail`. The run is stored as failed and the
+  process exits 2 after every artifact is flushed.
+- A failed test case is never sent to the judge.
+- Partial sample loss is unchanged: an errored sample still votes `unsure`, so
+  multi-sample voting absorbs transient failures in the open. Only a criterion
+  with no surviving sample is an outage. The nightly roster runs five samples.
+- Promotion evidence and the `error` verdict are mutually exclusive on a row.
+  The promotion object carries its own pass/fail/advisory decision; emitting it
+  beside `error` would place two contradictory decisions in one signed
+  predicate.
+
+Signing was chosen over silence because a missing row is indistinguishable
+downstream from a gate that never ran, which conflicts with the unification
+thesis. Any-failure was chosen over all-failure because `advisory` over
+surviving criteria is the ambiguity the 2026-09 conference audit exploited, and
+the rollout gate tolerates `advisory` by default. No kernel schema changed:
+`error` was already in the enum and `metadata` is free-form. The repository-
+level decision record is J-Rig `000-docs/037`; this is an application of an
+existing normative contract, not a new predicate or a new immutable artifact.
+
+#### Estate finding: node20 Actions runtime removal
+
+While integrating, J-Rig's required `actionlint` check began failing on pinned
+actions that run on the node20 Actions runtime, which the hosting provider
+removes on 2026-09-23. An inventory of every `uses:` reference across the six
+repositories, with the runtime read from each action's own manifest at the
+pinned ref, found node20 pins in five of them. All are now on node24 majors:
+J-Rig #301, Lab #343, Core #93, Rollout Gate #65, Dashboard #81. Audit Harness
+was already clean. Where workflow files are hash-pinned policy artifacts, the
+manifest was re-pinned and its diff checked line by line against the files
+edited. The node24 markdown-lint action bundles a linter that adds
+`MD060/table-column-style`; it is disabled with an inline rationale in the
+three repositories that had not yet adopted that estate-wide setting.
+
+#### Open after this phase
+
+- Dashboard #68 (tailnet unified eval surface) remains a draft with its
+  vocabulary finding awaiting an explicit decision; nothing in this phase
+  changes the internal/public report boundary.
+- `j-rig batch` (#250) and `j-rig suite` (#254) both execute balanced target-N
+  jobs. They are documented side by side; whether one should subsume the other
+  is undecided.
+- J-Rig global branch coverage sits 0.12 points above its floor, so the next
+  feature slice must carry its own tests.
+- No package release and no public report promotion has been made. The runner
+  bounds are host protection only; no hosted or untrusted-execution claim is
+  made.

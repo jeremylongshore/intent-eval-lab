@@ -11,6 +11,17 @@ Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skelet
 
 ### Added
 
+#### Labs adversarial audit record (2026-09-07)
+
+- `000-docs/114-RA-AUDT-labs-adversarial-audit-2026-09.md` — the evidence record for the
+  conference-readiness program: the public Labs chain traced end to end from code, exercised on a
+  scratch copy (happy path, dead judge, self-test present/broken/absent, tampered and re-serialized
+  payloads, stale pinned producer), and verified independently with cosign, sigstore-python and the
+  public Rekor log by index. Two P1 defects were found and fixed upstream with mutant-proven tests
+  ([j-rig #295](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/295),
+  [dashboard #73](https://github.com/jeremylongshore/intent-eval-dashboard/pull/73)); F3–F10 are
+  P2/P3 backlog. Records the audit's own earlier error (the roster does pass `--run-self-test`).
+
 #### Spec-currency loop repair (2026-07-22/23) — residual closed
 
 Platform epics intent-solutions-io/intent-eval-platform#10 / #17 closed after:
