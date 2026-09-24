@@ -1,0 +1,12 @@
+{
+  "record": "20260705T095251Z",
+  "surface_id": "mcp-spec-docs",
+  "url": "https://modelcontextprotocol.io/specification/draft",
+  "fetched_at": "2026-07-05T09:52:51Z",
+  "status": "FETCH_OK",
+  "http_code": 200,
+  "sha256": "88b68499c596e702a3c7eb664faeb902dc3de9a79e2eae9b9626871daeb75915",
+  "bytes": 349662,
+  "body_stored": true,
+  "body_ref": "20260705T095251Z"
+}

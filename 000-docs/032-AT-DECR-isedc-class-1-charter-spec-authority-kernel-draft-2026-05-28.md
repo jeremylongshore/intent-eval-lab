@@ -1,6 +1,6 @@
 ---
 date: 2026-05-28
-status: DRAFT — DEFERRED 2026-05-28 pending plan 031 v7 amendment per § 14 SAK incremental Plan Audit verdict NEEDS-AMENDMENT (12 P0 + 17 P1; 3 convergent themes C1/C2/C3). Charter scope (6 decisions in § 3) is UNCHANGED — convening defers until v7 closes the P0 cluster. Audit synthesis: `intent-eval-lab/000-docs/audit/2026-05-28-sak-incremental-audit/synthesis.md`.
+status: "[Update: this DRAFT charter was RATIFIED — the SAK Class-1 charter was ratified via DR-044, re-ratified DR-049 (2026-06-10) and DR-081 (2026-06-17); DR-049 supersedes the DRAFT status of this doc and the SAK bead-claim gate is LIFTED.] Original status (for history): DRAFT — DEFERRED 2026-05-28 pending plan 031 v7 amendment per § 14 SAK incremental Plan Audit verdict NEEDS-AMENDMENT (12 P0 + 17 P1; 3 convergent themes C1/C2/C3). Charter scope (6 decisions in § 3) is UNCHANGED — convening defers until v7 closes the P0 cluster. Audit synthesis: `intent-eval-lab/000-docs/audit/2026-05-28-sak-incremental-audit/synthesis.md`."
 class: Class-1 charter (entity-expansion / kernel-scope-bound; distinct from Session-N tension arbitration)
 author: Jeremy Longshore (drafter: Claude as acting CTO under CTO-mode delegation 2026-05-28)
 parent_plan: intent-eval-lab/000-docs/031-PP-PLAN-skill-refiner-sak-amendment-v6-2026-05-28.md § 14.8 directive 4

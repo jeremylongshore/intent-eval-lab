@@ -7,8 +7,9 @@ on:
   # forever. The push: trigger keeps its path filter (no required-check
   # semantics on push). mypy + pytest stay advisory (continue-on-error in their
   # jobs) — they may run on every PR but never block.
+  # No `branches:` filter on purpose: with `branches: [main]` a stacked PR whose
+  # base is another feature branch gets no checks at all. Push builds stay on main.
   pull_request:
-    branches: [main]
   push:
     branches: [main]
     paths:
@@ -52,15 +53,36 @@ jobs:
       - run: mypy research/phase-a-0-baseline/scripts/
 
   # ---------------------------------------------------------------------------
-  # L3 unit + coverage gate (with subprocess instrumentation)
+  # L3 unit tests (the required signal) + ADVISORY subprocess coverage.
   # ---------------------------------------------------------------------------
   pytest:
     name: pytest + coverage (research/phase-a-0-baseline)
     runs-on: ubuntu-latest
-    # Advisory first install: local coverage hits ~68% via subprocess
-    # instrumentation, CI hits ~40% — gap likely process-init timing.
-    # Investigated + tightened in follow-up; pytest itself (62 tests) always
-    # runs and is the real signal here.
+    # Coverage here is ADVISORY BY DESIGN (continue-on-error), not a gate. The
+    # floor lives in pyproject.toml ([tool.coverage.report] fail_under = 60) and
+    # applies to LOCAL runs, where the real ~66-68% is measurable; the CI step
+    # below passes --fail-under=0 to switch it off HERE ONLY. Without that, the
+    # config floor applied to CI's environment-limited ~40% and the job failed on
+    # every single PR — a permanently-red lane nobody reads, which is worse than
+    # no lane. (bd_000-projects-n6ueg closed this as "documented advisory-by-
+    # design", but only the comment landed; the config was never reconciled, so
+    # the contradiction shipped.) The smoke tests shell out via
+    # subprocess to the arm-runner scripts (run-arm-a.py / run-arm-b.py /
+    # analyze.py); in CI those children short-circuit early because the two
+    # external dependencies they need are absent:
+    #   1. the cross-repo IS validator + fixtures (Makefile FIXTURE_DIR →
+    #      ~/000-projects/claude-code-plugins/tests/fixtures/skill-frontmatter),
+    #      not checked out in this repo's CI, and
+    #   2. real model-provider keys (NVIDIA_API_KEY / GROQ_API_KEY / ANTHROPIC).
+    # So the arm-script bodies don't execute under coverage in CI (~40%) the way
+    # they do locally (~66-68%). That is an ENVIRONMENT limit — not a coverage
+    # bug and not "process-init timing" (an earlier, wrong hypothesis). The 62
+    # unit tests ALWAYS run and pass; that pass/fail is the real signal and the
+    # `ruff lint + format` job above is the required Python gate. Making CI
+    # measure the real ~66% would mean stubbing the cross-repo validator AND
+    # every model provider — i.e. mocking the very integration the suite exists
+    # to exercise. The honest call is to keep coverage advisory (tracked
+    # bd_000-projects-n6ueg), not to fake a number or add exclusions.
     continue-on-error: true
     steps:
       - uses: actions/checkout@v6
@@ -77,9 +99,15 @@ jobs:
           # Make sitecustomize.py findable by child Pythons via PYTHONPATH
           PYTHONPATH: ${{ github.workspace }}
         run: |
+          # A test FAILURE still fails this step — `coverage run -m pytest`
+          # propagates pytest's exit code, and that pass/fail is the real signal.
           coverage run -m pytest research/phase-a-0-baseline/tests/ -v --tb=short
           coverage combine
-          coverage report
+          # --fail-under=0 overrides pyproject's fail_under=60 for CI only; see
+          # the job comment. The percentage is still printed and still uploaded
+          # to Codecov, so the number remains visible — it just stops asserting a
+          # floor this environment is structurally unable to reach.
+          coverage report --fail-under=0
       - name: Upload coverage to Codecov
         if: always()
         uses: codecov/codecov-action@v6
@@ -87,3 +115,38 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: python
           fail_ci_if_error: false
+
+  # ---------------------------------------------------------------------------
+  # L3 unit tests for the scripts/ gate machinery (the spec-drift detectors, the
+  # SAK state machines, the projection freshness driver).
+  #
+  # These 190 tests existed and ran NOWHERE: pyproject lists scripts/tests in
+  # testpaths, but the only pytest job in CI invoked
+  # `pytest research/phase-a-0-baseline/tests/` explicitly, so scripts/tests was
+  # never collected on any PR — including the tests added with the FF#2 repair
+  # that this machinery's correctness now rests on. A regression lock that does
+  # not run is not a lock, so it gets its own job here.
+  #
+  # NOT continue-on-error, unlike the coverage job above: these are offline,
+  # deterministic, and dependency-light (stdlib + pytest + pyyaml), so there is
+  # no environment limit to excuse a failure. Promoting it to a REQUIRED check in
+  # branch protection is an owner action.
+  # ---------------------------------------------------------------------------
+  scripts-tests:
+    name: pytest (scripts/ gate machinery)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      # jsonschema is load-bearing here, not optional: the SAK modules' own
+      # cmd_self_test() exits 1 with "jsonschema not installed" when it is absent,
+      # and pytest.importorskip only shields the tests that import it directly.
+      # Without it 9 tests fail for an environment reason and the job's signal is
+      # noise. (Caught on this job's first CI run.)
+      - run: pip install --no-cache-dir 'pytest>=8' pyyaml jsonschema
+      - name: Run scripts/ unit tests
+        run: pytest scripts/tests/ -v --tb=short
+      - name: Vendored capture provenance integrity
+        run: python3 scripts/check-vendor-meta-integrity.py

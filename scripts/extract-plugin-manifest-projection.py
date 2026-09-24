@@ -47,7 +47,8 @@ Stdlib only. Offline. Exit 0 = ok; 1 = staleness / self-test failure;
 Usage:
   extract-plugin-manifest-projection.py --extract     # fresh projection to stdout
   extract-plugin-manifest-projection.py --write       # (re)write projection.json
-  extract-plugin-manifest-projection.py --check       # fail if committed projection is stale
+  extract-plugin-manifest-projection.py --check       # fail if committed projection is stale (vs the FROZEN doc)
+  extract-plugin-manifest-projection.py --check-fresh # fail if it drifted from the CAPTURED upstream page
   extract-plugin-manifest-projection.py --self-test   # offline fixtures + kernel cross-check
 """
 
@@ -61,9 +62,18 @@ import sys
 import tempfile
 from typing import Any
 
+# The shared captured-snapshot resolver lives in scripts/lib/. Hyphenated script
+# filenames are not importable as modules, so this script puts its OWN directory on
+# sys.path first: it runs as `python3 scripts/<name>.py` in CI (where sys.path[0] is
+# already scripts/) but is loaded by file path under pytest, where it is not.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from lib import captured_source  # noqa: E402
+
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_VENDOR_DIR = os.path.join(REPO_ROOT, "specs", "_vendor", "upstream", "plugin-manifest")
 
+CONTRACT = "plugin-manifest"
 PROJECTION_VERSION = "spec-projection/v1"
 
 # Mechanical anchors in the plugins-reference doc.
@@ -131,17 +141,54 @@ def _table_rows(section: list[str], heading: str) -> list[list[str]]:
     return rows
 
 
-def _enum_from_description(desc: str) -> list[str] | None:
-    """Backticked tokens of an 'One of `a`, `b`, or `c`' clause, where stated."""
+# MDX version annotations leak into the .md capture as literal
+# `{/* min-version: 2.1.200 */}`. Their embedded version number contains periods,
+# which truncates a value clause mid-list. Line-bounded, never re.DOTALL — an
+# unbalanced `{/*` opening a multi-line commented-out block exists in the wild.
+_MDX_COMMENT = re.compile(r"\{/\*[^\n]*?\*/\}")
+
+
+def _enum_from_description(desc: str) -> tuple[list[str] | None, list[str] | None]:
+    """'One of `a`, `b`, or `c`' clause -> (closed_enum, open_candidates).
+
+    HAD NO CLOSEDNESS GUARD AT ALL, and that was the dangerous shape of this bug.
+    It returned whatever backticked tokens survived truncation at the first '.',
+    as an authoritative `enum`. Both of these produced a WRONG closed set:
+
+        "One of `command` (Claude Code v2.1.200+), `http`, or `mcp_tool`."
+            -> ['command']
+        "One of `command`, `http`, or {/* min-version: 2.1.200 */}`mcp_tool`."
+            -> ['command', 'http']
+
+    Its two siblings hit the same input and DECLINE (their residue guard refuses
+    an open clause), so only this one asserted confident nonsense. A truncated
+    enum is worse than an absence: the projection is the field-diff baseline the
+    whole reconciliation loop trusts, so the next report would read as a
+    legitimate value REMOVAL and send a human to reconcile a phantom.
+
+    Not hypothetical — the captured plugins-reference page already carries MDX
+    min-version comments inside table description cells, and upstream
+    demonstrably writes them mid-clause (that is exactly how the permissionMode
+    value list broke). It simply has not landed on a `One of` row yet.
+
+    Now mirrors agent-definition: MDX stripped, order-preserving dedupe, and a
+    closed set ONLY when the clause reduces to backticked tokens, commas, 'or'
+    and whitespace. Otherwise the tokens are returned as OPEN CANDIDATES, so an
+    added value never renders as a bare absence."""
+    desc = _MDX_COMMENT.sub("", desc)
     idx = desc.find("One of ")
     if idx == -1:
-        return None
-    clause = desc[idx:]
-    stop = clause.find(".")
+        return None, None
+    clause = desc[idx + len("One of ") :]
+    stop = captured_source.clause_end(clause)
     if stop != -1:
         clause = clause[:stop]
-    tokens = _BACKTICK.findall(clause)
-    return tokens or None
+    tokens = list(dict.fromkeys(_BACKTICK.findall(clause)))
+    if len(tokens) < 2:
+        return None, None
+    residue = re.sub(r"`[^`]+`", "", clause)
+    residue = re.sub(r"\bor\b|,|\s", "", residue)
+    return (tokens, None) if not residue else (None, tokens)
 
 
 def _complete_schema_fields(section: list[str]) -> list[str]:
@@ -192,9 +239,12 @@ def extract_reference_doc(doc_path: str) -> dict[str, Any]:
                 "table": table,
                 "type": cells[1] if len(cells) > 1 else "unknown",
             }
-            enum = _enum_from_description(desc)
+            enum, open_candidates = _enum_from_description(desc)
             if enum:
                 entry["enum"] = enum
+            elif open_candidates:
+                entry["enum_candidates"] = open_candidates
+                entry["enum_clause_open"] = True
             fields[field] = entry
             if field == "name" and "kebab-case" in desc:
                 name_kebab = True
@@ -274,7 +324,16 @@ def load_vendor_meta(vendor_dir: str) -> dict[str, Any]:
         return json.load(fh)
 
 
-def build_projection(vendor_dir: str) -> dict[str, Any]:
+def build_projection(vendor_dir: str, reference_doc_path: str | None = None) -> dict[str, Any]:
+    """Extract the normative projection from the vendored capture.
+
+    `reference_doc_path` repoints ONLY the file this extractor parses — used by
+    --check-fresh to read the captured upstream page instead of the frozen
+    hand-vendored copy. Samples and supporting docs are never repointed: being
+    commit-pinned ground truth that corroborates the doc is precisely their value,
+    and the provenance rule (documented vs observed-in-samples, never promoted)
+    depends on them holding still.
+    """
     meta = load_vendor_meta(vendor_dir)
     docs = [f["file"] for f in meta["files"] if f["role"] == "reference-doc"]
     samples = sorted(f["file"] for f in meta["files"] if f["role"] == "sample-manifest")
@@ -282,7 +341,7 @@ def build_projection(vendor_dir: str) -> dict[str, Any]:
         print("ERROR: vendor-meta.json needs exactly one reference-doc and >=1 sample-manifest", file=sys.stderr)
         sys.exit(2)
 
-    manifest = extract_reference_doc(os.path.join(vendor_dir, docs[0]))
+    manifest = extract_reference_doc(reference_doc_path or os.path.join(vendor_dir, docs[0]))
     sample_facts = extract_samples([os.path.join(vendor_dir, s) for s in samples])
 
     # Cross-corroboration (the provenance rule): documented fields get an
@@ -337,6 +396,66 @@ def cmd_check(vendor_dir: str) -> int:
         return 1
     print("extract-plugin-manifest-projection --check: OK — committed projection is fresh.")
     return 0
+
+
+def cmd_check_fresh(vendor_dir: str, surface: str | None = None) -> int:
+    """Diff the committed projection against a projection of the CAPTURED page.
+
+    `--check` proves the committed projection still matches the FROZEN vendored doc
+    it was derived from. That is honest self-consistency, and it is green by
+    construction: specs/_vendor/upstream/ is hand-vendored and fetch-capture.py
+    cannot write it, so neither operand can move. This is the missing other half —
+    it repoints the parsed reference doc at specs/_vendor/<surface>/snapshot<ext>,
+    the tier-2 tree the capture stage advances on a FETCH_OK fetch, and reports what
+    actually changed field by field.
+
+    0 = no semantic drift; 1 = drift (a human reconciles); 2 = the comparison could
+    not be set up. Treat 2 as red: a gate that did not run is not a gate that passed.
+    """
+    label = "extract-plugin-manifest-projection --check-fresh"
+    try:
+        meta = load_vendor_meta(vendor_dir)
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"{label}: INOPERABLE — cannot read vendor-meta.json in {vendor_dir}: {exc}", file=sys.stderr)
+        return 2
+    try:
+        doc_file, doc_surface = captured_source.reference_doc_surface(meta)
+        surface = surface or doc_surface
+        snapshot = captured_source.resolve_captured_snapshot(surface, expected_contract=CONTRACT)
+    except captured_source.InoperableError as exc:
+        print(f"{label}: INOPERABLE — {exc}", file=sys.stderr)
+        return 2
+
+    committed_path = projection_path(vendor_dir)
+    try:
+        with open(committed_path, encoding="utf-8") as fh:
+            base = json.load(fh)
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"{label}: INOPERABLE — cannot read {committed_path}: {exc}", file=sys.stderr)
+        return 2
+
+    try:
+        fresh = build_projection(vendor_dir, reference_doc_path=snapshot)
+    except SystemExit as exc:
+        # A deliberate anchor failure already exits 2; keep that code.
+        return exc.code if isinstance(exc.code, int) else 2
+    except Exception as exc:  # noqa: BLE001 - any parse breakage is INOPERABLE, never drift
+        # Bare next()/json.loads() inside the extractors raise StopIteration /
+        # JSONDecodeError on a malformed capture. Uncaught, python exits 1, which
+        # the driver reads as DRIFT — so the watcher would open a RECONCILIATION
+        # issue for a PARSER breakage. Reconciling a phantom drift is worse than
+        # no signal, which is the distinction the 0/1/2 split exists to protect.
+        print(
+            f"{label}: INOPERABLE — the extractor could not parse the captured page "
+            f"({os.path.relpath(snapshot, REPO_ROOT)}): {type(exc).__name__}: {exc}",
+            file=sys.stderr,
+        )
+        return 2
+    context = (
+        f"committed projection vs the captured '{surface}' page "
+        f"({os.path.relpath(snapshot, REPO_ROOT)}, standing in for {doc_file})"
+    )
+    return captured_source.report(captured_source.diff_projections(base, fresh), context, label)
 
 
 # ── Kernel cross-check (read-only reference; reported, never fixed here) ────
@@ -627,15 +746,38 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--extract", action="store_true", help="print a fresh projection to stdout")
     mode.add_argument("--write", action="store_true", help="(re)write projection.json")
-    mode.add_argument("--check", action="store_true", help="fail if the committed projection is stale")
+    mode.add_argument(
+        "--check",
+        action="store_true",
+        help="fail if the committed projection is stale vs the FROZEN vendored doc (self-consistency)",
+    )
+    mode.add_argument(
+        "--check-fresh",
+        action="store_true",
+        help="fail if the committed projection has drifted from the CAPTURED upstream page (freshness)",
+    )
     mode.add_argument("--self-test", action="store_true", help="offline fixtures + kernel cross-check")
     parser.add_argument("--vendor-dir", default=DEFAULT_VENDOR_DIR, help="vendored capture directory")
+    parser.add_argument(
+        "--surface",
+        default=None,
+        help="registry surface whose captured snapshot --check-fresh diffs "
+        "(default: the reference-doc's own surface, per vendor-meta.json)",
+    )
     args = parser.parse_args()
+
+    # --surface only means anything in --check-fresh. Accepting and IGNORING it
+    # in another mode is what let a registry entry name `--check --surface X` and
+    # still exit 0 with an authoritative "OK", comparing frozen against frozen.
+    if args.surface is not None and not args.check_fresh:
+        parser.error("--surface applies only to --check-fresh; in any other mode it would be silently ignored")
 
     if args.self_test:
         return cmd_self_test(args.vendor_dir)
     if args.check:
         return cmd_check(args.vendor_dir)
+    if args.check_fresh:
+        return cmd_check_fresh(args.vendor_dir, args.surface)
     fresh = render(build_projection(args.vendor_dir))
     if args.extract:
         sys.stdout.write(fresh)

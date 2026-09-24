@@ -1,8 +1,8 @@
 {
   "contract": "plugin-manifest",
-  "spec_version": "unversioned-2026-06-12",
-  "fetched_at": "2026-06-12T20:45:20Z",
-  "note": "Contract-keyed deep capture (058-AT-SPEC). One-time build-time fetch; CI never refetches (offline determinism) — ongoing freshness is the watcher's job via the surface registry. Tier-2 conventions per 052-AT-SPEC: replace-in-place, lineage recorded (snapshot-updated in specs/lineage/log.jsonl), the extractor reads and never writes here. DEVIATION from the mcp-config capture: plugin-manifest has NO machine-readable upstream schema and NO upstream spec versioning — the code.claude.com plugins-reference page is the spec (prose + JSON examples + field tables) and the sample manifests from anthropics/claude-plugins-official are real-world corroboration (authority precedence per 050-AT-SPEC: the reference page is the spec; samples corroborate). spec_version is therefore the capture date, not an upstream-declared revision.",
+  "spec_version": "unversioned-2026-07-03",
+  "fetched_at": "2026-07-03T10:05:24Z",
+  "note": "Contract-keyed deep capture (058-AT-SPEC). One-time build-time fetch; CI never refetches (offline determinism) — ongoing freshness is the watcher's job via the surface registry. Tier-2 conventions per 052-AT-SPEC: replace-in-place, lineage recorded (snapshot-updated in specs/lineage/log.jsonl), the extractor reads and never writes here. DEVIATION from the mcp-config capture: plugin-manifest has NO machine-readable upstream schema and NO upstream spec versioning — the code.claude.com plugins-reference page is the spec (prose + JSON examples + field tables) and the sample manifests from anthropics/claude-plugins-official are real-world corroboration (authority precedence per 050-AT-SPEC: the reference page is the spec; samples corroborate). spec_version is therefore the capture date, not an upstream-declared revision. RE-VENDORED 2026-07-23 from the captured tier-2 snapshot specs/_vendor/plugins-reference/snapshot.md (capture record archive/raw/plugins-reference/20260703T100524Z.meta.json), advancing a baseline that had been frozen at the 2026-06-12 build-time fetch. The re-vendor was gated on --check-fresh reporting ZERO semantic findings against this exact capture, so the derived projection is unchanged except for the spec_version stamp; this is a baseline advance, not a contract change. Samples and the supporting doc are deliberately NOT re-vendored — being commit-pinned ground truth that corroborates the reference page is their whole value.",
   "files": [
     {
       "file": "claude-code-plugins-reference.md",
@@ -10,9 +10,10 @@
       "surface": "plugins-reference",
       "authority_tier": "reference",
       "source_url": "https://code.claude.com/docs/en/plugins-reference.md",
-      "sha256": "bbb4618ec8b1f1a29d20fae1792e5aab1e0f1f04efc528d86cfde458e9e727e7",
-      "bytes": 78644,
-      "version_basis": "The page carries no version identifier and upstream publishes no machine-readable schema for plugin.json; this .md form is the same URL/form the registry's fetch_plugins_reference extractor monitors (capture.urls + ext .md in specs/upstream-surface-registry.v1.json)."
+      "sha256": "931b787ea4627bbaa9bd6a5ff9792683e25b2085087ca8047822dc8d80df96f3",
+      "bytes": 79815,
+      "version_basis": "The page carries no version identifier and upstream publishes no machine-readable schema for plugin.json; this .md form is the same URL/form the registry's fetch_plugins_reference extractor monitors (capture.urls + ext .md in specs/upstream-surface-registry.v1.json).",
+      "revendored_from": "archive/raw/plugins-reference/20260703T100524Z.meta.json"
     },
     {
       "file": "sample-cwc-makers.plugin.json",

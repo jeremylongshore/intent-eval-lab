@@ -1,0 +1,12 @@
+{
+  "record": "20260701T102617Z",
+  "surface_id": "sub-agents",
+  "url": "https://code.claude.com/docs/en/sub-agents.md",
+  "fetched_at": "2026-07-01T10:26:17Z",
+  "status": "FETCH_OK",
+  "http_code": 200,
+  "sha256": "e2acc4c7f3bfa9a8efdecf2face4713a132aa8c7a3d87d371189fe39a0c2f32d",
+  "bytes": 70320,
+  "body_stored": true,
+  "body_ref": "20260701T102617Z"
+}

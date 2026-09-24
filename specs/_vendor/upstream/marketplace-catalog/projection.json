@@ -24,7 +24,9 @@
       "life-sciences",
       "claude-for-legal",
       "claude-for-financial-services",
-      "financial-services-plugins"
+      "financial-services-plugins",
+      "first-party-plugins",
+      "healthcare"
     ],
     "top_level_fields": {
       "$schema": {
@@ -68,6 +70,12 @@
         "required": true,
         "source": "documented",
         "type": "array"
+      },
+      "renames": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented",
+        "type": "object"
       },
       "version": {
         "observed_in_samples": false,
@@ -192,6 +200,13 @@
         "source": "documented",
         "type": "string"
       },
+      "relevance": {
+        "observed_in_samples": false,
+        "required": false,
+        "scope": "standard-metadata",
+        "source": "documented",
+        "type": "object"
+      },
       "repository": {
         "observed_in_samples": false,
         "required": false,
@@ -240,7 +255,8 @@
       "source",
       "category",
       "tags",
-      "strict"
+      "strict",
+      "relevance"
     ],
     "strict_default": "true",
     "strict_values": [
@@ -369,5 +385,5 @@
     },
     "sha_wins_over_ref": true
   },
-  "spec_version": "unversioned-2026-06-12"
+  "spec_version": "unversioned-2026-07-23"
 }

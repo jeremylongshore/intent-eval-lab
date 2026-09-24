@@ -38,7 +38,7 @@ We are coupling **one artifact the entire ecosystem trusts absolutely** (the ker
 > stale contract that customers' gates then validate against — corrupted signed evidence, discovered
 > months later by a customer, fleet-wide.
 
-Centralizing on one SSoT maximizes leverage **and** blast radius simultaneously. Staying
+Centralizing on one SSoT maximizes reach **and** blast radius simultaneously. Staying
 top-of-class = making _that specific failure_ structurally impossible. Every design choice below is
 in service of that. (This section is intentionally durable — future sessions inherit the "why".)
 

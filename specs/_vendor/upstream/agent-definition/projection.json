@@ -95,6 +95,15 @@
         "source": "documented"
       },
       "model": {
+        "enum_candidates": [
+          "sonnet",
+          "opus",
+          "haiku",
+          "fable",
+          "claude-opus-4-8",
+          "inherit"
+        ],
+        "enum_clause_open": true,
         "observed_in_samples": true,
         "required": false,
         "source": "documented"
@@ -105,14 +114,16 @@
         "source": "documented"
       },
       "permissionMode": {
-        "enum": [
+        "enum_candidates": [
           "default",
           "acceptEdits",
           "auto",
           "dontAsk",
           "bypassPermissions",
-          "plan"
+          "plan",
+          "manual"
         ],
+        "enum_clause_open": true,
         "observed_in_samples": false,
         "required": false,
         "source": "documented"
@@ -183,5 +194,5 @@
       "tools"
     ]
   },
-  "spec_version": "unversioned-2026-06-12"
+  "spec_version": "unversioned-2026-07-04"
 }

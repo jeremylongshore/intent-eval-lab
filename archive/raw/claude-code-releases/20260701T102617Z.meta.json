@@ -1,0 +1,12 @@
+{
+  "record": "20260701T102617Z",
+  "surface_id": "claude-code-releases",
+  "url": "https://github.com/anthropics/claude-code/releases.atom",
+  "fetched_at": "2026-07-01T10:26:17Z",
+  "status": "FETCH_OK",
+  "http_code": 200,
+  "sha256": "dad3bb19c72894483250c8c03615abc4f58e1edbb99fa2c71ebed0730747ce78",
+  "bytes": 31866,
+  "body_stored": true,
+  "body_ref": "20260701T102617Z"
+}

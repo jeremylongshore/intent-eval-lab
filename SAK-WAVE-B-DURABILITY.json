@@ -1,0 +1,43 @@
+{
+  "_comment": "SAK Wave-B durability state (sak-wave-b-durability/v1). The durability half of the Wave-B (Refiner) wave of the Phase-4 SAK corpus migration: per-file branch (refiner/wave-b/<hash>) + atomic commit + 3-retry-with-escalation (plan 033 v7 § 14.17.1 + § 14.17.2) + open-PR park (plan 048 v8 Delta 1). Parked files (open-PR or escalated) are routed into the SINGLE reconciliation queue (SAK-RECONCILIATION-QUEUE.json) — parked != failed. Validated by specs/state-machines/schema/sak-wave-b-durability.schema.json; consumed by scripts/sak-wave-b-durability.py. These rows are ILLUSTRATIVE seeds (one per terminal outcome); hand-maintained / generated upstream — the module reads + reasons, it never mutates this file. The atomic-commit invariant holds for every row: committed === (state === COMMITTED).",
+  "state_version": "sak-wave-b-durability/v1",
+  "as_of": "2026-06-20",
+  "files": [
+    {
+      "path": "skills/example-committed/SKILL.md",
+      "branch": "refiner/wave-b/371242f8abea",
+      "state": "COMMITTED",
+      "attempts": 1,
+      "committed": true,
+      "escalation_reason": null,
+      "refiner_run_id": "refiner-run-illustrative-001",
+      "cost": 0.14,
+      "score_delta": 0.42,
+      "last_failure_mode": null
+    },
+    {
+      "path": "skills/example-escalated/SKILL.md",
+      "branch": "refiner/wave-b/18492e097b02",
+      "state": "ESCALATED-PARKED",
+      "attempts": 3,
+      "committed": false,
+      "escalation_reason": "3-retry ladder exhausted (3 failed attempts); last failure mode: behavioral-eval-regressed-other-cases (plan 033 § 14.17.2)",
+      "refiner_run_id": null,
+      "cost": null,
+      "score_delta": null,
+      "last_failure_mode": "behavioral-eval-regressed-other-cases"
+    },
+    {
+      "path": "skills/example-open-pr/SKILL.md",
+      "branch": "refiner/wave-b/857ee29bfe4d",
+      "state": "PARKED-OPEN-PR",
+      "attempts": 0,
+      "committed": false,
+      "escalation_reason": "open-PR: Wave B never runs on a file with an open PR (plan 048 Delta 1)",
+      "refiner_run_id": null,
+      "cost": null,
+      "score_delta": null,
+      "last_failure_mode": null
+    }
+  ]
+}

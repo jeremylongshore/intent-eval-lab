@@ -25,11 +25,25 @@
     }
   ],
   "state_machine": {
+    "_comment": "Formal SAK Phase-4 advisory->blocking flip state machine. Authority: plan 033 v7 § 14.4.shadow (lifecycle diagram) + § 14.4c, plan 048 v8 Delta 3 (flip exit preconditions: (a) coverage calendar-dispositionable, (c) zero-open-P0 HARD, (d) governance-triple sign-off HARD), § 14.4.rollback (ROLLED-BACK semantics), § 14.31 lifecycle-states. Validated by specs/state-machines/schema/sak-state.schema.json; transitions emitted/validated by scripts/sak-state-machine.py. DISTINCT from the 13-entity runtime state machine at specs/state-machines/transition-table.v1.json.",
     "machine": "SAK advisory -> blocking flip (Phase 4)",
     "current_state": "ADVISORY",
     "entered_at": "2026-06-09",
     "next_gate": "CCP authority-flip soak >= 99.5% / >= 30d / zero-P0 / rollback-rehearsed / triple sign-off / 14d notice (DR-049); soak matures ~2026-07-11",
-    "states": ["ADVISORY", "ADVISORY-W-A", "ADVISORY-W-B", "BLOCKING-CANARY", "BLOCKING"]
+    "states": ["ADVISORY", "ADVISORY-W-A", "ADVISORY-W-AB", "SHADOW-MODE", "HOLDING", "READY-TO-FLIP", "BLOCKING", "ROLLED-BACK"],
+    "preconditions": {
+      "coverage_corpus_pass_pct": null,
+      "shadow_days_complete": null,
+      "shadow_deviation_pct": 1.16,
+      "open_p0_count": null,
+      "governance_signoff": {
+        "cto": false,
+        "ciso": false,
+        "vp_devrel": false,
+        "decision_record_ref": null
+      }
+    },
+    "transition_history": []
   },
   "cost_ledger": {
     "_comment": "Bandwidth model is FTE-week, not dollars (Intent Solutions is a sole-prop; 029-DR-BAND replaced plan 027's dollar/calendar budgets with an FTE-day model). Figures mirror 029-DR-BAND § 2 + § 3 aggregate.",

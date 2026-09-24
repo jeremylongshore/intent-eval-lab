@@ -26,9 +26,10 @@ import json
 import shutil
 import subprocess
 from pathlib import Path
+from typing import Any
 
 
-def run_scorer(score_script: Path, skill_path: Path) -> dict:
+def run_scorer(score_script: Path, skill_path: Path) -> dict[str, Any]:
     result = subprocess.run(
         ["python3", str(score_script), str(skill_path)],
         capture_output=True,
@@ -37,11 +38,17 @@ def run_scorer(score_script: Path, skill_path: Path) -> dict:
     )
     if result.returncode != 0:
         raise RuntimeError(f"scorer exit {result.returncode} on {skill_path}: {result.stderr[:200]}")
-    return json.loads(result.stdout)
+    return dict(json.loads(result.stdout))
 
 
 def stage_fixture(
-    out_dir: Path, sha8: str, input_path: Path, expected: dict, label: str, provenance: dict, force: bool
+    out_dir: Path,
+    sha8: str,
+    input_path: Path,
+    expected: dict[str, Any],
+    label: str,
+    provenance: dict[str, Any],
+    force: bool,
 ) -> bool:
     target = out_dir / sha8
     if target.exists() and not force:
@@ -54,7 +61,7 @@ def stage_fixture(
     return True
 
 
-def label_for(stratum: str, expected: dict) -> str:
+def label_for(stratum: str, expected: dict[str, Any]) -> str:
     pass_flag = expected["tiers"]["marketplace"]["pass"]
     if stratum == "A":
         return f"global-{'pass' if pass_flag else 'fail'}-marketplace"

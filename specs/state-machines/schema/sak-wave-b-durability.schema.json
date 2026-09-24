@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://evals.intentsolutions.io/state-machines/sak-wave-b-durability/v1",
+  "title": "SAK Wave-B durability state (sak-wave-b-durability/v1)",
+  "description": "Validates the committed SAK-WAVE-B-DURABILITY.json. The durability half of the Wave-B (Refiner) wave of the Phase-4 SAK corpus migration — the 'side-branch + atomic + 3-retry + parked-queue' mechanism of F-MK-004. Two normative authorities are composed: plan 033 v7 § 14.17.1 (per-file branch `refiner/wave-b/<hash>` + a single atomic commit per accepted edit; a failed attempt produces NO commit) and § 14.17.2 (the 3-retry ladder — sonnet-default / sonnet-adjusted-prompt / opus — then ESCALATE to a parked review, never silently dropped). plan 048 v8 Delta 1 adds the open-PR park (Wave B never runs on a file with an open PR). A parked file (open-PR OR escalated) is routed into the SINGLE reconciliation queue (sak-reconciliation-queue/v1) — parked != failed; it is re-enqueued, not lost. This schema is consumed by scripts/sak-wave-b-durability.py. DISTINCT from the reconciliation queue (sak-reconciliation-queue/v1) and the SAK Phase-4 flip state (sak-state/v1).",
+  "type": "object",
+  "required": ["state_version", "files"],
+  "additionalProperties": false,
+  "properties": {
+    "_comment": {
+      "type": "string"
+    },
+    "state_version": {
+      "type": "string",
+      "const": "sak-wave-b-durability/v1"
+    },
+    "as_of": {
+      "type": "string",
+      "description": "ISO date (YYYY-MM-DD) the durability state was last refreshed.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "files": {
+      "type": "array",
+      "description": "The per-file Wave-B durability records. Each record is keyed (by convention) on `path`; at most one record per path. Order is insert order, not significance.",
+      "items": { "$ref": "#/$defs/fileDurability" }
+    }
+  },
+  "$defs": {
+    "state": {
+      "type": "string",
+      "description": "The Wave-B durability lifecycle state (plan 033 § 14.17.1 + § 14.17.2). `PENDING` = registered, awaiting (or between) attempts. `IN-FLIGHT` = an attempt is being applied (transient). `COMMITTED` = the accepted edit landed as exactly one atomic commit on the per-file branch (terminal success). `PARKED-OPEN-PR` = parked before any attempt because the file has an open PR (plan 048 Delta 1; terminal, re-enqueueable). `ESCALATED-PARKED` = the 3-retry ladder was exhausted and the file was escalated to manual review (terminal, re-enqueueable, never silently dropped).",
+      "enum": ["PENDING", "IN-FLIGHT", "COMMITTED", "PARKED-OPEN-PR", "ESCALATED-PARKED"]
+    },
+    "fileDurability": {
+      "type": "object",
+      "description": "One per-file Wave-B durability record: the SKILL.md path, its deterministic `refiner/wave-b/<hash>` branch, the lifecycle state, the attempt counter, the atomic-commit flag, and the recorded escalation reason / commit metadata. ATOMIC-COMMIT INVARIANT (cross-field): `committed` is true IFF `state` == `COMMITTED` (a COMMITTED file has exactly one commit; every other state has none — no partial state).",
+      "additionalProperties": false,
+      "required": ["path", "state"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "The SKILL.md path being refined. At most one record per path.",
+          "minLength": 1
+        },
+        "branch": {
+          "type": "string",
+          "description": "The deterministic per-file Wave-B branch, `refiner/wave-b/<sha256(path)[:12]>` (plan 033 § 14.17.1). Derivable from the path alone (recoverability). The implementation re-derives + checks this on load.",
+          "pattern": "^refiner/wave-b/[0-9a-f]{12}$"
+        },
+        "state": { "$ref": "#/$defs/state" },
+        "attempts": {
+          "type": "integer",
+          "description": "The number of Refiner attempts made (0..3). Escalation (-> ESCALATED-PARKED) fires at the 3rd failure (plan 033 § 14.17.2).",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "committed": {
+          "type": "boolean",
+          "description": "True IFF `state` == `COMMITTED` — the atomic-commit success flag. A failed attempt produces NO commit (rolled back at the working tree); a parked file was never attempted-to-completion. No partial state is representable."
+        },
+        "escalation_reason": {
+          "type": ["string", "null"],
+          "description": "Why the file parked: the open-PR reason (PARKED-OPEN-PR) or the 3-retry-exhaustion reason incl. the last failure mode (ESCALATED-PARKED). Null for non-parked states. Carried into the reconciliation-queue item note (parked != failed)."
+        },
+        "refiner_run_id": {
+          "type": ["string", "null"],
+          "description": "The Refiner run-ID recorded on a COMMITTED edit (part of the § 14.17.1 commit message). Null otherwise."
+        },
+        "cost": {
+          "type": ["number", "null"],
+          "description": "The Refiner-run cost recorded on a COMMITTED edit (part of the § 14.17.1 commit message). Null otherwise."
+        },
+        "score_delta": {
+          "type": ["number", "null"],
+          "description": "The behavioral score-delta recorded on a COMMITTED edit (part of the § 14.17.1 commit message). Null otherwise."
+        },
+        "last_failure_mode": {
+          "type": ["string", "null"],
+          "description": "The failure mode of the most recent rejected attempt (informs the next attempt's adjusted prompt). Null when the last attempt was accepted or none were made."
+        }
+      }
+    }
+  }
+}

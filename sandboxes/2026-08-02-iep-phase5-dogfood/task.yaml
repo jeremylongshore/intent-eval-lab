@@ -1,0 +1,5 @@
+id: arithmetic-answer
+version: "1"
+description: Answer a deterministic arithmetic question through the generic runner.
+input:
+  question: What is two plus two?

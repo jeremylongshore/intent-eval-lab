@@ -1,0 +1,10 @@
+id: answer-checker
+version: 1.0.0
+kind: deterministic
+checks:
+  - id: answer-is-four
+    type: output_contains
+    expected: '"answer":"4"'
+  - id: rationale-is-stable
+    type: output_contains
+    expected: "2 + 2 = 4"

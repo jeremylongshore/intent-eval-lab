@@ -1,8 +1,8 @@
 {
   "contract": "hook-config",
-  "spec_version": "unversioned-2026-06-12",
-  "fetched_at": "2026-06-12T21:41:34Z",
-  "note": "Contract-keyed deep capture (060-AT-SPEC). One-time build-time fetch; CI never refetches (offline determinism) — ongoing freshness is the watcher's job via the surface registry. Tier-2 conventions per 052-AT-SPEC: replace-in-place, lineage recorded (snapshot-updated in specs/lineage/log.jsonl), the extractor reads and never writes here. Like plugin-manifest (058-AT-SPEC) and agent-definition (059-AT-SPEC): hook-config has NO machine-readable upstream schema and NO upstream spec versioning — the code.claude.com hooks reference page is the spec (the Hook-lifecycle event table, the three-levels-of-nesting Configuration section, the Matcher-patterns tables, and the five Field|Required|Description handler-field tables) and hooks/hooks.json files from anthropics/claude-plugins-official are real-world corroboration (authority precedence per 050-AT-SPEC: the reference page is the spec; samples corroborate). DEVIATION from 059: the registry registers TWO surfaces for this contract (claude-hooks + claude-settings, both monitored); the hooks page is primary — it defines every handler field — and it references the settings page only for hooks-block placement and the allowManagedHooksOnly policy gate (Hook-locations section -> /en/settings#hook-configuration), so the settings page is vendored as supporting-doc (the 059 best-practices arrangement) even though it is itself a registered surface. Handler-field tables here carry lowercase yes/no in the Required column (059's table used Yes/No). spec_version is the capture date, not an upstream-declared revision.",
+  "spec_version": "unversioned-2026-07-04",
+  "fetched_at": "2026-07-04T09:47:00Z",
+  "note": "Contract-keyed deep capture (060-AT-SPEC). One-time build-time fetch; CI never refetches (offline determinism) — ongoing freshness is the watcher's job via the surface registry. Tier-2 conventions per 052-AT-SPEC: replace-in-place, lineage recorded (snapshot-updated in specs/lineage/log.jsonl), the extractor reads and never writes here. Like plugin-manifest (058-AT-SPEC) and agent-definition (059-AT-SPEC): hook-config has NO machine-readable upstream schema and NO upstream spec versioning — the code.claude.com hooks reference page is the spec (the Hook-lifecycle event table, the three-levels-of-nesting Configuration section, the Matcher-patterns tables, and the five Field|Required|Description handler-field tables) and hooks/hooks.json files from anthropics/claude-plugins-official are real-world corroboration (authority precedence per 050-AT-SPEC: the reference page is the spec; samples corroborate). DEVIATION from 059: the registry registers TWO surfaces for this contract (claude-hooks + claude-settings, both monitored); the hooks page is primary — it defines every handler field — and it references the settings page only for hooks-block placement and the allowManagedHooksOnly policy gate (Hook-locations section -> /en/settings#hook-configuration), so the settings page is vendored as supporting-doc (the 059 best-practices arrangement) even though it is itself a registered surface. Handler-field tables here carry lowercase yes/no in the Required column (059's table used Yes/No). spec_version is the capture date, not an upstream-declared revision. RE-VENDORED 2026-07-23 from the captured tier-2 snapshot specs/_vendor/claude-hooks/snapshot.md (capture record archive/raw/claude-hooks/20260704T094700Z.meta.json), advancing a baseline that had been frozen at the 2026-06-12 build-time fetch. The re-vendor was gated on --check-fresh reporting ZERO semantic findings against this exact capture, so the derived projection is unchanged except for the spec_version stamp; this is a baseline advance, not a contract change. Samples and the supporting doc are deliberately NOT re-vendored — being commit-pinned ground truth that corroborates the reference page is their whole value.",
   "files": [
     {
       "file": "claude-code-hooks.md",
@@ -10,9 +10,10 @@
       "surface": "claude-hooks",
       "authority_tier": "reference",
       "source_url": "https://code.claude.com/docs/en/hooks.md",
-      "sha256": "bd7d4bae3bd7139d4e5f12980b0c2339a7567094057c41e1d840f0e2d92fe461",
-      "bytes": 212053,
-      "version_basis": "The page carries no version identifier and upstream publishes no machine-readable schema for the hooks block; this .md form is the same URL/form the registry's fetch_claude_hooks extractor monitors (capture.urls + ext .md in specs/upstream-surface-registry.v1.json)."
+      "sha256": "8a3c8c70e598964885777d13c39cad8e41f0055ab4c8d27d163d42d00a759eb0",
+      "bytes": 224976,
+      "version_basis": "The page carries no version identifier and upstream publishes no machine-readable schema for the hooks block; this .md form is the same URL/form the registry's fetch_claude_hooks extractor monitors (capture.urls + ext .md in specs/upstream-surface-registry.v1.json).",
+      "revendored_from": "archive/raw/claude-hooks/20260704T094700Z.meta.json"
     },
     {
       "file": "claude-code-settings.md",

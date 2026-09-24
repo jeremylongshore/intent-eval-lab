@@ -41,6 +41,8 @@ extend-ignore-re = [
 ]
 
 [default.extend-words]
+# RA-ANLY doc-filing category code (research/analysis) — a real code, not a typo.
+anly = "anly"
 # Governance / council vocabulary.
 isedc = "isedc"
 # Supply-chain + attestation stack.
@@ -79,6 +81,10 @@ roght = "roght"
 # Council-seat acronym (Chief Marketing Officer), not "COM".
 cmo = "cmo"
 # Product / metric proper nouns frequently flagged.
+# meta_skill stack proper nouns (RR-eval-research cluster): Rust TUI + FTS crates.
+ratatui = "ratatui"
+tantivy = "tantivy"
+fsqlite = "fsqlite"
 trulens = "trulens"
 tru = "tru"
 ttest = "ttest"
@@ -94,7 +100,16 @@ extend-exclude = [
   "node_modules/",
   "dist/",
   "build/",
-  "_vendor/",
+  # Vendored fetch-capture snapshots live nested (e.g. specs/_vendor/<surface>/
+  # snapshot.html) — match `_vendor` at ANY depth, not just repo root. A bare
+  # `_vendor/` did not catch the nested path, so minified captured HTML (an
+  # Anthropic web page) leaked into the scan and tripped on garbage tokens.
+  "**/_vendor/**",
+  # Raw fetch-capture bodies (Claude Code changelog/releases HTML+markdown
+  # snapshots committed by the scheduled spec-archive capture). External captured
+  # content, not authored prose — e.g. "iTerm2" tripping iterm->term. Same class
+  # as the _vendor snapshots above.
+  "archive/raw/**",
   ".beads/",
   ".audit-harness/",
   "*.lock",

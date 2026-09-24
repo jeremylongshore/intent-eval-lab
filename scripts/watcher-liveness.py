@@ -1,17 +1,22 @@
 #!/usr/bin/env python3
-"""Watcher liveness — the two P0 fixes so the spec-drift watcher cannot fail silent-green (Gregg).
+"""Watcher liveness — so the spec-drift watcher cannot fail silent-green (Gregg).
 
 The byte-hash watcher separates "drift" from "fetch_error" and, by design, does
-NOT fail the run on fetch errors alone (upstream may be briefly unavailable). The
-asymmetric failure the panel named: a surface that 404s / restructures forever
-then reads as "no drift, all green" while the contract silently goes stale. Two
-guards close that:
+NOT fail the run on fetch errors alone (upstream may be briefly unavailable).
+Three guards close silent-green modes:
 
   1. fetch_error_streak — a persisted per-surface consecutive-error counter. A
      single transient error is tolerated; >= THRESHOLD (default 3) consecutive
      errors FAILS the run loud (the surface is effectively unmonitored).
 
-  2. dead-man heartbeat — a persisted last-successful-run timestamp. If no run
+  2. baseline_stale_streak — consecutive successful captures where the source
+     is in ``drift`` status (byte hash moved) without a baseline advance
+     (``seeded`` / ``refreshed`` / ``ok``). Byte-hash on a *single* run stays
+     non-alerting (c875cf1); *persistence* of that drift is the signal to
+     fire (IEP #15 / 1jn0.1.5). Resets when the baseline advances or the
+     surface is clean again.
+
+  3. dead-man heartbeat — a persisted last-successful-run timestamp. If no run
      has recorded in > MAX_GAP_HOURS (default 26 — one daily cron + slack), the
      cron itself is dead; the next run (or a separate scheduled probe) alerts.
 
@@ -40,7 +45,12 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_STATE = os.path.join(REPO_ROOT, "specs", "snapshots", ".state.json")
 
 ERROR_STATUSES = {"fetch_error", "no_baseline"}
+# Successful observations (hash compared). "drift" is successful but baseline-stale.
 OK_STATUSES = {"ok", "drift", "seeded", "refreshed"}
+# Baseline advanced or surface is clean — clear baseline_stale_streak.
+BASELINE_CURRENT_STATUSES = {"ok", "seeded", "refreshed"}
+# Hash moved, baseline did not — accumulate baseline_stale_streak.
+BASELINE_STALE_STATUSES = {"drift"}
 
 
 def _now(args_now: str | None) -> datetime:
@@ -73,6 +83,14 @@ def _save_state(path: str, state: dict) -> None:
         fh.write("\n")
 
 
+def _default_surface_rec() -> dict:
+    return {
+        "fetch_error_streak": 0,
+        "baseline_stale_streak": 0,
+        "last_ok_utc": None,
+    }
+
+
 def cmd_record_run(state_path: str, drift_path: str, now_iso: str | None) -> int:
     state = _load_state(state_path)
     threshold = int(state.get("streak_threshold", 3))
@@ -84,28 +102,60 @@ def cmd_record_run(state_path: str, drift_path: str, now_iso: str | None) -> int
         name, status = row.get("source"), row.get("status")
         if not name:
             continue
-        rec = surfaces.setdefault(name, {"fetch_error_streak": 0, "last_ok_utc": None})
+        rec = surfaces.setdefault(name, _default_surface_rec())
+        # Backfill key for states written before baseline_stale_streak existed.
+        rec.setdefault("baseline_stale_streak", 0)
+        rec.setdefault("fetch_error_streak", 0)
+
         if status in ERROR_STATUSES:
             rec["fetch_error_streak"] = int(rec.get("fetch_error_streak", 0)) + 1
+            # Do not touch baseline_stale_streak on fetch errors — we did not
+            # observe the baseline relationship this run.
         elif status in OK_STATUSES:
             rec["fetch_error_streak"] = 0
             rec["last_ok_utc"] = drift.get("checked_at")
+            if status in BASELINE_STALE_STATUSES:
+                rec["baseline_stale_streak"] = int(rec.get("baseline_stale_streak", 0)) + 1
+            elif status in BASELINE_CURRENT_STATUSES:
+                rec["baseline_stale_streak"] = 0
 
     state["last_run_utc"] = (now_iso or _now(None).strftime("%Y-%m-%dT%H:%M:%SZ"))
     _save_state(state_path, state)
 
-    exceeded = [
-        f"{name} (streak={rec['fetch_error_streak']})"
+    fetch_exceeded = [
+        f"{name} (fetch_error_streak={rec['fetch_error_streak']})"
         for name, rec in surfaces.items()
         if int(rec.get("fetch_error_streak", 0)) >= threshold
     ]
-    if exceeded:
+    stale_exceeded = [
+        f"{name} (baseline_stale_streak={rec['baseline_stale_streak']})"
+        for name, rec in surfaces.items()
+        if int(rec.get("baseline_stale_streak", 0)) >= threshold
+    ]
+
+    tripped = False
+    if fetch_exceeded:
+        tripped = True
         print(f"watcher-liveness: FETCH-ERROR STREAK >= {threshold} on:")
-        for e in exceeded:
+        for e in fetch_exceeded:
             print(f"  - {e}")
         print("These surfaces are effectively unmonitored. Investigate the upstream URL / extractor.")
+    if stale_exceeded:
+        tripped = True
+        print(f"watcher-liveness: BASELINE-STALE STREAK >= {threshold} on:")
+        for e in stale_exceeded:
+            print(f"  - {e}")
+        print(
+            "These surfaces have drifted for N consecutive successful captures "
+            "without a baseline advance. Open/merge the promotion PR or run "
+            "spec-drift-check.sh --refresh after human review."
+        )
+    if tripped:
         return 1
-    print(f"watcher-liveness: recorded run; all {len(surfaces)} surfaces under the streak threshold ({threshold}).")
+    print(
+        f"watcher-liveness: recorded run; all {len(surfaces)} surfaces under "
+        f"the streak threshold ({threshold}) for fetch-error and baseline-stale."
+    )
     return 0
 
 

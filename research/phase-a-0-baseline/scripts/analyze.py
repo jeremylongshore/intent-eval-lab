@@ -26,6 +26,7 @@ from __future__ import annotations
 import json
 from collections import defaultdict
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 from scipy import stats
@@ -41,9 +42,9 @@ DESCOPE_THRESHOLD_FRACTION = 0.70  # DR-028 P0-RATIFY-3
 ALPHA = 0.05
 
 
-def load_arm_a() -> dict:
+def load_arm_a() -> dict[str, Any]:
     """Return {specimen_sha8: {k: {delta, baseline, candidate, score_dict}}}."""
-    data: dict = defaultdict(dict)
+    data: dict[str, Any] = defaultdict(dict)
     for score_file in ARM_A_DIR.rglob("score.json"):
         parts = score_file.parts
         sha8 = parts[-3]
@@ -66,10 +67,10 @@ def load_arm_a() -> dict:
     return dict(data)
 
 
-def load_arm_b() -> dict:
+def load_arm_b() -> dict[str, Any]:
     """Return {specimen_sha8: {delta, baseline, final, accepted, stratum}}."""
     summary = json.loads((ARM_B_DIR / "_summary.json").read_text())
-    out: dict = {}
+    out: dict[str, Any] = {}
     for rec in summary.get("per_specimen_results", []):
         sha8 = rec["sha8"]
         out[sha8] = {

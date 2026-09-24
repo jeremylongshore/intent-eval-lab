@@ -1,8 +1,8 @@
 {
   "contract": "agent-definition",
-  "spec_version": "unversioned-2026-06-12",
-  "fetched_at": "2026-06-12T21:12:55Z",
-  "note": "Contract-keyed deep capture (059-AT-SPEC). One-time build-time fetch; CI never refetches (offline determinism) — ongoing freshness is the watcher's job via the surface registry. Tier-2 conventions per 052-AT-SPEC: replace-in-place, lineage recorded (snapshot-updated in specs/lineage/log.jsonl), the extractor reads and never writes here. Like plugin-manifest (058-AT-SPEC) and unlike mcp-config: agent-definition has NO machine-readable upstream schema and NO upstream spec versioning — the code.claude.com sub-agents reference page is the spec (prose + the Supported-frontmatter-fields table + YAML examples) and sample agents/*.md files from anthropics/claude-plugins-official are real-world corroboration (authority precedence per 050-AT-SPEC: the reference page is the spec; samples corroborate). ADDITIONAL DEVIATION from plugin-manifest: the frontmatter field table carries Field|Required|Description columns only — no Type column and no Example column — so per-field types are NOT documented tabularly; value-shape facts come from the page's YAML examples instead. spec_version is therefore the capture date, not an upstream-declared revision.",
+  "spec_version": "unversioned-2026-07-04",
+  "fetched_at": "2026-07-04T09:47:00Z",
+  "note": "Contract-keyed deep capture (059-AT-SPEC). One-time build-time fetch; CI never refetches (offline determinism) — ongoing freshness is the watcher's job via the surface registry. Tier-2 conventions per 052-AT-SPEC: replace-in-place, lineage recorded (snapshot-updated in specs/lineage/log.jsonl), the extractor reads and never writes here. Like plugin-manifest (058-AT-SPEC) and unlike mcp-config: agent-definition has NO machine-readable upstream schema and NO upstream spec versioning — the code.claude.com sub-agents reference page is the spec (prose + the Supported-frontmatter-fields table + YAML examples) and sample agents/*.md files from anthropics/claude-plugins-official are real-world corroboration (authority precedence per 050-AT-SPEC: the reference page is the spec; samples corroborate). ADDITIONAL DEVIATION from plugin-manifest: the frontmatter field table carries Field|Required|Description columns only — no Type column and no Example column — so per-field types are NOT documented tabularly; value-shape facts come from the page's YAML examples instead. spec_version is therefore the capture date, not an upstream-declared revision. RE-VENDORED 2026-07-23 from the captured tier-2 snapshot specs/_vendor/sub-agents/snapshot.md (capture record archive/raw/sub-agents/20260704T094700Z.meta.json). Unlike the hook-config and plugin-manifest re-vendors, this one carries a REAL contract change and was gated on understanding it rather than on --check-fresh being clean: upstream added a 7th permissionMode value `manual` (an alias for `default`, Claude Code v2.1.200+) phrased with an MDX min-version comment and the words 'as an alias for', which turned a closed-set value clause into an open one. The closed-set-only extractor correctly declined to emit an enum; before the open-candidate change that landed alongside this re-vendor, the projection would simply have STOPPED recording any permission-mode values, rendering a value ADDITION as a bare absence. permissionMode remains a documented field the kernel does not model (EXPECTED_DIVERGENCES doc-fields-not-in-kernel), so there is no kernel enum to fold `manual` into and no authoring/v1 edit is implied. Samples are deliberately NOT re-vendored.",
   "files": [
     {
       "file": "claude-code-sub-agents.md",
@@ -10,9 +10,10 @@
       "surface": "sub-agents",
       "authority_tier": "reference",
       "source_url": "https://code.claude.com/docs/en/sub-agents.md",
-      "sha256": "824162201ae408cdb5b6746d6fd433eeae9165a3425e0cd58ee19d840a01b846",
-      "bytes": 66098,
-      "version_basis": "The page carries no version identifier and upstream publishes no machine-readable schema for agents/*.md frontmatter; this .md form is the same URL/form the registry's fetch_sub_agents extractor monitors (capture.urls + ext .md in specs/upstream-surface-registry.v1.json)."
+      "sha256": "504eb9c31bfa496c04b19577cd3503182ffc37572813da4326c7d59af56e49d4",
+      "bytes": 75053,
+      "version_basis": "The page carries no version identifier and upstream publishes no machine-readable schema for agents/*.md frontmatter; this .md form is the same URL/form the registry's fetch_sub_agents extractor monitors (capture.urls + ext .md in specs/upstream-surface-registry.v1.json).",
+      "revendored_from": "archive/raw/sub-agents/20260704T094700Z.meta.json"
     },
     {
       "file": "platform-skill-authoring-best-practices.md",

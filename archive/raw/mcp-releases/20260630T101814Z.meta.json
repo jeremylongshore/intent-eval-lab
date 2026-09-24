@@ -1,0 +1,12 @@
+{
+  "record": "20260630T101814Z",
+  "surface_id": "mcp-releases",
+  "url": "https://github.com/modelcontextprotocol/modelcontextprotocol/releases.atom",
+  "fetched_at": "2026-06-30T10:18:14Z",
+  "status": "FETCH_OK",
+  "http_code": 200,
+  "sha256": "ce44ddf52c1c0873b74bbbc3aab03818f7bef4122ab411d2fde58e3985aa7db9",
+  "bytes": 10520,
+  "body_stored": false,
+  "body_ref": "20260629T031718Z"
+}

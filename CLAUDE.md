@@ -10,7 +10,13 @@ A research umbrella for vendor-neutral evaluation methodology around AI plugins,
 - Productizable harnesses → contributions to `j-rig-skill-binary-eval` (sister project)
 - Public reference content → this repo's `000-docs/` (Apache 2.0)
 
-## Five-repo convergence (Phase A complete 2026-05-10; intent-rollout-gate added 2026-05-12)
+> **State (updated 2026-07-10):** SAK Class-1 charter RATIFIED (docs 049/081); Skill Refiner PUBLISHED to npm (initial `@intentsolutions/refiner@0.1.0` 2026-06-21; now **`@intentsolutions/refiner`+`refiner-core@0.3.0`** — provider-agnostic `refine score/propose --provider` over free/cheap models — with `@intentsolutions/jrig-cli@0.2.0`, 2026-07-10); the SSoT/spec-compliance machinery (doc 045 + `SAK-INDEX.md` + `scripts/spec-drift-check.sh` / `spec-projection-diff.py` + `.github/workflows/spec-drift-watch.yml`) is the dominant active surface. 000-docs runs through 106+. Any "Skill Refiner" or "Phase B/C gate" block below is a 2026-05-27 snapshot — trust the DRs + `SAK-INDEX.md` + the umbrella CLAUDE.md over them.
+
+### Current cross-repo evolution (2026-08-01)
+
+The active master blueprint is [`112-PP-PLAN-eval-platform-evolution-smevals-parity-and-superiority-2026-08-01.md`](./000-docs/112-PP-PLAN-eval-platform-evolution-smevals-parity-and-superiority-2026-08-01.md), plan `IEP-EVAL-EVOLUTION-001`, master bead `bd_000-projects-htjt`. It is the coordination authority for the six sibling repositories: each implementation uses its own feature branch, traceable commit footer, draft PR, and repo-local quality gates. Do not collapse this work into a monorepo or bypass the existing canonical kernel and Evidence Bundle boundaries.
+
+## Five-repo convergence (Phase A complete 2026-05-13; intent-rollout-gate added 2026-05-12)
 
 This repo is the **methodology + specs umbrella** in the five-repo convergence vision: the canonical contracts kernel (`intent-eval-core`) + `intent-eval-lab` + `audit-harness` + `j-rig-skill-binary-eval` + `intent-rollout-gate`. The architectural insight: the repos compose via a shared schema (the **Evidence Bundle**), not via package consolidation. Convergence happens at the schema layer. (`intent-eval-dashboard` is the 6th platform repo — the reports hub at `labs.intentsolutions.io` — separate from the 5-repo convergence taxonomy.) See the umbrella `~/000-projects/intent-eval-platform/CLAUDE.md` § "5-repo target" for the full taxonomy.
 
@@ -18,14 +24,14 @@ This repo is the **methodology + specs umbrella** in the five-repo convergence v
 
 ### Phase A landed (this repo)
 
-- **Evidence Bundle spec module** at `specs/evidence-bundle/v0.1.0-draft/` (skeleton — `SPEC.md` section headers only; normative content gates to Phase B per `IEL-3`)
-- **Cross-CLI discovery module** stub at `specs/cross-cli-discovery/v0.1.0-draft/` (Phase B per `IEL-5`)
+- **Evidence Bundle spec module** at `specs/evidence-bundle/v0.1.0-draft/` — the Phase A skeleton has since been elevated to a **NORMATIVE DRAFT** (`SPEC.md` self-declares `Status: NORMATIVE DRAFT` at Phase B Milestone 1). The canonical `gate-result/v1` JSON Schema now lives in the kernel `@intentsolutions/core`; this module's schema file is a redirect stub.
+- **Phase B spec-module stubs** live under `specs/` (e.g. `validator-contract-reliability/`, `forecasting-drift-detection/`, `decentralized-crypto-evaluation/`) — placeholders for Phase B work per `IEL-5`. (The originally-planned `cross-cli-discovery/` module was never created under that name.)
 - **OpenTelemetry RFC draft** at `000-docs/001-DR-RFC-otel-agent-rollout-gate-signals-draft.md` — full RFC text proposing `agent.rollout.gate.*` and `agent.evidence_bundle.*` signal conventions. **Drafted, NOT filed.** Filing is a Phase B deliverable per `IEL-CONV-7`.
 - **Partner-consent discipline** enforced (see § Brand-name policy below)
 
 ### Phase B/C gate
 
-Phase A is documentation + skeleton ONLY. **Phase B is bandwidth-gated, not customer-signal-gated** — the customer-signal gate was REMOVED per DR-010 § 13.5 (acting-head-of-board override; see `000-docs/010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md`). When Phase B work is scheduled, next-session entry point: `bd-sync status` across the convergence repos → begin `IEL-3` SPEC.md normative content.
+Phase A is documentation + skeleton ONLY. **Phase B is bandwidth-gated, not customer-signal-gated** — the customer-signal gate was REMOVED per DR-010 § 13.5 (acting-head-of-board override; see `000-docs/010-AT-DECR-isedc-council-session-4-widened-scope-2026-05-13.md`). When Phase B work is scheduled, next-session entry point: `bd-sync status` across the convergence repos → begin `IEL-3` SPEC.md normative content. (Note: end-to-end platform operation was demonstrated 2026-06-29 per `000-docs/105-AA-AACR-iep-demonstrably-works-end-to-end-2026-06-29.md`; the "documentation + skeleton only" framing predates that.)
 
 ### Brand-name policy (partner-consent discipline)
 
@@ -57,11 +63,11 @@ The lab session has full context for cross-project synthesis. The JRig session h
 
 Repos that **compose into one evaluation platform via the Evidence Bundle schema** (per LAB-6 / `IEL-CONV-1`). They share architectural coupling and live as siblings under the same umbrella dir.
 
-| Symlink                        | Real path                                                                                                                                                              | Convergence role                                                                                                                           |
-| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `projects/audit-harness`       | `~/000-projects/intent-eval-platform/audit-harness` (sibling)                                                                                                          | Deterministic gates — emits Evidence Bundle gate-result rows                                                                               |
-| `projects/j-rig-binary-eval`   | `~/000-projects/intent-eval-platform/j-rig-binary-eval` (sibling; GH-canonical repo name is `j-rig-skill-binary-eval`, local FS dir name retained for backward-compat) | 7-layer judgment harness — consumes + emits Evidence Bundle rows                                                                           |
-| `projects/intent-rollout-gate` | `~/000-projects/intent-eval-platform/intent-rollout-gate` (sibling)                                                                                                    | GitHub Action — consumes a bundle + a `tests/TESTING.md` policy → ship/no-ship decision (M5 implementation; M4 substantive bootstrap stub) |
+| Symlink                        | Real path                                                                                                                                                              | Convergence role                                                                                                                                                                                                  |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `projects/audit-harness`       | `~/000-projects/intent-eval-platform/audit-harness` (sibling)                                                                                                          | Deterministic gates — emits Evidence Bundle gate-result rows                                                                                                                                                      |
+| `projects/j-rig-binary-eval`   | `~/000-projects/intent-eval-platform/j-rig-binary-eval` (sibling; GH-canonical repo name is `j-rig-skill-binary-eval`, local FS dir name retained for backward-compat) | 7-layer judgment harness — consumes + emits Evidence Bundle rows                                                                                                                                                  |
+| `projects/intent-rollout-gate` | `~/000-projects/intent-eval-platform/intent-rollout-gate` (sibling)                                                                                                    | GitHub Action — consumes a bundle + a `tests/TESTING.md` policy → ship/no-ship decision (LIVE at v0.3.0, signed to production Rekor; delegates decision logic to published `@intentsolutions/rollout-gate@2.0.0`) |
 
 ### Tier 2 — Independent lab research projects (outside the umbrella)
 
@@ -93,6 +99,8 @@ Numbered + dated + category-coded (the `/doc-filing` standard).
 ```
 
 Filing-code crib: `RR` = research/recon, `PP` = plan, `AA` = after-action, `DR` = draft, `RA` = ready-to-publish.
+
+Key normative anchors added since Phase A: doc 045 (SSoT + continuous spec-compliance), `SAK-INDEX.md` (Spec Authority Kernel index), docs 049/081 (ISEDC Class-1 SAK charter ratifications), doc 076 (state-machine single-source + drift gate).
 
 ### Sandboxes
 
@@ -127,7 +135,7 @@ Keep this scoped. The lab's value is rigor + cross-project synthesis, not buildi
 
 ## Skill Refiner — plan + audit + ratification (2026-05-27)
 
-The Skill Refiner buildout is the active multi-week effort under this lab umbrella. Plan is RATIFIED 2026-05-27; first `bd claim` permitted; recommended first claim is the Phase A.0 null-hypothesis baseline.
+Skill Refiner is RATIFIED (DR-028, 2026-05-27) and PUBLISHED to npm (initial `@intentsolutions/refiner-core` + `@intentsolutions/refiner@0.1.0` 2026-06-21, SLSA provenance; now at **`0.3.0`** — provider-agnostic `refine score/propose --provider` over free/cheap OpenAI-compatible models — shipped in `@intentsolutions/jrig-cli@0.2.0`, 2026-07-10). The docs below are the ratification-era record; for current SAK/charter state see docs 044/049/081 + `SAK-INDEX.md`.
 
 **Canonical docs (read in order):**
 
@@ -168,6 +176,48 @@ The Skill Refiner buildout is the active multi-week effort under this lab umbrel
 
 Detailed operational state (active engagements, sock-puppet observations, partner-specific notes, patent-sensitive cross-refs) lives in `.private/CLAUDE-private.md` — gitignored, local-only. Read that file in addition to this one when working in this dir on operational tasks.
 
+## AI code review — BOTH REVIEWERS ARE DARK (do not wait for one)
+
+**As of 2026-07-22 no AI reviewer runs on this repo.** Verified by surveying the
+last four PRs across all six Intent Eval Platform repos: `gemini-code-assist`
+now posts only a sunset notice, and `greptile` has zero activity anywhere.
+
+- **Gemini Code Assist** — **SUNSET, permanently.** The consumer version on
+  GitHub has ceased all review activity; the bot says so verbatim on live PRs.
+  `.gemini/config.yaml` + `.gemini/styleguide.md` are retained but INERT. This
+  is a vendor decision — it is not a quota that resets and it is not coming back.
+- **Greptile** (`.greptile/config.json` + `rules.md` + `files.json`) — configured
+  to the platform-unified schema (`strictness: 3`, `commentTypes:
+["logic","syntax"]`, `statusCheck: false`, a universal `no-gate-weakening`
+  rule, plus this repo's scoped invariant rules) but **not observed reviewing
+  any PR**. The config stays so the App works if it is reinstalled; do not treat
+  it as an expected reviewer today.
+
+**Operationally: never block a merge waiting for an AI review.** Check whether
+one arrived, read it if so, and otherwise proceed on CI. The deterministic merge gate is this repo's own CI (the partner-name guard + schema-drift gate + doc gates) plus CodeQL. That was
+always the required gate; it is now the only one. Installing or uninstalling the
+GitHub Apps is an admin (UI) action — the in-repo config here does not do it.
+
+**Replacement (decided 2026-07-22, not yet activated):** stand up the advisory
+lane we already run on the marketplace repo —
+`claude-code-plugins/.github/workflows/minimax-review.yml`. The action is
+[`tarmojussila/minimax-code-review`](https://github.com/tarmojussila/minimax-code-review)
+(the upstream mechanism), consumed via our own fork
+`jeremylongshore/minimax-code-review` **pinned to an immutable SHA** — the right
+supply-chain posture for a small single-maintainer action: we do not auto-track
+upstream. It is fork-safe by construction (`pull_request`, not
+`pull_request_target`, plus a same-repo guard, so a forked PR never receives the
+API key) and kill-switched by repo variable.
+
+**Do not copy CCPI's prompts.** The mechanism is generic; the value is prompts
+grounded in the consuming repo's own invariants — CCPI's three lanes are written
+against its validators and its A-grade bar and would be noise here. For this
+repo the reviewer should be pointed at spec + governance discipline — DR/Blueprint authority order, the partner-name guard, schema-drift into `specs/`, and the verbatim-preservation rule for AT-DECR council records.
+
+Activation needs owner secret actions: repo secret `MINIMAX_API_KEY` + repo
+variable `ENABLE_MINIMAX_REVIEW=true` (+ `MINIMAX_MODEL`). Until then this repo
+is CI-only, deliberately.
+
 <!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:ca08a54f -->
 
 ## Beads Issue Tracker
@@ -176,12 +226,12 @@ This project uses **bd (beads)** for issue tracking. Run `bd prime` to see full 
 
 ### Quick Reference
 
-````bash
+```bash
 bd ready              # Find available work
 bd show <id>          # View issue details
 bd update <id> --claim  # Claim work
 bd close <id>         # Complete work
-```text
+```
 
 ### Rules
 
@@ -205,11 +255,11 @@ bd close <id>         # Complete work
    bd dolt push
    git push
    git status  # MUST show "up to date with origin"
-````
+   ```
 
-1. **Clean up** - Clear stashes, prune remote branches
-2. **Verify** - All changes committed AND pushed
-3. **Hand off** - Provide context for next session
+5. **Clean up** - Clear stashes, prune remote branches
+6. **Verify** - All changes committed AND pushed
+7. **Hand off** - Provide context for next session
 
 **CRITICAL RULES:**
 
@@ -217,4 +267,5 @@ bd close <id>         # Complete work
 - NEVER stop before pushing - that leaves work stranded locally
 - NEVER say "ready to push when you are" - YOU must push
 - If push fails, resolve and retry until it succeeds
+
 <!-- END BEADS INTEGRATION -->

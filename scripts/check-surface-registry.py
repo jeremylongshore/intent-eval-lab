@@ -12,6 +12,13 @@ It also validates each surface's `capture` config — the per-surface fetch kind
 expected extractor pattern (shape hint) and min-bytes floor that drive the
 raw-fetch capture stage (scripts/fetch-capture.py; 000-docs/052-AT-SPEC-...md).
 
+And each surface's `semantic_coverage` block — whether the surface has a
+field-level projection checker (and which, and whether it is enforced) or is
+byte-hash-only with a named reason. That block is the coverage map the freshness
+driver (scripts/projection-freshness.py) executes, so it must be present and
+well-formed on EVERY surface: an unstated coverage level is how "no extractor"
+gets quietly mistaken for "not covered by design".
+
 Stdlib only, offline. Exit 0 = consistent; exit 1 = drift; exit 2 = usage/parse.
 
 Usage: check-surface-registry.py
@@ -31,6 +38,131 @@ SCRIPT = os.path.join(REPO_ROOT, "scripts", "spec-drift-check.sh")
 _SOURCE_ROW = re.compile(r'^\s*"([a-z0-9-]+)\|[^|]*\|([a-z_]+)"\s*$')
 
 _CAPTURE_KINDS = {"http", "command"}
+
+_COVERAGE_STATUSES = {"field-level", "byte-hash-only"}
+_ENFORCEMENTS = {"failing", "report-only"}
+
+# Every surface declares the CONTRACT it informs. That value is only meaningful
+# if it names a contract the kernel actually models, so it is validated against
+# @intentsolutions/core schemas/authoring/v1/index.json rather than a list
+# hand-copied into this file — a hand-copy is the same DRY-duplication failure
+# this gate exists to catch one level up.
+#
+# Why this check exists: `claude-slash-commands` sat in the registry declaring
+# contract "slash-commands", which the kernel has never modelled. Nothing
+# objected, so the unmatched value read as a real seventh contract awaiting
+# charter for weeks. It was not one — upstream had folded custom commands into
+# skills, and the correct contract was skill-frontmatter, already published.
+# An unrecognised contract must be a loud error, not a silent placeholder.
+_KERNEL_INDEX = os.path.join(
+    os.path.dirname(REPO_ROOT), "intent-eval-core", "schemas", "authoring", "v1", "index.json"
+)
+
+# Registry rows that deliberately inform NO authoring contract: early-warning
+# feeds whose value is the signal itself, not a field shape to project.
+_SIGNAL_CONTRACTS = {"version-signal", "cross-cutting-signal"}
+
+
+def _kernel_contracts() -> set[str] | None:
+    """Contract names the kernel models, or None when the kernel is unavailable.
+
+    Returns None rather than an empty set so a missing checkout degrades to
+    "skip this check" instead of "every contract is invalid".
+    """
+    try:
+        with open(_KERNEL_INDEX, encoding="utf-8") as fh:
+            schemas = json.load(fh).get("schemas") or {}
+    except (OSError, ValueError):
+        return None
+    names = {n for n, v in schemas.items() if (v or {}).get("kind") == "authoring-contract"}
+    return names or None
+
+# Which flag makes each checker compare against the CAPTURED tree, i.e. which flag
+# actually performs a FRESHNESS check rather than a self-consistency one.
+#
+# Validating only that `checker[0]` is an existing file is not enough, and the gap
+# is not theoretical: swapping `--check-fresh` for `--check` on any extractor
+# re-arms the exact frozen-vs-frozen bug this machinery exists to end, and the
+# driver then prints an authoritative all-green board — including for surfaces
+# with real outstanding findings. `--surface` is a top-level arg, so the wrong
+# mode accepts it and silently ignores it; nothing else in the chain objects.
+#
+# The registry is precisely the file humans are told to edit ("flipping a surface
+# to `failing` is a one-line registry edit"), so the next person who sees red and
+# "fixes" the flag would get a green board. Hence: pin the SEMANTICS of the argv,
+# not just its head. A checker absent from this table is an error — adding one is
+# a deliberate, reviewed act.
+_FRESH_MODE_FLAG = {
+    # spec-projection-diff's --check reads specs/_vendor/<surface>/snapshot<ext>
+    # (repointed in #234); it has no separate --check-fresh.
+    "scripts/spec-projection-diff.py": "--check",
+    "scripts/extract-agent-definition-projection.py": "--check-fresh",
+    "scripts/extract-hook-config-projection.py": "--check-fresh",
+    "scripts/extract-marketplace-catalog-projection.py": "--check-fresh",
+    "scripts/extract-plugin-manifest-projection.py": "--check-fresh",
+}
+
+# Mode flags a checker must never carry instead of (or in addition to) its fresh
+# mode. `--write` would have the gate MUTATE the baseline it is meant to guard.
+_MODE_FLAGS = {"--check", "--check-fresh", "--extract", "--write", "--self-test", "--diff", "--list", "--strict"}
+
+
+def _check_semantic_coverage(name: str, surface: dict, problems: list[str]) -> None:
+    """Validate one surface's semantic_coverage block (projection-freshness.py contract)."""
+    cov = surface.get("semantic_coverage")
+    if not isinstance(cov, dict):
+        problems.append(
+            f"{name}: missing semantic_coverage block. Every surface must state whether it has a "
+            "field-level projection checker or is byte-hash-only, and why."
+        )
+        return
+
+    status = cov.get("status")
+    if status not in _COVERAGE_STATUSES:
+        problems.append(f"{name}: semantic_coverage.status '{status}' not one of {sorted(_COVERAGE_STATUSES)}")
+        return
+
+    if status == "byte-hash-only":
+        reason = cov.get("reason")
+        if not isinstance(reason, str) or len(reason) < 20:
+            problems.append(
+                f"{name}: byte-hash-only coverage needs a substantive `reason` — an unexplained gap "
+                "reads as a design choice."
+            )
+        if "checker" in cov:
+            problems.append(f"{name}: byte-hash-only coverage must not declare a checker")
+        return
+
+    checker = cov.get("checker")
+    if not isinstance(checker, list) or not checker or not all(isinstance(a, str) for a in checker):
+        problems.append(f"{name}: field-level coverage needs `checker` as a non-empty list of argv strings")
+    elif not os.path.isfile(os.path.join(REPO_ROOT, checker[0])):
+        problems.append(f"{name}: semantic_coverage.checker script not found: {checker[0]}")
+    elif checker[0] not in _FRESH_MODE_FLAG:
+        problems.append(
+            f"{name}: '{checker[0]}' is not a registered freshness checker. Add it to _FRESH_MODE_FLAG in "
+            "this script, naming the flag that makes it read the CAPTURED tree — a checker whose mode is "
+            "unpinned can silently compare frozen against frozen."
+        )
+    else:
+        required = _FRESH_MODE_FLAG[checker[0]]
+        supplied = [a for a in checker[1:] if a in _MODE_FLAGS]
+        if supplied != [required]:
+            problems.append(
+                f"{name}: checker must run '{checker[0]}' in its freshness mode '{required}', got mode flag(s) "
+                f"{supplied or 'none'}. A checker in the wrong mode compares frozen against frozen and reports "
+                "an authoritative green — the exact failure this gate exists to detect."
+            )
+
+    enforcement = cov.get("enforcement")
+    # str() first: a list/dict here is unhashable and `in` would raise TypeError,
+    # killing the gate with a traceback instead of naming the problem.
+    if not isinstance(enforcement, str) or enforcement not in _ENFORCEMENTS:
+        problems.append(
+            f"{name}: semantic_coverage.enforcement {enforcement!r} not one of {sorted(_ENFORCEMENTS)}"
+        )
+    if enforcement == "report-only" and not isinstance(cov.get("note"), str):
+        problems.append(f"{name}: report-only coverage needs a `note` saying what is pending and when it flips")
 
 
 def _check_capture(name: str, surface: dict, problems: list[str]) -> None:
@@ -68,6 +200,19 @@ def _check_capture(name: str, surface: dict, problems: list[str]) -> None:
     ext = cap.get("ext")
     if not isinstance(ext, str) or not ext.startswith("."):
         problems.append(f"{name}: capture.ext must be a string starting with '.' (got {ext!r})")
+    # expect_title is optional (feeds and raw .ts/.json surfaces have no H1),
+    # but when present it must compile — an uncompilable pattern would raise
+    # inside classify_fetch and take the whole capture down rather than
+    # classifying one surface.
+    expect_title = cap.get("expect_title")
+    if expect_title is not None:
+        if not isinstance(expect_title, str) or not expect_title:
+            problems.append(f"{name}: capture.expect_title must be a non-empty string (got {expect_title!r})")
+        else:
+            try:
+                re.compile(expect_title)
+            except re.error as exc:
+                problems.append(f"{name}: capture.expect_title does not compile: {exc}")
 
 
 def main() -> int:
@@ -107,10 +252,31 @@ def main() -> int:
         if src_fn not in defined_fns:
             problems.append(f"{name}: extractor function '{src_fn}' not defined in the script")
 
-    # Every monitored surface must carry a valid capture config (fetch-capture.py).
+    # Every monitored surface must carry a valid capture config (fetch-capture.py)
+    # and a stated semantic-coverage level (projection-freshness.py).
     for name in sorted(reg_surfaces):
         if reg_surfaces[name].get("monitored"):
             _check_capture(name, reg_surfaces[name], problems)
+            _check_semantic_coverage(name, reg_surfaces[name], problems)
+
+    # Every surface's `contract` must name a kernel authoring contract, or be an
+    # explicitly-declared signal feed. Skipped (not failed) when the sibling
+    # kernel checkout is absent, so this gate stays runnable standalone.
+    kernel_contracts = _kernel_contracts()
+    if kernel_contracts is not None:
+        allowed = kernel_contracts | _SIGNAL_CONTRACTS
+        for name in sorted(reg_surfaces):
+            contract = reg_surfaces[name].get("contract")
+            if not isinstance(contract, str) or not contract:
+                problems.append(f"{name}: contract must be a non-empty string (got {contract!r})")
+            elif contract not in allowed:
+                problems.append(
+                    f"{name}: contract '{contract}' is not a kernel authoring contract "
+                    f"({', '.join(sorted(kernel_contracts))}) and is not a declared signal feed "
+                    f"({', '.join(sorted(_SIGNAL_CONTRACTS))}). Either the surface informs an "
+                    f"existing contract and should say so, or the kernel genuinely needs a new "
+                    f"one — which is a charter decision, not a registry edit."
+                )
 
     if problems:
         print(f"surface-registry consistency: {len(problems)} PROBLEM(S):")
@@ -119,9 +285,31 @@ def main() -> int:
         print("\nFix: edit BOTH spec-drift-check.sh SOURCES and the registry in the same change.")
         return 1
 
+    field_level = sum(
+        1 for s in reg_surfaces.values() if (s.get("semantic_coverage") or {}).get("status") == "field-level"
+    )
+    # A floor, so shrinking semantic coverage is a visible edit rather than a
+    # quietly smaller green board. Without it, "the map got smaller" and "the map
+    # is clean" look identical downstream.
+    floor = (reg.get("semantic_coverage_floor") or {}).get("field_level")
+    if not isinstance(floor, int) or isinstance(floor, bool) or floor < 1:
+        problems.append("registry: semantic_coverage_floor.field_level must be a positive integer")
+    elif field_level < floor:
+        problems.append(
+            f"registry: {field_level} field-level surfaces is below the declared floor of {floor}. "
+            "Semantic coverage SHRANK. If that is intended, lower the floor in the same change so the "
+            "reduction is reviewed."
+        )
+    if problems:
+        print(f"surface-registry consistency: {len(problems)} PROBLEM(S):")
+        for problem in problems:
+            print(f"  - {problem}")
+        print("\nFix: edit BOTH spec-drift-check.sh SOURCES and the registry in the same change.")
+        return 1
     print(
         f"surface-registry consistency: OK — {len(reg_surfaces)} surfaces, registry == watcher "
-        "SOURCES, all extractors defined, all capture configs valid."
+        f"SOURCES, all extractors defined, all capture configs valid, all semantic-coverage levels "
+        f"stated ({field_level} field-level, {len(reg_surfaces) - field_level} byte-hash-only)."
     )
     return 0
 

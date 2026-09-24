@@ -2,15 +2,15 @@
 
 # Detector health
 
-## Verdict: DEGRADED
+## Verdict: HEALTHY
 
-Failing condition(s) first:
+All composite-predicate conditions pass:
 
-- **FAIL** `watcher-run-recent` — no successful watcher run recorded — bootstrap state is not proof of life; an unproven watcher is DEGRADED, never green
-- ok `no-fetch-error-streaks` — all 0 tracked surfaces under the streak threshold (3)
+- ok `watcher-run-recent` — last successful watcher run 2026-07-23T09:54:05Z was 8.9h ago (max gap 26h)
+- ok `no-fetch-error-streaks` — all 16 tracked surfaces under the streak threshold (3)
 - ok `coverage-at-target` — 16/16 registered surfaces monitored (100.0% of target 100%)
 
-Lineage: 11 surfaces adopted, 12 divergences outstanding, 0 convergence triggers fired. Evaluated at 2026-06-13T01:06:35Z.
+Lineage: 11 surfaces adopted, 12 divergences outstanding, 0 convergence triggers fired. Evaluated at 2026-07-23T18:48:24Z.
 
 ## Drift table (per registered surface)
 
@@ -23,7 +23,7 @@ Lineage: 11 surfaces adopted, 12 divergences outstanding, 0 convergence triggers
 | claude-code-releases | version-signal | yes | `556b4faba702…` | 0 | — | 0 |
 | claude-hooks | hook-config | yes | `0b644e2208f8…` | 0 | yes | 1 |
 | claude-settings | hook-config | yes | `491b623ae274…` | 0 | yes | 0 |
-| claude-slash-commands | slash-commands | yes | `d7d367c7d004…` | 0 | — | 0 |
+| claude-slash-commands | skill-frontmatter | yes | `d7d367c7d004…` | 0 | — | 0 |
 | mcp-releases | mcp-config | yes | `1b180712c47f…` | 0 | yes | 0 |
 | mcp-schema-ts | mcp-config | yes | `1bf94a601817…` | 0 | yes | 1 |
 | mcp-spec-docs | mcp-config | yes | `9afb71b14f68…` | 0 | yes | 0 |
