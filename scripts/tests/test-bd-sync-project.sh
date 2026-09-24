@@ -18,11 +18,30 @@ export PATH="$FIXTURE_DIR/fake-bin:$PATH"
 "$ROOT_DIR/scripts/bd-sync.sh" project bd_fixture_0001 --repo-root "$TEST_DIR"
 : > "$TEST_DIR/edits.log"
 
+"$ROOT_DIR/scripts/bd-sync.sh" project bd_fixture_0002 --repo-root "$TEST_DIR"
+shared_doc=$(<"$TEST_DIR/000-docs/fixture.md")
+expected_shared_beads="Beads: \`bd_fixture_0001, bd_fixture_0002\`"
+expected_shared_gh="GitHub: \`owner/repo#42, owner/repo#99\`"
+case "$shared_doc" in
+  *"$expected_shared_beads"*"$expected_shared_gh"*) : ;;
+  *)
+    echo 'bd-sync project test FAIL: shared document projection lost a bead receipt' >&2
+    exit 1
+    ;;
+esac
+shared_doc_sha=$(sha256sum "$TEST_DIR/000-docs/fixture.md")
+"$ROOT_DIR/scripts/bd-sync.sh" project bd_fixture_0002 --repo-root "$TEST_DIR"
+[ "$shared_doc_sha" = "$(sha256sum "$TEST_DIR/000-docs/fixture.md")" ] || {
+  echo 'bd-sync project test FAIL: repeated shared projection was not idempotent' >&2
+  exit 1
+}
+: > "$TEST_DIR/edits.log"
+
 doc_before=$(sha256sum "$TEST_DIR/000-docs/fixture.md")
 sed -i 's/^Projection-SHA256: .*/Projection-SHA256: 0000000000000000000000000000000000000000000000000000000000000000/' "$TEST_DIR/issue.md"
 issue_after_mutation=$(sha256sum "$TEST_DIR/issue.md")
 
-if "$ROOT_DIR/scripts/bd-sync.sh" project bd_fixture_0001 --repo-root "$TEST_DIR" >/dev/null 2>&1; then
+if "$ROOT_DIR/scripts/bd-sync.sh" project bd_fixture_0002 --repo-root "$TEST_DIR" >/dev/null 2>&1; then
   echo 'bd-sync project test FAIL: mutated projection was accepted' >&2
   exit 1
 fi

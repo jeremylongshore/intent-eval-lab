@@ -20,9 +20,9 @@ forward_refs:
 
 <!-- BEGIN BD-SYNC:cross-ref:v1 -->
 
-Beads: `bd_000-projects-rqwk.7.1`
-GitHub: `jeremylongshore/intent-eval-lab#268`
-Projection-SHA256: 7447e165b02a8dabd1454d9f9377d14594d43d3db08ccedc312988a21743cf5e
+Beads: `bd_000-projects-rqwk.7.1, bd_000-projects-rqwk.6.1, bd_000-projects-rqwk.4.1`
+GitHub: `jeremylongshore/intent-eval-lab#268, jeremylongshore/intent-eval-lab#270, jeremylongshore/intent-eval-lab#274`
+Projection-SHA256: b8e698824c4dfffea9416804010314bd45a3f094b080d579f52d357e17ba33b2
 
 <!-- END BD-SYNC:cross-ref:v1 -->
 
@@ -74,7 +74,7 @@ This document carries:
 
 ---
 
-## 1. Where the hooks sit — the 3-product agent-rig stack
+## 1. D1 — Where the hooks sit — the 3-product agent-rig stack
 
 The Skill Refiner is the middle product. The hooks are how its refine loop runs inside Claude Code
 without the user invoking anything; the explicit CLI (§ 5) is the manual escape hatch.
@@ -202,7 +202,7 @@ L3-class gate are, in order of preference:
 
 ---
 
-## 4. End-to-end flow — skill edit → hooks → eval / evidence
+## 4. D3 — End-to-end flow — skill edit → hooks → eval / evidence
 
 This is plan 027 § 6.5 diagram D3, **corrected** so the L3 row reads `PreToolUse: Bash` per § 3
 above (the plan's catalog rendering of this diagram still showed the pre-fix `PostToolUse: Bash`
