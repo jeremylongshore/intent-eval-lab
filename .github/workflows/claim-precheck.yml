@@ -15,4 +15,4 @@ jobs:
     with:
       # The gate script is unchanged on main; callers pin the source commit
       # rather than following a mutable branch from an untrusted PR.
-      gate_ref: 3c881d477b05d8ec98474b4841d5858fbc158ae4
+      gate_ref: 0f81b2466abf5e9ea85399957be9a631ee60094a
