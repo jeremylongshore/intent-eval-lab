@@ -1,0 +1,12 @@
+{
+  "record": "20260922T092026Z",
+  "surface_id": "claude-settings",
+  "url": "https://code.claude.com/docs/en/settings.md",
+  "fetched_at": "2026-09-22T09:20:26Z",
+  "status": "SHAPE_CHANGED",
+  "http_code": 200,
+  "sha256": "7e8821d26a2cfb3f5094900bca00820f159f3a0867a2bc75b14c767068f0d229",
+  "bytes": 59264,
+  "body_stored": true,
+  "body_ref": "20260922T092026Z"
+}
