@@ -1,0 +1,93 @@
+name: bd-claim-precheck (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      gate_ref:
+        description: Full commit SHA in intent-eval-lab containing the canonical gate script.
+        required: true
+        type: string
+      acknowledgment_marker:
+        description: Exact line external contributors add to the pull-request body.
+        required: false
+        default: "contributor-acknowledgment: bd-claim-precheck"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    name: bd-claim-precheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate canonical gate pin
+        shell: bash
+        env:
+          GATE_REF: ${{ inputs.gate_ref }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$GATE_REF" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::gate_ref must be a full 40-character lowercase commit SHA"
+            exit 1
+          fi
+
+      - name: Checkout caller repository
+        uses: actions/checkout@v6
+
+      - name: Checkout canonical gate source
+        uses: actions/checkout@v6
+        with:
+          repository: jeremylongshore/intent-eval-lab
+          ref: ${{ inputs.gate_ref }}
+          path: .claim-precheck/intent-eval-lab
+          fetch-depth: 1
+
+      - name: Run internal hard gate or external contributor warning
+        shell: bash
+        env:
+          ACKNOWLEDGMENT_MARKER: ${{ inputs.acknowledgment_marker }}
+          IS_EXTERNAL_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+        run: |
+          set -euo pipefail
+          gate_script=".claim-precheck/intent-eval-lab/scripts/bd-claim-precheck.sh"
+
+          if [ "$IS_EXTERNAL_PR" = "true" ]; then
+            echo "External contributor PR: the bd-claim-precheck gate is advisory by policy."
+            set +e
+            bash "$gate_script" --self-test
+            gate_rc=$?
+            set -e
+
+            if [ "$gate_rc" -eq 0 ]; then
+              echo "::notice::bd-claim-precheck self-test passed for the external contributor PR"
+            else
+              echo "::warning::bd-claim-precheck self-test returned $gate_rc; maintainer review is required"
+            fi
+
+            pr_body="$(jq -r '.pull_request.body // ""' "$GITHUB_EVENT_PATH")"
+            if printf '%s\n' "$pr_body" | grep -Fq -- "$ACKNOWLEDGMENT_MARKER"; then
+              echo "External contributor acknowledgment found."
+            else
+              echo "::warning::External contributor PR should add this exact line to its body: $ACKNOWLEDGMENT_MARKER"
+            fi
+
+            {
+              echo "## bd-claim-precheck"
+              echo "- Mode: external contributor (advisory)"
+              echo "- Self-test exit: $gate_rc"
+              if printf '%s\n' "$pr_body" | grep -Fq -- "$ACKNOWLEDGMENT_MARKER"; then
+                echo "- Acknowledgment: present"
+              else
+                echo "- Acknowledgment: missing (warning only)"
+              fi
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          bash "$gate_script" --self-test
+          {
+            echo "## bd-claim-precheck"
+            echo "- Mode: internal hard gate"
+            echo "- Self-test: passed"
+          } >> "$GITHUB_STEP_SUMMARY"

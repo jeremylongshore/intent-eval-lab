@@ -18,6 +18,14 @@ Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skelet
 - Restored the missing `Beads:` front-matter rows on the six legacy
   Skill-Refiner documents covered by the verifier.
 
+#### P0-RATIFY-4 claim-precheck CI wiring
+
+- Added a pinned reusable `bd-claim-precheck` workflow for the five-repo
+  convergence set.
+- Internal pushes and same-repository PRs hard-fail on gate regressions;
+  fork PRs receive the ratified advisory warning and acknowledgment contract.
+- Documented the immutable source-pin and contributor acknowledgment rules.
+
 #### Labs adversarial audit record (2026-09-07)
 
 - `000-docs/114-RA-AUDT-labs-adversarial-audit-2026-09.md` — the evidence record for the
@@ -140,6 +148,9 @@ skill evals still hit the judge-truncation (#175) + reasoning-model
 
 ### Changed
 
+- Refresh the neutral end-to-end convergence harness to validate against the
+  published `@intentsolutions/core@0.10.0` kernel while preserving the same
+  five-repository seam assertions.
 - Blueprint B § 7 — add Parallel Change discipline (expand-contract for kernel schema additions) (#148)
 - Scope advisory doc-lint to exclude machine-generated research results (#157)
 
