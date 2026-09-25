@@ -26,6 +26,9 @@ Projection-SHA256: b8e698824c4dfffea9416804010314bd45a3f094b080d579f52d357e17ba3
 
 <!-- END BD-SYNC:cross-ref:v1 -->
 
+| Beads | `bd_000-projects-rqwk` |
+| GitHub | `jeremylongshore/intent-eval-lab#78` |
+
 # Skill Refiner 3-layer hook architecture — sinker / line / hook
 
 > **State label: NORMATIVE.** This document faithfully records the **already-decided** 3-layer hook

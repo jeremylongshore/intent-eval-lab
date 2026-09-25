@@ -12,6 +12,14 @@ related:
   bead: bd_000-projects-214c.8 (Phase A.0 null-hypothesis baseline — claimed 2026-05-28)
 ---
 
+<!-- BEGIN BD-SYNC:cross-ref:v1 -->
+
+Beads: `bd_000-projects-pu35.1`
+GitHub: `jeremylongshore/intent-eval-lab#79`
+Projection-SHA256: c8a78a7bf72087b4ee3d5d53efb451928226dccfe9d0cf949a20c9bc23a6df40
+
+<!-- END BD-SYNC:cross-ref:v1 -->
+
 | Beads | bd_000-projects-214c.8, D29-VALIDATOR-PATCH (new), D29-SPEC-DRIFT-WATCH (new), D29-EVALSET-V1 (new) |
 | GitHub | jeremylongshore/intent-eval-lab#77 |
 
