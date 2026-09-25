@@ -18,6 +18,9 @@ forward_refs:
   - 083-AT-SPEC-skill-refiner-pass-v1-normative-spec-2026-06-17.md (skill-refiner-pass/v1 predicate)
 ---
 
+| Beads | `bd_000-projects-rqwk` |
+| GitHub | `jeremylongshore/intent-eval-lab#78` |
+
 # Skill Refiner 3-layer hook architecture — sinker / line / hook
 
 > **State label: NORMATIVE.** This document faithfully records the **already-decided** 3-layer hook
