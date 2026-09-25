@@ -208,7 +208,7 @@ jobs:
       # only resets streaks to the seed (the byte/field drift detection is
       # unaffected) — committed belt-and-suspenders state is a tracked follow-on.
       - name: Restore liveness state
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: specs/snapshots/.state.json
           key: spec-drift-state-${{ github.run_id }}
@@ -479,7 +479,7 @@ jobs:
 
       - name: Save liveness state
         if: always()
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: specs/snapshots/.state.json
           key: spec-drift-state-${{ github.run_id }}
