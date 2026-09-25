@@ -8,7 +8,7 @@
     "e2e": "node run-e2e.mjs"
   },
   "dependencies": {
-    "@intentsolutions/core": "0.7.0"
+    "@intentsolutions/core": "0.10.0"
   },
   "optionalDependencies": {
     "@intentsolutions/rollout-gate": "^2.0.0"

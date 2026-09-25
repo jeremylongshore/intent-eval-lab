@@ -8,9 +8,20 @@
 # After that, hooks run automatically on `git commit`.
 # Run manually:  pre-commit run --all-files
 #
-# Posture: advisory on first install (no required check yet).
+# Posture: existing framework is advisory on first install; the public-surface
+# scrub hook is blocking whenever this framework is installed.
 
 repos:
+  # Public-Flip Gate #3 (109-AT-DECR §7): changed-lines PII/secret scrub.
+  - repo: local
+    hooks:
+      - id: public-surface-scrub
+        name: public-surface PII and secret scrub
+        entry: python3 scripts/public-surface-scan.py --staged
+        language: system
+        pass_filenames: false
+        always_run: true
+
   # ---------------------------------------------------------------------------
   # L2 code lint + format (Python)
   # ---------------------------------------------------------------------------

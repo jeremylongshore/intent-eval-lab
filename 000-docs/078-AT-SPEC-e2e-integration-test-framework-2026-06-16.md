@@ -7,7 +7,7 @@
 | Authority  | Blueprint A (ecosystem) · Blueprint B § 2.4 + § 7 (`gate-result/v1`, EvidenceBundle) · DR-010 Q3 (unification thesis) |
 | Supersedes | — (first e2e integration spec)                                                                                        |
 | Bead       | `iep-e2e-integration-spec` (epic `i1c0`)                                                                              |
-| Kernel pin | `@intentsolutions/core@0.7.0` (published, sigstore provenance)                                                        |
+| Kernel pin | `@intentsolutions/core@0.10.0` (published, sigstore provenance)                                                       |
 
 ---
 
@@ -32,7 +32,7 @@ This framework defines:
 3. A **concrete test-harness design** — fixtures, the kernel-canonical schema checks
    at each hop, and which repo's CI runs the framework (§ 4–6).
 4. A **runnable skeleton** — `e2e/run-e2e.mjs`, shipped in this PR, that pipes a
-   fixture bundle through the **published** `@intentsolutions/core@0.7.0` validators,
+   fixture bundle through the **published** `@intentsolutions/core@0.10.0` validators,
    the audit-harness `conform` verb, the j-rig append step, the
    `@intentsolutions/rollout-gate` `decide()` logic, and a dashboard-render check, and
    asserts the contract at each seam (§ 7).
@@ -159,7 +159,7 @@ asserts every one of these; a CI run is green only if all pass.
 ### 4.1 Fixtures
 
 Fixtures live in `e2e/fixtures/` and are **kernel-canonical by construction** — each
-is validated against the published `@intentsolutions/core@0.7.0` schema as the first
+is validated against the published `@intentsolutions/core@0.10.0` schema as the first
 step of the harness, so a fixture can never silently rot the test.
 
 | Fixture                         | Purpose                                                                                           |
@@ -183,7 +183,7 @@ step of the harness, so a fixture can never silently rot the test.
 imports `.ts`; the skeleton is plain `.mjs` so it runs on stock Node) executes the
 flow in § 2, asserting every contract in § 3. It:
 
-- imports the **published** kernel validators (`npm i --no-save @intentsolutions/core@0.7.0`),
+- imports the **published** kernel validators (`npm i --no-save @intentsolutions/core@0.10.0`),
 - shells out to the real `audit-harness conform` verb when the harness is on `PATH`
   (and falls back to the captured fixture row when it is not, so the lane stays
   hermetic),
@@ -210,7 +210,7 @@ dependency (audit-harness's CI can't gate on j-rig which can't gate on rollout-g
 
 - **Trigger:** `.github/workflows/e2e-integration.yml` on `pull_request` + `push` to
   `main` + manual `workflow_dispatch`.
-- **Steps:** checkout → Node 22 → `npm i --no-save @intentsolutions/core@0.7.0`
+- **Steps:** checkout → Node 22 → `npm i --no-save @intentsolutions/core@0.10.0`
   (+ `@intentsolutions/rollout-gate@latest` for the real decider) → `node e2e/run-e2e.mjs`.
 - **Gate posture:** the e2e lane is a **required check** for any PR that touches
   `e2e/**` or the convergence docs; advisory elsewhere (it does not re-run on every
@@ -257,7 +257,7 @@ e2e/
 
 ```bash
 # from intent-eval-lab/
-npm i --no-save @intentsolutions/core@0.7.0
+npm i --no-save @intentsolutions/core@0.10.0
 npm i --no-save @intentsolutions/rollout-gate@latest   # optional: real decider
 node e2e/run-e2e.mjs
 # → per-seam PASS/FAIL table; exit 0 = unification thesis holds for the fixtures
