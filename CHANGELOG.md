@@ -11,6 +11,14 @@ Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skelet
 
 ### Added
 
+#### P0-RATIFY-4 claim-precheck CI wiring
+
+- Added a pinned reusable `bd-claim-precheck` workflow for the five-repo
+  convergence set.
+- Internal pushes and same-repository PRs hard-fail on gate regressions;
+  fork PRs receive the ratified advisory warning and acknowledgment contract.
+- Documented the immutable source-pin and contributor acknowledgment rules.
+
 #### Labs adversarial audit record (2026-09-07)
 
 - `000-docs/114-RA-AUDT-labs-adversarial-audit-2026-09.md` — the evidence record for the
