@@ -4,12 +4,25 @@
   <link type="text/html" rel="alternate" href="https://github.com/modelcontextprotocol/modelcontextprotocol/releases"/>
   <link type="application/atom+xml" rel="self" href="https://github.com/modelcontextprotocol/modelcontextprotocol/releases.atom"/>
   <title>Release notes from modelcontextprotocol</title>
-  <updated>2026-05-29T12:49:07Z</updated>
+  <updated>2026-07-28T16:44:35Z</updated>
+  <entry>
+    <id>tag:github.com,2008:Repository/862570523/2026-07-28</id>
+    <updated>2026-07-28T16:47:49Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/modelcontextprotocol/modelcontextprotocol/releases/tag/2026-07-28"/>
+    <title>2026-07-28</title>
+    <content type="html">&lt;p&gt;This release marks the &lt;strong&gt;stable release&lt;/strong&gt; of the &lt;code&gt;2026-07-28&lt;/code&gt; revision of the Model Context Protocol.&lt;/p&gt;
+&lt;p&gt;The specification is available on the &lt;a href=&quot;https://modelcontextprotocol.io/specification/2026-07-28&quot; rel=&quot;nofollow&quot;&gt;official Model Context Protocol website&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;For a detailed overview of changes, see &lt;a href=&quot;https://modelcontextprotocol.io/specification/2026-07-28/changelog&quot; rel=&quot;nofollow&quot;&gt;2026-07-28 changelog&lt;/a&gt;.&lt;/p&gt;</content>
+    <author>
+      <name>localden</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/53200638?s=60&amp;v=4"/>
+  </entry>
   <entry>
     <id>tag:github.com,2008:Repository/862570523/2026-07-28-RC</id>
-    <updated>2026-05-29T12:51:22Z</updated>
+    <updated>2026-07-28T16:48:26Z</updated>
     <link rel="alternate" type="text/html" href="https://github.com/modelcontextprotocol/modelcontextprotocol/releases/tag/2026-07-28-RC"/>
-    <title>MCP 2026-07-28 RC</title>
+    <title>2026-07-28 RC</title>
     <content type="html">&lt;p&gt;This release marks the &lt;strong&gt;release candidate (RC)&lt;/strong&gt; &lt;code&gt;2026-07-28&lt;/code&gt; revision of the Model Context Protocol.&lt;/p&gt;
 &lt;p&gt;The specification is available in &lt;a href=&quot;https://modelcontextprotocol.io/specification/draft&quot; rel=&quot;nofollow&quot;&gt;draft form&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;For a detailed overview of changes, see &lt;a href=&quot;https://modelcontextprotocol.io/specification/draft/changelog&quot; rel=&quot;nofollow&quot;&gt;2026-07-28 draft changelog&lt;/a&gt;.&lt;/p&gt;

@@ -1,7 +1,7 @@
 {
   "surface_id": "plugin-marketplaces",
-  "sha256": "b26587f202719e55188d55f099b17adad7a64a046bf838a7843627aa72e4129e",
-  "bytes": 72462,
-  "updated_at": "2026-07-23T00:14:15Z",
-  "source_raw_record": "archive/raw/plugin-marketplaces/20260723T001415Z.meta.json"
+  "sha256": "f7edcac19aec227330f4df149ed11c9fa4c657cef58ac2719d20d4bb4d153663",
+  "bytes": 126423,
+  "updated_at": "2026-09-23T09:21:33Z",
+  "source_raw_record": "archive/raw/plugin-marketplaces/20260923T092133Z.meta.json"
 }

@@ -188,11 +188,11 @@
     "surfaces_total": 16
   },
   "dashboard_version": "sak-dashboard/v1",
-  "generated_at": "2026-07-23T18:50:42Z",
+  "generated_at": "2026-09-25T00:41:42Z",
   "inputs": {
     "SAK-STATE.json": "8f0c009bb43b7175fcc97521095a2f887df72232ed203156fbeb6a496f32b27d",
     "specs/leading-indicators.v1.json": "4bcb1549ded6bf02d043a81d122c02d36538221e508340bdc1d061994cef4f67",
-    "specs/lineage/coverage-map.json": "db541a2ef9109096dfa404e850c3468b4f4106ade3bd233e85e0912590d44bd0"
+    "specs/lineage/coverage-map.json": "1e61e7a8e679ddb24a368884999dc14a2b8bb7da3ecb11e5053b416a78bafcb1"
   },
   "leading_indicators": {
     "action": "Continue per plan",

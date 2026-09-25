@@ -1,7 +1,7 @@
 {
   "surface_id": "claude-code-npm",
-  "sha256": "3fec0cc7668c6bc7453a375da27784842ecd608d05ef3f5c0d8af0006175b5a3",
+  "sha256": "65cf71b7582567246435cb8751ce69600f9493cb9d56732dbb1a572e58f13a19",
   "bytes": 8,
-  "updated_at": "2026-07-23T00:14:15Z",
-  "source_raw_record": "archive/raw/claude-code-npm/20260723T001415Z.meta.json"
+  "updated_at": "2026-09-24T09:21:56Z",
+  "source_raw_record": "archive/raw/claude-code-npm/20260924T092156Z.meta.json"
 }
