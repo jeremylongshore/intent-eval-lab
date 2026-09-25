@@ -1,0 +1,12 @@
+{
+  "record": "20260917T092156Z",
+  "surface_id": "claude-code-npm",
+  "url": "npm view @anthropic-ai/claude-code version",
+  "fetched_at": "2026-09-17T09:21:56Z",
+  "status": "FETCH_OK",
+  "http_code": 200,
+  "sha256": "a346e2c756e29e58cd6d72385f2cdf51dc9dd83c17e8921da8817e8cdf0a1874",
+  "bytes": 8,
+  "body_stored": true,
+  "body_ref": "20260917T092156Z"
+}
