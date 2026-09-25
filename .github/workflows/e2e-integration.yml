@@ -10,7 +10,7 @@ name: E2E Integration (5-repo unification thesis)
 # The lab owns this lane because it is the only repo neutral across all 5 (it
 # produces no row of its own and depends on no other repo's runtime) — placing it
 # here avoids a circular CI dependency. The harness validates rows against the
-# PUBLISHED @intentsolutions/core@0.7.0 kernel validators (the SSoT) + the published
+# PUBLISHED @intentsolutions/core@0.10.0 kernel validators (the SSoT) + the published
 # @intentsolutions/rollout-gate decider; no signing, no Rekor, no paid LLM judge.
 
 on:
