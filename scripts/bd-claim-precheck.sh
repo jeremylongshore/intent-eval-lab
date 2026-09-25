@@ -99,7 +99,7 @@ decide() {
     return 2
   fi
   # Whitelist bead id format to prevent injection (same pattern as validate-trilink.sh)
-  if ! [[ "$bead_id" =~ ^bd_000-projects-[a-z0-9]+(\.[0-9]+)?$ ]]; then
+  if ! [[ "$bead_id" =~ ^bd_000-projects-[a-z0-9]+(\.[0-9]+)*$ ]]; then
     echo "ERROR: invalid bead id format: $bead_id" >&2
     return 2
   fi
@@ -268,7 +268,7 @@ cmd_self_test() {
     return 1
   }
 
-  local valid_bead="bd_000-projects-214c.9"
+  local valid_bead="bd_000-projects-214c.9.2"
   local bad_bead="bd_000-projects-214c; rm -rf /"
 
   expect() {

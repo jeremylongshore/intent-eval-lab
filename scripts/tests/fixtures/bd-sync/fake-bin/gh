@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+state="${BD_SYNC_TEST_STATE:?BD_SYNC_TEST_STATE is required}"
+case "${1:-} ${2:-}" in
+  "issue view")
+    cat "$state/issue.md"
+    ;;
+  "issue edit")
+    body_file=''
+    while [ "$#" -gt 0 ]; do
+      if [ "$1" = '--body-file' ]; then
+        body_file="$2"
+        break
+      fi
+      shift
+    done
+    [ -n "$body_file" ] || { echo 'fake gh: missing --body-file' >&2; exit 2; }
+    cp -f "$body_file" "$state/issue.md"
+    printf 'edit\n' >> "$state/edits.log"
+    ;;
+  *)
+    echo "fake gh: unsupported invocation: $*" >&2
+    exit 2
+    ;;
+esac

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+bead="${2:-bd_fixture_0001}"
+case "$bead" in
+  bd_fixture_0002)
+    printf '%s\n' '{"description":"Doc: intent-eval-platform/intent-eval-lab/000-docs/fixture.md\nGitHub: owner/repo#99","notes":""}'
+    ;;
+  *)
+    printf '%s\n' '{"description":"Doc: intent-eval-platform/intent-eval-lab/000-docs/fixture.md\nGitHub: owner/repo#42","notes":""}'
+    ;;
+esac
