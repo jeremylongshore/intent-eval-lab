@@ -1,0 +1,12 @@
+{
+  "record": "20260926T091858Z",
+  "surface_id": "plugins-reference",
+  "url": "https://code.claude.com/docs/en/plugins-reference.md",
+  "fetched_at": "2026-09-26T09:18:58Z",
+  "status": "SHAPE_CHANGED",
+  "http_code": 200,
+  "sha256": "b1f317e9ffaea5a6bfb9ebc1d509b6163e6b120b6dc5e050d772e898550bff60",
+  "bytes": 57001,
+  "body_stored": true,
+  "body_ref": "20260926T091858Z"
+}
