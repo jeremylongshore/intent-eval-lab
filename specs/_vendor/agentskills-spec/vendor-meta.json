@@ -1,7 +1,7 @@
 {
   "surface_id": "agentskills-spec",
-  "sha256": "2b1dbb4fd80c31748d15812c4ebd3e66c09383d0c792801f617718684489e40d",
-  "bytes": 8157,
-  "updated_at": "2026-08-05T09:57:33Z",
-  "source_raw_record": "archive/raw/agentskills-spec/20260805T095733Z.meta.json"
+  "sha256": "4c649bdf0e0a51c9e215d9f91009ecdca05ee9d073edb6f37c20265bbd829e11",
+  "bytes": 7697,
+  "updated_at": "2026-09-29T09:23:10Z",
+  "source_raw_record": "archive/raw/agentskills-spec/20260929T092310Z.meta.json"
 }

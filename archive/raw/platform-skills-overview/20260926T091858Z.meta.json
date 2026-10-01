@@ -1,0 +1,12 @@
+{
+  "record": "20260926T091858Z",
+  "surface_id": "platform-skills-overview",
+  "url": "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview.md",
+  "fetched_at": "2026-09-26T09:18:58Z",
+  "status": "SHAPE_CHANGED",
+  "http_code": 200,
+  "sha256": "acc3a81d482fc3bace77b88453a3c4c4460dc2e427255e0fb5fd628c3d24032d",
+  "bytes": 21753,
+  "body_stored": true,
+  "body_ref": "20260926T091858Z"
+}

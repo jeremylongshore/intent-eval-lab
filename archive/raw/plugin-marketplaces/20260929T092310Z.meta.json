@@ -1,0 +1,12 @@
+{
+  "record": "20260929T092310Z",
+  "surface_id": "plugin-marketplaces",
+  "url": "https://code.claude.com/docs/en/plugin-marketplaces.md",
+  "fetched_at": "2026-09-29T09:23:10Z",
+  "status": "SHAPE_CHANGED",
+  "http_code": 200,
+  "sha256": "3b079222bc97cf17a9231e163cb9df2d47acf79cc80f0c0b155de33c087dbca5",
+  "bytes": 14247,
+  "body_stored": true,
+  "body_ref": "20260929T092310Z"
+}
