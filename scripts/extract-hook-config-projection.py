@@ -557,17 +557,19 @@ KERNEL_EXPECTATIONS = {
     "matcher_min_length": 1,  # kernel requires an explicit non-empty matcher
 }
 
-# The expected finding sets for the CURRENT capture (hooks.md @ sha bd7d4bae…
+# The expected finding sets for the CURRENT capture (hooks.md @ sha 94e33cf5…, re-vendored 2026-10-01,
 # + 4 claude-plugins-official samples @ eb1510e1). A re-capture that shifts
 # either set fails the self-test loud; a human reconciles (and only a human
 # ever promotes anything into the kernel).
 EXPECTED_AGREEMENTS = [
-    "event-enum-exact-30-values-lifecycle-table-order",
     "type-enum-exact-5-handler-kinds",
     "command-required-for-command-handlers-both-sides",
     "samples-corroborate:events-and-types-within-documented-enums",
 ]
 EXPECTED_DIVERGENCES = [
+    # Since the 2026-10-01 re-vendor: three documented events the kernel's closed
+    # enum (30 values) rejects. A kernel fold, tracked separately; never fixed here.
+    "event-enum:doc-events-kernel-rejects:DirectoryAdded,PostModelSwitch,PreModelSwitch",
     "shape:kernel-flattens-3-level-nesting-to-single-hook-entry-carrying-event-and-matcher",
     "matcher:doc-allows-omit-empty-star-match-all;kernel-requires-explicit-non-empty",
     "doc-handler-fields-not-in-kernel:allowedEnvVars,args,async,asyncRewake,headers,if,"
@@ -590,7 +592,16 @@ def kernel_cross_check(projection: dict[str, Any]) -> tuple[list[str], list[str]
     if projection["events"]["enum"] == k["event_enum"]:
         agreements.append("event-enum-exact-30-values-lifecycle-table-order")
     else:
-        divergences.append("event-enum:mismatch")
+        # Name the gap rather than reporting a bare mismatch: a documented event
+        # the kernel's closed enum lacks is a handler the kernel would REJECT.
+        doc_only = sorted(set(projection["events"]["enum"]) - set(k["event_enum"]))
+        kernel_only = sorted(set(k["event_enum"]) - set(projection["events"]["enum"]))
+        if doc_only:
+            divergences.append("event-enum:doc-events-kernel-rejects:" + ",".join(doc_only))
+        if kernel_only:
+            divergences.append("event-enum:kernel-events-not-documented:" + ",".join(kernel_only))
+        if not doc_only and not kernel_only:
+            divergences.append("event-enum:same-members-different-order")
 
     if projection["handler_types"] == k["type_enum"]:
         agreements.append("type-enum-exact-5-handler-kinds")
@@ -858,7 +869,7 @@ def cmd_self_test(vendor_dir: str) -> int:
     check("committed projection is fresh (--check)", cmd_check(vendor_dir) == 0)
     projection = build_projection(vendor_dir)
     fields = projection["handler_fields"]
-    check("real capture: 30 documented lifecycle events", projection["events"]["count"] == 30)
+    check("real capture: 33 documented lifecycle events", projection["events"]["count"] == 33)
     check(
         "real capture: 18 documented handler fields (6 required)",
         len(fields) == 18 and len([f for f, e in fields.items() if e["required"]]) == 6,

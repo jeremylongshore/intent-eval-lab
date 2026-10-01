@@ -18,6 +18,7 @@
       "dependencies",
       "description",
       "displayName",
+      "experimental.evals",
       "experimental.monitors",
       "experimental.themes",
       "homepage",
@@ -26,6 +27,7 @@
       "license",
       "lspServers",
       "mcpServers",
+      "metadata",
       "name",
       "outputStyles",
       "repository",
@@ -96,6 +98,13 @@
         "table": "metadata",
         "type": "string"
       },
+      "experimental.evals": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented",
+        "table": "component-path",
+        "type": "string|array"
+      },
       "experimental.monitors": {
         "observed_in_samples": false,
         "required": false,
@@ -152,6 +161,13 @@
         "table": "component-path",
         "type": "string|array|object"
       },
+      "metadata": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented",
+        "table": "metadata",
+        "type": "object"
+      },
       "name": {
         "observed_in_samples": true,
         "required": true,
@@ -193,13 +209,24 @@
         "source": "documented",
         "table": "metadata",
         "type": "string"
+      },
+      "workflows": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented",
+        "table": "component-path",
+        "type": "string|array"
       }
     },
     "manifest_optional": true,
     "name_kebab_case_prose": true,
     "name_only_required": true,
     "unrecognized_top_level_ignored": true,
-    "wrong_type_fails": true
+    "wrong_type_fails": true,
+    "wrong_type_ignored_fields": [
+      "experimental",
+      "metadata"
+    ]
   },
   "projection_version": "spec-projection/v1",
   "samples": {
@@ -231,5 +258,5 @@
       "version"
     ]
   },
-  "spec_version": "unversioned-2026-07-03"
+  "spec_version": "unversioned-2026-09-23"
 }

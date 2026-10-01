@@ -16,8 +16,8 @@
       "surfaces_at_or_over_threshold": []
     },
     "watcher-run-recent": {
-      "detail": "last successful watcher run 2026-10-01T09:24:18Z was 0.0h ago (max gap 26h)",
-      "gap_hours": 0.0,
+      "detail": "last successful watcher run 2026-10-01T09:24:18Z was 14.4h ago (max gap 26h)",
+      "gap_hours": 14.4,
       "last_run_utc": "2026-10-01T09:24:18Z",
       "max_gap_hours": 26.0,
       "pass": true
@@ -201,7 +201,7 @@
       "surface": "sub-agents"
     }
   ],
-  "evaluated_at": "2026-10-01T09:24:22Z",
+  "evaluated_at": "2026-10-01T23:51:13Z",
   "failing_conditions": [],
   "health_version": "detector-health/v1",
   "inputs": {
@@ -223,7 +223,7 @@
     "specs/snapshots/.sha/skills-releases.sha": "698ed71afca22f55068c34b7d92ea5b6551f6bd4ce8a126a5b1b4c68de349668",
     "specs/snapshots/.sha/sub-agents.sha": "bd8f915ad666f53f6d1b914ffc5e931d502c65d645803d6cc4be22dfe52ceea9",
     "specs/snapshots/.state.json": "3eabee89b237aae9ac4bdb88d804318d0495e94bb73c6b4062754ba5d34086ac",
-    "specs/upstream-surface-registry.v1.json": "94eddf7a9fcab9740c000053c42e9a0c1a95c6b6f73dcd6c319c65603de93068"
+    "specs/upstream-surface-registry.v1.json": "511fb917b16fe20fddf34c80b01f014d8fba7303d8f9185dc02d5c22f824fae5"
   },
   "lineage": {
     "convergence_triggers_fired": 0,

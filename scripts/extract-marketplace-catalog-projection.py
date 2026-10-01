@@ -128,6 +128,10 @@ _SOURCE_TYPE_SECTIONS = [
     ("### Git repositories", "url"),
     ("### Git subdirectories", "git-subdir"),
     ("### npm packages", "npm"),
+    # Added 2026-10-01: upstream documents two more object source types, each
+    # with its own section, Field table and discriminator example.
+    ("### Zip archives", "archive"),  # Claude Code v2.1.224+
+    ("### Command sources", "command"),  # Claude Code v2.1.229+
 ]
 _FIELD_COLUMNS = ["Field", "Type", "Description"]
 _OWNER_COLUMNS = ["Field", "Type", "Required", "Description"]
@@ -345,6 +349,11 @@ def extract_reference_doc(doc_path: str) -> dict[str, Any]:
 
     object_types: dict[str, dict[str, list[str]]] = {}
     for heading, type_name in _SOURCE_TYPE_SECTIONS:
+        if type_name is not None and type_name not in summary:
+            # A known type this capture's summary table does not name (an older
+            # capture, or the fixture). The summary-vs-sections check below still
+            # catches the opposite case: a summary type with no mapped section.
+            continue
         sec = _section(sources_sec, heading, ("## ", "### "))
         example = _first_json_example(sec, heading)
         if type_name is None:  # the string form: example anchors the './' shape
@@ -677,13 +686,18 @@ EXPECTED_AGREEMENTS = [
 # edit is implied), and the reserved-name count moves 14 -> 16. These sets are pinned
 # precisely so a re-capture that shifts a finding fails LOUD and a human reconciles —
 # which is exactly what happened here.
+# Updated 2026-10-01 with the re-vendor to the 2026-09-23 capture: owner gains an
+# optional `url`, plugin entries an optional `metadata`, sources two object types
+# (archive, command) and the reserved names `claude-tag-plugins`. All optional or
+# unmodeled on the kernel side, so again no authoring/v1 edit is implied.
 EXPECTED_DIVERGENCES = [
+    "owner-shape:doc-optional-owner-fields-not-in-kernel:url",
     "plugins-min-items:kernel-requires-minItems-1;doc-states-no-minimum",
     "doc-top-level-optional-fields-not-in-kernel:$schema,allowCrossMarketplaceDependenciesOn,description,renames,version",
     "doc-plugin-entry-optional-fields-not-in-kernel:agents,author,category,commands,defaultEnabled,description,"
-    "displayName,homepage,hooks,keywords,license,lspServers,mcpServers,relevance,repository,skills,strict,tags,version",
-    "source-forms:doc-documents-relative-path-string-plus-4-object-types;kernel-leaves-source-unmodeled",
-    "name-constraints:kernel-adds-maxLength-64-and-kebab-regex;doc-prose-kebab-case-plus-16-reserved-names-not-encoded",
+    "displayName,homepage,hooks,keywords,license,lspServers,mcpServers,metadata,relevance,repository,skills,strict,tags,version",
+    "source-forms:doc-documents-relative-path-string-plus-6-object-types;kernel-leaves-source-unmodeled",
+    "name-constraints:kernel-adds-maxLength-64-and-kebab-regex;doc-prose-kebab-case-plus-17-reserved-names-not-encoded",
     "samples:tolerances-outside-documented-surface:github:commit,url:path,plugin-name:wordpress.com",
 ]
 
@@ -709,9 +723,13 @@ def kernel_cross_check(projection: dict[str, Any]) -> tuple[list[str], list[str]
         owner.get("name", {}).get("required") is True
         and owner.get("email", {}).get("required") is False
         and k["owner_required"] == ["name"]
-        and sorted(owner) == k["owner_properties"]
+        and set(k["owner_properties"]) <= set(owner)
     ):
         agreements.append("owner-shape-inner-name-required-email-optional-both-sides")
+        # Optional owner fields the doc adds beyond the kernel's (2026-10-01: url).
+        doc_only = sorted(set(owner) - set(k["owner_properties"]))
+        if doc_only:
+            divergences.append("owner-shape:doc-optional-owner-fields-not-in-kernel:" + ",".join(doc_only))
     else:
         divergences.append("owner-shape:mismatch")
 
@@ -1063,17 +1081,17 @@ def cmd_self_test(vendor_dir: str) -> int:
     entry_fields = projection["plugin_entry"]["fields"]
     samples = projection["samples"]
     check("real capture: 9 documented top-level fields (3 required)", len(top) == 9 and len([f for f, e in top.items() if e["required"]]) == 3)
-    check("real capture: 16 reserved marketplace names", len(projection["catalog"]["reserved_names"]) == 16)
+    check("real capture: 17 reserved marketplace names", len(projection["catalog"]["reserved_names"]) == 17)
     check(
-        "real capture: 21 documented plugin-entry fields (2 required, 13 standard-metadata, 6 component-config)",
-        len(entry_fields) == 21
+        "real capture: 22 documented plugin-entry fields (2 required, 14 standard-metadata, 6 component-config)",
+        len(entry_fields) == 22
         and len([f for f, e in entry_fields.items() if e["required"]]) == 2
-        and len([f for f, e in entry_fields.items() if e["scope"] == "standard-metadata"]) == 13
+        and len([f for f, e in entry_fields.items() if e["scope"] == "standard-metadata"]) == 14
         and len([f for f, e in entry_fields.items() if e["scope"] == "component-config"]) == 6,
     )
     check(
-        "real capture: 5 source forms with sha-beats-ref + strict default true",
-        projection["sources"]["forms_count"] == 5
+        "real capture: 7 source forms with sha-beats-ref + strict default true",
+        projection["sources"]["forms_count"] == 7
         and projection["sources"]["sha_wins_over_ref"] is True
         and projection["plugin_entry"]["strict_default"] == "true",
     )

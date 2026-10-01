@@ -58,6 +58,11 @@
         "required": false,
         "source": "documented"
       },
+      "experimental": {
+        "observed_in_samples": false,
+        "required": false,
+        "source": "documented"
+      },
       "hooks": {
         "observed_in_samples": false,
         "required": false,
@@ -100,7 +105,7 @@
           "opus",
           "haiku",
           "fable",
-          "claude-opus-4-8",
+          "claude-opus-5-5",
           "inherit"
         ],
         "enum_clause_open": true,
@@ -111,6 +116,12 @@
       "name": {
         "observed_in_samples": true,
         "required": true,
+        "source": "documented"
+      },
+      "omitClaudeMd": {
+        "observed_in_samples": false,
+        "required": false,
+        "set_to_value": "true",
         "source": "documented"
       },
       "permissionMode": {
@@ -145,11 +156,11 @@
       "haiku",
       "fable"
     ],
-    "model_default_inherit": true,
+    "model_default_inherit": false,
     "model_full_id_latitude": true,
     "model_inherit_documented": true,
     "name_description_only_required": true,
-    "name_lowercase_hyphens_prose": true,
+    "name_lowercase_hyphens_prose": false,
     "table_columns": [
       "Field",
       "Required",
@@ -194,5 +205,5 @@
       "tools"
     ]
   },
-  "spec_version": "unversioned-2026-07-04"
+  "spec_version": "unversioned-2026-09-30"
 }
