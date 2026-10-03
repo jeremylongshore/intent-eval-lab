@@ -413,20 +413,37 @@ jobs:
       #
       # Commit only — the single push happens once, at the end, onto the promotion
       # branch. [skip ci] keeps the bot commit from re-triggering doc/CI workflows.
+      # Advance the byte-hash baselines to what this run's drift check observed.
+      # This lands on the promotion branch only (the restore step above never
+      # pulls specs/snapshots/.sha/ back from the branch), so main's baseline moves
+      # exactly when a human merges the promotion PR, which is what lets
+      # watcher-liveness's baseline_stale_streak reset. Before 2026-10 nothing
+      # wrote these files and the streak grew by one every day.
+      - name: Advance byte-hash baselines on the promotion branch
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! -f /tmp/drift-report.json ]]; then
+            echo "No drift report (the drift check did not run); baselines unchanged."
+            exit 0
+          fi
+          python3 scripts/advance-sha-baselines.py --report /tmp/drift-report.json
+
       - name: Commit archive tiers (append-only)
         id: archive_commit
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         shell: bash
         run: |
           set -euo pipefail
-          if [[ -z "$(git status --porcelain archive/ specs/_vendor/ specs/lineage/ evidence/snapshot-currency/ 2>/dev/null)" ]]; then
+          if [[ -z "$(git status --porcelain archive/ specs/_vendor/ specs/lineage/ evidence/snapshot-currency/ specs/snapshots/.sha/ 2>/dev/null)" ]]; then
             echo "No archive/vendored/lineage/evidence changes to commit."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add archive/ specs/_vendor/ specs/lineage/ evidence/snapshot-currency/
-          git commit -m "chore(spec-archive): capture $(date -u +%Y-%m-%dT%H:%MZ) raw fetches + currency row [skip ci]"
+          git add archive/ specs/_vendor/ specs/lineage/ evidence/snapshot-currency/ specs/snapshots/.sha/
+          git commit -m "chore(spec-archive): capture $(date -u +%Y-%m-%dT%H:%MZ) raw fetches + baselines + currency row [skip ci]"
           echo "committed=true" >> "${GITHUB_OUTPUT}"
 
       # Dead-man heartbeat (true, external): ping an uptime monitor so absence of
@@ -600,9 +617,13 @@ jobs:
         run: |
           set -euo pipefail
           TITLE="Spec drift detected — $(date -u +%Y-%m-%d)"
-          existing=$(gh issue list --state open --search "in:title \"Spec drift detected\"" --json number,title --jq '.[] | select(.title | startswith("Spec drift detected — '"$(date -u +%Y-%m-%d)"'")) | .number' | head -1)
+          # ONE rolling issue: while any drift issue is open, comment on the oldest
+          # instead of opening a new one. A new issue per day (2026-09: nine open at
+          # once) is how a lane stops being read.
+          existing=$(gh issue list --state open --search "in:title \"Spec drift detected\"" --json number,createdAt --jq 'sort_by(.createdAt) | .[0].number // empty')
           if [[ -n "${existing}" ]]; then
-            echo "Already opened issue #${existing} today; skipping duplicate."
+            gh issue comment "${existing}" --body "Still tripped on $(date -u +%Y-%m-%d): field-level drift=${{ steps.projection.outputs.drift }}, freshness drift=${{ steps.freshness.outputs.drift }}, heartbeat stale=${{ steps.heartbeat.outputs.stale }}, streak exceeded=${{ steps.streak.outputs.exceeded }}. Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            echo "Updated rolling drift issue #${existing}."
             exit 0
           fi
           body=$(cat <<EOF
