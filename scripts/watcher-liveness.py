@@ -14,7 +14,19 @@ Three guards close silent-green modes:
      (``seeded`` / ``refreshed`` / ``ok``). Byte-hash on a *single* run stays
      non-alerting (c875cf1); *persistence* of that drift is the signal to
      fire (IEP #15 / 1jn0.1.5). Resets when the baseline advances or the
-     surface is clean again.
+     surface is clean again. A baseline advances when a promotion PR merges:
+     the watcher writes each drifted source's observed hash into
+     specs/snapshots/.sha/ on the promotion branch (advance-sha-baselines.py).
+     Before 2026-10, nothing ever wrote those files, so the streak could never
+     reset and grew by one every day.
+
+     Only surfaces the registry gives a field-level semantic gate TRIP on this
+     streak, at their own threshold (``baseline_stale_threshold``, default 7:
+     "merge the promotion PR at least weekly"). ``byte-hash-only`` signal
+     sources (changelogs, release feeds, the npm version) change bytes almost
+     daily by design; their streak is reported as advisory and never fails the
+     run, which keeps the 2026-06 decision that byte churn alone does not alert.
+     A surface missing from the registry is treated as enforced (fail-safe).
 
   3. dead-man heartbeat — a persisted last-successful-run timestamp. If no run
      has recorded in > MAX_GAP_HOURS (default 26 — one daily cron + slack), the
@@ -43,6 +55,8 @@ from datetime import datetime, timezone
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_STATE = os.path.join(REPO_ROOT, "specs", "snapshots", ".state.json")
+DEFAULT_REGISTRY = os.path.join(REPO_ROOT, "specs", "upstream-surface-registry.v1.json")
+DEFAULT_BASELINE_STALE_THRESHOLD = 7
 
 ERROR_STATUSES = {"fetch_error", "no_baseline"}
 # Successful observations (hash compared). "drift" is successful but baseline-stale.
@@ -72,6 +86,7 @@ def _load_state(path: str) -> dict:
         "last_run_utc": None,
         "max_gap_hours": 26,
         "streak_threshold": 3,
+        "baseline_stale_threshold": DEFAULT_BASELINE_STALE_THRESHOLD,
         "surfaces": {},
     }
 
@@ -91,9 +106,26 @@ def _default_surface_rec() -> dict:
     }
 
 
-def cmd_record_run(state_path: str, drift_path: str, now_iso: str | None) -> int:
+def signal_only_surfaces(registry_path: str) -> set[str]:
+    """Surfaces the registry marks byte-hash-only (no semantic gate)."""
+    if not os.path.exists(registry_path):
+        return set()
+    with open(registry_path, encoding="utf-8") as fh:
+        registry = json.load(fh)
+    return {
+        s["name"]
+        for s in registry.get("surfaces", [])
+        if (s.get("semantic_coverage") or {}).get("status") == "byte-hash-only"
+    }
+
+
+def cmd_record_run(
+    state_path: str, drift_path: str, now_iso: str | None, registry_path: str = DEFAULT_REGISTRY
+) -> int:
     state = _load_state(state_path)
     threshold = int(state.get("streak_threshold", 3))
+    stale_threshold = int(state.get("baseline_stale_threshold", DEFAULT_BASELINE_STALE_THRESHOLD))
+    advisory_only = signal_only_surfaces(registry_path)
     with open(drift_path, encoding="utf-8") as fh:
         drift = json.load(fh)
 
@@ -130,7 +162,12 @@ def cmd_record_run(state_path: str, drift_path: str, now_iso: str | None) -> int
     stale_exceeded = [
         f"{name} (baseline_stale_streak={rec['baseline_stale_streak']})"
         for name, rec in surfaces.items()
-        if int(rec.get("baseline_stale_streak", 0)) >= threshold
+        if name not in advisory_only and int(rec.get("baseline_stale_streak", 0)) >= stale_threshold
+    ]
+    stale_advisory = [
+        f"{name} (baseline_stale_streak={rec['baseline_stale_streak']})"
+        for name, rec in surfaces.items()
+        if name in advisory_only and int(rec.get("baseline_stale_streak", 0)) >= stale_threshold
     ]
 
     tripped = False
@@ -140,9 +177,13 @@ def cmd_record_run(state_path: str, drift_path: str, now_iso: str | None) -> int
         for e in fetch_exceeded:
             print(f"  - {e}")
         print("These surfaces are effectively unmonitored. Investigate the upstream URL / extractor.")
+    if stale_advisory:
+        print(f"watcher-liveness: advisory — byte-hash-only signal sources stale >= {stale_threshold} runs (does not fail the run):")
+        for e in stale_advisory:
+            print(f"  - {e}")
     if stale_exceeded:
         tripped = True
-        print(f"watcher-liveness: BASELINE-STALE STREAK >= {threshold} on:")
+        print(f"watcher-liveness: BASELINE-STALE STREAK >= {stale_threshold} on:")
         for e in stale_exceeded:
             print(f"  - {e}")
         print(
@@ -153,8 +194,8 @@ def cmd_record_run(state_path: str, drift_path: str, now_iso: str | None) -> int
     if tripped:
         return 1
     print(
-        f"watcher-liveness: recorded run; all {len(surfaces)} surfaces under "
-        f"the streak threshold ({threshold}) for fetch-error and baseline-stale."
+        f"watcher-liveness: recorded run; all {len(surfaces)} surfaces under the fetch-error "
+        f"threshold ({threshold}) and, where enforced, the baseline-stale threshold ({stale_threshold})."
     )
     return 0
 
@@ -191,10 +232,11 @@ def main() -> int:
     group.add_argument("--show", action="store_true", help="print current state")
     parser.add_argument("--state", default=DEFAULT_STATE, help="state file path")
     parser.add_argument("--now", default=None, help="override 'now' (ISO 8601) for deterministic tests")
+    parser.add_argument("--registry", default=DEFAULT_REGISTRY, help="surface registry (classifies signal-only sources)")
     args = parser.parse_args()
 
     if args.record_run:
-        return cmd_record_run(args.state, args.record_run, args.now)
+        return cmd_record_run(args.state, args.record_run, args.now, args.registry)
     if args.heartbeat_check:
         return cmd_heartbeat_check(args.state, args.now)
     if args.show:
