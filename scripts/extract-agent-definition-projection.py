@@ -87,6 +87,12 @@ PROJECTION_VERSION = "spec-projection/v1"
 
 # Mechanical anchors in the sub-agents doc.
 _TABLE_HEADING = "#### Supported frontmatter fields"
+# The 2026-09-30 capture renders this heading as raw HTML with new visible text
+# ("Frontmatter reference") but the SAME fragment id. The id is what other pages
+# link to (#supported-frontmatter-fields), so it is the steadier anchor; the
+# markdown form is kept for older captures and the fixture.
+_TABLE_HEADING_HTML = re.compile(r'^<h[1-6] id="supported-frontmatter-fields">')
+_HTML_HEADING = ("<h2", "<h3", "<h4")
 _EXAMPLE_HEADING = "### Write subagent files"
 _MODEL_HEADING = "### Choose a model"
 _REQUIRED_SENTENCE = "Only `name` and `description` are required."
@@ -116,9 +122,27 @@ _MDX_COMMENT = re.compile(r"\{/\*[^\n]*?\*/\}")
 # ── Extraction: the reference doc (the spec — there is no machine schema) ───
 
 
-def _section(lines: list[str], heading: str, stop_prefixes: tuple[str, ...]) -> list[str]:
-    """Slice the section under `heading` (up to the next same-or-higher heading)."""
-    start = next((i for i, ln in enumerate(lines) if ln.strip() == heading), None)
+def _section(
+    lines: list[str],
+    heading: str,
+    stop_prefixes: tuple[str, ...],
+    html_anchor: re.Pattern[str] | None = None,
+) -> list[str]:
+    """Slice the section under `heading` (up to the next same-or-higher heading).
+
+    `html_anchor` also accepts the heading rendered as raw HTML, matched by its
+    fragment id; HTML headings then also end the section.
+    """
+    start = next(
+        (
+            i
+            for i, ln in enumerate(lines)
+            if ln.strip() == heading or (html_anchor is not None and html_anchor.match(ln.strip()))
+        ),
+        None,
+    )
+    if html_anchor is not None:
+        stop_prefixes = stop_prefixes + _HTML_HEADING
     if start is None:
         print(f"ERROR: {heading!r} anchor not found in the sub-agents doc", file=sys.stderr)
         sys.exit(2)
@@ -240,7 +264,7 @@ def extract_reference_doc(doc_path: str) -> dict[str, Any]:
     with open(doc_path, encoding="utf-8") as fh:
         lines = fh.read().splitlines()
 
-    table_section = _section(lines, _TABLE_HEADING, ("## ", "### ", "#### "))
+    table_section = _section(lines, _TABLE_HEADING, ("## ", "### ", "#### "), _TABLE_HEADING_HTML)
     if _REQUIRED_SENTENCE not in "\n".join(table_section):
         print(f"ERROR: required-set anchor {_REQUIRED_SENTENCE!r} not found", file=sys.stderr)
         sys.exit(2)
@@ -535,14 +559,14 @@ KERNEL_EXPECTATIONS = {
 # only a human ever promotes anything into the kernel).
 EXPECTED_AGREEMENTS = [
     "name-description-only-required-both-sides",
-    "name-lowercase-hyphens-prose-encoded-as-kernel-pattern",
     "color-enum-exact-8-values",
     "model-enum-matches-documented-aliases-plus-inherit",
     "samples-corroborate:no-observed-only-fields",
 ]
 EXPECTED_DIVERGENCES = [
-    "doc-fields-not-in-kernel:background,disallowedTools,effort,hooks,"
-    "initialPrompt,isolation,maxTurns,mcpServers,memory,permissionMode,skills",
+    "name-pattern:kernel-kebab-case-stricter-than-documented",
+    "doc-fields-not-in-kernel:background,disallowedTools,effort,experimental,hooks,"
+    "initialPrompt,isolation,maxTurns,mcpServers,memory,omitClaudeMd,permissionMode,skills",
     "kernel-only-fields-not-documented-upstream:metadata",
     "tools-wire-form:kernel-narrows-comma-separated-string-to-array;samples-also-use-flow-array",
     "model-full-id-latitude-not-modeled-in-kernel",
@@ -569,6 +593,10 @@ def kernel_cross_check(projection: dict[str, Any]) -> tuple[list[str], list[str]
 
     if fm["name_lowercase_hyphens_prose"] and k["name_pattern_kebab"]:
         agreements.append("name-lowercase-hyphens-prose-encoded-as-kernel-pattern")
+    elif k["name_pattern_kebab"]:
+        # Upstream dropped the lowercase-and-hyphens rule; the kernel kept it, so
+        # the kernel now rejects names the doc permits.
+        divergences.append("name-pattern:kernel-kebab-case-stricter-than-documented")
 
     if sorted(fields.get("color", {}).get("enum") or []) == k["color_enum"]:
         agreements.append("color-enum-exact-8-values")
@@ -773,8 +801,8 @@ def cmd_self_test(vendor_dir: str) -> int:
     projection = build_projection(vendor_dir)
     fields = projection["frontmatter"]["fields"]
     check(
-        "real capture: 16 documented fields (2 required + 14 optional)",
-        len([f for f, e in fields.items() if e["source"] == "documented"]) == 16
+        "real capture: 18 documented fields (2 required + 16 optional)",
+        len([f for f, e in fields.items() if e["source"] == "documented"]) == 18
         and len([f for f, e in fields.items() if e.get("required") is True]) == 2,
     )
     check("real capture: every sample field is documented (provenance rule holds)", projection["samples"]["fields_observed_not_documented"] == [])

@@ -40,18 +40,19 @@ def captured_snapshot_text(spd: ModuleType) -> str:
 def _perturb(text: str, *, add_field: bool = False, flip_required: bool = False) -> str:
     """Mutate the real captured table the way upstream actually would.
 
-    Anchored on the live column widths so a silently reformatted table fails these
-    tests loudly instead of quietly producing an unperturbed control.
+    Anchored on the live cell text so a silently reformatted table fails these
+    tests loudly instead of quietly producing an unperturbed control. (The
+    2026-09 capture dropped the padded column widths for compact cells.)
     """
     out = text
     if flip_required:
-        assert "| `license`       | No       |" in out, "captured table shape changed; update this fixture"
-        out = out.replace("| `license`       | No       |", "| `license`       | Yes      |")
+        assert "| `license` | No |" in out, "captured table shape changed; update this fixture"
+        out = out.replace("| `license` | No |", "| `license` | Yes |")
     if add_field:
-        assert "| `metadata`      | No       |" in out, "captured table shape changed; update this fixture"
+        assert "| `metadata` | No |" in out, "captured table shape changed; update this fixture"
         out = out.replace(
-            "| `metadata`      | No       |",
-            "| `icon`          | No       | Optional display glyph. |\n| `metadata`      | No       |",
+            "| `metadata` | No |",
+            "| `icon` | No | Optional display glyph. |\n| `metadata` | No |",
         )
     return out
 

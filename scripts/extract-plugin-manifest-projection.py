@@ -87,7 +87,16 @@ _COMPLETE_SCHEMA_HEADING = "### Complete schema"
 _REQUIRED_SENTENCE = "`name` is the only required field"
 _MANIFEST_OPTIONAL_SENTENCE = "The manifest is optional."
 _UNRECOGNIZED_SENTENCE = "ignores top-level fields it does not recognize"
-_WRONG_TYPE_SENTENCE = "Fields with the wrong type still fail"
+# The wrong-type rule, in both phrasings upstream has used. Through 2026-09 it was
+# one sentence; the 2026-10-01 capture rewrote it as a per-field list ("Most
+# fields: the plugin fails to load" plus named exceptions). Matching only the old
+# sentence turned a reworded rule into a false "wrong types no longer fail".
+_WRONG_TYPE_SENTENCES = (
+    "Fields with the wrong type still fail",
+    "**Most fields**: the plugin fails to load",
+)
+# A bullet naming fields whose non-object value is ignored instead of failing.
+_WRONG_TYPE_IGNORED = re.compile(r"^\* \*\*(?P<names>.+?)\*\*: Claude Code ignores a non-object value")
 _FENCE_OPEN = re.compile(r"^```json\b")
 _FENCE_CLOSE = re.compile(r"^```\s*$")
 _CELL_SPLIT = re.compile(r"(?<!\\)\|")
@@ -269,8 +278,19 @@ def extract_reference_doc(doc_path: str) -> dict[str, Any]:
         "name_kebab_case_prose": name_kebab,
         "name_only_required": True,
         "unrecognized_top_level_ignored": _UNRECOGNIZED_SENTENCE in section_text,
-        "wrong_type_fails": _WRONG_TYPE_SENTENCE in section_text,
+        "wrong_type_fails": any(sentence in section_text for sentence in _WRONG_TYPE_SENTENCES),
+        "wrong_type_ignored_fields": _wrong_type_ignored_fields(section),
     }
+
+
+def _wrong_type_ignored_fields(section: list[str]) -> list[str]:
+    """Fields the page says are ignored, not failed, when their value has the wrong type."""
+    names: set[str] = set()
+    for line in section:
+        m = _WRONG_TYPE_IGNORED.match(line.strip())
+        if m:
+            names.update(re.findall(r"`([^`]+)`", m.group("names")))
+    return sorted(names)
 
 
 def _example_field_types(section: list[str]) -> dict[str, str]:
@@ -500,11 +520,12 @@ EXPECTED_AGREEMENTS = [
 ]
 EXPECTED_DIVERGENCES = [
     "component-paths:kernel-models-only-commands;missing:agents,channels,"
-    "dependencies,experimental.monitors,experimental.themes,hooks,lspServers,"
-    "mcpServers,outputStyles,skills,userConfig",
+    "dependencies,experimental.evals,experimental.monitors,experimental.themes,hooks,lspServers,"
+    "mcpServers,outputStyles,skills,userConfig,workflows",
     "commands-type:kernel-narrows-string|array-to-array",
     "metadata-fields-not-in-kernel:$schema,defaultEnabled,displayName",
-    "kernel-only-fields-not-documented-upstream:metadata",
+    # "kernel-only-fields-not-documented-upstream:metadata" RETIRED 2026-10-01:
+    # upstream now documents `metadata`, so the kernel field is no longer kernel-only.
     "name-maxlength:kernel-64-cap-not-documented-upstream",
 ]
 
@@ -706,7 +727,7 @@ def cmd_self_test(vendor_dir: str) -> int:
     check("committed projection is fresh (--check)", cmd_check(vendor_dir) == 0)
     projection = build_projection(vendor_dir)
     fields = projection["manifest"]["fields"]
-    check("real capture: 23 documented fields (1 required + 10 metadata + 12 component-path)", len([f for f, e in fields.items() if e["source"] == "documented"]) == 23)
+    check("real capture: 26 documented fields (1 required + 11 metadata + 14 component-path)", len([f for f, e in fields.items() if e["source"] == "documented"]) == 26)
     check("real capture: every sample field is documented (provenance rule holds)", projection["samples"]["fields_observed_not_documented"] == [])
     check("real capture: no wall-clock keys in projection", "fetched_at" not in render(projection) and "generated" not in render(projection))
 

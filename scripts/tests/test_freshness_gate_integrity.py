@@ -252,8 +252,15 @@ def test_an_unparseable_capture_is_inoperable_not_drift(
     real = (REPO_ROOT / "specs" / "_vendor" / "sub-agents" / "snapshot.md").read_text(encoding="utf-8")
     lines = real.splitlines(True)
     start = next(i for i, ln in enumerate(lines) if ln.startswith("### Write subagent files"))
-    fence = next(j for j in range(start + 4, len(lines)) if lines[j].strip() == "```")
-    del lines[fence]
+    stop = next(j for j in range(start + 1, len(lines)) if lines[j].startswith(("## ", "### ")))
+    # Delete EVERY closing fence in the section, not just the example's: since the
+    # 2026-09-30 capture the section holds a later fenced block whose closer would
+    # otherwise end the example, so a single deletion no longer reaches the bare
+    # next() this test exists to exercise.
+    closers = [j for j in range(start + 1, stop) if lines[j].strip() == "```"]
+    assert closers, "the Write-subagent-files section has no closing fence; update this fixture"
+    for j in reversed(closers):
+        del lines[j]
 
     surface_dir = tmp_path / "sub-agents"
     surface_dir.mkdir()

@@ -18,13 +18,14 @@
       ".claude/settings.local.json",
       "Managed policy settings",
       "Plugin hooks/hooks.json",
-      "Skill or agent frontmatter"
+      "Skill frontmatter",
+      "Subagent frontmatter"
     ],
     "three_level_nesting": true
   },
   "contract": "hook-config",
   "events": {
-    "count": 30,
+    "count": 33,
     "enum": [
       "SessionStart",
       "Setup",
@@ -48,11 +49,14 @@
       "InstructionsLoaded",
       "ConfigChange",
       "CwdChanged",
+      "DirectoryAdded",
       "FileChanged",
       "WorktreeCreate",
       "WorktreeRemove",
       "PreCompact",
       "PostCompact",
+      "PreModelSwitch",
+      "PostModelSwitch",
       "Elicitation",
       "ElicitationResult",
       "SessionEnd"
@@ -248,7 +252,7 @@
     ],
     "types_outside_documented_enum": []
   },
-  "spec_version": "unversioned-2026-07-04",
+  "spec_version": "unversioned-2026-10-01",
   "timeout_defaults": {
     "agent": 60,
     "command": 600,
