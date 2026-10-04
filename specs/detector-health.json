@@ -16,18 +16,18 @@
       "surfaces_at_or_over_threshold": []
     },
     "watcher-run-recent": {
-      "detail": "last successful watcher run 2026-10-01T09:24:18Z was 14.4h ago (max gap 26h)",
-      "gap_hours": 14.4,
+      "detail": "last successful watcher run 2026-10-01T09:24:18Z was 59.5h ago (max gap 26h)",
+      "gap_hours": 59.5,
       "last_run_utc": "2026-10-01T09:24:18Z",
       "max_gap_hours": 26.0,
-      "pass": true
+      "pass": false
     }
   },
   "drift_rows": [
     {
       "adopted": true,
       "authority_tier": "official-spec",
-      "baseline_sha256": "9d770de8f1b0556e6198defeba162e3336df431b60b52bf786f3700c5555493b",
+      "baseline_sha256": "4c649bdf0e0a51c9e215d9f91009ecdca05ee9d073edb6f37c20265bbd829e11",
       "contract": "skill-frontmatter",
       "divergences_outstanding": 7,
       "fetch_error_streak": 0,
@@ -49,7 +49,7 @@
     {
       "adopted": false,
       "authority_tier": "changelog",
-      "baseline_sha256": "1ef5cb06ed90f3d9acebbd8aadc58fa85862f9a3ea9c4650d5631363a8e5345f",
+      "baseline_sha256": "c2073a2eb811b9322317fe8496bfa38634984a3de1147cc8ef3439f91e0be9a1",
       "contract": "version-signal",
       "divergences_outstanding": 0,
       "fetch_error_streak": 0,
@@ -60,7 +60,7 @@
     {
       "adopted": false,
       "authority_tier": "changelog",
-      "baseline_sha256": "8c12dd45ecf0c4d2261efe911b7fe17f9e17ab503ddcc57d628f02dafdefc969",
+      "baseline_sha256": "5fef7bd6468ec2c512217b6e4f12e63754c137f92039b03f6f119183e6f94f82",
       "contract": "version-signal",
       "divergences_outstanding": 0,
       "fetch_error_streak": 0,
@@ -82,7 +82,7 @@
     {
       "adopted": true,
       "authority_tier": "reference",
-      "baseline_sha256": "0b644e2208f80b860530d578d85872d405d9c529c500b34fd24ed7c223a22ab7",
+      "baseline_sha256": "755e30355fb80abada5a6a5ec10fe491cc1a57bf123232c80d1cc68312869ae5",
       "contract": "hook-config",
       "divergences_outstanding": 1,
       "fetch_error_streak": 0,
@@ -93,7 +93,7 @@
     {
       "adopted": true,
       "authority_tier": "reference",
-      "baseline_sha256": "491b623ae2740a7266454309276f0de09fb9e843c5e950a99c0fe116cf952fd9",
+      "baseline_sha256": "41ea72eb329492a8530f2d4730b093e930151422003f161656297e44cecbf074",
       "contract": "hook-config",
       "divergences_outstanding": 0,
       "fetch_error_streak": 0,
@@ -104,7 +104,7 @@
     {
       "adopted": false,
       "authority_tier": "reference",
-      "baseline_sha256": "d7d367c7d0040ba05b96688511727ff9456a9057f22b417c5e1f279b7f6b08d7",
+      "baseline_sha256": "efdc415213d82e2aefd6f144f78b3d806fec595a89ff4e5cd0a7a665a11d2a70",
       "contract": "skill-frontmatter",
       "divergences_outstanding": 0,
       "fetch_error_streak": 0,
@@ -126,7 +126,7 @@
     {
       "adopted": true,
       "authority_tier": "official-spec-machine-readable",
-      "baseline_sha256": "1bf94a601817ab07fc04058a9ff2e031227f9b9384e198ea7f187e75eb4b9ec6",
+      "baseline_sha256": "b2d3a00d4094e413a48628560fec60652169a3d2b427e8c629238e13f987723f",
       "contract": "mcp-config",
       "divergences_outstanding": 1,
       "fetch_error_streak": 0,
@@ -137,7 +137,7 @@
     {
       "adopted": true,
       "authority_tier": "official-spec",
-      "baseline_sha256": "9afb71b14f689387a6d29cdb89ba7f47d8a5555ae4565cc31b253ab53da2abf2",
+      "baseline_sha256": "82e9c63ce6ba6ee69af70a1518bf3d559368174a3d9d76032caf7c5fff9f2040",
       "contract": "mcp-config",
       "divergences_outstanding": 0,
       "fetch_error_streak": 0,
@@ -148,7 +148,7 @@
     {
       "adopted": true,
       "authority_tier": "anthropic-doc",
-      "baseline_sha256": "0bd9758afca5cc32441bb59a9b59b1a3fe3717b77fa7cc48abd6f24b0ff0e9cb",
+      "baseline_sha256": "acc3a81d482fc3bace77b88453a3c4c4460dc2e427255e0fb5fd628c3d24032d",
       "contract": "skill-frontmatter",
       "divergences_outstanding": 0,
       "fetch_error_streak": 0,
@@ -159,7 +159,7 @@
     {
       "adopted": true,
       "authority_tier": "reference",
-      "baseline_sha256": "1f37e87ff3442fb7bcf35dd07bcff6509a49c4e0140119849b472ee8794317cd",
+      "baseline_sha256": "0597250fec9a5eb9734df9c6821409431623604656129cf8e462f93460db6a84",
       "contract": "marketplace-catalog",
       "divergences_outstanding": 1,
       "fetch_error_streak": 0,
@@ -170,7 +170,7 @@
     {
       "adopted": true,
       "authority_tier": "reference",
-      "baseline_sha256": "bbb4618ec8b1f1a29d20fae1792e5aab1e0f1f04efc528d86cfde458e9e727e7",
+      "baseline_sha256": "45289e551da96e9c4a3a5968b3bdcdd7fd766f0c735c019f60d71d06f28a58d1",
       "contract": "plugin-manifest",
       "divergences_outstanding": 1,
       "fetch_error_streak": 0,
@@ -192,7 +192,7 @@
     {
       "adopted": true,
       "authority_tier": "reference",
-      "baseline_sha256": "824162201ae408cdb5b6746d6fd433eeae9165a3425e0cd58ee19d840a01b846",
+      "baseline_sha256": "436c792e87396a1c929af41f4dbae943d61757e9575728ad40ac5fa7c48a4393",
       "contract": "agent-definition",
       "divergences_outstanding": 1,
       "fetch_error_streak": 0,
@@ -201,27 +201,29 @@
       "surface": "sub-agents"
     }
   ],
-  "evaluated_at": "2026-10-01T23:51:13Z",
-  "failing_conditions": [],
+  "evaluated_at": "2026-10-03T20:55:04Z",
+  "failing_conditions": [
+    "watcher-run-recent"
+  ],
   "health_version": "detector-health/v1",
   "inputs": {
     "specs/lineage/coverage-map.json": "2bfe03661739fe23cddf68ec03e13b366cca21cd9e9612d3971f626208e195a3",
-    "specs/snapshots/.sha/agentskills-spec.sha": "abd9c47b9f663c9325ff00463f3bbb3aab7b1027e05bccd188d4bd94b883cca5",
+    "specs/snapshots/.sha/agentskills-spec.sha": "66fc6dc4df96ffe8919fbeb2f8f898efc37a7a57c3325c86b84f597b0eedb6fb",
     "specs/snapshots/.sha/anthropic-engineering.sha": "f7b2166fb88215842ced23bb35ac38bbc13c313fb4a0fd862032c5684ebd33db",
-    "specs/snapshots/.sha/claude-code-changelog.sha": "3680d5061d691d527445f5c2559586551d48e3f02446805eb1460eb1d635ad5d",
-    "specs/snapshots/.sha/claude-code-npm.sha": "e858ace3cc91048f520807fc33af68ec3989d1bd0a4ddc5a64af5b1b3dee3fe5",
+    "specs/snapshots/.sha/claude-code-changelog.sha": "66f89f825675db077c2c0d8c92bd3eeedab229241f9891d4b2ba285478ddd750",
+    "specs/snapshots/.sha/claude-code-npm.sha": "9d990e863d9e95f8ce656ed48ea2db77bc662b65d53366baf6cacf20219d915c",
     "specs/snapshots/.sha/claude-code-releases.sha": "40e6fa03facce13fbf32fa6edcbab623dd49c3579d7e1d72e64c983a68bf8807",
-    "specs/snapshots/.sha/claude-hooks.sha": "8ab1352ad3d111b5a081dc1e46b10138207e971ddd547ce93bac57aaffc19b51",
-    "specs/snapshots/.sha/claude-settings.sha": "5af3b7ec7f863c0b8f49914247ba30129d42eb9683d3725025f55c132c39a8e0",
-    "specs/snapshots/.sha/claude-slash-commands.sha": "2fbf7f3c475fe43ba304e1356b644d144240fe76d331763ae80fac29a589dcc5",
+    "specs/snapshots/.sha/claude-hooks.sha": "7ff75d9440eb62ee45485a76d3c4db1df6ba11889141d4754c4bcbe623c66db4",
+    "specs/snapshots/.sha/claude-settings.sha": "ca5a1aab975cb68b23533e093c281f63790828248c46cbc8d2f2071948844edd",
+    "specs/snapshots/.sha/claude-slash-commands.sha": "e021c1ffb0be1d32fd4bea932e220b95542f12a43bc91ddcb8467702da1f57c2",
     "specs/snapshots/.sha/mcp-releases.sha": "abacf9472a98686b4a292a255a81707532fbb14a1eeaf4976cc0a93cb2428a29",
-    "specs/snapshots/.sha/mcp-schema-ts.sha": "637ec1c4c3c60701906def8019805e2da38aabee3472597df559b8673412ac4e",
-    "specs/snapshots/.sha/mcp-spec-docs.sha": "4059d11327d17616918ec9890949fbeed15722a7bb7faab85fe9b566424e2a35",
-    "specs/snapshots/.sha/platform-skills-overview.sha": "0fb25330e8d7b377f1986213b3ec1d0ac9174d8000acce7cb0f3006a62a8a09f",
-    "specs/snapshots/.sha/plugin-marketplaces.sha": "565e27084d7e20065397a8cad29a709981a955e05b1e8d57f2c3621602b0d5a8",
-    "specs/snapshots/.sha/plugins-reference.sha": "5cf5a002ae7f9c23da303407c889f9d8a4e9829fe961c07b5b693a1687cb3557",
+    "specs/snapshots/.sha/mcp-schema-ts.sha": "6592b802b9642ebac9abe3eb72a78a19ecca69947e2d32ed592ceb0e1ae5e5e3",
+    "specs/snapshots/.sha/mcp-spec-docs.sha": "913a48ec27a0dfde95e7182ed923667e27ddd45b5447fdfa81866ffd12dd2789",
+    "specs/snapshots/.sha/platform-skills-overview.sha": "d29b126e3d65e234d1488b7828ae3ff79da3035090e80527652edb25b7b5e31d",
+    "specs/snapshots/.sha/plugin-marketplaces.sha": "b782478aea4ffb27fcd85a5af99b4ac920129566b6d1103897e4950065922382",
+    "specs/snapshots/.sha/plugins-reference.sha": "e7b73a5d908fe1843ffb0b05d4b8604b8b8ed42b0e648d03a634050908a275db",
     "specs/snapshots/.sha/skills-releases.sha": "698ed71afca22f55068c34b7d92ea5b6551f6bd4ce8a126a5b1b4c68de349668",
-    "specs/snapshots/.sha/sub-agents.sha": "bd8f915ad666f53f6d1b914ffc5e931d502c65d645803d6cc4be22dfe52ceea9",
+    "specs/snapshots/.sha/sub-agents.sha": "fdf672a4d9fd2b950616c5fd26ef48f934b62829d05b9a4bdb06e8a4fde851fc",
     "specs/snapshots/.state.json": "3eabee89b237aae9ac4bdb88d804318d0495e94bb73c6b4062754ba5d34086ac",
     "specs/upstream-surface-registry.v1.json": "511fb917b16fe20fddf34c80b01f014d8fba7303d8f9185dc02d5c22f824fae5"
   },
@@ -230,5 +232,5 @@
     "divergences_outstanding": 12,
     "surfaces_adopted": 11
   },
-  "verdict": "HEALTHY"
+  "verdict": "DEGRADED"
 }

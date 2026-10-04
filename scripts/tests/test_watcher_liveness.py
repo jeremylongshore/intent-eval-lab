@@ -61,17 +61,68 @@ def test_baseline_stale_streak_increments_on_drift_only(tmp_path: Path) -> None:
 
 
 def test_baseline_stale_streak_trips_at_threshold(tmp_path: Path) -> None:
+    # baseline-stale has its own threshold (default 7: "merge the promotion PR at
+    # least weekly"), separate from the fetch-error streak's 3. "s1" is not in the
+    # registry, so it is treated as enforced (fail-safe).
     state = tmp_path / "state.json"
     drift = tmp_path / "drift.json"
-    for i in range(3):
+    for i in range(7):
         _write_drift(drift, [{"source": "s1", "status": "drift"}])
         rc = wl.cmd_record_run(str(state), str(drift), f"2026-07-2{i}T12:00:00Z")
-        if i < 2:
+        if i < 6:
             assert rc == 0
         else:
             assert rc == 1
     st = json.loads(state.read_text())
-    assert st["surfaces"]["s1"]["baseline_stale_streak"] == 3
+    assert st["surfaces"]["s1"]["baseline_stale_streak"] == 7
+
+
+def _registry(path: Path) -> Path:
+    path.write_text(
+        json.dumps(
+            {
+                "surfaces": [
+                    {"name": "signal", "semantic_coverage": {"status": "byte-hash-only"}},
+                    {"name": "normative", "semantic_coverage": {"status": "field-level"}},
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    return path
+
+
+def test_signal_only_source_is_advisory_and_never_trips(tmp_path: Path, capsys) -> None:
+    state = tmp_path / "state.json"
+    drift = tmp_path / "drift.json"
+    reg = _registry(tmp_path / "registry.json")
+    for i in range(10):
+        _write_drift(drift, [{"source": "signal", "status": "drift"}])
+        assert wl.cmd_record_run(str(state), str(drift), f"2026-07-{10 + i}T12:00:00Z", str(reg)) == 0
+    st = json.loads(state.read_text())
+    assert st["surfaces"]["signal"]["baseline_stale_streak"] == 10  # still tracked
+    assert "advisory" in capsys.readouterr().out
+
+
+def test_field_level_source_still_trips(tmp_path: Path) -> None:
+    state = tmp_path / "state.json"
+    drift = tmp_path / "drift.json"
+    reg = _registry(tmp_path / "registry.json")
+    rcs = []
+    for i in range(7):
+        _write_drift(drift, [{"source": "normative", "status": "drift"}, {"source": "signal", "status": "drift"}])
+        rcs.append(wl.cmd_record_run(str(state), str(drift), f"2026-07-{10 + i}T12:00:00Z", str(reg)))
+    assert rcs == [0, 0, 0, 0, 0, 0, 1]
+
+
+def test_signal_only_classification_reads_the_real_registry() -> None:
+    signal = wl.signal_only_surfaces(wl.DEFAULT_REGISTRY)
+    assert {"claude-code-changelog", "claude-code-npm", "platform-skills-overview"} <= signal
+    assert not {"claude-hooks", "plugins-reference", "sub-agents", "plugin-marketplaces", "agentskills-spec"} & signal
+
+
+def test_missing_registry_treats_everything_as_enforced(tmp_path: Path) -> None:
+    assert wl.signal_only_surfaces(str(tmp_path / "absent.json")) == set()
 
 
 def test_baseline_advance_resets_stale_streak(tmp_path: Path) -> None:
