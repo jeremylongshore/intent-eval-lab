@@ -25,7 +25,7 @@ name: Leading-indicator watch
 #
 # Side effects on a new escalating hit (schedule only):
 #   1. Workflow fails (visible red X)
-#   2. ntfy push (subscribed on Jeremy's phone)
+#   2. Buzz alert to the sys-automation channel (ci-failure-alerts webhook)
 #   3. GH issue opened with the disposition verdict (auto-deduped by title)
 #
 # Trigger:
@@ -133,26 +133,29 @@ jobs:
             echo '```'
           } >> "${GITHUB_STEP_SUMMARY}"
 
-      - name: Fire ntfy notification on a new escalating hit
+      - name: Post Buzz alert on a new escalating hit
         if: github.event_name == 'schedule' && steps.poll.outputs.hit == 'true'
         shell: bash
         env:
-          NTFY_URL: ${{ secrets.NTFY_URL }}
+          BUZZ_CI_WEBHOOK_URL: ${{ secrets.BUZZ_CI_WEBHOOK_URL }}
+          BUZZ_CI_WEBHOOK_SECRET: ${{ secrets.BUZZ_CI_WEBHOOK_SECRET }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          if [[ -z "${NTFY_URL:-}" ]]; then
-            echo "NTFY_URL secret not set; skipping ntfy push."
+          if [[ -z "${BUZZ_CI_WEBHOOK_URL:-}" || -z "${BUZZ_CI_WEBHOOK_SECRET:-}" ]]; then
+            echo "BUZZ_CI_WEBHOOK_URL or BUZZ_CI_WEBHOOK_SECRET not set; skipping Buzz alert."
             exit 0
           fi
           {
             echo "Anthropic leading indicator fired — verdict ${{ steps.poll.outputs.verdict }}"
             grep -E 'FIRE|VERDICT' /tmp/li-log.txt | head -10
-          } > /tmp/li-ntfy.txt
-          curl -fsSL \
-            -H "Title: Leading-indicator hit (intent-eval-lab)" \
-            -H "Priority: high" \
-            -H "Tags: warning,satellite" \
-            -d "$(cat /tmp/li-ntfy.txt)" \
-            "${NTFY_URL}/prod-health" || echo "ntfy push failed (non-fatal)"
+          } > /tmp/li-buzz.txt
+          msg="$(printf '%s\n%s\nRun: %s' "🛰️ [intent-eval-lab] Leading-indicator hit" "$(cat /tmp/li-buzz.txt)" "${RUN_URL}")"
+          jq -n --arg a "${msg:0:1500}" '{alert:$a}' > "$RUNNER_TEMP/buzz-alert.json"
+          code=$(curl -sS -m 15 -o /dev/null -w '%{http_code}' -X POST "$BUZZ_CI_WEBHOOK_URL" \
+            -H "x-webhook-secret: ${BUZZ_CI_WEBHOOK_SECRET}" \
+            -H 'Content-Type: application/json' \
+            --data @"$RUNNER_TEMP/buzz-alert.json") || code=000
+          if [[ "$code" == "202" ]]; then echo "Buzz alert accepted (HTTP 202)"; else echo "Buzz alert not accepted (HTTP $code; non-fatal)"; fi
 
       # A new escalating hit opens a deduped [leading-indicator] issue carrying
       # the disposition verdict. Bad fetches deliberately do NOT open an issue
