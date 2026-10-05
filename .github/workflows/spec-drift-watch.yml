@@ -33,7 +33,7 @@ name: Spec drift watch
 #
 # Side effects on drift / liveness trip:
 #   1. Workflow fails (visible red X)
-#   2. Buzz alert to the sys-automation channel (ci-failure-alerts webhook)
+#   2. Buzz alert to the sys-health channel (iep-health-alerts webhook)
 #   3. GH issue opened with diff summary (auto-deduped by title)
 #
 # Trigger:
@@ -585,12 +585,12 @@ jobs:
            steps.capture.outputs.bad_fetch == 'true')
         shell: bash
         env:
-          BUZZ_CI_WEBHOOK_URL: ${{ secrets.BUZZ_CI_WEBHOOK_URL }}
-          BUZZ_CI_WEBHOOK_SECRET: ${{ secrets.BUZZ_CI_WEBHOOK_SECRET }}
+          BUZZ_HEALTH_WEBHOOK_URL: ${{ secrets.BUZZ_HEALTH_WEBHOOK_URL }}
+          BUZZ_HEALTH_WEBHOOK_SECRET: ${{ secrets.BUZZ_HEALTH_WEBHOOK_SECRET }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          if [[ -z "${BUZZ_CI_WEBHOOK_URL:-}" || -z "${BUZZ_CI_WEBHOOK_SECRET:-}" ]]; then
-            echo "BUZZ_CI_WEBHOOK_URL or BUZZ_CI_WEBHOOK_SECRET not set; skipping Buzz alert."
+          if [[ -z "${BUZZ_HEALTH_WEBHOOK_URL:-}" || -z "${BUZZ_HEALTH_WEBHOOK_SECRET:-}" ]]; then
+            echo "BUZZ_HEALTH_WEBHOOK_URL or BUZZ_HEALTH_WEBHOOK_SECRET not set; skipping Buzz alert."
             exit 0
           fi
           {
@@ -601,8 +601,8 @@ jobs:
           } > /tmp/buzz-body.txt
           msg="$(printf '%s\n%s\nRun: %s' "⚠️ [intent-eval-lab] Spec drift / liveness trip" "$(cat /tmp/buzz-body.txt)" "${RUN_URL}")"
           jq -n --arg a "${msg:0:1500}" '{alert:$a}' > "$RUNNER_TEMP/buzz-alert.json"
-          code=$(curl -sS -m 15 -o /dev/null -w '%{http_code}' -X POST "$BUZZ_CI_WEBHOOK_URL" \
-            -H "x-webhook-secret: ${BUZZ_CI_WEBHOOK_SECRET}" \
+          code=$(curl -sS -m 15 -o /dev/null -w '%{http_code}' -X POST "$BUZZ_HEALTH_WEBHOOK_URL" \
+            -H "x-webhook-secret: ${BUZZ_HEALTH_WEBHOOK_SECRET}" \
             -H 'Content-Type: application/json' \
             --data @"$RUNNER_TEMP/buzz-alert.json") || code=000
           if [[ "$code" == "202" ]]; then echo "Buzz alert accepted (HTTP 202)"; else echo "Buzz alert not accepted (HTTP $code; non-fatal)"; fi
