@@ -26,14 +26,14 @@ name: Spec drift watch
 #      classified FETCH_OK|UNREACHABLE|MOVED|RATELIMITED|SHAPE_CHANGED|TRUNCATED and
 #      archived append-only (tier 1 archive/raw/, sha256-deduplicated bodies); ONLY a
 #      FETCH_OK record updates the tier-2 vendored snapshot (specs/_vendor/). A bad
-#      fetch keeps the last-good snapshot, alerts via ntfy, and NEVER opens a
+#      fetch keeps the last-good snapshot, alerts via Buzz, and NEVER opens a
 #      reconciliation issue/PR. A tier-2 promotion additionally appends a
 #      snapshot-updated event to the append-only lineage log (specs/lineage/,
 #      054-AT-SPEC) and regenerates its derived coverage map.
 #
 # Side effects on drift / liveness trip:
 #   1. Workflow fails (visible red X)
-#   2. ntfy push (subscribed on Jeremy's phone)
+#   2. Buzz alert to the sys-automation channel (ci-failure-alerts webhook)
 #   3. GH issue opened with diff summary (auto-deduped by title)
 #
 # Trigger:
@@ -302,7 +302,7 @@ jobs:
       # network or grow the archive). Every fetch attempt appends a raw record under
       # archive/raw/<surface>/ (bodies sha256-deduplicated); ONLY FETCH_OK records
       # update specs/_vendor/<surface>/. A bad fetch leaves the last-good vendored
-      # snapshot untouched and surfaces bad_fetch=true for the ntfy alert below —
+      # snapshot untouched and surfaces bad_fetch=true for the Buzz alert below —
       # it NEVER feeds the differ and NEVER opens a reconciliation issue.
       - name: Capture raw fetches into the archive tiers
         id: capture
@@ -574,7 +574,7 @@ jobs:
       # bad_fetch is in THIS condition (alert) but deliberately NOT in the
       # issue-open condition below — a bad fetch never opens a reconciliation
       # issue/PR (052-AT-SPEC: only FETCH_OK output feeds anything downstream).
-      - name: Fire ntfy notification on drift, liveness trip, or bad fetch
+      - name: Post Buzz alert on drift, liveness trip, or bad fetch
         if: >-
           github.event_name == 'schedule' &&
           (steps.projection.outputs.drift == 'true' ||
@@ -584,9 +584,13 @@ jobs:
            steps.streak.outputs.exceeded == 'true' ||
            steps.capture.outputs.bad_fetch == 'true')
         shell: bash
+        env:
+          BUZZ_CI_WEBHOOK_URL: ${{ secrets.BUZZ_CI_WEBHOOK_URL }}
+          BUZZ_CI_WEBHOOK_SECRET: ${{ secrets.BUZZ_CI_WEBHOOK_SECRET }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          if [[ -z "${NTFY_URL:-}" ]]; then
-            echo "NTFY_URL secret not set; skipping ntfy push."
+          if [[ -z "${BUZZ_CI_WEBHOOK_URL:-}" || -z "${BUZZ_CI_WEBHOOK_SECRET:-}" ]]; then
+            echo "BUZZ_CI_WEBHOOK_URL or BUZZ_CI_WEBHOOK_SECRET not set; skipping Buzz alert."
             exit 0
           fi
           {
@@ -594,15 +598,14 @@ jobs:
             head -10 /tmp/drift-report.txt
             sed -n '/─── Summary/,$p' /tmp/freshness-report.txt 2>/dev/null | head -12 || true
             grep -v FETCH_OK /tmp/capture-log.txt 2>/dev/null | head -6 || true
-          } > /tmp/ntfy-body.txt
-          curl -fsSL \
-            -H "Title: Spec drift / liveness (intent-eval-lab)" \
-            -H "Priority: high" \
-            -H "Tags: warning,page_facing_up" \
-            -d "$(cat /tmp/ntfy-body.txt)" \
-            "${NTFY_URL}/prod-health" || echo "ntfy push failed (non-fatal)"
-        env:
-          NTFY_URL: ${{ secrets.NTFY_URL }}
+          } > /tmp/buzz-body.txt
+          msg="$(printf '%s\n%s\nRun: %s' "⚠️ [intent-eval-lab] Spec drift / liveness trip" "$(cat /tmp/buzz-body.txt)" "${RUN_URL}")"
+          jq -n --arg a "${msg:0:1500}" '{alert:$a}' > "$RUNNER_TEMP/buzz-alert.json"
+          code=$(curl -sS -m 15 -o /dev/null -w '%{http_code}' -X POST "$BUZZ_CI_WEBHOOK_URL" \
+            -H "x-webhook-secret: ${BUZZ_CI_WEBHOOK_SECRET}" \
+            -H 'Content-Type: application/json' \
+            --data @"$RUNNER_TEMP/buzz-alert.json") || code=000
+          if [[ "$code" == "202" ]]; then echo "Buzz alert accepted (HTTP 202)"; else echo "Buzz alert not accepted (HTTP $code; non-fatal)"; fi
 
       - name: Open or update drift issue
         if: >-
