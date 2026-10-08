@@ -121,7 +121,7 @@ jobs:
       # So: the default GITHUB_TOKEN is deliberate. It cannot push to main, and it
       # does not need to.
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0   # promotion branch is rebuilt from prior state; needs history
 
