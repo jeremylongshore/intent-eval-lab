@@ -1,87 +1,87 @@
 {
   "state_version": "watcher-liveness/v1",
-  "last_run_utc": "2026-10-01T09:24:18Z",
+  "last_run_utc": "2026-10-10T09:20:34Z",
   "max_gap_hours": 26,
   "streak_threshold": 3,
   "surfaces": {
     "claude-code-changelog": {
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
-      "baseline_stale_streak": 73
+      "last_ok_utc": "2026-10-10T09:20:24Z",
+      "baseline_stale_streak": 86
     },
     "claude-code-npm": {
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
-      "baseline_stale_streak": 73
+      "last_ok_utc": "2026-10-10T09:20:24Z",
+      "baseline_stale_streak": 86
     },
     "platform-skills-overview": {
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
-      "baseline_stale_streak": 73
+      "last_ok_utc": "2026-10-10T09:20:24Z",
+      "baseline_stale_streak": 3
     },
     "anthropic-engineering": {
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
+      "last_ok_utc": "2026-10-10T09:20:24Z",
       "baseline_stale_streak": 0
     },
     "skills-releases": {
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
+      "last_ok_utc": "2026-10-10T09:20:24Z",
       "baseline_stale_streak": 0
     },
     "agentskills-spec": {
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
-      "baseline_stale_streak": 60
+      "last_ok_utc": "2026-10-10T09:20:24Z",
+      "baseline_stale_streak": 0
     },
     "mcp-schema-ts": {
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
-      "baseline_stale_streak": 73
+      "last_ok_utc": "2026-10-10T09:20:24Z",
+      "baseline_stale_streak": 0
     },
     "mcp-spec-docs": {
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
-      "baseline_stale_streak": 73
+      "last_ok_utc": "2026-10-10T09:20:24Z",
+      "baseline_stale_streak": 8
     },
     "claude-hooks": {
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
-      "baseline_stale_streak": 73
+      "last_ok_utc": "2026-10-10T09:20:24Z",
+      "baseline_stale_streak": 9
     },
     "claude-settings": {
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
-      "baseline_stale_streak": 73
+      "last_ok_utc": "2026-10-10T09:20:24Z",
+      "baseline_stale_streak": 5
     },
     "claude-slash-commands": {
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
-      "baseline_stale_streak": 73
+      "last_ok_utc": "2026-10-10T09:20:24Z",
+      "baseline_stale_streak": 9
     },
     "plugins-reference": {
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
-      "baseline_stale_streak": 73
+      "last_ok_utc": "2026-10-10T09:20:24Z",
+      "baseline_stale_streak": 9
     },
     "sub-agents": {
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
-      "baseline_stale_streak": 73
+      "last_ok_utc": "2026-10-10T09:20:24Z",
+      "baseline_stale_streak": 9
     },
     "plugin-marketplaces": {
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
-      "baseline_stale_streak": 73
+      "last_ok_utc": "2026-10-10T09:20:24Z",
+      "baseline_stale_streak": 0
     },
     "mcp-releases": {
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
+      "last_ok_utc": "2026-10-10T09:20:24Z",
       "baseline_stale_streak": 0
     },
     "claude-code-releases": {
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
+      "last_ok_utc": "2026-10-10T09:20:24Z",
       "baseline_stale_streak": 0
     }
   }
