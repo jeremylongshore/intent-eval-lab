@@ -1,7 +1,7 @@
 {
   "surface_id": "claude-code-changelog",
-  "sha256": "da05018aedf08212a86cb8c26aa88fa9676fbc3bda86ece9687c4c222bdcf6cc",
-  "bytes": 872057,
-  "updated_at": "2026-10-01T09:24:14Z",
-  "source_raw_record": "archive/raw/claude-code-changelog/20261001T092414Z.meta.json"
+  "sha256": "0383b383e05c30b7592c512ea3356104cbc3a799d028d36204033175ff256a51",
+  "bytes": 987162,
+  "updated_at": "2026-10-10T09:20:27Z",
+  "source_raw_record": "archive/raw/claude-code-changelog/20261010T092027Z.meta.json"
 }
