@@ -2,7 +2,7 @@
   "_type": "https://in-toto.io/Statement/v1",
   "predicate": {
     "advisory_severity": "warn",
-    "commit_sha": "07aaa72757567d697f12bb4caf032d1afcbfae53",
+    "commit_sha": "0e723703d7a7010e26d717184746c94f9e76953c",
     "coverage": {
       "dimensions_evaluated": [
         "claude-code-changelog",
@@ -24,7 +24,7 @@
       ],
       "dimensions_skipped": []
     },
-    "evaluated_at": "2026-10-01T09:24:13.000Z",
+    "evaluated_at": "2026-10-10T09:20:27.000Z",
     "gate_decision": "advisory",
     "gate_id": "spec-drift-watch:ci:snapshot-currency",
     "gate_name": "spec-snapshot-currency",
@@ -32,21 +32,18 @@
       "snapshot-drift:claude-code-changelog",
       "snapshot-drift:claude-code-npm",
       "snapshot-drift:platform-skills-overview",
-      "snapshot-drift:agentskills-spec",
-      "snapshot-drift:mcp-schema-ts",
       "snapshot-drift:mcp-spec-docs",
       "snapshot-drift:claude-hooks",
       "snapshot-drift:claude-settings",
       "snapshot-drift:claude-slash-commands",
       "snapshot-drift:plugins-reference",
-      "snapshot-drift:sub-agents",
-      "snapshot-drift:plugin-marketplaces"
+      "snapshot-drift:sub-agents"
     ],
     "gate_version": "1.0.0",
-    "input_hash": "sha256:6979763a29c6b7f993872509727f1d74c19977c7b0e63cb6b12ae071600c227b",
+    "input_hash": "sha256:2a36ab4fc2c25c6f3526945627616e69f866216d2e6c516f97155b23d8b04144",
     "metadata": {
       "authority": "Blueprint B § 7.4 (gate-result/v1); DR-010 Q3 unification thesis",
-      "checked_at": "2026-10-01T09:24:11Z",
+      "checked_at": "2026-10-10T09:20:24Z",
       "sources_total": 16
     },
     "policy_hash": "sha256:611ea9b0e9c7e07b3405bf8a29332861aad42164b960ab6d0b9dd6d8db072139",
@@ -57,7 +54,7 @@
   "subject": [
     {
       "digest": {
-        "sha256": "6979763a29c6b7f993872509727f1d74c19977c7b0e63cb6b12ae071600c227b"
+        "sha256": "2a36ab4fc2c25c6f3526945627616e69f866216d2e6c516f97155b23d8b04144"
       },
       "name": "spec-drift-watch:ci:snapshot-currency"
     }

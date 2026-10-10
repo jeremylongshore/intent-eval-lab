@@ -1,7 +1,7 @@
 {
   "surface_id": "claude-hooks",
-  "sha256": "94e33cf5e328fb21343332d39fe2093becb27bf9e93b8c3601b2787468eea839",
-  "bytes": 248712,
-  "updated_at": "2026-10-01T09:24:14Z",
-  "source_raw_record": "archive/raw/claude-hooks/20261001T092414Z.meta.json"
+  "sha256": "ad56e03ba949864cab3346b7d69a896b34a004f1af26f0a7666a9c5bdc44553b",
+  "bytes": 262620,
+  "updated_at": "2026-10-10T09:20:27Z",
+  "source_raw_record": "archive/raw/claude-hooks/20261010T092027Z.meta.json"
 }
