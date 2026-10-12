@@ -430,3 +430,23 @@ jobs:
         run: |
           python3 scripts/sak-wave-b-durability.py --self-test
           python3 scripts/sak-wave-b-durability.py --validate
+
+  canonical-evidence:
+    name: Canonical dashboard evidence contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: ci/package-lock.json
+      - name: Install locked private CI kernel
+        run: npm ci --prefix ci --ignore-scripts
+      - name: Canonical payload and mutation contracts
+        run: npm test --prefix ci
+      - name: Emitter self-check
+        run: node --experimental-strip-types ci/emit-evidence.ts --self-check
+      - name: Verify harness policy pins
+        run: scripts/audit-harness verify

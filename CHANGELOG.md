@@ -11,6 +11,14 @@ Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skelet
 
 ### Added
 
+#### Canonical dashboard producer (2026-10-12)
+
+- Bind complete kernel-valid statement payloads in signed `iel` bundle metadata;
+  reject payload, metadata and projection mutations before manifest assembly.
+- Pin the private CI emitter at kernel 0.10.0 through an npm lockfile, with twelve
+  offline contracts in PR and release CI. Preserve spec-integrity measurements,
+  tag-only signing, predicate URIs and consumer version-skew policy.
+
 #### Tri-link verifier correctness (2026-08-02)
 
 - Read bead descriptions through `bd show --json` so wrapped human output

@@ -112,3 +112,11 @@ specs/state-machines/schema/sak-reconciliation-queue.schema.json
 # commit. (DISTINCT from the reconciliation-liveness SLA timer — advisory + unpinned.)
 scripts/sak-wave-b-durability.py
 specs/state-machines/schema/sak-wave-b-durability.schema.json
+
+# 0s2a — private canonical evidence producer, dependency lock and mutation tests.
+ci/emit-evidence.ts
+ci/assemble-manifest.ts
+ci/canonical-payload.test.mjs
+ci/canonical-payload.fixture.json
+ci/package.json
+ci/package-lock.json
