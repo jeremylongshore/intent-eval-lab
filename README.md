@@ -71,3 +71,5 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution model and convention
 ## Author
 
 Jeremy Longshore — [intentsolutions.io](https://intentsolutions.io) · [startaitools.com](https://startaitools.com)
+
+Private release evidence: [canonical dashboard producer guide](000-docs/118-AT-SPEC-canonical-dashboard-evidence-2026-10-12.md).

@@ -6,8 +6,9 @@
  *
  * Runs AFTER `ci/emit-evidence.ts` and AFTER CI has signed each `bundle-<i>.json`
  * with `cosign sign-blob --bundle bundle-<i>.sigstore.json`. Fail-closed: a
- * missing bundle/sigstore file or a structural mismatch aborts rather than
- * publishing a half-built manifest.
+ * missing bundle/signature, invalid payload, signed metadata mismatch or
+ * divergent projection aborts assembly. The workflow and dashboard separately
+ * verify real signatures; this helper only transports the signature bundle.
  *
  * Usage:
  *   node --experimental-strip-types ci/assemble-manifest.ts [--dir build/evidence] [--out build/evidence/report-manifest.json]
@@ -15,15 +16,26 @@
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { basename, join } from 'node:path';
+import { EvidenceBundleSchema } from '@intentsolutions/core/validators/v1/evidence-bundle';
+import {
+  EvidenceBundlePayloadSchema,
+  type EvidenceBundlePayload,
+} from '@intentsolutions/core/validators/v1/evidence-statement';
+import { evidencePayloadMetadata, stableStringify } from './emit-evidence.ts';
 
 interface SkeletonRow {
   readonly bundleFile: string;
   readonly gateResults: readonly unknown[];
+  readonly evidencePayload: EvidenceBundlePayload;
   readonly sourceSha: string;
 }
 interface Skeleton {
   readonly repo: string;
-  readonly signing: { readonly issuer: string; readonly subject: string; readonly workflowRef: string };
+  readonly signing: {
+    readonly issuer: string;
+    readonly subject: string;
+    readonly workflowRef: string;
+  };
   readonly rows: readonly SkeletonRow[];
 }
 interface ManifestRow {
@@ -31,6 +43,7 @@ interface ManifestRow {
   readonly sigstoreBundle: unknown;
   readonly sourceSha: string;
   readonly gateResults: readonly unknown[];
+  readonly evidencePayload: EvidenceBundlePayload;
 }
 interface ReportManifest {
   readonly repo: string;
@@ -72,18 +85,40 @@ export function assemble(dir: string): ReportManifest {
     const sigPath = join(dir, `${basename(row.bundleFile, '.json')}.sigstore.json`);
     if (!existsSync(bundlePath)) throw new Error(`missing bundle file ${bundlePath}`);
     if (!existsSync(sigPath)) {
-      throw new Error(`missing sigstore bundle ${sigPath} — was cosign sign-blob run for ${row.bundleFile}?`);
+      throw new Error(
+        `missing sigstore bundle ${sigPath} — was cosign sign-blob run for ${row.bundleFile}?`,
+      );
+    }
+    const bundle = readJson(bundlePath);
+    const parsedBundle = EvidenceBundleSchema.parse(bundle);
+    const payload = EvidenceBundlePayloadSchema.parse(row.evidencePayload);
+    for (const [key, expected] of Object.entries(evidencePayloadMetadata(row.evidencePayload))) {
+      if (
+        stableStringify(parsedBundle[key as keyof typeof parsedBundle]) !==
+        stableStringify(expected)
+      ) {
+        throw new Error(`evidencePayload does not match signed bundle ${key}`);
+      }
+    }
+    if (
+      stableStringify(row.gateResults) !==
+      stableStringify(payload.map((statement) => statement.predicate))
+    ) {
+      throw new Error('gateResults do not match evidencePayload predicates');
     }
     return {
-      bundle: readJson(bundlePath),
+      bundle,
       sigstoreBundle: readJson(sigPath),
       sourceSha: row.sourceSha,
       gateResults: row.gateResults,
+      evidencePayload: row.evidencePayload,
     };
   });
   const manifest: ReportManifest = { repo: skeleton.repo, signing: skeleton.signing, rows };
   if (!isReportManifestShape(manifest)) {
-    throw new Error('assembled manifest failed the report-manifest shape check (would be rejected at ingest)');
+    throw new Error(
+      'assembled manifest failed the report-manifest shape check (would be rejected at ingest)',
+    );
   }
   return manifest;
 }
@@ -113,7 +148,10 @@ if (invokedDirectly) {
     console.log(`✓ assemble-manifest: ${manifest.rows.length} signed row(s) -> ${out}`);
     process.exit(0);
   } catch (err: unknown) {
-    console.error('assemble-manifest FAILED (fail-closed):', err instanceof Error ? err.message : String(err));
+    console.error(
+      'assemble-manifest FAILED (fail-closed):',
+      err instanceof Error ? err.message : String(err),
+    );
     process.exit(1);
   }
 }

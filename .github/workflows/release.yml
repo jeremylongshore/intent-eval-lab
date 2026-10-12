@@ -3,7 +3,7 @@ name: Release
 # Tag a spec release of intent-eval-lab and emit its signed spec-integrity
 # evidence for the intent-eval-dashboard reports hub (bead nr75.13).
 #
-# The lab has NO package.json / no npm publish — a "release" here is: cut a
+# The lab has no root package.json / no npm publish — a "release" here is: cut a
 # GitHub Release for the tag, then emit + cosign-sign a kernel gate-result/v1
 # report-manifest and attach it to that Release. The dashboard fetches:
 #   https://github.com/jeremylongshore/intent-eval-lab/releases/latest/download/report-manifest.json
@@ -11,9 +11,9 @@ name: Release
 # schema at ingest. The signing identity is this workflow's reusable-workflow ref
 # (release.yml@refs/tags/vX.Y.Z) — which the dashboard pins for `iel`.
 #
-# @intentsolutions/core is installed CI-only via `npm i --no-save`; the lab keeps
-# no node manifest. The emit scripts run under Node 22 `--experimental-strip-types`
-# (no build step).
+# The private ci/ package pins @intentsolutions/core at 0.10.0 through a frozen
+# npm lockfile. The emit scripts run under Node 22 --experimental-strip-types
+# without a build step; nothing is published to npm.
 
 on:
   push:
@@ -61,9 +61,11 @@ jobs:
             gh release create "$tag" --title "intent-eval-lab $tag" --generate-notes --latest
           fi
 
-      # CI-only kernel install — the lab keeps no node manifest (zero footprint).
-      - name: Install kernel validators (CI-only, --no-save)
-        run: npm i --no-save @intentsolutions/core@0.2.0
+      - name: Install locked private CI kernel
+        run: npm ci --prefix ci --ignore-scripts
+
+      - name: Canonical dashboard payload mutation contracts
+        run: npm test --prefix ci
 
       - name: Emit-evidence self-check (kernel-valid + canonical-stable)
         run: node --experimental-strip-types ci/emit-evidence.ts --self-check
