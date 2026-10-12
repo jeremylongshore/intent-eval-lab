@@ -8,11 +8,11 @@ Bead: `bd_000-projects-h08j.8.1`. Account: `jeremylongshore`. Observation date: 
 
 The authenticated census contains **184 owned repositories: 159 public and 25 private**, including **53 forks**. Public listing and authenticated owner listing were reconciled by GitHub repository ID. Every repository has an independently successful `gh repo view --json visibility` receipt, pinned default-branch SHA, reachable commit count, GitHub license metadata, complete recursive tree and fully paginated tag/release enumeration. The trees contain **148,763 files**; none was truncated.
 
-The Contents API verified **5488/5488 selected files** at those exact commits. All workflow and changelog filenames were requested. The ranked sample now includes every filename candidate in the documented extension set. **0 filename candidates remain uninspected**. Other extensions and body-only matches outside these paths remain unassessed. **136 repositories** have at least one lexical match in the inspected material. Keyword hits can be tests, documentation, generic language annotations or ordinary stack traces: the references below are discovery evidence, not proof of a trace-intelligence capability. Uninspected candidates and negative results remain explicit; no whole-repository absence claim is made.
+The Contents API verified **6915/6915 selected files** at those exact commits. All workflow and changelog filenames were requested. The initial filename-candidate set is fully inspected: **0 candidates remain** within that documented set. A supplemental pass added **784 files** from additional language formats, extensionless executable paths and ranked entrypoints; a body-search pass added **639 source files**; direct tree-guided transcript review added **4 files**. These passes broaden discovery but do not establish whole-codebase absence. **140 repositories** have at least one lexical match in the inspected material. Each source-positive repository/category pair has a manually reviewed representative. The review contains **308 assessments across 221 files**, covering **302 repository/category pairs**; this is representative semantic review, not a review of every collected file. Documentation and workflow hits remain explicitly lexical. No execution, deployment, adoption or whole-repository absence claim is made.
 
 The public projection retains one row for every repository. **29 repository identities** and any policy-restricted file references are withheld; the complete local owner annex binds each alias to its actual repository, metadata and references. This preserves the lab's partner-consent, private-brain and private-repository boundaries. It does not remove those repositories from audit scope. The owner must review the annex as well as this projection before sign-off.
 
-Owner-annex SHA-256: `e7d601d1f1529c6b7e05b7cb5d9614ee1552005141d9570655e0ff6928573af2`. Its location and API receipt directory are recorded on the Bead. The annex is a local audit artifact, not a committed public asset.
+Owner-annex SHA-256: `24e882dff01876aee3634c3b64337b1aefee31719152ae7b847f1c16eb780a58`. Its location and API receipt directory are recorded on the Bead. The annex is a local audit artifact, not a committed public asset.
 
 ## Reproduction and interpretation
 
@@ -31,9 +31,19 @@ The deterministic projection flattens both page arrays, selects `owner.login == 
 - `GET /repos/OWNER/REPO/contents/PATH?ref=COMMIT_SHA`: HTTP 200, blob SHA, decoded content SHA-256 and matching line numbers. Every published file reference has this receipt.
 - Fully paginated `tags` and `releases` endpoints. Release-body matches are retained privately; linked release text may subsequently change.
 
-Discovery terms cover trace/trajectory, telemetry/OpenTelemetry/observability, annotation/human review/labeling, eval/benchmark/grading/scoring, evidence/attestation/Sigstore/Rekor, and taxonomy/failure classification. Candidate selection prefers authored source over tests, dependencies and prose. The source extension set is `.py`, `.ts`, `.tsx`, `.js`, `.mjs`, `.cjs`, `.jsx`, `.go`, `.rs`, `.sh`, `.bash`, `.java`, `.kt`, `.rb`, `.cs`, `.cpp`, `.c`, `.h`, `.sql` and `.proto`; additional candidate formats are `.json`, `.yaml`, `.yml`, `.toml`, `.md`, `.mdx`, `.rst` and `.txt`. Other language extensions and body-only matches outside named candidates are not exhaustively assessed. Paths are not invented; tree-only candidates are never presented as Contents-verified evidence.
+Discovery terms cover trace/trajectory, telemetry/OpenTelemetry/observability, annotation/human review/labeling, eval/benchmark/grading/scoring, evidence/attestation/Sigstore/Rekor, and taxonomy/failure classification. Candidate selection prefers authored source over tests, dependencies and prose. The source extension set is `.py`, `.ts`, `.tsx`, `.js`, `.mjs`, `.cjs`, `.jsx`, `.go`, `.rs`, `.sh`, `.bash`, `.java`, `.kt`, `.rb`, `.cs`, `.cpp`, `.c`, `.h`, `.sql` and `.proto`; additional initial candidate formats are `.json`, `.yaml`, `.yml`, `.toml`, `.md`, `.mdx`, `.rst` and `.txt`. The supplemental source formats are `.mts`, `.cts`, `.php`, `.svelte`, `.astro`, `.vue`, `.lua`, `.ps1`, `.swift`, `.dart`, `.ex`, `.exs`, `.r`, `.rmd`, `.jl`, `.nix`, `.bats`, `.feature` and `.ipynb`. The supplemental pass includes keyword-named paths in these formats, extensionless executable files under `bin/`, `scripts/` or `libexec/`, and up to three ranked source entrypoints per repository; supplemental files are limited to 2 MB. Notebook references point to raw JSON source lines, not proof that cells executed. Other paths are not exhaustively assessed. Paths are not invented; tree-only candidates are never presented as Contents-verified evidence.
 
 GitHub license metadata is reported literally. `NOASSERTION` or an unclassified result does not prove the repository lacks a license. Forks are retained and labeled; inherited upstream code is not claimed as an internally owned platform capability. Each repository has its own observation time, so the census is not an atomic estate snapshot.
+
+## Semantic review and search limits
+
+Reviewed assessments: **67 implementation-source**, **47 contract**, **21 dependency-only**, **20 test/fixture**, **17 other-domain** and **136 not established by the cited reference**. Categories can share a file. A negative classification applies to that reference, never the entire repository. Runtime and privacy guarantees require separate execution evidence.
+
+Language-level annotations, Perl `eval`, query-AST evaluation, training-loss trajectories, PDF annotations and MCP tool hints do not by themselves establish agent annotation or evaluation capabilities. Vendored emitters, forks, samples, import statements and test assertions are identified as such. A CLI branch returning constant success fields is not treated as verification. Source observations do not select architecture or authorize replacing existing components.
+
+Body discovery used stable REST `search/code` queries of the form `TERM user:jeremylongshore in:file`, with terms `opentelemetry`, `trajectory`, `human_review`, `annotation`, `EvaluationResult`, `EvidenceBundle` and `taxonomy`. Search results were candidates only: every retained source path had to exist in the previously pinned tree and then pass Contents verification at that commit. One result added after the pinned census was excluded as outside that tree; this is not a 404 claim.
+
+GitHub search is an incomplete, changing index of current default branches and excludes many forks. The `annotation` query reached the 1,000-result cap (2,084 reported; 813 unique paths returned). Reported totals changed during pagination for four other queries, producing duplicates or different page boundaries. Neither pagination nor `incomplete_results: false` establishes exhaustive coverage. Other query unique counts were 687 taxonomy, 82 human_review, 277 EvidenceBundle, 52 EvaluationResult, 635 opentelemetry and 413 trajectory. These counts overlap and are not file totals. The raw pages and observed total ranges are retained in the owner evidence package.
 
 ## Reviewed platform source findings
 
@@ -105,7 +115,7 @@ Observed default branch: `main`; reachable commits: **25**; head: `8d794376ec52e
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 1 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 4 tags and 1 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 4/4 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 7/7 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R004: DiagnosticPro
 
@@ -113,15 +123,15 @@ Repository: [jeremylongshore/DiagnosticPro](https://github.com/jeremylongshore/D
 
 Observed default branch: `main`; reachable commits: **189**; head: `92b7f1def2a3ec0912aca85cadeb89006d6c2fa4`. GitHub license metadata: **AGPL-3.0**. Tree: **785 files**, complete. Observation: `2026-10-12T06:29:24Z`.
 
-- **Trace:** [`CHANGELOG.md` L330–332](https://github.com/jeremylongshore/DiagnosticPro/blob/92b7f1def2a3ec0912aca85cadeb89006d6c2fa4/CHANGELOG.md#L330-L332) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Trace:** [`CHANGELOG.md` L330–332](https://github.com/jeremylongshore/DiagnosticPro/blob/92b7f1def2a3ec0912aca85cadeb89006d6c2fa4/CHANGELOG.md#L330-L332) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`tests/prompt-eval/judge.mjs` L2–4](https://github.com/jeremylongshore/DiagnosticPro/blob/92b7f1def2a3ec0912aca85cadeb89006d6c2fa4/tests/prompt-eval/judge.mjs#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`05-scripts/smoke-evidence.sh` L2–4](https://github.com/jeremylongshore/DiagnosticPro/blob/92b7f1def2a3ec0912aca85cadeb89006d6c2fa4/05-scripts/smoke-evidence.sh#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`.github/workflows/minimax-review.yml` L10–12](https://github.com/jeremylongshore/DiagnosticPro/blob/92b7f1def2a3ec0912aca85cadeb89006d6c2fa4/.github/workflows/minimax-review.yml#L10-L12) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`tests/prompt-eval/lib/common.mjs` L13–20](https://github.com/jeremylongshore/DiagnosticPro/blob/92b7f1def2a3ec0912aca85cadeb89006d6c2fa4/tests/prompt-eval/lib/common.mjs#L13-L20) — **implementation source**. The prompt-evaluation support module defines result paths and guards loading its runtime key configuration; no keys were read by this audit.
+- **Evidence:** [`02-src/frontend/src/src/services/evidence.ts` L14–19](https://github.com/jeremylongshore/DiagnosticPro/blob/92b7f1def2a3ec0912aca85cadeb89006d6c2fa4/02-src/frontend/src/src/services/evidence.ts#L14-L19) — **other domain**. The application defines evidence attachments such as photos and work orders, with optional content hashes.
+- **Taxonomy:** [`.github/workflows/minimax-review.yml` L10–12](https://github.com/jeremylongshore/DiagnosticPro/blob/92b7f1def2a3ec0912aca85cadeb89006d6c2fa4/.github/workflows/minimax-review.yml#L10-L12) (workflow; lexical evidence only, not an operational verdict).
 - **Related workflow references:** [`.github/workflows/deploy.yml` L109–111](https://github.com/jeremylongshore/DiagnosticPro/blob/92b7f1def2a3ec0912aca85cadeb89006d6c2fa4/.github/workflows/deploy.yml#L109-L111); [`.github/workflows/minimax-review.yml` L10–12](https://github.com/jeremylongshore/DiagnosticPro/blob/92b7f1def2a3ec0912aca85cadeb89006d6c2fa4/.github/workflows/minimax-review.yml#L10-L12).
 - **Release/changelog evidence:** 21 tags and 4 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L11–13](https://github.com/jeremylongshore/DiagnosticPro/blob/92b7f1def2a3ec0912aca85cadeb89006d6c2fa4/CHANGELOG.md#L11-L13).
-- **Verification scope:** 168/168 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 171/171 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R005: Hybrid-ai-stack-intent-solutions
 
@@ -130,14 +140,14 @@ Repository: [jeremylongshore/Hybrid-ai-stack-intent-solutions](https://github.co
 Observed default branch: `main`; reachable commits: **31**; head: `2332f444b88318e62478147657efc046713caf2a`. GitHub license metadata: **MIT**. Tree: **129 files**, complete. Observation: `2026-10-12T06:29:24Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L259–261](https://github.com/jeremylongshore/Hybrid-ai-stack-intent-solutions/blob/2332f444b88318e62478147657efc046713caf2a/.audit-harness/scripts/emit-evidence.sh#L259-L261) (source; lexical evidence, not an operational verdict).
-- **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`scripts/benchmark_ternary.py` L3–5](https://github.com/jeremylongshore/Hybrid-ai-stack-intent-solutions/blob/2332f444b88318e62478147657efc046713caf2a/scripts/benchmark_ternary.py#L3-L5) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L2–4](https://github.com/jeremylongshore/Hybrid-ai-stack-intent-solutions/blob/2332f444b88318e62478147657efc046713caf2a/.audit-harness/scripts/emit-evidence.sh#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L260–262](https://github.com/jeremylongshore/Hybrid-ai-stack-intent-solutions/blob/2332f444b88318e62478147657efc046713caf2a/.audit-harness/scripts/emit-evidence.sh#L260-L262) (source; lexical evidence, not an operational verdict).
+- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L386–390](https://github.com/jeremylongshore/Hybrid-ai-stack-intent-solutions/blob/2332f444b88318e62478147657efc046713caf2a/.audit-harness/scripts/emit-evidence.sh#L386-L390) — **implementation source**. The vendored audit-harness emitter conditionally writes buffered OTEL records.
+- **Annotation:** [`.audit-harness/scripts/crap-score.py` L15–20](https://github.com/jeremylongshore/Hybrid-ai-stack-intent-solutions/blob/2332f444b88318e62478147657efc046713caf2a/.audit-harness/scripts/crap-score.py#L15-L20) — **capability not established by this reference**. The match is Python future-import syntax in a vendored complexity checker.
+- **Evaluation:** [`scripts/benchmark_ternary.py` L14–20](https://github.com/jeremylongshore/Hybrid-ai-stack-intent-solutions/blob/2332f444b88318e62478147657efc046713caf2a/scripts/benchmark_ternary.py#L14-L20) — **contract**. BenchmarkResult records model, prompt, elapsed time and token throughput for model benchmarking.
+- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L63–72](https://github.com/jeremylongshore/Hybrid-ai-stack-intent-solutions/blob/2332f444b88318e62478147657efc046713caf2a/.audit-harness/scripts/emit-evidence.sh#L63-L72) — **contract**. The vendored emitter declares in-toto statement and gate-result predicate identifiers.
+- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L259–264](https://github.com/jeremylongshore/Hybrid-ai-stack-intent-solutions/blob/2332f444b88318e62478147657efc046713caf2a/.audit-harness/scripts/emit-evidence.sh#L259-L264) — **capability not established by this reference**. The taxonomy reference is an explanatory comment linking the event specification.
 - **Related workflows:** no publishable lexical match among 2 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 3 tags and 3 releases enumerated; 1 release records have lexical matches. [`.audit-harness/CHANGELOG.md` L23–25](https://github.com/jeremylongshore/Hybrid-ai-stack-intent-solutions/blob/2332f444b88318e62478147657efc046713caf2a/.audit-harness/CHANGELOG.md#L23-L25); [`CHANGELOG.md` L89–91](https://github.com/jeremylongshore/Hybrid-ai-stack-intent-solutions/blob/2332f444b88318e62478147657efc046713caf2a/CHANGELOG.md#L89-L91); [release `v1.1.0`](https://github.com/jeremylongshore/Hybrid-ai-stack-intent-solutions/releases/tag/v1.1.0).
-- **Verification scope:** 7/7 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 12/12 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R006: No-You-Pick. (repository)
 
@@ -153,7 +163,7 @@ Observed default branch: `main`; reachable commits: **47**; head: `2e661238a14a6
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 0 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 2/2 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 0 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 0 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R007: OmaSafe
 
@@ -180,8 +190,8 @@ Observed default branch: `main`; reachable commits: **45**; head: `1ec908c0724a4
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`eval/find-cpa-firm/run.sh` L2–4](https://github.com/jeremylongshore/ServiceGraph/blob/1ec908c0724a48410c0d00fac46df96651d6d9a1/eval/find-cpa-firm/run.sh#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`README.md` L469–471](https://github.com/jeremylongshore/ServiceGraph/blob/1ec908c0724a48410c0d00fac46df96651d6d9a1/README.md#L469-L471) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`eval/find-cpa-firm/run.sh` L1–7](https://github.com/jeremylongshore/ServiceGraph/blob/1ec908c0724a48410c0d00fac46df96651d6d9a1/eval/find-cpa-firm/run.sh#L1-L7) — **capability not established by this reference**. The selected reference documents an evaluation runner; its executable invocation is outside these reviewed lines.
+- **Evidence:** [`README.md` L469–471](https://github.com/jeremylongshore/ServiceGraph/blob/1ec908c0724a48410c0d00fac46df96651d6d9a1/README.md#L469-L471) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 0 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
@@ -193,15 +203,15 @@ Repository: [jeremylongshore/a2a-samples](https://github.com/jeremylongshore/a2a
 
 Observed default branch: `main`; reachable commits: **327**; head: `44ed6197f493ed7120e969ca8cbc691fe0df743d`. GitHub license metadata: **Apache-2.0**. Tree: **714 files**, complete. Observation: `2026-10-12T06:29:27Z`.
 
-- **Trace:** [`samples/python/agents/a2a_telemetry/__main__.py` L12–14](https://github.com/jeremylongshore/a2a-samples/blob/44ed6197f493ed7120e969ca8cbc691fe0df743d/samples/python/agents/a2a_telemetry/__main__.py#L12-L14) (source; lexical evidence, not an operational verdict).
-- **Telemetry:** [`samples/python/agents/a2a_telemetry/__main__.py` L12–14](https://github.com/jeremylongshore/a2a-samples/blob/44ed6197f493ed7120e969ca8cbc691fe0df743d/samples/python/agents/a2a_telemetry/__main__.py#L12-L14) (source; lexical evidence, not an operational verdict).
+- **Trace:** [`samples/python/agents/a2a_telemetry/__main__.py` L12–19](https://github.com/jeremylongshore/a2a-samples/blob/44ed6197f493ed7120e969ca8cbc691fe0df743d/samples/python/agents/a2a_telemetry/__main__.py#L12-L19) — **dependency only**. The forked A2A sample imports OpenTelemetry tracing, OTLP export, Starlette instrumentation and batch span processing.
+- **Telemetry:** [`samples/python/agents/a2a_telemetry/__main__.py` L12–19](https://github.com/jeremylongshore/a2a-samples/blob/44ed6197f493ed7120e969ca8cbc691fe0df743d/samples/python/agents/a2a_telemetry/__main__.py#L12-L19) — **dependency only**. The forked A2A sample imports OpenTelemetry tracing, OTLP export, Starlette instrumentation and batch span processing.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** no public positive reference in the inspected sample; absence is **not established**.
+- **Evaluation:** [`notebooks/a2a_evaluation.ipynb` L1152–1163](https://github.com/jeremylongshore/a2a-samples/blob/44ed6197f493ed7120e969ca8cbc691fe0df743d/notebooks/a2a_evaluation.ipynb#L1152-L1163) — **implementation source**. The forked notebook constructs a Vertex EvalTask from a dataset and metrics, calls evaluate on an A2A result and displays its report; this is unexecuted notebook source.
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 1 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 7/7 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 11/11 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R010: agent-brain
 
@@ -210,14 +220,14 @@ Repository: [jeremylongshore/agent-brain](https://github.com/jeremylongshore/age
 Observed default branch: `main`; reachable commits: **621**; head: `1d6132582db3392acdf1b44b1c6bc322c84f2607`. GitHub license metadata: **MIT**. Tree: **1349 files**, complete. Observation: `2026-10-12T06:29:29Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`docs/CHANGELOG.md` L30–32](https://github.com/jeremylongshore/agent-brain/blob/1d6132582db3392acdf1b44b1c6bc322c84f2607/docs/CHANGELOG.md#L30-L32) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Annotation:** [`scripts/query_benchmark.py` L810–812](https://github.com/jeremylongshore/agent-brain/blob/1d6132582db3392acdf1b44b1c6bc322c84f2607/scripts/query_benchmark.py#L810-L812) (source; lexical evidence, not an operational verdict).
-- **Evaluation:** [`scripts/query_benchmark.py` L2–4](https://github.com/jeremylongshore/agent-brain/blob/1d6132582db3392acdf1b44b1c6bc322c84f2607/scripts/query_benchmark.py#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`docs/CHANGELOG.md` L67–69](https://github.com/jeremylongshore/agent-brain/blob/1d6132582db3392acdf1b44b1c6bc322c84f2607/docs/CHANGELOG.md#L67-L69) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Telemetry:** [`agent-brain-server/agent_brain_server/api/main.py` L203–206](https://github.com/jeremylongshore/agent-brain/blob/1d6132582db3392acdf1b44b1c6bc322c84f2607/agent-brain-server/agent_brain_server/api/main.py#L203-L206) — **other domain**. The forked server disables anonymous dependency telemetry and reduces related logger output during startup.
+- **Annotation:** [`scripts/query_benchmark.py` L808–814](https://github.com/jeremylongshore/agent-brain/blob/1d6132582db3392acdf1b44b1c6bc322c84f2607/scripts/query_benchmark.py#L808-L814) — **capability not established by this reference**. Annotation here means an explanatory reason attached to a benchmark result.
+- **Evaluation:** [`scripts/query_benchmark.py` L808–815](https://github.com/jeremylongshore/agent-brain/blob/1d6132582db3392acdf1b44b1c6bc322c84f2607/scripts/query_benchmark.py#L808-L815) — **implementation source**. The forked benchmark appends a completed result, including an optional matrix reason, to its result set.
+- **Evidence:** [`docs/CHANGELOG.md` L67–69](https://github.com/jeremylongshore/agent-brain/blob/1d6132582db3392acdf1b44b1c6bc322c84f2607/docs/CHANGELOG.md#L67-L69) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 4 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 30 tags and 0 releases enumerated; 0 release records have lexical matches. [`docs/CHANGELOG.md` L18–20](https://github.com/jeremylongshore/agent-brain/blob/1d6132582db3392acdf1b44b1c6bc322c84f2607/docs/CHANGELOG.md#L18-L20).
-- **Verification scope:** 19/19 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 4 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 22/22 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 4 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R011: agent-governance-plane
 
@@ -226,14 +236,14 @@ Repository: [jeremylongshore/agent-governance-plane](https://github.com/jeremylo
 Observed default branch: `main`; reachable commits: **275**; head: `2076dec5264a194e28302fbb1ce26a5d0305a576`. GitHub license metadata: **Apache-2.0**. Tree: **288 files**, complete. Observation: `2026-10-12T06:29:29Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L259–261](https://github.com/jeremylongshore/agent-governance-plane/blob/2076dec5264a194e28302fbb1ce26a5d0305a576/.audit-harness/scripts/emit-evidence.sh#L259-L261) (source; lexical evidence, not an operational verdict).
+- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L386–390](https://github.com/jeremylongshore/agent-governance-plane/blob/2076dec5264a194e28302fbb1ce26a5d0305a576/.audit-harness/scripts/emit-evidence.sh#L386-L390) — **implementation source**. The vendored audit-harness emitter conditionally writes buffered OTEL records.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.audit-harness/scripts/emit-evidence.sh` L9–11](https://github.com/jeremylongshore/agent-governance-plane/blob/2076dec5264a194e28302fbb1ce26a5d0305a576/.audit-harness/scripts/emit-evidence.sh#L9-L11) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`scripts/evidence-bundle.sh` L2–4](https://github.com/jeremylongshore/agent-governance-plane/blob/2076dec5264a194e28302fbb1ce26a5d0305a576/scripts/evidence-bundle.sh#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L260–262](https://github.com/jeremylongshore/agent-governance-plane/blob/2076dec5264a194e28302fbb1ce26a5d0305a576/.audit-harness/scripts/emit-evidence.sh#L260-L262) (source; lexical evidence, not an operational verdict).
+- **Evaluation:** [`.audit-harness/scripts/emit-evidence.sh` L192–199](https://github.com/jeremylongshore/agent-governance-plane/blob/2076dec5264a194e28302fbb1ce26a5d0305a576/.audit-harness/scripts/emit-evidence.sh#L192-L199) — **implementation source**. The vendored emitter copies evaluated/skipped dimensions into gate coverage.
+- **Evidence:** [`scripts/evidence-bundle.sh` L72–78](https://github.com/jeremylongshore/agent-governance-plane/blob/2076dec5264a194e28302fbb1ce26a5d0305a576/scripts/evidence-bundle.sh#L72-L78) — **implementation source**. Evidence-bundle completion fails when no tool call was gated and propagates a nonzero verification result.
+- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L259–264](https://github.com/jeremylongshore/agent-governance-plane/blob/2076dec5264a194e28302fbb1ce26a5d0305a576/.audit-harness/scripts/emit-evidence.sh#L259-L264) — **capability not established by this reference**. The taxonomy reference is an explanatory comment linking the event specification.
 - **Related workflow references:** [`.github/workflows/ci.yml` L138–140](https://github.com/jeremylongshore/agent-governance-plane/blob/2076dec5264a194e28302fbb1ce26a5d0305a576/.github/workflows/ci.yml#L138-L140); [`.github/workflows/dogfood.yml` L6–8](https://github.com/jeremylongshore/agent-governance-plane/blob/2076dec5264a194e28302fbb1ce26a5d0305a576/.github/workflows/dogfood.yml#L6-L8).
 - **Release/changelog evidence:** 108 tags and 108 releases enumerated; 2 release records have lexical matches. [`.audit-harness/CHANGELOG.md` L23–25](https://github.com/jeremylongshore/agent-governance-plane/blob/2076dec5264a194e28302fbb1ce26a5d0305a576/.audit-harness/CHANGELOG.md#L23-L25); [`CHANGELOG.md` L106–108](https://github.com/jeremylongshore/agent-governance-plane/blob/2076dec5264a194e28302fbb1ce26a5d0305a576/CHANGELOG.md#L106-L108); [release `v0.1.78`](https://github.com/jeremylongshore/agent-governance-plane/releases/tag/v0.1.78); [release `v0.1.54`](https://github.com/jeremylongshore/agent-governance-plane/releases/tag/v0.1.54).
-- **Verification scope:** 10/10 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 14/14 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R012: agent-starter-pack
 
@@ -241,15 +251,15 @@ Repository: [jeremylongshore/agent-starter-pack](https://github.com/jeremylongsh
 
 Observed default branch: `main`; reachable commits: **502**; head: `37947c3351d2349ffb53f5e3e37d777df0aed6c9`. GitHub license metadata: **Apache-2.0**. Tree: **284 files**, complete. Observation: `2026-10-12T06:29:29Z`.
 
-- **Trace:** [`agent_starter_pack/base_template/{{cookiecutter.agent_directory}}/app_utils/telemetry.py` L63–65](https://github.com/jeremylongshore/agent-starter-pack/blob/37947c3351d2349ffb53f5e3e37d777df0aed6c9/agent_starter_pack/base_template/%7B%7Bcookiecutter.agent_directory%7D%7D/app_utils/telemetry.py#L63-L65) (source; lexical evidence, not an operational verdict).
-- **Telemetry:** [`agent_starter_pack/base_template/{{cookiecutter.agent_directory}}/app_utils/telemetry.py` L22–24](https://github.com/jeremylongshore/agent-starter-pack/blob/37947c3351d2349ffb53f5e3e37d777df0aed6c9/agent_starter_pack/base_template/%7B%7Bcookiecutter.agent_directory%7D%7D/app_utils/telemetry.py#L22-L24) (source; lexical evidence, not an operational verdict).
+- **Trace:** [`agent_starter_pack/base_template/{{cookiecutter.agent_directory}}/app_utils/telemetry.py` L64–71](https://github.com/jeremylongshore/agent-starter-pack/blob/37947c3351d2349ffb53f5e3e37d777df0aed6c9/agent_starter_pack/base_template/%7B%7Bcookiecutter.agent_directory%7D%7D/app_utils/telemetry.py#L64-L71) — **implementation source**. The forked agent template obtains GCP exporters with cloud tracing enabled and builds an OTel resource.
+- **Telemetry:** [`agent_starter_pack/base_template/{{cookiecutter.agent_directory}}/app_utils/telemetry.py` L64–71](https://github.com/jeremylongshore/agent-starter-pack/blob/37947c3351d2349ffb53f5e3e37d777df0aed6c9/agent_starter_pack/base_template/%7B%7Bcookiecutter.agent_directory%7D%7D/app_utils/telemetry.py#L64-L71) — **implementation source**. The forked agent template obtains GCP exporters with cloud tracing enabled and builds an OTel resource.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`README.md` L24–26](https://github.com/jeremylongshore/agent-starter-pack/blob/37947c3351d2349ffb53f5e3e37d777df0aed6c9/README.md#L24-L26) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`README.md` L24–26](https://github.com/jeremylongshore/agent-starter-pack/blob/37947c3351d2349ffb53f5e3e37d777df0aed6c9/README.md#L24-L26) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 1 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 45 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 4/4 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 7/7 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R013: agglayer-docs
 
@@ -260,7 +270,7 @@ Observed default branch: `main`; reachable commits: **156**; head: `d09a4b908de0
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`docs/agglayer/core-concepts/pessimistic-proof/benchmarks.md` L2–4](https://github.com/jeremylongshore/agglayer-docs/blob/d09a4b908de016739b5978916da1255e19a2fee3/docs/agglayer/core-concepts/pessimistic-proof/benchmarks.md#L2-L4) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`docs/agglayer/core-concepts/pessimistic-proof/benchmarks.md` L2–4](https://github.com/jeremylongshore/agglayer-docs/blob/d09a4b908de016739b5978916da1255e19a2fee3/docs/agglayer/core-concepts/pessimistic-proof/benchmarks.md#L2-L4) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 3 inspected workflow paths; this does not establish behavior or absence.
@@ -311,13 +321,13 @@ Observed default branch: `main`; reachable commits: **1014**; head: `84d3409bd3b
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
-- **Annotation:** [`CHANGELOG.md` L109–111](https://github.com/jeremylongshore/anthropic-sdk-typescript/blob/84d3409bd3b8b50288eb25f2c1388e7b486d017e/CHANGELOG.md#L109-L111) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Annotation:** [`CHANGELOG.md` L109–111](https://github.com/jeremylongshore/anthropic-sdk-typescript/blob/84d3409bd3b8b50288eb25f2c1388e7b486d017e/CHANGELOG.md#L109-L111) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Evaluation:** no public positive reference in the inspected sample; absence is **not established**.
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 4 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 229 tags and 0 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L109–111](https://github.com/jeremylongshore/anthropic-sdk-typescript/blob/84d3409bd3b8b50288eb25f2c1388e7b486d017e/CHANGELOG.md#L109-L111).
-- **Verification scope:** 9/9 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 4 workflow paths and 4 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 22/22 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 4 workflow paths and 4 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R018: automate
 
@@ -326,7 +336,7 @@ Repository: [jeremylongshore/automate](https://github.com/jeremylongshore/automa
 Observed default branch: `main`; reachable commits: **25**; head: `278f0b4b9518d101a236d70faf466fb5f828f759`. GitHub license metadata: **MIT**. Tree: **49 files**, complete. Observation: `2026-10-12T06:29:36Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`README.md` L149–151](https://github.com/jeremylongshore/automate/blob/278f0b4b9518d101a236d70faf466fb5f828f759/README.md#L149-L151) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Telemetry:** [`README.md` L149–151](https://github.com/jeremylongshore/automate/blob/278f0b4b9518d101a236d70faf466fb5f828f759/README.md#L149-L151) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
 - **Evaluation:** no public positive reference in the inspected sample; absence is **not established**.
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
@@ -341,10 +351,10 @@ Repository: [jeremylongshore/awesome-agent-skills](https://github.com/jeremylong
 
 Observed default branch: `main`; reachable commits: **164**; head: `b40e90b33ef91591250b15e1d04ff99af7b0cf56`. GitHub license metadata: **MIT**. Tree: **4 files**, complete. Observation: `2026-10-12T06:29:37Z`.
 
-- **Trace:** [`README.md` L388–390](https://github.com/jeremylongshore/awesome-agent-skills/blob/b40e90b33ef91591250b15e1d04ff99af7b0cf56/README.md#L388-L390) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Telemetry:** [`README.md` L273–275](https://github.com/jeremylongshore/awesome-agent-skills/blob/b40e90b33ef91591250b15e1d04ff99af7b0cf56/README.md#L273-L275) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Trace:** [`README.md` L388–390](https://github.com/jeremylongshore/awesome-agent-skills/blob/b40e90b33ef91591250b15e1d04ff99af7b0cf56/README.md#L388-L390) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Telemetry:** [`README.md` L273–275](https://github.com/jeremylongshore/awesome-agent-skills/blob/b40e90b33ef91591250b15e1d04ff99af7b0cf56/README.md#L273-L275) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`README.md` L169–171](https://github.com/jeremylongshore/awesome-agent-skills/blob/b40e90b33ef91591250b15e1d04ff99af7b0cf56/README.md#L169-L171) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`README.md` L169–171](https://github.com/jeremylongshore/awesome-agent-skills/blob/b40e90b33ef91591250b15e1d04ff99af7b0cf56/README.md#L169-L171) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 0 inspected workflow paths; this does not establish behavior or absence.
@@ -360,7 +370,7 @@ Observed default branch: `main`; reachable commits: **42**; head: `eb596888a1715
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`README.md` L429–431](https://github.com/jeremylongshore/awesome-claude-skills/blob/eb596888a17151464c26a80abe18197238da342c/README.md#L429-L431) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`README.md` L429–431](https://github.com/jeremylongshore/awesome-claude-skills/blob/eb596888a17151464c26a80abe18197238da342c/README.md#L429-L431) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 0 inspected workflow paths; this does not establish behavior or absence.
@@ -373,11 +383,11 @@ Repository: [jeremylongshore/awesome-claude-skills-1](https://github.com/jeremyl
 
 Observed default branch: `master`; reachable commits: **54**; head: `970d1fa3db81fd72df39fa498f70eb1ace0128ae`. GitHub license metadata: **unclassified by GitHub**. Tree: **1247 files**, complete. Observation: `2026-10-12T06:29:38Z`.
 
-- **Trace:** [`README.md` L121–123](https://github.com/jeremylongshore/awesome-claude-skills-1/blob/970d1fa3db81fd72df39fa498f70eb1ace0128ae/README.md#L121-L123) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Telemetry:** [`README.md` L121–123](https://github.com/jeremylongshore/awesome-claude-skills-1/blob/970d1fa3db81fd72df39fa498f70eb1ace0128ae/README.md#L121-L123) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Annotation:** [`document-skills/pdf/scripts/fill_pdf_form_with_annotations.py` L5–7](https://github.com/jeremylongshore/awesome-claude-skills-1/blob/970d1fa3db81fd72df39fa498f70eb1ace0128ae/document-skills/pdf/scripts/fill_pdf_form_with_annotations.py#L5-L7) (source; lexical evidence, not an operational verdict).
-- **Evaluation:** [`mcp-builder/scripts/evaluation.py` L1–3](https://github.com/jeremylongshore/awesome-claude-skills-1/blob/970d1fa3db81fd72df39fa498f70eb1ace0128ae/mcp-builder/scripts/evaluation.py#L1-L3) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`mcp-builder/reference/evaluation.md` L70–72](https://github.com/jeremylongshore/awesome-claude-skills-1/blob/970d1fa3db81fd72df39fa498f70eb1ace0128ae/mcp-builder/reference/evaluation.md#L70-L72) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Trace:** [`README.md` L121–123](https://github.com/jeremylongshore/awesome-claude-skills-1/blob/970d1fa3db81fd72df39fa498f70eb1ace0128ae/README.md#L121-L123) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Telemetry:** [`README.md` L121–123](https://github.com/jeremylongshore/awesome-claude-skills-1/blob/970d1fa3db81fd72df39fa498f70eb1ace0128ae/README.md#L121-L123) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Annotation:** [`document-skills/pdf/scripts/fill_pdf_form_with_annotations.py` L47–54](https://github.com/jeremylongshore/awesome-claude-skills-1/blob/970d1fa3db81fd72df39fa498f70eb1ace0128ae/document-skills/pdf/scripts/fill_pdf_form_with_annotations.py#L47-L54) — **other domain**. The forked PDF utility iterates form-field annotations and resolves page coordinates; these are document annotations.
+- **Evaluation:** [`mcp-builder/scripts/evaluation.py` L19–26](https://github.com/jeremylongshore/awesome-claude-skills-1/blob/970d1fa3db81fd72df39fa498f70eb1ace0128ae/mcp-builder/scripts/evaluation.py#L19-L26) — **contract**. The forked MCP evaluation helper defines a tool-use evaluation prompt and imports its connection factory.
+- **Evidence:** [`mcp-builder/reference/evaluation.md` L70–72](https://github.com/jeremylongshore/awesome-claude-skills-1/blob/970d1fa3db81fd72df39fa498f70eb1ace0128ae/mcp-builder/reference/evaluation.md#L70-L72) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 0 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
@@ -405,15 +415,15 @@ Repository: [jeremylongshore/beads](https://github.com/jeremylongshore/beads). V
 
 Observed default branch: `main`; reachable commits: **8452**; head: `11e3aaa0609eccfbde24bd31254aae6532e6778a`. GitHub license metadata: **MIT**. Tree: **1544 files**, complete. Observation: `2026-10-12T06:29:40Z`.
 
-- **Trace:** [`internal/telemetry/storage.go` L10–12](https://github.com/jeremylongshore/beads/blob/11e3aaa0609eccfbde24bd31254aae6532e6778a/internal/telemetry/storage.go#L10-L12) (source; lexical evidence, not an operational verdict).
-- **Telemetry:** [`internal/telemetry/otlp.go` L1–3](https://github.com/jeremylongshore/beads/blob/11e3aaa0609eccfbde24bd31254aae6532e6778a/internal/telemetry/otlp.go#L1-L3) (source; lexical evidence, not an operational verdict).
-- **Annotation:** [`internal/storage/annotation_queries.go` L10–12](https://github.com/jeremylongshore/beads/blob/11e3aaa0609eccfbde24bd31254aae6532e6778a/internal/storage/annotation_queries.go#L10-L12) (source; lexical evidence, not an operational verdict).
-- **Evaluation:** [`internal/query/evaluator.go` L24–26](https://github.com/jeremylongshore/beads/blob/11e3aaa0609eccfbde24bd31254aae6532e6778a/internal/query/evaluator.go#L24-L26) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/release.yml` L325–326](https://github.com/jeremylongshore/beads/blob/11e3aaa0609eccfbde24bd31254aae6532e6778a/.github/workflows/release.yml#L325-L326) (workflow; lexical evidence, not an operational verdict).
+- **Trace:** [`internal/telemetry/storage.go` L22–29](https://github.com/jeremylongshore/beads/blob/11e3aaa0609eccfbde24bd31254aae6532e6778a/internal/telemetry/storage.go#L22-L29) — **contract**. The forked Beads storage wrapper holds an OTel tracer plus operation, duration, error and issue metrics.
+- **Telemetry:** [`internal/telemetry/otlp.go` L3–8](https://github.com/jeremylongshore/beads/blob/11e3aaa0609eccfbde24bd31254aae6532e6778a/internal/telemetry/otlp.go#L3-L8) — **dependency only**. The forked module imports the OTLP HTTP metric exporter and SDK metric interfaces.
+- **Annotation:** [`internal/storage/annotation_queries.go` L10–16](https://github.com/jeremylongshore/beads/blob/11e3aaa0609eccfbde24bd31254aae6532e6778a/internal/storage/annotation_queries.go#L10-L16) — **contract**. The forked storage interface defines issue comments, comment counts and label lookups; its annotation domain is task metadata.
+- **Evaluation:** [`internal/query/evaluator.go` L34–46](https://github.com/jeremylongshore/beads/blob/11e3aaa0609eccfbde24bd31254aae6532e6778a/internal/query/evaluator.go#L34-L46) — **capability not established by this reference**. Evaluator here converts a query syntax tree into issue filters; it is not an AI-quality evaluator.
+- **Evidence:** [`.github/workflows/release.yml` L325–326](https://github.com/jeremylongshore/beads/blob/11e3aaa0609eccfbde24bd31254aae6532e6778a/.github/workflows/release.yml#L325-L326) (workflow; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/release.yml` L325–326](https://github.com/jeremylongshore/beads/blob/11e3aaa0609eccfbde24bd31254aae6532e6778a/.github/workflows/release.yml#L325-L326).
 - **Release/changelog evidence:** 63 tags and 0 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L14–16](https://github.com/jeremylongshore/beads/blob/11e3aaa0609eccfbde24bd31254aae6532e6778a/CHANGELOG.md#L14-L16).
-- **Verification scope:** 30/30 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 9 workflow paths and 8 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 34/34 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 9 workflow paths and 8 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R024
 
@@ -477,15 +487,15 @@ Repository: [jeremylongshore/cad-ai-agent](https://github.com/jeremylongshore/ca
 
 Observed default branch: `main`; reachable commits: **345**; head: `3215dc0b0b706e5b280798e00bf8b512dbb9cfbc`. GitHub license metadata: **Apache-2.0**. Tree: **718 files**, complete. Observation: `2026-10-12T06:29:46Z`.
 
-- **Trace:** [`src/cad_dxf_agent/otel.py` L1–3](https://github.com/jeremylongshore/cad-ai-agent/blob/3215dc0b0b706e5b280798e00bf8b512dbb9cfbc/src/cad_dxf_agent/otel.py#L1-L3) (source; lexical evidence, not an operational verdict).
-- **Telemetry:** [`src/cad_dxf_agent/otel.py` L1–3](https://github.com/jeremylongshore/cad-ai-agent/blob/3215dc0b0b706e5b280798e00bf8b512dbb9cfbc/src/cad_dxf_agent/otel.py#L1-L3) (source; lexical evidence, not an operational verdict).
-- **Annotation:** [`src/cad_dxf_agent/otel.py` L8–10](https://github.com/jeremylongshore/cad-ai-agent/blob/3215dc0b0b706e5b280798e00bf8b512dbb9cfbc/src/cad_dxf_agent/otel.py#L8-L10) (source; lexical evidence, not an operational verdict).
-- **Evaluation:** [`tests/eval/test_scorecard.py` L1–3](https://github.com/jeremylongshore/cad-ai-agent/blob/3215dc0b0b706e5b280798e00bf8b512dbb9cfbc/tests/eval/test_scorecard.py#L1-L3) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L2–4](https://github.com/jeremylongshore/cad-ai-agent/blob/3215dc0b0b706e5b280798e00bf8b512dbb9cfbc/.audit-harness/scripts/emit-evidence.sh#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L260–262](https://github.com/jeremylongshore/cad-ai-agent/blob/3215dc0b0b706e5b280798e00bf8b512dbb9cfbc/.audit-harness/scripts/emit-evidence.sh#L260-L262) (source; lexical evidence, not an operational verdict).
+- **Trace:** [`src/cad_dxf_agent/otel.py` L22–34](https://github.com/jeremylongshore/cad-ai-agent/blob/3215dc0b0b706e5b280798e00bf8b512dbb9cfbc/src/cad_dxf_agent/otel.py#L22-L34) — **dependency only**. The module guards OpenTelemetry metrics and tracing SDK imports and records whether the dependency is installed.
+- **Telemetry:** [`src/cad_dxf_agent/otel.py` L22–34](https://github.com/jeremylongshore/cad-ai-agent/blob/3215dc0b0b706e5b280798e00bf8b512dbb9cfbc/src/cad_dxf_agent/otel.py#L22-L34) — **dependency only**. The module guards OpenTelemetry metrics and tracing SDK imports and records whether the dependency is installed.
+- **Annotation:** [`src/cad_dxf_agent/otel.py` L8–13](https://github.com/jeremylongshore/cad-ai-agent/blob/3215dc0b0b706e5b280798e00bf8b512dbb9cfbc/src/cad_dxf_agent/otel.py#L8-L13) — **capability not established by this reference**. The annotation match is Python future-import syntax.
+- **Evaluation:** [`.audit-harness/scripts/emit-evidence.sh` L192–199](https://github.com/jeremylongshore/cad-ai-agent/blob/3215dc0b0b706e5b280798e00bf8b512dbb9cfbc/.audit-harness/scripts/emit-evidence.sh#L192-L199) — **implementation source**. The vendored emitter copies evaluated/skipped dimensions into gate coverage.
+- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L63–72](https://github.com/jeremylongshore/cad-ai-agent/blob/3215dc0b0b706e5b280798e00bf8b512dbb9cfbc/.audit-harness/scripts/emit-evidence.sh#L63-L72) — **contract**. The vendored emitter declares in-toto statement and gate-result predicate identifiers.
+- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L259–264](https://github.com/jeremylongshore/cad-ai-agent/blob/3215dc0b0b706e5b280798e00bf8b512dbb9cfbc/.audit-harness/scripts/emit-evidence.sh#L259-L264) — **capability not established by this reference**. The taxonomy reference is an explanatory comment linking the event specification.
 - **Related workflow references:** [`.github/workflows/ci.yml` L111–113](https://github.com/jeremylongshore/cad-ai-agent/blob/3215dc0b0b706e5b280798e00bf8b512dbb9cfbc/.github/workflows/ci.yml#L111-L113).
 - **Release/changelog evidence:** 14 tags and 14 releases enumerated; 5 release records have lexical matches. [`.audit-harness/CHANGELOG.md` L23–25](https://github.com/jeremylongshore/cad-ai-agent/blob/3215dc0b0b706e5b280798e00bf8b512dbb9cfbc/.audit-harness/CHANGELOG.md#L23-L25); [`CHANGELOG.md` L44–46](https://github.com/jeremylongshore/cad-ai-agent/blob/3215dc0b0b706e5b280798e00bf8b512dbb9cfbc/CHANGELOG.md#L44-L46); [`src/cad_dxf_agent/core/comparison/changelog.py` L3–5](https://github.com/jeremylongshore/cad-ai-agent/blob/3215dc0b0b706e5b280798e00bf8b512dbb9cfbc/src/cad_dxf_agent/core/comparison/changelog.py#L3-L5); [release `v0.11.0`](https://github.com/jeremylongshore/cad-ai-agent/releases/tag/v0.11.0); [release `v0.7.0`](https://github.com/jeremylongshore/cad-ai-agent/releases/tag/v0.7.0); [release `v0.6.0`](https://github.com/jeremylongshore/cad-ai-agent/releases/tag/v0.6.0).
-- **Verification scope:** 56/56 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 8 workflow paths and 5 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 161/161 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 8 workflow paths and 5 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R033: cal.com
 
@@ -493,15 +503,15 @@ Repository: [jeremylongshore/cal.com](https://github.com/jeremylongshore/cal.com
 
 Observed default branch: `main`; reachable commits: **15387**; head: `c12b2544d45c081eed33b244dc95fa8efa5f6852`. GitHub license metadata: **NOASSERTION (GitHub did not identify an SPDX license)**. Tree: **9664 files**, complete. Observation: `2026-10-12T06:29:46Z`.
 
-- **Trace:** [`packages/lib/tracing/index.ts` L8–10](https://github.com/jeremylongshore/cal.com/blob/c12b2544d45c081eed33b244dc95fa8efa5f6852/packages/lib/tracing/index.ts#L8-L10) (source; lexical evidence, not an operational verdict).
-- **Telemetry:** [`packages/lib/telemetry.ts` L7–9](https://github.com/jeremylongshore/cal.com/blob/c12b2544d45c081eed33b244dc95fa8efa5f6852/packages/lib/telemetry.ts#L7-L9) (source; lexical evidence, not an operational verdict).
-- **Annotation:** [`.github/workflows/publish-report.yml` L96–98](https://github.com/jeremylongshore/cal.com/blob/c12b2544d45c081eed33b244dc95fa8efa5f6852/.github/workflows/publish-report.yml#L96-L98) (workflow; lexical evidence, not an operational verdict).
-- **Evaluation:** [`packages/lib/raqb/evaluateRaqbLogic.ts` L15–17](https://github.com/jeremylongshore/cal.com/blob/c12b2544d45c081eed33b244dc95fa8efa5f6852/packages/lib/raqb/evaluateRaqbLogic.ts#L15-L17) (source; lexical evidence, not an operational verdict).
+- **Trace:** [`packages/lib/tracing/index.ts` L19–28](https://github.com/jeremylongshore/cal.com/blob/c12b2544d45c081eed33b244dc95fa8efa5f6852/packages/lib/tracing/index.ts#L19-L28) — **implementation source**. The forked tracing utility creates a context with generated trace/span IDs, parent span, operation and metadata.
+- **Telemetry:** [`packages/lib/telemetry.ts` L40–46](https://github.com/jeremylongshore/cal.com/blob/c12b2544d45c081eed33b244dc95fa8efa5f6852/packages/lib/telemetry.ts#L40-L46) — **other domain**. The forked application reports qualifying booking usage through an HTTP POST.
+- **Annotation:** [`.github/workflows/publish-report.yml` L96–98](https://github.com/jeremylongshore/cal.com/blob/c12b2544d45c081eed33b244dc95fa8efa5f6852/.github/workflows/publish-report.yml#L96-L98) (workflow; lexical evidence only, not an operational verdict).
+- **Evaluation:** [`packages/lib/raqb/evaluateRaqbLogic.ts` L15–20](https://github.com/jeremylongshore/cal.com/blob/c12b2544d45c081eed33b244dc95fa8efa5f6852/packages/lib/raqb/evaluateRaqbLogic.ts#L15-L20) — **capability not established by this reference**. The function evaluates a query-builder expression against data; AI evaluation is not established by this reference.
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/companion-build.yml` L36–38](https://github.com/jeremylongshore/cal.com/blob/c12b2544d45c081eed33b244dc95fa8efa5f6852/.github/workflows/companion-build.yml#L36-L38); [`.github/workflows/nextjs-bundle-analysis-annotation.yml` L1–3](https://github.com/jeremylongshore/cal.com/blob/c12b2544d45c081eed33b244dc95fa8efa5f6852/.github/workflows/nextjs-bundle-analysis-annotation.yml#L1-L3); [`.github/workflows/publish-report.yml` L96–98](https://github.com/jeremylongshore/cal.com/blob/c12b2544d45c081eed33b244dc95fa8efa5f6852/.github/workflows/publish-report.yml#L96-L98).
 - **Release/changelog evidence:** 600 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 75/75 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 52 workflow paths and 8 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 78/78 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 52 workflow paths and 8 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R034: centaur
 
@@ -509,15 +519,15 @@ Repository: [jeremylongshore/centaur](https://github.com/jeremylongshore/centaur
 
 Observed default branch: `main`; reachable commits: **231**; head: `def9276add3ab4e5be4ac8810a33f9e0a39fb1db`. GitHub license metadata: **NOASSERTION (GitHub did not identify an SPDX license)**. Tree: **825 files**, complete. Observation: `2026-10-12T06:29:48Z`.
 
-- **Trace:** [`services/api/api/otel.py` L10–12](https://github.com/jeremylongshore/centaur/blob/def9276add3ab4e5be4ac8810a33f9e0a39fb1db/services/api/api/otel.py#L10-L12) (source; lexical evidence, not an operational verdict).
-- **Telemetry:** [`services/api/api/otel.py` L10–12](https://github.com/jeremylongshore/centaur/blob/def9276add3ab4e5be4ac8810a33f9e0a39fb1db/services/api/api/otel.py#L10-L12) (source; lexical evidence, not an operational verdict).
-- **Annotation:** [`services/api/api/otel.py` L1–3](https://github.com/jeremylongshore/centaur/blob/def9276add3ab4e5be4ac8810a33f9e0a39fb1db/services/api/api/otel.py#L1-L3) (source; lexical evidence, not an operational verdict).
+- **Trace:** [`services/slackbot/src/otel.ts` L4–15](https://github.com/jeremylongshore/centaur/blob/def9276add3ab4e5be4ac8810a33f9e0a39fb1db/services/slackbot/src/otel.ts#L4-L15) — **dependency only**. The forked service imports OTel context, tracing, OTLP export and Node tracer-provider components.
+- **Telemetry:** [`services/slackbot/src/otel.ts` L4–15](https://github.com/jeremylongshore/centaur/blob/def9276add3ab4e5be4ac8810a33f9e0a39fb1db/services/slackbot/src/otel.ts#L4-L15) — **dependency only**. The forked service imports OTel context, tracing, OTLP export and Node tracer-provider components.
+- **Annotation:** [`services/api/api/otel.py` L1–6](https://github.com/jeremylongshore/centaur/blob/def9276add3ab4e5be4ac8810a33f9e0a39fb1db/services/api/api/otel.py#L1-L6) — **capability not established by this reference**. The hit is Python future-import syntax.
 - **Evaluation:** no public positive reference in the inspected sample; absence is **not established**.
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
-- **Taxonomy:** [`.agents/skills/dogfood/references/issue-taxonomy.md` L1–3](https://github.com/jeremylongshore/centaur/blob/def9276add3ab4e5be4ac8810a33f9e0a39fb1db/.agents/skills/dogfood/references/issue-taxonomy.md#L1-L3) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Taxonomy:** [`.agents/skills/dogfood/references/issue-taxonomy.md` L1–3](https://github.com/jeremylongshore/centaur/blob/def9276add3ab4e5be4ac8810a33f9e0a39fb1db/.agents/skills/dogfood/references/issue-taxonomy.md#L1-L3) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Related workflows:** no publishable lexical match among 5 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 16/16 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 5 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 20/20 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 5 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R035
 
@@ -530,9 +540,9 @@ Repository: [jeremylongshore/claude-code](https://github.com/jeremylongshore/cla
 Observed default branch: `main`; reachable commits: **407**; head: `deb92edab617baf2ac21032e7ab4512a9d81fdad`. GitHub license metadata: **unclassified by GitHub**. Tree: **174 files**, complete. Observation: `2026-10-12T06:29:50Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`CHANGELOG.md` L386–388](https://github.com/jeremylongshore/claude-code/blob/deb92edab617baf2ac21032e7ab4512a9d81fdad/CHANGELOG.md#L386-L388) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Annotation:** [`CHANGELOG.md` L247–249](https://github.com/jeremylongshore/claude-code/blob/deb92edab617baf2ac21032e7ab4512a9d81fdad/CHANGELOG.md#L247-L249) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evaluation:** [`.github/workflows/oncall-triage.yml` L49–51](https://github.com/jeremylongshore/claude-code/blob/deb92edab617baf2ac21032e7ab4512a9d81fdad/.github/workflows/oncall-triage.yml#L49-L51) (workflow; lexical evidence, not an operational verdict).
+- **Telemetry:** [`CHANGELOG.md` L386–388](https://github.com/jeremylongshore/claude-code/blob/deb92edab617baf2ac21032e7ab4512a9d81fdad/CHANGELOG.md#L386-L388) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Annotation:** [`CHANGELOG.md` L247–249](https://github.com/jeremylongshore/claude-code/blob/deb92edab617baf2ac21032e7ab4512a9d81fdad/CHANGELOG.md#L247-L249) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Evaluation:** [`.github/workflows/oncall-triage.yml` L49–51](https://github.com/jeremylongshore/claude-code/blob/deb92edab617baf2ac21032e7ab4512a9d81fdad/.github/workflows/oncall-triage.yml#L49-L51) (workflow; lexical evidence only, not an operational verdict).
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/oncall-triage.yml` L49–51](https://github.com/jeremylongshore/claude-code/blob/deb92edab617baf2ac21032e7ab4512a9d81fdad/.github/workflows/oncall-triage.yml#L49-L51).
@@ -547,13 +557,13 @@ Observed default branch: `main`; reachable commits: **402**; head: `804c252f483e
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
-- **Annotation:** [`README.md` L44–46](https://github.com/jeremylongshore/claude-code-action/blob/804c252f483ebd0f1a1b5814b20a84c8dfd737bb/README.md#L44-L46) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evaluation:** [`README.md` L20–22](https://github.com/jeremylongshore/claude-code-action/blob/804c252f483ebd0f1a1b5814b20a84c8dfd737bb/README.md#L20-L22) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Annotation:** [`README.md` L44–46](https://github.com/jeremylongshore/claude-code-action/blob/804c252f483ebd0f1a1b5814b20a84c8dfd737bb/README.md#L44-L46) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Evaluation:** [`README.md` L20–22](https://github.com/jeremylongshore/claude-code-action/blob/804c252f483ebd0f1a1b5814b20a84c8dfd737bb/README.md#L20-L22) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 11 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 94 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 12/12 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 11 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 15/15 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 11 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R038: claude-code-slack-channel
 
@@ -561,15 +571,15 @@ Repository: [jeremylongshore/claude-code-slack-channel](https://github.com/jerem
 
 Observed default branch: `main`; reachable commits: **366**; head: `5c7a04bafb26cf612402a3805faca62a509d656e`. GitHub license metadata: **Apache-2.0**. Tree: **191 files**, complete. Observation: `2026-10-12T06:29:52Z`.
 
-- **Trace:** [`CHANGELOG.md` L159–161](https://github.com/jeremylongshore/claude-code-slack-channel/blob/5c7a04bafb26cf612402a3805faca62a509d656e/CHANGELOG.md#L159-L161) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L259–261](https://github.com/jeremylongshore/claude-code-slack-channel/blob/5c7a04bafb26cf612402a3805faca62a509d656e/.audit-harness/scripts/emit-evidence.sh#L259-L261) (source; lexical evidence, not an operational verdict).
-- **Annotation:** [`CHANGELOG.md` L121–123](https://github.com/jeremylongshore/claude-code-slack-channel/blob/5c7a04bafb26cf612402a3805faca62a509d656e/CHANGELOG.md#L121-L123) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evaluation:** [`.audit-harness/scripts/emit-evidence.sh` L9–11](https://github.com/jeremylongshore/claude-code-slack-channel/blob/5c7a04bafb26cf612402a3805faca62a509d656e/.audit-harness/scripts/emit-evidence.sh#L9-L11) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L2–4](https://github.com/jeremylongshore/claude-code-slack-channel/blob/5c7a04bafb26cf612402a3805faca62a509d656e/.audit-harness/scripts/emit-evidence.sh#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L260–262](https://github.com/jeremylongshore/claude-code-slack-channel/blob/5c7a04bafb26cf612402a3805faca62a509d656e/.audit-harness/scripts/emit-evidence.sh#L260-L262) (source; lexical evidence, not an operational verdict).
+- **Trace:** [`server.ts` L173–177](https://github.com/jeremylongshore/claude-code-slack-channel/blob/5c7a04bafb26cf612402a3805faca62a509d656e/server.ts#L173-L177) — **capability not established by this reference**. The comment refers to preserving an exception stack trace in diagnostic logging.
+- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L386–390](https://github.com/jeremylongshore/claude-code-slack-channel/blob/5c7a04bafb26cf612402a3805faca62a509d656e/.audit-harness/scripts/emit-evidence.sh#L386-L390) — **implementation source**. The vendored audit-harness emitter conditionally writes buffered OTEL records.
+- **Annotation:** [`CHANGELOG.md` L121–123](https://github.com/jeremylongshore/claude-code-slack-channel/blob/5c7a04bafb26cf612402a3805faca62a509d656e/CHANGELOG.md#L121-L123) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Evaluation:** [`.audit-harness/scripts/emit-evidence.sh` L192–199](https://github.com/jeremylongshore/claude-code-slack-channel/blob/5c7a04bafb26cf612402a3805faca62a509d656e/.audit-harness/scripts/emit-evidence.sh#L192-L199) — **implementation source**. The vendored emitter copies evaluated/skipped dimensions into gate coverage.
+- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L63–72](https://github.com/jeremylongshore/claude-code-slack-channel/blob/5c7a04bafb26cf612402a3805faca62a509d656e/.audit-harness/scripts/emit-evidence.sh#L63-L72) — **contract**. The vendored emitter declares in-toto statement and gate-result predicate identifiers.
+- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L259–264](https://github.com/jeremylongshore/claude-code-slack-channel/blob/5c7a04bafb26cf612402a3805faca62a509d656e/.audit-harness/scripts/emit-evidence.sh#L259-L264) — **capability not established by this reference**. The taxonomy reference is an explanatory comment linking the event specification.
 - **Related workflows:** no publishable lexical match among 6 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 15 tags and 15 releases enumerated; 3 release records have lexical matches. [`.audit-harness/CHANGELOG.md` L23–25](https://github.com/jeremylongshore/claude-code-slack-channel/blob/5c7a04bafb26cf612402a3805faca62a509d656e/.audit-harness/CHANGELOG.md#L23-L25); [`CHANGELOG.md` L20–22](https://github.com/jeremylongshore/claude-code-slack-channel/blob/5c7a04bafb26cf612402a3805faca62a509d656e/CHANGELOG.md#L20-L22); [release `v0.10.0`](https://github.com/jeremylongshore/claude-code-slack-channel/releases/tag/v0.10.0); [release `v0.6.0`](https://github.com/jeremylongshore/claude-code-slack-channel/releases/tag/v0.6.0); [release `v0.5.0`](https://github.com/jeremylongshore/claude-code-slack-channel/releases/tag/v0.5.0).
-- **Verification scope:** 11/11 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 6 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 16/16 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 6 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R039: claude-cookbooks
 
@@ -578,14 +588,14 @@ Repository: [jeremylongshore/claude-cookbooks](https://github.com/jeremylongshor
 Observed default branch: `main`; reachable commits: **474**; head: `cad7f50d79f2aa9748a703e66560ad47db62f6e6`. GitHub license metadata: **MIT**. Tree: **388 files**, complete. Observation: `2026-10-12T06:29:52Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`claude_agent_sdk/observability_agent/agent.py` L2–4](https://github.com/jeremylongshore/claude-cookbooks/blob/cad7f50d79f2aa9748a703e66560ad47db62f6e6/claude_agent_sdk/observability_agent/agent.py#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`capabilities/summarization/evaluation/custom_evals/llm_eval.py` L10–12](https://github.com/jeremylongshore/claude-cookbooks/blob/cad7f50d79f2aa9748a703e66560ad47db62f6e6/capabilities/summarization/evaluation/custom_evals/llm_eval.py#L10-L12) (source; lexical evidence, not an operational verdict).
+- **Telemetry:** [`claude_agent_sdk/observability_agent/agent.py` L1–11](https://github.com/jeremylongshore/claude-cookbooks/blob/cad7f50d79f2aa9748a703e66560ad47db62f6e6/claude_agent_sdk/observability_agent/agent.py#L1-L11) — **capability not established by this reference**. The selected observability reference documents a GitHub-monitoring agent; no telemetry instrumentation is shown.
+- **Annotation:** [`claude_agent_sdk/02_The_observability_agent.ipynb` L1645–1649](https://github.com/jeremylongshore/claude-cookbooks/blob/cad7f50d79f2aa9748a703e66560ad47db62f6e6/claude_agent_sdk/02_The_observability_agent.ipynb#L1645-L1649) — **capability not established by this reference**. The labeling reference occurs in stored notebook output prose, not labeling implementation.
+- **Evaluation:** [`capabilities/retrieval_augmented_generation/evaluation/eval_retrieval.py` L12–17](https://github.com/jeremylongshore/claude-cookbooks/blob/cad7f50d79f2aa9748a703e66560ad47db62f6e6/capabilities/retrieval_augmented_generation/evaluation/eval_retrieval.py#L12-L17) — **implementation source**. The forked retrieval evaluator computes true positives, precision, recall and F1 from retrieved and expected links.
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 9 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 49/49 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 9 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 57/57 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 9 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R040: claude-plugins-official
 
@@ -612,12 +622,12 @@ Observed default branch: `main`; reachable commits: **83**; head: `b6a9395a19059
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`browser-use-demo/CHANGELOG.md` L32–33](https://github.com/jeremylongshore/claude-quickstarts/blob/b6a9395a190599961930e99284cf5126c63e9039/browser-use-demo/CHANGELOG.md#L32-L33) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`browser-use-demo/CHANGELOG.md` L32–33](https://github.com/jeremylongshore/claude-quickstarts/blob/b6a9395a190599961930e99284cf5126c63e9039/browser-use-demo/CHANGELOG.md#L32-L33) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 3 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. [`browser-use-demo/CHANGELOG.md` L32–33](https://github.com/jeremylongshore/claude-quickstarts/blob/b6a9395a190599961930e99284cf5126c63e9039/browser-use-demo/CHANGELOG.md#L32-L33).
-- **Verification scope:** 6/6 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 8/8 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R042: claude-skills-collection
 
@@ -625,10 +635,10 @@ Repository: [jeremylongshore/claude-skills-collection](https://github.com/jeremy
 
 Observed default branch: `main`; reachable commits: **11**; head: `c7c2a0ec030a3db9696056185a8e951f4e4b110d`. GitHub license metadata: **unclassified by GitHub**. Tree: **2 files**, complete. Observation: `2026-10-12T06:29:54Z`.
 
-- **Trace:** [`README.md` L102–104](https://github.com/jeremylongshore/claude-skills-collection/blob/c7c2a0ec030a3db9696056185a8e951f4e4b110d/README.md#L102-L104) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Trace:** [`README.md` L102–104](https://github.com/jeremylongshore/claude-skills-collection/blob/c7c2a0ec030a3db9696056185a8e951f4e4b110d/README.md#L102-L104) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`README.md` L174–176](https://github.com/jeremylongshore/claude-skills-collection/blob/c7c2a0ec030a3db9696056185a8e951f4e4b110d/README.md#L174-L176) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`README.md` L174–176](https://github.com/jeremylongshore/claude-skills-collection/blob/c7c2a0ec030a3db9696056185a8e951f4e4b110d/README.md#L174-L176) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 0 inspected workflow paths; this does not establish behavior or absence.
@@ -657,7 +667,7 @@ Observed default branch: `main`; reachable commits: **55**; head: `ab74dfabfeaf6
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 1 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 2/2 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R046: contributing-clanker
 
@@ -666,14 +676,14 @@ Repository: [jeremylongshore/contributing-clanker](https://github.com/jeremylong
 Observed default branch: `master`; reachable commits: **183**; head: `3c4212cd0e6ab96a5571bc3030bc4e9407f0e495`. GitHub license metadata: **MIT**. Tree: **287 files**, complete. Observation: `2026-10-12T06:29:57Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L259–261](https://github.com/jeremylongshore/contributing-clanker/blob/3c4212cd0e6ab96a5571bc3030bc4e9407f0e495/.audit-harness/scripts/emit-evidence.sh#L259-L261) (source; lexical evidence, not an operational verdict).
-- **Annotation:** [`skills/contribute/scripts/gates/c23-mcp-tool-annotations-spec.sh` L2–4](https://github.com/jeremylongshore/contributing-clanker/blob/3c4212cd0e6ab96a5571bc3030bc4e9407f0e495/skills/contribute/scripts/gates/c23-mcp-tool-annotations-spec.sh#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Evaluation:** [`.audit-harness/scripts/emit-evidence.sh` L9–11](https://github.com/jeremylongshore/contributing-clanker/blob/3c4212cd0e6ab96a5571bc3030bc4e9407f0e495/.audit-harness/scripts/emit-evidence.sh#L9-L11) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L2–4](https://github.com/jeremylongshore/contributing-clanker/blob/3c4212cd0e6ab96a5571bc3030bc4e9407f0e495/.audit-harness/scripts/emit-evidence.sh#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L260–262](https://github.com/jeremylongshore/contributing-clanker/blob/3c4212cd0e6ab96a5571bc3030bc4e9407f0e495/.audit-harness/scripts/emit-evidence.sh#L260-L262) (source; lexical evidence, not an operational verdict).
+- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L386–390](https://github.com/jeremylongshore/contributing-clanker/blob/3c4212cd0e6ab96a5571bc3030bc4e9407f0e495/.audit-harness/scripts/emit-evidence.sh#L386-L390) — **implementation source**. The vendored audit-harness emitter conditionally writes buffered OTEL records.
+- **Annotation:** [`skills/contribute/scripts/gates/c23-mcp-tool-annotations-spec.sh` L47–52](https://github.com/jeremylongshore/contributing-clanker/blob/3c4212cd0e6ab96a5571bc3030bc4e9407f0e495/skills/contribute/scripts/gates/c23-mcp-tool-annotations-spec.sh#L47-L52) — **other domain**. The gate parses MCP tool annotations such as read-only, destructive and idempotent hints; this is tool metadata validation.
+- **Evaluation:** [`.audit-harness/scripts/emit-evidence.sh` L192–199](https://github.com/jeremylongshore/contributing-clanker/blob/3c4212cd0e6ab96a5571bc3030bc4e9407f0e495/.audit-harness/scripts/emit-evidence.sh#L192-L199) — **implementation source**. The vendored emitter copies evaluated/skipped dimensions into gate coverage.
+- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L63–72](https://github.com/jeremylongshore/contributing-clanker/blob/3c4212cd0e6ab96a5571bc3030bc4e9407f0e495/.audit-harness/scripts/emit-evidence.sh#L63-L72) — **contract**. The vendored emitter declares in-toto statement and gate-result predicate identifiers.
+- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L259–264](https://github.com/jeremylongshore/contributing-clanker/blob/3c4212cd0e6ab96a5571bc3030bc4e9407f0e495/.audit-harness/scripts/emit-evidence.sh#L259-L264) — **capability not established by this reference**. The taxonomy reference is an explanatory comment linking the event specification.
 - **Related workflows:** no publishable lexical match among 2 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 5 tags and 5 releases enumerated; 3 release records have lexical matches. [`.audit-harness/CHANGELOG.md` L23–25](https://github.com/jeremylongshore/contributing-clanker/blob/3c4212cd0e6ab96a5571bc3030bc4e9407f0e495/.audit-harness/CHANGELOG.md#L23-L25); [`CHANGELOG.md` L14–16](https://github.com/jeremylongshore/contributing-clanker/blob/3c4212cd0e6ab96a5571bc3030bc4e9407f0e495/CHANGELOG.md#L14-L16); [release `v0.3.0`](https://github.com/jeremylongshore/contributing-clanker/releases/tag/v0.3.0); [release `v0.2.0`](https://github.com/jeremylongshore/contributing-clanker/releases/tag/v0.2.0); [release `v0.1.0`](https://github.com/jeremylongshore/contributing-clanker/releases/tag/v0.1.0).
-- **Verification scope:** 9/9 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 16/16 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R047: cortex
 
@@ -684,12 +694,12 @@ Observed default branch: `main`; reachable commits: **316**; head: `c5667328c97c
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`CHANGELOG.md` L90–92](https://github.com/jeremylongshore/cortex/blob/c5667328c97c1ca320ebc205208947f42d96e907/CHANGELOG.md#L90-L92) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`CHANGELOG.md` L90–92](https://github.com/jeremylongshore/cortex/blob/c5667328c97c1ca320ebc205208947f42d96e907/CHANGELOG.md#L90-L92) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 6 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 1 tags and 0 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L90–92](https://github.com/jeremylongshore/cortex/blob/c5667328c97c1ca320ebc205208947f42d96e907/CHANGELOG.md#L90-L92).
-- **Verification scope:** 8/8 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 6 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 9/9 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 6 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R048: cost-plus-db
 
@@ -699,13 +709,13 @@ Observed default branch: `main`; reachable commits: **177**; head: `8a30fc22f1c1
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
-- **Annotation:** [`testing/benchmarks/benchmarking-project/TASKWARRIOR-TRACKING.md` L172–174](https://github.com/jeremylongshore/cost-plus-db/blob/8a30fc22f1c1dbac47820a2f7db71e976c80b36e/testing/benchmarks/benchmarking-project/TASKWARRIOR-TRACKING.md#L172-L174) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evaluation:** [`testing/benchmarks/run-multitenant-benchmark.sh` L2–4](https://github.com/jeremylongshore/cost-plus-db/blob/8a30fc22f1c1dbac47820a2f7db71e976c80b36e/testing/benchmarks/run-multitenant-benchmark.sh#L2-L4) (source; lexical evidence, not an operational verdict).
+- **Annotation:** [`testing/benchmarks/benchmarking-project/TASKWARRIOR-TRACKING.md` L172–174](https://github.com/jeremylongshore/cost-plus-db/blob/8a30fc22f1c1dbac47820a2f7db71e976c80b36e/testing/benchmarks/benchmarking-project/TASKWARRIOR-TRACKING.md#L172-L174) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Evaluation:** [`testing/benchmarks/run-multitenant-benchmark.sh` L29–36](https://github.com/jeremylongshore/cost-plus-db/blob/8a30fc22f1c1dbac47820a2f7db71e976c80b36e/testing/benchmarks/run-multitenant-benchmark.sh#L29-L36) — **capability not established by this reference**. The excerpt reports benchmark process IDs; workload invocation and metric calculation require another reference.
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 0 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 4 tags and 2 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L28–30](https://github.com/jeremylongshore/cost-plus-db/blob/8a30fc22f1c1dbac47820a2f7db71e976c80b36e/CHANGELOG.md#L28-L30).
-- **Verification scope:** 28/28 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 0 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 31/31 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 0 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R049
 
@@ -720,7 +730,7 @@ Observed default branch: `main`; reachable commits: **34**; head: `772d13eec68db
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`README.md` L15–17](https://github.com/jeremylongshore/daily-energizer-workflow-n8n/blob/772d13eec68db1fc95d6b3702648f9f5dad7f8e0/README.md#L15-L17) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`README.md` L15–17](https://github.com/jeremylongshore/daily-energizer-workflow-n8n/blob/772d13eec68db1fc95d6b3702648f9f5dad7f8e0/README.md#L15-L17) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 2 inspected workflow paths; this does not establish behavior or absence.
@@ -768,12 +778,12 @@ Observed default branch: `main`; reachable commits: **6**; head: `c98d69d9a468eb
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`CHANGELOG.md` L13–15](https://github.com/jeremylongshore/derivatives-signal-agent/blob/c98d69d9a468eb6af8ec454567adb8925a04fc9b/CHANGELOG.md#L13-L15) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`CHANGELOG.md` L13–15](https://github.com/jeremylongshore/derivatives-signal-agent/blob/c98d69d9a468eb6af8ec454567adb8925a04fc9b/CHANGELOG.md#L13-L15) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 0 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L13–15](https://github.com/jeremylongshore/derivatives-signal-agent/blob/c98d69d9a468eb6af8ec454567adb8925a04fc9b/CHANGELOG.md#L13-L15).
-- **Verification scope:** 2/2 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 0 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 4/4 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 0 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R054
 
@@ -808,7 +818,7 @@ Observed default branch: `master`; reachable commits: **13**; head: `cbd789c9cf5
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`tests/performance/benchmark.js` L2–4](https://github.com/jeremylongshore/disposable-marketplace-n8n/blob/cbd789c9cf5244dc34ef94cf8ab1e21bb0ba7a87/tests/performance/benchmark.js#L2-L4) (source; lexical evidence, not an operational verdict).
+- **Evaluation:** [`tests/performance/benchmark.js` L74–78](https://github.com/jeremylongshore/disposable-marketplace-n8n/blob/cbd789c9cf5244dc34ef94cf8ab1e21bb0ba7a87/tests/performance/benchmark.js#L74-L78) — **test or fixture**. The test benchmark defines a validation-script benchmarking routine and identifies its workflow and script inputs.
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/test.yml` L165–167](https://github.com/jeremylongshore/disposable-marketplace-n8n/blob/cbd789c9cf5244dc34ef94cf8ab1e21bb0ba7a87/.github/workflows/test.yml#L165-L167).
@@ -824,12 +834,12 @@ Observed default branch: `main`; reachable commits: **18**; head: `8a61fba16f362
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`README.md` L169–171](https://github.com/jeremylongshore/dolt-mcp-vcs-plugin/blob/8a61fba16f362ebb277ef8bccb999d4834fb7d63/README.md#L169-L171) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evidence:** [`README.md` L50–52](https://github.com/jeremylongshore/dolt-mcp-vcs-plugin/blob/8a61fba16f362ebb277ef8bccb999d4834fb7d63/README.md#L50-L52) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`CHANGELOG.md` L35–37](https://github.com/jeremylongshore/dolt-mcp-vcs-plugin/blob/8a61fba16f362ebb277ef8bccb999d4834fb7d63/CHANGELOG.md#L35-L37) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`README.md` L169–171](https://github.com/jeremylongshore/dolt-mcp-vcs-plugin/blob/8a61fba16f362ebb277ef8bccb999d4834fb7d63/README.md#L169-L171) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Evidence:** [`scripts/dolt-detect.py` L8–19](https://github.com/jeremylongshore/dolt-mcp-vcs-plugin/blob/8a61fba16f362ebb277ef8bccb999d4834fb7d63/scripts/dolt-detect.py#L8-L19) — **capability not established by this reference**. The selected lines document a database-flavor detection taxonomy and supporting observations; implementation is outside this excerpt.
+- **Taxonomy:** [`scripts/dolt-detect.py` L8–19](https://github.com/jeremylongshore/dolt-mcp-vcs-plugin/blob/8a61fba16f362ebb277ef8bccb999d4834fb7d63/scripts/dolt-detect.py#L8-L19) — **capability not established by this reference**. The selected lines document a database-flavor detection taxonomy and supporting observations; implementation is outside this excerpt.
 - **Related workflows:** no publishable lexical match among 1 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L33–35](https://github.com/jeremylongshore/dolt-mcp-vcs-plugin/blob/8a61fba16f362ebb277ef8bccb999d4834fb7d63/CHANGELOG.md#L33-L35).
-- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 8/8 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R059: editor
 
@@ -845,7 +855,7 @@ Observed default branch: `main`; reachable commits: **490**; head: `f25806ee8f10
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 1 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 8 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 2/2 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R060: excel-analyst-pro-skill-md
 
@@ -855,13 +865,13 @@ Observed default branch: `main`; reachable commits: **19**; head: `62ab55ece132a
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
-- **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`CHANGELOG.md` L48–50](https://github.com/jeremylongshore/excel-analyst-pro-skill-md/blob/62ab55ece132a1c1b91ce64e86fa4e0f4ad4947d/CHANGELOG.md#L48-L50) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evidence:** [`README.md` L3–5](https://github.com/jeremylongshore/excel-analyst-pro-skill-md/blob/62ab55ece132a1c1b91ce64e86fa4e0f4ad4947d/README.md#L3-L5) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Annotation:** [`skills/excel-analyst-pro/scripts/profile_reconcile.py` L4–9](https://github.com/jeremylongshore/excel-analyst-pro-skill-md/blob/62ab55ece132a1c1b91ce64e86fa4e0f4ad4947d/skills/excel-analyst-pro/scripts/profile_reconcile.py#L4-L9) — **capability not established by this reference**. The match is Python future-import syntax.
+- **Evaluation:** [`CHANGELOG.md` L48–50](https://github.com/jeremylongshore/excel-analyst-pro-skill-md/blob/62ab55ece132a1c1b91ce64e86fa4e0f4ad4947d/CHANGELOG.md#L48-L50) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Evidence:** [`skills/excel-analyst-pro/tests/test_assurance_scripts.py` L190–206](https://github.com/jeremylongshore/excel-analyst-pro-skill-md/blob/62ab55ece132a1c1b91ce64e86fa4e0f4ad4947d/skills/excel-analyst-pro/tests/test_assurance_scripts.py#L190-L206) — **test or fixture**. The assurance test helper seals recalculation evidence and adds it to a workbook receipt; it is test-fixture construction.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 0 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 2 tags and 2 releases enumerated; 1 release records have lexical matches. [`CHANGELOG.md` L25–27](https://github.com/jeremylongshore/excel-analyst-pro-skill-md/blob/62ab55ece132a1c1b91ce64e86fa4e0f4ad4947d/CHANGELOG.md#L25-L27); [release `v1.1.0`](https://github.com/jeremylongshore/excel-analyst-pro-skill-md/releases/tag/v1.1.0).
-- **Verification scope:** 3/3 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 0 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 0 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R061: executive-assistant-skills
 
@@ -886,14 +896,14 @@ Repository: [jeremylongshore/executive-intent](https://github.com/jeremylongshor
 Observed default branch: `main`; reachable commits: **37**; head: `985479cd909763f43945833033b3c0849e64a3bc`. GitHub license metadata: **unclassified by GitHub**. Tree: **159 files**, complete. Observation: `2026-10-12T06:30:11Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L259–261](https://github.com/jeremylongshore/executive-intent/blob/985479cd909763f43945833033b3c0849e64a3bc/.audit-harness/scripts/emit-evidence.sh#L259-L261) (source; lexical evidence, not an operational verdict).
-- **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`src/lib/evidence/types.ts` L164–166](https://github.com/jeremylongshore/executive-intent/blob/985479cd909763f43945833033b3c0849e64a3bc/src/lib/evidence/types.ts#L164-L166) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`src/app/evidence/page.tsx` L17–19](https://github.com/jeremylongshore/executive-intent/blob/985479cd909763f43945833033b3c0849e64a3bc/src/app/evidence/page.tsx#L17-L19) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`src/lib/evidence/types.ts` L4–6](https://github.com/jeremylongshore/executive-intent/blob/985479cd909763f43945833033b3c0849e64a3bc/src/lib/evidence/types.ts#L4-L6) (source; lexical evidence, not an operational verdict).
+- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L386–390](https://github.com/jeremylongshore/executive-intent/blob/985479cd909763f43945833033b3c0849e64a3bc/.audit-harness/scripts/emit-evidence.sh#L386-L390) — **implementation source**. The vendored audit-harness emitter conditionally writes buffered OTEL records.
+- **Annotation:** [`.audit-harness/scripts/crap-score.py` L15–20](https://github.com/jeremylongshore/executive-intent/blob/985479cd909763f43945833033b3c0849e64a3bc/.audit-harness/scripts/crap-score.py#L15-L20) — **capability not established by this reference**. The match is Python future-import syntax in vendored tooling.
+- **Evaluation:** [`.audit-harness/scripts/emit-evidence.sh` L192–199](https://github.com/jeremylongshore/executive-intent/blob/985479cd909763f43945833033b3c0849e64a3bc/.audit-harness/scripts/emit-evidence.sh#L192-L199) — **implementation source**. The vendored emitter copies evaluated/skipped dimensions into gate coverage.
+- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L63–72](https://github.com/jeremylongshore/executive-intent/blob/985479cd909763f43945833033b3c0849e64a3bc/.audit-harness/scripts/emit-evidence.sh#L63-L72) — **contract**. The vendored emitter declares in-toto statement and gate-result predicate identifiers.
+- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L259–264](https://github.com/jeremylongshore/executive-intent/blob/985479cd909763f43945833033b3c0849e64a3bc/.audit-harness/scripts/emit-evidence.sh#L259-L264) — **capability not established by this reference**. The taxonomy reference is an explanatory comment linking the event specification.
 - **Related workflow references:** [`.github/workflows/deploy-dev.yml` L66–68](https://github.com/jeremylongshore/executive-intent/blob/985479cd909763f43945833033b3c0849e64a3bc/.github/workflows/deploy-dev.yml#L66-L68); [`.github/workflows/deploy-prod.yml` L66–68](https://github.com/jeremylongshore/executive-intent/blob/985479cd909763f43945833033b3c0849e64a3bc/.github/workflows/deploy-prod.yml#L66-L68); [`.github/workflows/deploy.yml` L94–96](https://github.com/jeremylongshore/executive-intent/blob/985479cd909763f43945833033b3c0849e64a3bc/.github/workflows/deploy.yml#L94-L96).
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. [`.audit-harness/CHANGELOG.md` L23–25](https://github.com/jeremylongshore/executive-intent/blob/985479cd909763f43945833033b3c0849e64a3bc/.audit-harness/CHANGELOG.md#L23-L25).
-- **Verification scope:** 22/22 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 5 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 31/31 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 5 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R063: feishin
 
@@ -909,7 +919,7 @@ Observed default branch: `development`; reachable commits: **3153**; head: `cb74
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 12 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 58 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 15/15 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 12 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 18/18 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 12 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R064: field-of-greens
 
@@ -925,7 +935,7 @@ Observed default branch: `master`; reachable commits: **7**; head: `0524c12ac23d
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 1 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 3/3 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 4/4 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R065: filament
 
@@ -936,12 +946,12 @@ Observed default branch: `4.x`; reachable commits: **28902**; head: `c2e564e80c9
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** no public positive reference in the inspected sample; absence is **not established**.
+- **Evaluation:** [`packages/support/src/Concerns/EvaluatesClosures.php` L24–28](https://github.com/jeremylongshore/filament/blob/c2e564e80c91f036c3ff2e2fbf68690a1c59a7dc/packages/support/src/Concerns/EvaluatesClosures.php#L24-L28) — **capability not established by this reference**. The forked PHP trait evaluates closures/values; it is language/framework evaluation, not an AI evaluator.
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 11 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 1211 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 13/13 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 11 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 19/19 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 11 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R066: firebase-gen2-buildpack-failure
 
@@ -953,7 +963,7 @@ Observed default branch: `main`; reachable commits: **1**; head: `fbfeb14ac59671
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
 - **Evaluation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evidence:** [`README.md` L22–24](https://github.com/jeremylongshore/firebase-gen2-buildpack-failure/blob/fbfeb14ac59671b1f9a115e8f3d1cd7aed1fabc2/README.md#L22-L24) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evidence:** [`README.md` L22–24](https://github.com/jeremylongshore/firebase-gen2-buildpack-failure/blob/fbfeb14ac59671b1f9a115e8f3d1cd7aed1fabc2/README.md#L22-L24) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 0 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
@@ -985,15 +995,15 @@ Repository: [jeremylongshore/gastown](https://github.com/jeremylongshore/gastown
 
 Observed default branch: `main`; reachable commits: **5715**; head: `4623be8f84667ec6a50cf446a7ba4bd3eb05fc78`. GitHub license metadata: **MIT**. Tree: **1190 files**, complete. Observation: `2026-10-12T06:30:18Z`.
 
-- **Trace:** [`CHANGELOG.md` L123–125](https://github.com/jeremylongshore/gastown/blob/4623be8f84667ec6a50cf446a7ba4bd3eb05fc78/CHANGELOG.md#L123-L125) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Telemetry:** [`internal/cmd/telemetry.go` L16–18](https://github.com/jeremylongshore/gastown/blob/4623be8f84667ec6a50cf446a7ba4bd3eb05fc78/internal/cmd/telemetry.go#L16-L18) (source; lexical evidence, not an operational verdict).
+- **Trace:** [`CHANGELOG.md` L123–125](https://github.com/jeremylongshore/gastown/blob/4623be8f84667ec6a50cf446a7ba4bd3eb05fc78/CHANGELOG.md#L123-L125) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Telemetry:** [`internal/cmd/telemetry.go` L14–21](https://github.com/jeremylongshore/gastown/blob/4623be8f84667ec6a50cf446a7ba4bd3eb05fc78/internal/cmd/telemetry.go#L14-L21) — **contract**. The forked command module configures a usage-log path and exclusions for high-frequency commands.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`gt-model-eval/scripts/results-to-discussion.sh` L2–4](https://github.com/jeremylongshore/gastown/blob/4623be8f84667ec6a50cf446a7ba4bd3eb05fc78/gt-model-eval/scripts/results-to-discussion.sh#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`gt-model-eval/README.md` L7–9](https://github.com/jeremylongshore/gastown/blob/4623be8f84667ec6a50cf446a7ba4bd3eb05fc78/gt-model-eval/README.md#L7-L9) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`gt-model-eval/package-lock.json` L4787–4789](https://github.com/jeremylongshore/gastown/blob/4623be8f84667ec6a50cf446a7ba4bd3eb05fc78/gt-model-eval/package-lock.json#L4787-L4789) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`gt-model-eval/scripts/results-to-discussion.sh` L114–121](https://github.com/jeremylongshore/gastown/blob/4623be8f84667ec6a50cf446a7ba4bd3eb05fc78/gt-model-eval/scripts/results-to-discussion.sh#L114-L121) — **capability not established by this reference**. This excerpt is generated report prose describing evaluation metrics; it does not show execution or scoring.
+- **Evidence:** [`gt-model-eval/README.md` L7–9](https://github.com/jeremylongshore/gastown/blob/4623be8f84667ec6a50cf446a7ba4bd3eb05fc78/gt-model-eval/README.md#L7-L9) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Taxonomy:** [`gt-model-eval/package-lock.json` L4787–4789](https://github.com/jeremylongshore/gastown/blob/4623be8f84667ec6a50cf446a7ba4bd3eb05fc78/gt-model-eval/package-lock.json#L4787-L4789) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Related workflows:** no publishable lexical match among 10 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 17 tags and 0 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L120–122](https://github.com/jeremylongshore/gastown/blob/4623be8f84667ec6a50cf446a7ba4bd3eb05fc78/CHANGELOG.md#L120-L122).
-- **Verification scope:** 41/41 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 10 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 47/47 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 10 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R070: gastown-series
 
@@ -1025,7 +1035,7 @@ Observed default branch: `master`; reachable commits: **64**; head: `402c2d573a4
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 3 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 9 tags and 9 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 8/8 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R072: gmail-drive-organizer-n8n
 
@@ -1049,15 +1059,15 @@ Repository: [jeremylongshore/guidewire-mcp-for-claude](https://github.com/jeremy
 
 Observed default branch: `main`; reachable commits: **129**; head: `4ea87cb940f3258c6e57c6caf69b90c6941cc911`. GitHub license metadata: **Apache-2.0**. Tree: **291 files**, complete. Observation: `2026-10-12T06:30:21Z`.
 
-- **Trace:** [`packages/observability/src/error.ts` L16–18](https://github.com/jeremylongshore/guidewire-mcp-for-claude/blob/4ea87cb940f3258c6e57c6caf69b90c6941cc911/packages/observability/src/error.ts#L16-L18) (source; lexical evidence, not an operational verdict).
-- **Telemetry:** [`packages/observability/src/index.ts` L2–4](https://github.com/jeremylongshore/guidewire-mcp-for-claude/blob/4ea87cb940f3258c6e57c6caf69b90c6941cc911/packages/observability/src/index.ts#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Annotation:** [`.github/workflows/dependabot-automerge.yml` L5–7](https://github.com/jeremylongshore/guidewire-mcp-for-claude/blob/4ea87cb940f3258c6e57c6caf69b90c6941cc911/.github/workflows/dependabot-automerge.yml#L5-L7) (workflow; lexical evidence, not an operational verdict).
-- **Evaluation:** [`packages/harness/src/evidence/exporter.ts` L179–181](https://github.com/jeremylongshore/guidewire-mcp-for-claude/blob/4ea87cb940f3258c6e57c6caf69b90c6941cc911/packages/harness/src/evidence/exporter.ts#L179-L181) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`packages/harness/tests/evidence.test.ts` L4–6](https://github.com/jeremylongshore/guidewire-mcp-for-claude/blob/4ea87cb940f3258c6e57c6caf69b90c6941cc911/packages/harness/tests/evidence.test.ts#L4-L6) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
+- **Trace:** [`packages/observability/src/error.ts` L14–21](https://github.com/jeremylongshore/guidewire-mcp-for-claude/blob/4ea87cb940f3258c6e57c6caf69b90c6941cc911/packages/observability/src/error.ts#L14-L21) — **contract**. The application-error shape carries a trace identifier with tenant, tool and retry metadata.
+- **Telemetry:** [`packages/observability/src/index.ts` L1–7](https://github.com/jeremylongshore/guidewire-mcp-for-claude/blob/4ea87cb940f3258c6e57c6caf69b90c6941cc911/packages/observability/src/index.ts#L1-L7) — **capability not established by this reference**. The selected lines describe the package architecture; instrumentation implementation is not shown.
+- **Annotation:** [`.github/workflows/dependabot-automerge.yml` L5–7](https://github.com/jeremylongshore/guidewire-mcp-for-claude/blob/4ea87cb940f3258c6e57c6caf69b90c6941cc911/.github/workflows/dependabot-automerge.yml#L5-L7) (workflow; lexical evidence only, not an operational verdict).
+- **Evaluation:** [`packages/harness/src/evidence/exporter.ts` L183–191](https://github.com/jeremylongshore/guidewire-mcp-for-claude/blob/4ea87cb940f3258c6e57c6caf69b90c6941cc911/packages/harness/src/evidence/exporter.ts#L183-L191) — **capability not established by this reference**. The excerpt constructs a placeholder policy decision when audit entries are absent; it is not evaluator evidence.
+- **Evidence:** [`packages/schemas/src/harness/evidence.ts` L27–32](https://github.com/jeremylongshore/guidewire-mcp-for-claude/blob/4ea87cb940f3258c6e57c6caf69b90c6941cc911/packages/schemas/src/harness/evidence.ts#L27-L32) — **contract**. The local Zod evidence-bundle schema declares bundle version, trace ID, tenant ID and generation timestamp; wire compatibility is unassessed.
+- **Taxonomy:** [`packages/harness/tests/error-codes.test.ts` L2–9](https://github.com/jeremylongshore/guidewire-mcp-for-claude/blob/4ea87cb940f3258c6e57c6caf69b90c6941cc911/packages/harness/tests/error-codes.test.ts#L2-L9) — **capability not established by this reference**. The selected test header describes error-code coverage; the corresponding cases are outside this range.
 - **Related workflow references:** [`.github/workflows/cloud-api-contract.yml` L42–44](https://github.com/jeremylongshore/guidewire-mcp-for-claude/blob/4ea87cb940f3258c6e57c6caf69b90c6941cc911/.github/workflows/cloud-api-contract.yml#L42-L44); [`.github/workflows/dependabot-automerge.yml` L5–7](https://github.com/jeremylongshore/guidewire-mcp-for-claude/blob/4ea87cb940f3258c6e57c6caf69b90c6941cc911/.github/workflows/dependabot-automerge.yml#L5-L7).
 - **Release/changelog evidence:** 3 tags and 3 releases enumerated; 1 release records have lexical matches. [`CHANGELOG.md` L40–42](https://github.com/jeremylongshore/guidewire-mcp-for-claude/blob/4ea87cb940f3258c6e57c6caf69b90c6941cc911/CHANGELOG.md#L40-L42); [release `v0.1.0`](https://github.com/jeremylongshore/guidewire-mcp-for-claude/releases/tag/v0.1.0).
-- **Verification scope:** 24/24 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 8 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 37/37 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 8 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R074: hustle
 
@@ -1065,15 +1075,15 @@ Repository: [jeremylongshore/hustle](https://github.com/jeremylongshore/hustle).
 
 Observed default branch: `main`; reachable commits: **513**; head: `0fe52bffd99c3e7b0bc4e5b74b6f96bf9cb135d3`. GitHub license metadata: **NOASSERTION (GitHub did not identify an SPDX license)**. Tree: **1102 files**, complete. Observation: `2026-10-12T06:30:22Z`.
 
-- **Trace:** [`.github/workflows/synthetic-qa.yml` L169–171](https://github.com/jeremylongshore/hustle/blob/0fe52bffd99c3e7b0bc4e5b74b6f96bf9cb135d3/.github/workflows/synthetic-qa.yml#L169-L171) (workflow; lexical evidence, not an operational verdict).
-- **Telemetry:** [`.github/workflows/deploy.yml` L40–42](https://github.com/jeremylongshore/hustle/blob/0fe52bffd99c3e7b0bc4e5b74b6f96bf9cb135d3/.github/workflows/deploy.yml#L40-L42) (workflow; lexical evidence, not an operational verdict).
+- **Trace:** [`.github/workflows/synthetic-qa.yml` L169–171](https://github.com/jeremylongshore/hustle/blob/0fe52bffd99c3e7b0bc4e5b74b6f96bf9cb135d3/.github/workflows/synthetic-qa.yml#L169-L171) (workflow; lexical evidence only, not an operational verdict).
+- **Telemetry:** [`.github/workflows/deploy.yml` L40–42](https://github.com/jeremylongshore/hustle/blob/0fe52bffd99c3e7b0bc4e5b74b6f96bf9cb135d3/.github/workflows/deploy.yml#L40-L42) (workflow; lexical evidence only, not an operational verdict).
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`CHANGELOG.md` L999–1001](https://github.com/jeremylongshore/hustle/blob/0fe52bffd99c3e7b0bc4e5b74b6f96bf9cb135d3/CHANGELOG.md#L999-L1001) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evidence:** [`CHANGELOG.md` L751–753](https://github.com/jeremylongshore/hustle/blob/0fe52bffd99c3e7b0bc4e5b74b6f96bf9cb135d3/CHANGELOG.md#L751-L753) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`CHANGELOG.md` L543–545](https://github.com/jeremylongshore/hustle/blob/0fe52bffd99c3e7b0bc4e5b74b6f96bf9cb135d3/CHANGELOG.md#L543-L545) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`CHANGELOG.md` L999–1001](https://github.com/jeremylongshore/hustle/blob/0fe52bffd99c3e7b0bc4e5b74b6f96bf9cb135d3/CHANGELOG.md#L999-L1001) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Evidence:** [`CHANGELOG.md` L751–753](https://github.com/jeremylongshore/hustle/blob/0fe52bffd99c3e7b0bc4e5b74b6f96bf9cb135d3/CHANGELOG.md#L751-L753) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Taxonomy:** [`src/types/league.ts` L2–7](https://github.com/jeremylongshore/hustle/blob/0fe52bffd99c3e7b0bc4e5b74b6f96bf9cb135d3/src/types/league.ts#L2-L7) — **capability not established by this reference**. The taxonomy refers to youth soccer league classifications, not trace or failure classification.
 - **Related workflow references:** [`.github/workflows/deploy.yml` L40–42](https://github.com/jeremylongshore/hustle/blob/0fe52bffd99c3e7b0bc4e5b74b6f96bf9cb135d3/.github/workflows/deploy.yml#L40-L42); [`.github/workflows/synthetic-qa.yml` L169–171](https://github.com/jeremylongshore/hustle/blob/0fe52bffd99c3e7b0bc4e5b74b6f96bf9cb135d3/.github/workflows/synthetic-qa.yml#L169-L171).
 - **Release/changelog evidence:** 26 tags and 26 releases enumerated; 3 release records have lexical matches. [`CHANGELOG.md` L318–320](https://github.com/jeremylongshore/hustle/blob/0fe52bffd99c3e7b0bc4e5b74b6f96bf9cb135d3/CHANGELOG.md#L318-L320); [release `v2.0.0`](https://github.com/jeremylongshore/hustle/releases/tag/untagged-efd39037c108a50bb645); [release `v2.0.0`](https://github.com/jeremylongshore/hustle/releases/tag/v2.0.0); [release `v1.0.0`](https://github.com/jeremylongshore/hustle/releases/tag/v1.0.0).
-- **Verification scope:** 12/12 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 6 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 16/16 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 6 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R075
 
@@ -1085,15 +1095,15 @@ Repository: [jeremylongshore/iam-bob-adk-python](https://github.com/jeremylongsh
 
 Observed default branch: `main`; reachable commits: **382**; head: `e3ab610ba825a54cc4c41fff5d314e53dece3817`. GitHub license metadata: **NOASSERTION (GitHub did not identify an SPDX license)**. Tree: **3160 files**, complete. Observation: `2026-10-12T06:30:24Z`.
 
-- **Trace:** [`archive/2025-11-11-final-cleanup/2025-11-10-genkit-agent/node_modules/genkit/lib/tracing.js` L19–21](https://github.com/jeremylongshore/iam-bob-adk-python/blob/e3ab610ba825a54cc4c41fff5d314e53dece3817/archive/2025-11-11-final-cleanup/2025-11-10-genkit-agent/node_modules/genkit/lib/tracing.js#L19-L21) (source; lexical evidence, not an operational verdict).
-- **Telemetry:** [`archive/2025-11-11-final-cleanup/2025-11-10-genkit-agent/node_modules/genkit/lib/tracing.js` L33–35](https://github.com/jeremylongshore/iam-bob-adk-python/blob/e3ab610ba825a54cc4c41fff5d314e53dece3817/archive/2025-11-11-final-cleanup/2025-11-10-genkit-agent/node_modules/genkit/lib/tracing.js#L33-L35) (source; lexical evidence, not an operational verdict).
-- **Annotation:** [`archive/2025-11-11-final-cleanup/2025-11-10-genkit-agent/node_modules/genkit/lib/tracing.js` L43–45](https://github.com/jeremylongshore/iam-bob-adk-python/blob/e3ab610ba825a54cc4c41fff5d314e53dece3817/archive/2025-11-11-final-cleanup/2025-11-10-genkit-agent/node_modules/genkit/lib/tracing.js#L43-L45) (source; lexical evidence, not an operational verdict).
-- **Evaluation:** [`archive/2025-11-11-final-cleanup/2025-11-10-genkit-agent/node_modules/genkit/lib/evaluator.js` L19–21](https://github.com/jeremylongshore/iam-bob-adk-python/blob/e3ab610ba825a54cc4c41fff5d314e53dece3817/archive/2025-11-11-final-cleanup/2025-11-10-genkit-agent/node_modules/genkit/lib/evaluator.js#L19-L21) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`agents/shared_contracts/evidence_bundle.py` L2–4](https://github.com/jeremylongshore/iam-bob-adk-python/blob/e3ab610ba825a54cc4c41fff5d314e53dece3817/agents/shared_contracts/evidence_bundle.py#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`CHANGELOG.md` L201–203](https://github.com/jeremylongshore/iam-bob-adk-python/blob/e3ab610ba825a54cc4c41fff5d314e53dece3817/CHANGELOG.md#L201-L203) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Trace:** [`archive/2025-11-11-final-cleanup/2025-11-10-adk-agent/agent_starter_pack/base_template/{{cookiecutter.agent_directory}}/app_utils/tracing.py` L20–27](https://github.com/jeremylongshore/iam-bob-adk-python/blob/e3ab610ba825a54cc4c41fff5d314e53dece3817/archive/2025-11-11-final-cleanup/2025-11-10-adk-agent/agent_starter_pack/base_template/%7B%7Bcookiecutter.agent_directory%7D%7D/app_utils/tracing.py#L20-L27) — **dependency only**. An archived agent template subclasses the Google Cloud Trace exporter; current runtime use is unassessed.
+- **Telemetry:** [`archive/2025-11-11-final-cleanup/2025-11-10-adk-agent/agent_starter_pack/base_template/{{cookiecutter.agent_directory}}/app_utils/tracing.py` L20–27](https://github.com/jeremylongshore/iam-bob-adk-python/blob/e3ab610ba825a54cc4c41fff5d314e53dece3817/archive/2025-11-11-final-cleanup/2025-11-10-adk-agent/agent_starter_pack/base_template/%7B%7Bcookiecutter.agent_directory%7D%7D/app_utils/tracing.py#L20-L27) — **dependency only**. An archived agent template subclasses the Google Cloud Trace exporter; current runtime use is unassessed.
+- **Annotation:** [`archive/2025-11-11-final-cleanup/2025-11-10-genkit-agent/node_modules/genkit/lib/tracing.js` L41–48](https://github.com/jeremylongshore/iam-bob-adk-python/blob/e3ab610ba825a54cc4c41fff5d314e53dece3817/archive/2025-11-11-final-cleanup/2025-11-10-genkit-agent/node_modules/genkit/lib/tracing.js#L41-L48) — **capability not established by this reference**. The match is a bundler comment about CommonJS export names inside an archived dependency.
+- **Evaluation:** [`archive/2025-11-11-final-cleanup/2025-11-10-genkit-agent/node_modules/genkit/lib/evaluator.js` L19–30](https://github.com/jeremylongshore/iam-bob-adk-python/blob/e3ab610ba825a54cc4c41fff5d314e53dece3817/archive/2025-11-11-final-cleanup/2025-11-10-genkit-agent/node_modules/genkit/lib/evaluator.js#L19-L30) — **dependency only**. An archived Genkit dependency re-exports evaluator schemas and score types; this is historical vendored code.
+- **Evidence:** [`agents/shared_contracts/evidence_bundle.py` L1–17](https://github.com/jeremylongshore/iam-bob-adk-python/blob/e3ab610ba825a54cc4c41fff5d314e53dece3817/agents/shared_contracts/evidence_bundle.py#L1-L17) — **capability not established by this reference**. The excerpt documents evidence-bundle intent and storage destinations; its implementation needs a separate source reference.
+- **Taxonomy:** [`CHANGELOG.md` L201–203](https://github.com/jeremylongshore/iam-bob-adk-python/blob/e3ab610ba825a54cc4c41fff5d314e53dece3817/CHANGELOG.md#L201-L203) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Related workflow references:** [`.github/workflows/agent-engine-inline-deploy.yml` L107–109](https://github.com/jeremylongshore/iam-bob-adk-python/blob/e3ab610ba825a54cc4c41fff5d314e53dece3817/.github/workflows/agent-engine-inline-deploy.yml#L107-L109); [`.github/workflows/ci.yml` L212–214](https://github.com/jeremylongshore/iam-bob-adk-python/blob/e3ab610ba825a54cc4c41fff5d314e53dece3817/.github/workflows/ci.yml#L212-L214); [`.github/workflows/deploy-dev.yml` L136–138](https://github.com/jeremylongshore/iam-bob-adk-python/blob/e3ab610ba825a54cc4c41fff5d314e53dece3817/.github/workflows/deploy-dev.yml#L136-L138); [`.github/workflows/deploy-prod.yml` L113–115](https://github.com/jeremylongshore/iam-bob-adk-python/blob/e3ab610ba825a54cc4c41fff5d314e53dece3817/.github/workflows/deploy-prod.yml#L113-L115).
 - **Release/changelog evidence:** 49 tags and 37 releases enumerated; 1 release records have lexical matches. [`CHANGELOG.md` L201–203](https://github.com/jeremylongshore/iam-bob-adk-python/blob/e3ab610ba825a54cc4c41fff5d314e53dece3817/CHANGELOG.md#L201-L203); [release `v2.0.0`](https://github.com/jeremylongshore/iam-bob-adk-python/releases/tag/v2.0.0).
-- **Verification scope:** 140/140 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 17 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 178/178 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 17 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R077: iam-bob-intendant
 
@@ -1102,14 +1112,14 @@ Repository: [jeremylongshore/iam-bob-intendant](https://github.com/jeremylongsho
 Observed default branch: `main`; reachable commits: **27**; head: `afa7f568d9f228fce6d801a822b663861492922c`. GitHub license metadata: **Apache-2.0**. Tree: **102 files**, complete. Observation: `2026-10-12T06:30:25Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L259–261](https://github.com/jeremylongshore/iam-bob-intendant/blob/afa7f568d9f228fce6d801a822b663861492922c/.audit-harness/scripts/emit-evidence.sh#L259-L261) (source; lexical evidence, not an operational verdict).
+- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L386–390](https://github.com/jeremylongshore/iam-bob-intendant/blob/afa7f568d9f228fce6d801a822b663861492922c/.audit-harness/scripts/emit-evidence.sh#L386-L390) — **implementation source**. The vendored audit-harness emitter conditionally writes buffered OTEL records.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.audit-harness/scripts/emit-evidence.sh` L9–11](https://github.com/jeremylongshore/iam-bob-intendant/blob/afa7f568d9f228fce6d801a822b663861492922c/.audit-harness/scripts/emit-evidence.sh#L9-L11) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L2–4](https://github.com/jeremylongshore/iam-bob-intendant/blob/afa7f568d9f228fce6d801a822b663861492922c/.audit-harness/scripts/emit-evidence.sh#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L260–262](https://github.com/jeremylongshore/iam-bob-intendant/blob/afa7f568d9f228fce6d801a822b663861492922c/.audit-harness/scripts/emit-evidence.sh#L260-L262) (source; lexical evidence, not an operational verdict).
+- **Evaluation:** [`.audit-harness/scripts/emit-evidence.sh` L192–199](https://github.com/jeremylongshore/iam-bob-intendant/blob/afa7f568d9f228fce6d801a822b663861492922c/.audit-harness/scripts/emit-evidence.sh#L192-L199) — **implementation source**. The vendored emitter copies evaluated/skipped dimensions into gate coverage.
+- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L63–72](https://github.com/jeremylongshore/iam-bob-intendant/blob/afa7f568d9f228fce6d801a822b663861492922c/.audit-harness/scripts/emit-evidence.sh#L63-L72) — **contract**. The vendored emitter declares in-toto statement and gate-result predicate identifiers.
+- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L259–264](https://github.com/jeremylongshore/iam-bob-intendant/blob/afa7f568d9f228fce6d801a822b663861492922c/.audit-harness/scripts/emit-evidence.sh#L259-L264) — **capability not established by this reference**. The taxonomy reference is an explanatory comment linking the event specification.
 - **Related workflows:** no publishable lexical match among 2 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 12 tags and 12 releases enumerated; 0 release records have lexical matches. [`.audit-harness/CHANGELOG.md` L23–25](https://github.com/jeremylongshore/iam-bob-intendant/blob/afa7f568d9f228fce6d801a822b663861492922c/.audit-harness/CHANGELOG.md#L23-L25); [`CHANGELOG.md` L61–63](https://github.com/jeremylongshore/iam-bob-intendant/blob/afa7f568d9f228fce6d801a822b663861492922c/CHANGELOG.md#L61-L63).
-- **Verification scope:** 6/6 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 8/8 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R078: iam-bob-langgraph
 
@@ -1119,13 +1129,13 @@ Observed default branch: `main`; reachable commits: **9**; head: `14606d29ed0ac6
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
-- **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
+- **Annotation:** [`src/bob_langgraph/cli.py` L4–9](https://github.com/jeremylongshore/iam-bob-langgraph/blob/14606d29ed0ac683f7ebcd656b62c504ff7ca512/src/bob_langgraph/cli.py#L4-L9) — **capability not established by this reference**. The annotation match is Python future-import syntax.
 - **Evaluation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evidence:** [`README.md` L9–11](https://github.com/jeremylongshore/iam-bob-langgraph/blob/14606d29ed0ac683f7ebcd656b62c504ff7ca512/README.md#L9-L11) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evidence:** [`src/bob_langgraph/cli.py` L83–89](https://github.com/jeremylongshore/iam-bob-langgraph/blob/14606d29ed0ac683f7ebcd656b62c504ff7ca512/src/bob_langgraph/cli.py#L83-L89) — **capability not established by this reference**. The evidence CLI branch prints constant success/verify-chain flags; no chain verification occurs in this branch.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 1 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 3/3 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R079: iam-bob-pydantic
 
@@ -1135,13 +1145,13 @@ Observed default branch: `main`; reachable commits: **9**; head: `b33db225dbba4e
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
-- **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.github/workflows/ci.yml` L31–33](https://github.com/jeremylongshore/iam-bob-pydantic/blob/b33db225dbba4ebe3ab64da23d6c0e9765c267cf/.github/workflows/ci.yml#L31-L33) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`README.md` L23–25](https://github.com/jeremylongshore/iam-bob-pydantic/blob/b33db225dbba4ebe3ab64da23d6c0e9765c267cf/README.md#L23-L25) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Annotation:** [`core/agent.py` L16–21](https://github.com/jeremylongshore/iam-bob-pydantic/blob/b33db225dbba4ebe3ab64da23d6c0e9765c267cf/core/agent.py#L16-L21) — **capability not established by this reference**. The annotation match is Python future-import syntax.
+- **Evaluation:** [`core/governance.py` L1–13](https://github.com/jeremylongshore/iam-bob-pydantic/blob/b33db225dbba4ebe3ab64da23d6c0e9765c267cf/core/governance.py#L1-L13) — **capability not established by this reference**. The excerpt describes a governance adapter and distinguishes planned scaffold work; executable gate/signing behavior is not shown here.
+- **Evidence:** [`core/governance.py` L1–13](https://github.com/jeremylongshore/iam-bob-pydantic/blob/b33db225dbba4ebe3ab64da23d6c0e9765c267cf/core/governance.py#L1-L13) — **capability not established by this reference**. The excerpt describes a governance adapter and distinguishes planned scaffold work; executable gate/signing behavior is not shown here.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/ci.yml` L31–33](https://github.com/jeremylongshore/iam-bob-pydantic/blob/b33db225dbba4ebe3ab64da23d6c0e9765c267cf/.github/workflows/ci.yml#L31-L33).
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 3/3 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 8/8 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R080: iam-git-with-intent
 
@@ -1149,15 +1159,15 @@ Repository: [jeremylongshore/iam-git-with-intent](https://github.com/jeremylongs
 
 Observed default branch: `main`; reachable commits: **431**; head: `0e1bcf2f68f10a7da5e71d22fbe32421a52dfdd5`. GitHub license metadata: **NOASSERTION (GitHub did not identify an SPDX license)**. Tree: **1205 files**, complete. Observation: `2026-10-12T06:30:27Z`.
 
-- **Trace:** [`scripts/arv/observability-gate.ts` L10–12](https://github.com/jeremylongshore/iam-git-with-intent/blob/0e1bcf2f68f10a7da5e71d22fbe32421a52dfdd5/scripts/arv/observability-gate.ts#L10-L12) (source; lexical evidence, not an operational verdict).
-- **Telemetry:** [`scripts/arv/observability-gate.ts` L3–5](https://github.com/jeremylongshore/iam-git-with-intent/blob/0e1bcf2f68f10a7da5e71d22fbe32421a52dfdd5/scripts/arv/observability-gate.ts#L3-L5) (source; lexical evidence, not an operational verdict).
-- **Annotation:** [`000-docs/209-DR-SPEC-observability-export-specification.md` L147–149](https://github.com/jeremylongshore/iam-git-with-intent/blob/0e1bcf2f68f10a7da5e71d22fbe32421a52dfdd5/000-docs/209-DR-SPEC-observability-export-specification.md#L147-L149) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evaluation:** [`test/goldens/scoring.test.ts` L2–4](https://github.com/jeremylongshore/iam-git-with-intent/blob/0e1bcf2f68f10a7da5e71d22fbe32421a52dfdd5/test/goldens/scoring.test.ts#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`packages/core/src/evidence/index.ts` L2–4](https://github.com/jeremylongshore/iam-git-with-intent/blob/0e1bcf2f68f10a7da5e71d22fbe32421a52dfdd5/packages/core/src/evidence/index.ts#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
+- **Trace:** [`scripts/arv/observability-gate.ts` L192–207](https://github.com/jeremylongshore/iam-git-with-intent/blob/0e1bcf2f68f10a7da5e71d22fbe32421a52dfdd5/scripts/arv/observability-gate.ts#L192-L207) — **test or fixture**. The observability gate checks that a tracing source file contains expected API names; it does not exercise tracing behavior.
+- **Telemetry:** [`scripts/arv/observability-gate.ts` L192–207](https://github.com/jeremylongshore/iam-git-with-intent/blob/0e1bcf2f68f10a7da5e71d22fbe32421a52dfdd5/scripts/arv/observability-gate.ts#L192-L207) — **test or fixture**. The observability gate checks that a tracing source file contains expected API names; it does not exercise tracing behavior.
+- **Annotation:** [`packages/core/src/compliance/policy-gates.ts` L38–43](https://github.com/jeremylongshore/iam-git-with-intent/blob/0e1bcf2f68f10a7da5e71d22fbe32421a52dfdd5/packages/core/src/compliance/policy-gates.ts#L38-L43) — **contract**. The gate-status schema includes pending approval and pending human-review states.
+- **Evaluation:** [`apps/cli/src/commands/eval.ts` L71–73](https://github.com/jeremylongshore/iam-git-with-intent/blob/0e1bcf2f68f10a7da5e71d22fbe32421a52dfdd5/apps/cli/src/commands/eval.ts#L71-L73) — **contract**. The evaluation CLI helper resolves the default golden-task directory; evaluator execution is not shown by this range.
+- **Evidence:** [`scripts/arv/browser-evidence-gate.ts` L50–57](https://github.com/jeremylongshore/iam-git-with-intent/blob/0e1bcf2f68f10a7da5e71d22fbe32421a52dfdd5/scripts/arv/browser-evidence-gate.ts#L50-L57) — **test or fixture**. The browser-evidence gate checks source text for schema names and a Zod import; behavioral validation is not established by these checks.
+- **Taxonomy:** [`packages/core/src/reliability/index.ts` L9–15](https://github.com/jeremylongshore/iam-git-with-intent/blob/0e1bcf2f68f10a7da5e71d22fbe32421a52dfdd5/packages/core/src/reliability/index.ts#L9-L15) — **capability not established by this reference**. The taxonomy match is a package-overview comment.
 - **Related workflow references:** [`.github/workflows/auto-fix.yml` L331–333](https://github.com/jeremylongshore/iam-git-with-intent/blob/0e1bcf2f68f10a7da5e71d22fbe32421a52dfdd5/.github/workflows/auto-fix.yml#L331-L333); [`.github/workflows/deploy-agents.yml` L170–172](https://github.com/jeremylongshore/iam-git-with-intent/blob/0e1bcf2f68f10a7da5e71d22fbe32421a52dfdd5/.github/workflows/deploy-agents.yml#L170-L172); [`.github/workflows/golden-tasks.yml` L2–4](https://github.com/jeremylongshore/iam-git-with-intent/blob/0e1bcf2f68f10a7da5e71d22fbe32421a52dfdd5/.github/workflows/golden-tasks.yml#L2-L4).
 - **Release/changelog evidence:** 11 tags and 11 releases enumerated; 4 release records have lexical matches. [`CHANGELOG.md` L12–14](https://github.com/jeremylongshore/iam-git-with-intent/blob/0e1bcf2f68f10a7da5e71d22fbe32421a52dfdd5/CHANGELOG.md#L12-L14); [release `v0.10.0`](https://github.com/jeremylongshore/iam-git-with-intent/releases/tag/v0.10.0); [release `v0.8.0`](https://github.com/jeremylongshore/iam-git-with-intent/releases/tag/v0.8.0); [release `v0.7.0`](https://github.com/jeremylongshore/iam-git-with-intent/releases/tag/v0.7.0).
-- **Verification scope:** 88/88 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 18 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 121/121 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 18 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R081: iam-local-rag
 
@@ -1166,14 +1176,14 @@ Repository: [jeremylongshore/iam-local-rag](https://github.com/jeremylongshore/i
 Observed default branch: `master`; reachable commits: **83**; head: `b8c9468250f2d3dde198af7e58c576c6287ed42d`. GitHub license metadata: **NOASSERTION (GitHub did not identify an SPDX license)**. Tree: **115 files**, complete. Observation: `2026-10-12T06:30:27Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`nexus/evals/metrics/latency.py` L6–8](https://github.com/jeremylongshore/iam-local-rag/blob/b8c9468250f2d3dde198af7e58c576c6287ed42d/nexus/evals/metrics/latency.py#L6-L8) (source; lexical evidence, not an operational verdict).
-- **Annotation:** [`nexus/evals/run.py` L7–9](https://github.com/jeremylongshore/iam-local-rag/blob/b8c9468250f2d3dde198af7e58c576c6287ed42d/nexus/evals/run.py#L7-L9) (source; lexical evidence, not an operational verdict).
-- **Evaluation:** [`nexus/evals/run.py` L2–4](https://github.com/jeremylongshore/iam-local-rag/blob/b8c9468250f2d3dde198af7e58c576c6287ed42d/nexus/evals/run.py#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`03-Tests/test_evals.py` L57–59](https://github.com/jeremylongshore/iam-local-rag/blob/b8c9468250f2d3dde198af7e58c576c6287ed42d/03-Tests/test_evals.py#L57-L59) (source; lexical evidence, not an operational verdict).
+- **Telemetry:** [`nexus/evals/metrics/latency.py` L4–11](https://github.com/jeremylongshore/iam-local-rag/blob/b8c9468250f2d3dde198af7e58c576c6287ed42d/nexus/evals/metrics/latency.py#L4-L11) — **capability not established by this reference**. The excerpt describes an always-passing latency observation; measurement implementation is outside this reviewed range.
+- **Annotation:** [`nexus/evals/run.py` L5–11](https://github.com/jeremylongshore/iam-local-rag/blob/b8c9468250f2d3dde198af7e58c576c6287ed42d/nexus/evals/run.py#L5-L11) — **capability not established by this reference**. The annotation match is Python future-import syntax.
+- **Evaluation:** [`03-Tests/test_evals.py` L4–16](https://github.com/jeremylongshore/iam-local-rag/blob/b8c9468250f2d3dde198af7e58c576c6287ed42d/03-Tests/test_evals.py#L4-L16) — **test or fixture**. The offline test suite imports the evaluation harness and recall/privacy metrics.
+- **Evidence:** [`03-Tests/test_evals.py` L56–61](https://github.com/jeremylongshore/iam-local-rag/blob/b8c9468250f2d3dde198af7e58c576c6287ed42d/03-Tests/test_evals.py#L56-L61) — **test or fixture**. A groundedness test treats the standard insufficient-evidence refusal as grounded; this is answer-evidence semantics.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 2 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 19 tags and 18 releases enumerated; 2 release records have lexical matches. [`CHANGELOG.md` L110–112](https://github.com/jeremylongshore/iam-local-rag/blob/b8c9468250f2d3dde198af7e58c576c6287ed42d/CHANGELOG.md#L110-L112); [release `v1.1.5`](https://github.com/jeremylongshore/iam-local-rag/releases/tag/v1.1.5); [release `v1.1.4`](https://github.com/jeremylongshore/iam-local-rag/releases/tag/v1.1.4).
-- **Verification scope:** 20/20 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 25/25 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R082: intent-agent-model-jvp-base
 
@@ -1183,13 +1193,13 @@ Observed default branch: `master`; reachable commits: **16**; head: `137c4854b14
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
-- **Annotation:** [`README.md` L248–250](https://github.com/jeremylongshore/intent-agent-model-jvp-base/blob/137c4854b14933f566d51e86881e94bb1b2f13b1/README.md#L248-L250) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Annotation:** [`app/main.py` L3–8](https://github.com/jeremylongshore/intent-agent-model-jvp-base/blob/137c4854b14933f566d51e86881e94bb1b2f13b1/app/main.py#L3-L8) — **capability not established by this reference**. The match is Python future-import syntax.
 - **Evaluation:** no public positive reference in the inspected sample; absence is **not established**.
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 2 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 3/3 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R083: intent-audit-harness
 
@@ -1198,14 +1208,14 @@ Repository: [jeremylongshore/intent-audit-harness](https://github.com/jeremylong
 Observed default branch: `main`; reachable commits: **159**; head: `735134f3a0bf8a644c5078b70a8b8d87031e2f86`. GitHub license metadata: **Apache-2.0**. Tree: **269 files**, complete. Observation: `2026-10-12T06:30:29Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`scripts/emit-evidence.sh` L302–304](https://github.com/jeremylongshore/intent-audit-harness/blob/735134f3a0bf8a644c5078b70a8b8d87031e2f86/scripts/emit-evidence.sh#L302-L304) (source; lexical evidence, not an operational verdict).
-- **Annotation:** [`.github/workflows/ci.yml` L214–216](https://github.com/jeremylongshore/intent-audit-harness/blob/735134f3a0bf8a644c5078b70a8b8d87031e2f86/.github/workflows/ci.yml#L214-L216) (workflow; lexical evidence, not an operational verdict).
-- **Evaluation:** [`ci/emit-evidence.ts` L4–6](https://github.com/jeremylongshore/intent-audit-harness/blob/735134f3a0bf8a644c5078b70a8b8d87031e2f86/ci/emit-evidence.ts#L4-L6) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`ci/emit-evidence.ts` L3–5](https://github.com/jeremylongshore/intent-audit-harness/blob/735134f3a0bf8a644c5078b70a8b8d87031e2f86/ci/emit-evidence.ts#L3-L5) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`scripts/emit-evidence.sh` L303–305](https://github.com/jeremylongshore/intent-audit-harness/blob/735134f3a0bf8a644c5078b70a8b8d87031e2f86/scripts/emit-evidence.sh#L303-L305) (source; lexical evidence, not an operational verdict).
+- **Telemetry:** [`scripts/emit-evidence.sh` L429–433](https://github.com/jeremylongshore/intent-audit-harness/blob/735134f3a0bf8a644c5078b70a8b8d87031e2f86/scripts/emit-evidence.sh#L429-L433) — **implementation source**. The audit-harness emitter conditionally prints buffered OTEL records.
+- **Annotation:** [`ci/signing-reconciler/src/cli.ts` L110–116](https://github.com/jeremylongshore/intent-audit-harness/blob/735134f3a0bf8a644c5078b70a8b8d87031e2f86/ci/signing-reconciler/src/cli.ts#L110-L116) — **implementation source**. The signing-reconciliation CLI prints queued human-review items with skill/version, retry count and reason.
+- **Evaluation:** [`ci/emit-evidence.ts` L146–153](https://github.com/jeremylongshore/intent-audit-harness/blob/735134f3a0bf8a644c5078b70a8b8d87031e2f86/ci/emit-evidence.ts#L146-L153) — **implementation source**. Gate-result construction copies evaluated/skipped dimensions and binds policy and input hashes.
+- **Evidence:** [`ci/emit-evidence.ts` L61–68](https://github.com/jeremylongshore/intent-audit-harness/blob/735134f3a0bf8a644c5078b70a8b8d87031e2f86/ci/emit-evidence.ts#L61-L68) — **dependency only**. The producer imports kernel evidence-bundle and statement-payload schemas.
+- **Taxonomy:** [`scripts/emit-evidence.sh` L302–308](https://github.com/jeremylongshore/intent-audit-harness/blob/735134f3a0bf8a644c5078b70a8b8d87031e2f86/scripts/emit-evidence.sh#L302-L308) — **capability not established by this reference**. The event-taxonomy reference in this excerpt is documentation, not a failure classifier.
 - **Related workflow references:** [`.github/workflows/ci.yml` L17–19](https://github.com/jeremylongshore/intent-audit-harness/blob/735134f3a0bf8a644c5078b70a8b8d87031e2f86/.github/workflows/ci.yml#L17-L19); [`.github/workflows/claim-precheck.yml` L17–19](https://github.com/jeremylongshore/intent-audit-harness/blob/735134f3a0bf8a644c5078b70a8b8d87031e2f86/.github/workflows/claim-precheck.yml#L17-L19); [`.github/workflows/minimax-review.yml` L12–14](https://github.com/jeremylongshore/intent-audit-harness/blob/735134f3a0bf8a644c5078b70a8b8d87031e2f86/.github/workflows/minimax-review.yml#L12-L14); [`.github/workflows/release.yml` L3–5](https://github.com/jeremylongshore/intent-audit-harness/blob/735134f3a0bf8a644c5078b70a8b8d87031e2f86/.github/workflows/release.yml#L3-L5); [`.github/workflows/rollout-gate-dogfood.yml` L4–6](https://github.com/jeremylongshore/intent-audit-harness/blob/735134f3a0bf8a644c5078b70a8b8d87031e2f86/.github/workflows/rollout-gate-dogfood.yml#L4-L6).
 - **Release/changelog evidence:** 21 tags and 14 releases enumerated; 10 release records have lexical matches. [`CHANGELOG.md` L38–40](https://github.com/jeremylongshore/intent-audit-harness/blob/735134f3a0bf8a644c5078b70a8b8d87031e2f86/CHANGELOG.md#L38-L40); [release `v1.5.0`](https://github.com/jeremylongshore/intent-audit-harness/releases/tag/v1.5.0); [release `v1.3.1`](https://github.com/jeremylongshore/intent-audit-harness/releases/tag/v1.3.1); [release `v1.3.0`](https://github.com/jeremylongshore/intent-audit-harness/releases/tag/v1.3.0).
-- **Verification scope:** 22/22 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 9 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 32/32 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 9 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R084
 
@@ -1217,15 +1227,15 @@ Repository: [jeremylongshore/intent-blueprint-docs](https://github.com/jeremylon
 
 Observed default branch: `main`; reachable commits: **127**; head: `1c5913bb18be8a908b08018f28978b486308024e`. GitHub license metadata: **Apache-2.0**. Tree: **401 files**, complete. Observation: `2026-10-12T06:30:31Z`.
 
-- **Trace:** [`CHANGELOG.md` L15–17](https://github.com/jeremylongshore/intent-blueprint-docs/blob/1c5913bb18be8a908b08018f28978b486308024e/CHANGELOG.md#L15-L17) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L178–180](https://github.com/jeremylongshore/intent-blueprint-docs/blob/1c5913bb18be8a908b08018f28978b486308024e/.audit-harness/scripts/emit-evidence.sh#L178-L180) (source; lexical evidence, not an operational verdict).
-- **Annotation:** [`CHANGELOG.md` L15–17](https://github.com/jeremylongshore/intent-blueprint-docs/blob/1c5913bb18be8a908b08018f28978b486308024e/CHANGELOG.md#L15-L17) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evaluation:** [`test/doc-quality-eval.test.ts` L5–7](https://github.com/jeremylongshore/intent-blueprint-docs/blob/1c5913bb18be8a908b08018f28978b486308024e/test/doc-quality-eval.test.ts#L5-L7) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`test/release-evidence.test.ts` L9–11](https://github.com/jeremylongshore/intent-blueprint-docs/blob/1c5913bb18be8a908b08018f28978b486308024e/test/release-evidence.test.ts#L9-L11) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`.audit-harness/CHANGELOG.md` L164–166](https://github.com/jeremylongshore/intent-blueprint-docs/blob/1c5913bb18be8a908b08018f28978b486308024e/.audit-harness/CHANGELOG.md#L164-L166) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Trace:** [`CHANGELOG.md` L15–17](https://github.com/jeremylongshore/intent-blueprint-docs/blob/1c5913bb18be8a908b08018f28978b486308024e/CHANGELOG.md#L15-L17) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L184–188](https://github.com/jeremylongshore/intent-blueprint-docs/blob/1c5913bb18be8a908b08018f28978b486308024e/.audit-harness/scripts/emit-evidence.sh#L184-L188) — **implementation source**. The older vendored emitter writes a gate-evaluated OTEL record with gate, runner, commit and timestamp fields.
+- **Annotation:** [`CHANGELOG.md` L15–17](https://github.com/jeremylongshore/intent-blueprint-docs/blob/1c5913bb18be8a908b08018f28978b486308024e/CHANGELOG.md#L15-L17) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Evaluation:** [`.audit-harness/scripts/emit-evidence.sh` L53–56](https://github.com/jeremylongshore/intent-blueprint-docs/blob/1c5913bb18be8a908b08018f28978b486308024e/.audit-harness/scripts/emit-evidence.sh#L53-L56) — **capability not established by this reference**. The selected evaluation match is a predicate URI; scoring or execution is not shown.
+- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L50–56](https://github.com/jeremylongshore/intent-blueprint-docs/blob/1c5913bb18be8a908b08018f28978b486308024e/.audit-harness/scripts/emit-evidence.sh#L50-L56) — **contract**. The older vendored emitter declares signing options and in-toto/gate-result identifiers.
+- **Taxonomy:** [`.audit-harness/CHANGELOG.md` L164–166](https://github.com/jeremylongshore/intent-blueprint-docs/blob/1c5913bb18be8a908b08018f28978b486308024e/.audit-harness/CHANGELOG.md#L164-L166) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Related workflow references:** [`.github/workflows/release.yml` L10–12](https://github.com/jeremylongshore/intent-blueprint-docs/blob/1c5913bb18be8a908b08018f28978b486308024e/.github/workflows/release.yml#L10-L12).
 - **Release/changelog evidence:** 20 tags and 14 releases enumerated; 0 release records have lexical matches. [`.audit-harness/CHANGELOG.md` L9–11](https://github.com/jeremylongshore/intent-blueprint-docs/blob/1c5913bb18be8a908b08018f28978b486308024e/.audit-harness/CHANGELOG.md#L9-L11); [`CHANGELOG.md` L15–17](https://github.com/jeremylongshore/intent-blueprint-docs/blob/1c5913bb18be8a908b08018f28978b486308024e/CHANGELOG.md#L15-L17).
-- **Verification scope:** 24/24 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 8 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 27/27 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 8 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R086: intent-eval-core
 
@@ -1233,15 +1243,15 @@ Repository: [jeremylongshore/intent-eval-core](https://github.com/jeremylongshor
 
 Observed default branch: `main`; reachable commits: **115**; head: `863f60eb3f2579090066dd1790597f9ecb2e8e75`. GitHub license metadata: **Apache-2.0**. Tree: **735 files**, complete. Observation: `2026-10-12T06:30:32Z`.
 
-- **Trace:** [`src/otel/v1/attributes.ts` L41–43](https://github.com/jeremylongshore/intent-eval-core/blob/863f60eb3f2579090066dd1790597f9ecb2e8e75/src/otel/v1/attributes.ts#L41-L43) (source; lexical evidence, not an operational verdict).
-- **Telemetry:** [`src/otel/v1/index.ts` L2–4](https://github.com/jeremylongshore/intent-eval-core/blob/863f60eb3f2579090066dd1790597f9ecb2e8e75/src/otel/v1/index.ts#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Annotation:** [`src/validators/v1/eval-spec.ts` L37–39](https://github.com/jeremylongshore/intent-eval-core/blob/863f60eb3f2579090066dd1790597f9ecb2e8e75/src/validators/v1/eval-spec.ts#L37-L39) (source; lexical evidence, not an operational verdict).
-- **Evaluation:** [`scripts/emit-evidence.ts` L5–7](https://github.com/jeremylongshore/intent-eval-core/blob/863f60eb3f2579090066dd1790597f9ecb2e8e75/scripts/emit-evidence.ts#L5-L7) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`scripts/emit-evidence.ts` L3–5](https://github.com/jeremylongshore/intent-eval-core/blob/863f60eb3f2579090066dd1790597f9ecb2e8e75/scripts/emit-evidence.ts#L3-L5) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`src/entities/FailureTaxonomy.ts` L2–4](https://github.com/jeremylongshore/intent-eval-core/blob/863f60eb3f2579090066dd1790597f9ecb2e8e75/src/entities/FailureTaxonomy.ts#L2-L4) (source; lexical evidence, not an operational verdict).
+- **Trace:** [`src/entities/SessionTrace.ts` L36–67](https://github.com/jeremylongshore/intent-eval-core/blob/863f60eb3f2579090066dd1790597f9ecb2e8e75/src/entities/SessionTrace.ts#L36-L67) — **contract**. SessionTrace is a typed entity linked to an EvalRun; its contract includes a trace-blob storage key.
+- **Telemetry:** [`src/otel/v1/attributes.ts` L38–69](https://github.com/jeremylongshore/intent-eval-core/blob/863f60eb3f2579090066dd1790597f9ecb2e8e75/src/otel/v1/attributes.ts#L38-L69) — **contract**. Shared and event-specific OTel attribute constants bind evaluation, session-trace and replay identifiers; this is a vocabulary contract, not an exporter.
+- **Annotation:** [`src/entities/HumanReview.ts` L66–100](https://github.com/jeremylongshore/intent-eval-core/blob/863f60eb3f2579090066dd1790597f9ecb2e8e75/src/entities/HumanReview.ts#L66-L100) — **contract**. HumanReview declares an append-only recorded state and a typed review linked to an EvalRun, SessionTrace or JudgeDecision; these declarations alone do not prove runtime enforcement.
+- **Evaluation:** [`scripts/emit-evidence.ts` L77–84](https://github.com/jeremylongshore/intent-eval-core/blob/863f60eb3f2579090066dd1790597f9ecb2e8e75/scripts/emit-evidence.ts#L77-L84) — **contract**. Gate outcomes declare verdicts, reasons and evaluated/skipped dimensions.
+- **Evidence:** [`scripts/emit-evidence.ts` L64–71](https://github.com/jeremylongshore/intent-eval-core/blob/863f60eb3f2579090066dd1790597f9ecb2e8e75/scripts/emit-evidence.ts#L64-L71) — **dependency only**. The producer imports the kernel evidence-bundle and statement-payload schemas.
+- **Taxonomy:** [`src/entities/FailureTaxonomy.ts` L44–60](https://github.com/jeremylongshore/intent-eval-core/blob/863f60eb3f2579090066dd1790597f9ecb2e8e75/src/entities/FailureTaxonomy.ts#L44-L60) — **contract**. FailureTaxonomy defines proposed, canonical and deprecated states with an explicit transition map.
 - **Related workflow references:** [`.github/workflows/changelog-observance.yml` L3–5](https://github.com/jeremylongshore/intent-eval-core/blob/863f60eb3f2579090066dd1790597f9ecb2e8e75/.github/workflows/changelog-observance.yml#L3-L5); [`.github/workflows/ci.yml` L52–54](https://github.com/jeremylongshore/intent-eval-core/blob/863f60eb3f2579090066dd1790597f9ecb2e8e75/.github/workflows/ci.yml#L52-L54); [`.github/workflows/claim-precheck.yml` L17–19](https://github.com/jeremylongshore/intent-eval-core/blob/863f60eb3f2579090066dd1790597f9ecb2e8e75/.github/workflows/claim-precheck.yml#L17-L19); [`.github/workflows/coverage-map-gates.yml` L12–14](https://github.com/jeremylongshore/intent-eval-core/blob/863f60eb3f2579090066dd1790597f9ecb2e8e75/.github/workflows/coverage-map-gates.yml#L12-L14); [`.github/workflows/minimax-review.yml` L12–14](https://github.com/jeremylongshore/intent-eval-core/blob/863f60eb3f2579090066dd1790597f9ecb2e8e75/.github/workflows/minimax-review.yml#L12-L14); [`.github/workflows/release.yml` L3–5](https://github.com/jeremylongshore/intent-eval-core/blob/863f60eb3f2579090066dd1790597f9ecb2e8e75/.github/workflows/release.yml#L3-L5); [`.github/workflows/typos.yml` L5–7](https://github.com/jeremylongshore/intent-eval-core/blob/863f60eb3f2579090066dd1790597f9ecb2e8e75/.github/workflows/typos.yml#L5-L7).
 - **Release/changelog evidence:** 14 tags and 13 releases enumerated; 13 release records have lexical matches. [`.github/workflows/changelog-observance.yml` L3–5](https://github.com/jeremylongshore/intent-eval-core/blob/863f60eb3f2579090066dd1790597f9ecb2e8e75/.github/workflows/changelog-observance.yml#L3-L5); [`CHANGELOG.md` L40–42](https://github.com/jeremylongshore/intent-eval-core/blob/863f60eb3f2579090066dd1790597f9ecb2e8e75/CHANGELOG.md#L40-L42); [`schemas/authoring/v1/CHANGELOG.md` L6–8](https://github.com/jeremylongshore/intent-eval-core/blob/863f60eb3f2579090066dd1790597f9ecb2e8e75/schemas/authoring/v1/CHANGELOG.md#L6-L8); [release `v0.11.0`](https://github.com/jeremylongshore/intent-eval-core/releases/tag/v0.11.0); [release `v0.10.0`](https://github.com/jeremylongshore/intent-eval-core/releases/tag/v0.10.0); [release `v0.9.0`](https://github.com/jeremylongshore/intent-eval-core/releases/tag/v0.9.0).
-- **Verification scope:** 76/76 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 13 workflow paths and 5 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 125/125 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 13 workflow paths and 5 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R087: intent-eval-dashboard
 
@@ -1249,15 +1259,15 @@ Repository: [jeremylongshore/intent-eval-dashboard](https://github.com/jeremylon
 
 Observed default branch: `main`; reachable commits: **258**; head: `4bd2d35dc3477b4427b1996c5d92da66c29673f6`. GitHub license metadata: **Apache-2.0**. Tree: **1676 files**, complete. Observation: `2026-10-12T06:30:32Z`.
 
-- **Trace:** no public positive reference in the inspected sample; absence is **not established**.
+- **Trace:** [`src/skills/__fixtures__/skills-fixtures.ts` L60–67](https://github.com/jeremylongshore/intent-eval-dashboard/blob/4bd2d35dc3477b4427b1996c5d92da66c29673f6/src/skills/__fixtures__/skills-fixtures.ts#L60-L67) — **test or fixture**. A dashboard fixture links a review record to evaluation and session-trace identifiers.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
-- **Annotation:** [`README.md` L39–41](https://github.com/jeremylongshore/intent-eval-dashboard/blob/4bd2d35dc3477b4427b1996c5d92da66c29673f6/README.md#L39-L41) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evaluation:** [`src/alerting/evaluate.ts` L2–4](https://github.com/jeremylongshore/intent-eval-dashboard/blob/4bd2d35dc3477b4427b1996c5d92da66c29673f6/src/alerting/evaluate.ts#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`src/ingest/rekor-anchor.ts` L2–4](https://github.com/jeremylongshore/intent-eval-dashboard/blob/4bd2d35dc3477b4427b1996c5d92da66c29673f6/src/ingest/rekor-anchor.ts#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`src/ingest/verifier-sigstore.ts` L56–58](https://github.com/jeremylongshore/intent-eval-dashboard/blob/4bd2d35dc3477b4427b1996c5d92da66c29673f6/src/ingest/verifier-sigstore.ts#L56-L58) (source; lexical evidence, not an operational verdict).
+- **Annotation:** [`src/skills/index.ts` L22–29](https://github.com/jeremylongshore/intent-eval-dashboard/blob/4bd2d35dc3477b4427b1996c5d92da66c29673f6/src/skills/index.ts#L22-L29) — **contract**. The skills module exports a human-review predicate identifier and human-trust signal types.
+- **Evaluation:** [`scripts/generate-eval-report.ts` L23–26](https://github.com/jeremylongshore/intent-eval-dashboard/blob/4bd2d35dc3477b4427b1996c5d92da66c29673f6/scripts/generate-eval-report.ts#L23-L26) — **implementation source**. The report command parses a JSON evaluation report and writes generated report files.
+- **Evidence:** [`scripts/generate-eval-report.ts` L7–11](https://github.com/jeremylongshore/intent-eval-dashboard/blob/4bd2d35dc3477b4427b1996c5d92da66c29673f6/scripts/generate-eval-report.ts#L7-L11) — **capability not established by this reference**. The selected evidence mention describes this input as a local JSON projection; signed-bundle verification is not established here.
+- **Taxonomy:** [`src/ingest/verifier-sigstore.ts` L54–61](https://github.com/jeremylongshore/intent-eval-dashboard/blob/4bd2d35dc3477b4427b1996c5d92da66c29673f6/src/ingest/verifier-sigstore.ts#L54-L61) — **implementation source**. Verification exceptions are classified using error-code/message patterns into ingest failure steps.
 - **Related workflow references:** [`.github/workflows/deploy.yml` L4–6](https://github.com/jeremylongshore/intent-eval-dashboard/blob/4bd2d35dc3477b4427b1996c5d92da66c29673f6/.github/workflows/deploy.yml#L4-L6); [`.github/workflows/ingest-ci.yml` L7–9](https://github.com/jeremylongshore/intent-eval-dashboard/blob/4bd2d35dc3477b4427b1996c5d92da66c29673f6/.github/workflows/ingest-ci.yml#L7-L9); [`.github/workflows/minimax-review.yml` L12–14](https://github.com/jeremylongshore/intent-eval-dashboard/blob/4bd2d35dc3477b4427b1996c5d92da66c29673f6/.github/workflows/minimax-review.yml#L12-L14); [`.github/workflows/partner-name-guard.yml` L6–8](https://github.com/jeremylongshore/intent-eval-dashboard/blob/4bd2d35dc3477b4427b1996c5d92da66c29673f6/.github/workflows/partner-name-guard.yml#L6-L8); [`.github/workflows/regenerate.yml` L1–3](https://github.com/jeremylongshore/intent-eval-dashboard/blob/4bd2d35dc3477b4427b1996c5d92da66c29673f6/.github/workflows/regenerate.yml#L1-L3); [`.github/workflows/typos.yml` L6–8](https://github.com/jeremylongshore/intent-eval-dashboard/blob/4bd2d35dc3477b4427b1996c5d92da66c29673f6/.github/workflows/typos.yml#L6-L8).
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L3–5](https://github.com/jeremylongshore/intent-eval-dashboard/blob/4bd2d35dc3477b4427b1996c5d92da66c29673f6/CHANGELOG.md#L3-L5).
-- **Verification scope:** 28/28 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 9 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 57/57 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 9 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R088: intent-eval-lab
 
@@ -1265,15 +1275,15 @@ Repository: [jeremylongshore/intent-eval-lab](https://github.com/jeremylongshore
 
 Observed default branch: `main`; reachable commits: **264**; head: `04cdc4530a26d0bf24626717f2b10e0aceced831`. GitHub license metadata: **NOASSERTION (GitHub did not identify an SPDX license)**. Tree: **2600 files**, complete. Observation: `2026-10-12T06:30:33Z`.
 
-- **Trace:** [`README.md` L26–28](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/README.md#L26-L28) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L259–261](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/.audit-harness/scripts/emit-evidence.sh#L259-L261) (source; lexical evidence, not an operational verdict).
-- **Annotation:** [`scripts/drift-eval-runner.py` L34–36](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/scripts/drift-eval-runner.py#L34-L36) (source; lexical evidence, not an operational verdict).
-- **Evaluation:** [`ci/emit-evidence.ts` L3–5](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/ci/emit-evidence.ts#L3-L5) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`ci/emit-evidence.ts` L3–5](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/ci/emit-evidence.ts#L3-L5) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L260–262](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/.audit-harness/scripts/emit-evidence.sh#L260-L262) (source; lexical evidence, not an operational verdict).
+- **Trace:** [`scripts/check-statemachine-drift.py` L70–76](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/scripts/check-statemachine-drift.py#L70-L76) — **test or fixture**. The drift checker maps the session-trace transition table to its owning entity file.
+- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L386–390](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/.audit-harness/scripts/emit-evidence.sh#L386-L390) — **implementation source**. The vendored audit-harness emitter conditionally writes buffered OTEL records.
+- **Annotation:** [`scripts/drift-eval-runner.py` L32–39](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/scripts/drift-eval-runner.py#L32-L39) — **capability not established by this reference**. The matched annotations token is Python future-import syntax, not annotation workflow code.
+- **Evaluation:** [`ci/emit-evidence.ts` L65–73](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/ci/emit-evidence.ts#L65-L73) — **contract**. Gate outcomes declare pass/fail/advisory/error decisions, reasons and coverage dimensions.
+- **Evidence:** [`ci/emit-evidence.ts` L53–60](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/ci/emit-evidence.ts#L53-L60) — **dependency only**. The CI producer imports kernel bundle and canonical statement-payload schemas.
+- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L259–264](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/.audit-harness/scripts/emit-evidence.sh#L259-L264) — **capability not established by this reference**. The taxonomy reference is an explanatory comment linking the event specification.
 - **Related workflow references:** [`.github/workflows/ci.yml` L73–75](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/.github/workflows/ci.yml#L73-L75); [`.github/workflows/claim-precheck-reusable.yml` L7–9](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/.github/workflows/claim-precheck-reusable.yml#L7-L9); [`.github/workflows/codeql.yml` L10–12](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/.github/workflows/codeql.yml#L10-L12); [`.github/workflows/e2e-integration.yml` L4–6](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/.github/workflows/e2e-integration.yml#L4-L6); [`.github/workflows/harness-hash-verify.yml` L11–13](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/.github/workflows/harness-hash-verify.yml#L11-L13); [`.github/workflows/leading-indicator-watch.yml` L152–154](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/.github/workflows/leading-indicator-watch.yml#L152-L154); [`.github/workflows/lint.yml` L3–5](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/.github/workflows/lint.yml#L3-L5); [`.github/workflows/minimax-review.yml` L12–14](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/.github/workflows/minimax-review.yml#L12-L14); [`.github/workflows/public-surface-scrub.yml` L22–24](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/.github/workflows/public-surface-scrub.yml#L22-L24); [`.github/workflows/release.yml` L3–5](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/.github/workflows/release.yml#L3-L5); [`.github/workflows/schema-drift.yml` L5–7](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/.github/workflows/schema-drift.yml#L5-L7); [`.github/workflows/sign-dogfood-bundle.yml` L3–5](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/.github/workflows/sign-dogfood-bundle.yml#L3-L5); [`.github/workflows/sign-evidence-bundle.yml` L1–3](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/.github/workflows/sign-evidence-bundle.yml#L1-L3); [`.github/workflows/spec-drift-watch.yml` L5–7](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/.github/workflows/spec-drift-watch.yml#L5-L7); [`.github/workflows/typos.yml` L3–5](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/.github/workflows/typos.yml#L3-L5).
 - **Release/changelog evidence:** 3 tags and 3 releases enumerated; 3 release records have lexical matches. [`.audit-harness/CHANGELOG.md` L23–25](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/.audit-harness/CHANGELOG.md#L23-L25); [`CHANGELOG.md` L10–12](https://github.com/jeremylongshore/intent-eval-lab/blob/04cdc4530a26d0bf24626717f2b10e0aceced831/CHANGELOG.md#L10-L12); [release `v0.3.0`](https://github.com/jeremylongshore/intent-eval-lab/releases/tag/v0.3.0); [release `v0.2.0`](https://github.com/jeremylongshore/intent-eval-lab/releases/tag/v0.2.0); [release `v0.1.0`](https://github.com/jeremylongshore/intent-eval-lab/releases/tag/v0.1.0).
-- **Verification scope:** 91/91 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 20 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 149/149 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 20 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R089: intent-longbox
 
@@ -1283,13 +1293,13 @@ Observed default branch: `main`; reachable commits: **165**; head: `d7b8de8053f7
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
-- **Annotation:** [`.github/workflows/minimax-review.yml` L93–95](https://github.com/jeremylongshore/intent-longbox/blob/d7b8de8053f77791900ab6dfe0f61b44890dd6ea/.github/workflows/minimax-review.yml#L93-L95) (workflow; lexical evidence, not an operational verdict).
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L145–147](https://github.com/jeremylongshore/intent-longbox/blob/d7b8de8053f77791900ab6dfe0f61b44890dd6ea/.github/workflows/minimax-review.yml#L145-L147) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/ci.yml` L202–204](https://github.com/jeremylongshore/intent-longbox/blob/d7b8de8053f77791900ab6dfe0f61b44890dd6ea/.github/workflows/ci.yml#L202-L204) (workflow; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`000-docs/018-AT-DECR-longbox-evidence-rules-2026-09-03.md` L1–3](https://github.com/jeremylongshore/intent-longbox/blob/d7b8de8053f77791900ab6dfe0f61b44890dd6ea/000-docs/018-AT-DECR-longbox-evidence-rules-2026-09-03.md#L1-L3) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Annotation:** [`src/catalog/mint.ts` L85–91](https://github.com/jeremylongshore/intent-longbox/blob/d7b8de8053f77791900ab6dfe0f61b44890dd6ea/src/catalog/mint.ts#L85-L91) — **contract**. The catalog-minting input distinguishes import from human-review provenance and records authorship type.
+- **Evaluation:** [`src/services/outbox.ts` L37–43](https://github.com/jeremylongshore/intent-longbox/blob/d7b8de8053f77791900ab6dfe0f61b44890dd6ea/src/services/outbox.ts#L37-L43) — **capability not established by this reference**. Evaluated refers to server-side timestamp computation in transaction commentary.
+- **Evidence:** [`src/app.ts` L34–41](https://github.com/jeremylongshore/intent-longbox/blob/d7b8de8053f77791900ab6dfe0f61b44890dd6ea/src/app.ts#L34-L41) — **capability not established by this reference**. Evidence is explanatory commentary about preserving correlated error logs.
+- **Taxonomy:** [`src/services/outbox.ts` L217–224](https://github.com/jeremylongshore/intent-longbox/blob/d7b8de8053f77791900ab6dfe0f61b44890dd6ea/src/services/outbox.ts#L217-L224) — **capability not established by this reference**. The taxonomy match is rationale distinguishing a producer defect from a guard refusal.
 - **Related workflow references:** [`.github/workflows/ci.yml` L202–204](https://github.com/jeremylongshore/intent-longbox/blob/d7b8de8053f77791900ab6dfe0f61b44890dd6ea/.github/workflows/ci.yml#L202-L204); [`.github/workflows/minimax-review.yml` L91–93](https://github.com/jeremylongshore/intent-longbox/blob/d7b8de8053f77791900ab6dfe0f61b44890dd6ea/.github/workflows/minimax-review.yml#L91-L93).
 - **Release/changelog evidence:** 22 tags and 0 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L40–42](https://github.com/jeremylongshore/intent-longbox/blob/d7b8de8053f77791900ab6dfe0f61b44890dd6ea/CHANGELOG.md#L40-L42).
-- **Verification scope:** 10/10 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 34/34 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R090
 
@@ -1302,14 +1312,14 @@ Repository: [jeremylongshore/intent-mail](https://github.com/jeremylongshore/int
 Observed default branch: `main`; reachable commits: **259**; head: `7f1104576422b9cecc0466195fcb12d7ffec5537`. GitHub license metadata: **Apache-2.0**. Tree: **356 files**, complete. Observation: `2026-10-12T06:30:35Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L259–261](https://github.com/jeremylongshore/intent-mail/blob/7f1104576422b9cecc0466195fcb12d7ffec5537/.audit-harness/scripts/emit-evidence.sh#L259-L261) (source; lexical evidence, not an operational verdict).
-- **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.audit-harness/scripts/emit-evidence.sh` L9–11](https://github.com/jeremylongshore/intent-mail/blob/7f1104576422b9cecc0466195fcb12d7ffec5537/.audit-harness/scripts/emit-evidence.sh#L9-L11) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L2–4](https://github.com/jeremylongshore/intent-mail/blob/7f1104576422b9cecc0466195fcb12d7ffec5537/.audit-harness/scripts/emit-evidence.sh#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L260–262](https://github.com/jeremylongshore/intent-mail/blob/7f1104576422b9cecc0466195fcb12d7ffec5537/.audit-harness/scripts/emit-evidence.sh#L260-L262) (source; lexical evidence, not an operational verdict).
+- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L386–390](https://github.com/jeremylongshore/intent-mail/blob/7f1104576422b9cecc0466195fcb12d7ffec5537/.audit-harness/scripts/emit-evidence.sh#L386-L390) — **implementation source**. The vendored audit-harness emitter conditionally writes buffered OTEL records.
+- **Annotation:** [`.audit-harness/scripts/crap-score.py` L15–20](https://github.com/jeremylongshore/intent-mail/blob/7f1104576422b9cecc0466195fcb12d7ffec5537/.audit-harness/scripts/crap-score.py#L15-L20) — **capability not established by this reference**. The match is Python future-import syntax in vendored tooling.
+- **Evaluation:** [`.audit-harness/scripts/emit-evidence.sh` L192–199](https://github.com/jeremylongshore/intent-mail/blob/7f1104576422b9cecc0466195fcb12d7ffec5537/.audit-harness/scripts/emit-evidence.sh#L192-L199) — **implementation source**. The vendored emitter copies evaluated/skipped dimensions into gate coverage.
+- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L63–72](https://github.com/jeremylongshore/intent-mail/blob/7f1104576422b9cecc0466195fcb12d7ffec5537/.audit-harness/scripts/emit-evidence.sh#L63-L72) — **contract**. The vendored emitter declares in-toto statement and gate-result predicate identifiers.
+- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L259–264](https://github.com/jeremylongshore/intent-mail/blob/7f1104576422b9cecc0466195fcb12d7ffec5537/.audit-harness/scripts/emit-evidence.sh#L259-L264) — **capability not established by this reference**. The taxonomy reference is an explanatory comment linking the event specification.
 - **Related workflow references:** [`.github/workflows/release.yml` L14–16](https://github.com/jeremylongshore/intent-mail/blob/7f1104576422b9cecc0466195fcb12d7ffec5537/.github/workflows/release.yml#L14-L16).
 - **Release/changelog evidence:** 4 tags and 4 releases enumerated; 0 release records have lexical matches. [`.audit-harness/CHANGELOG.md` L23–25](https://github.com/jeremylongshore/intent-mail/blob/7f1104576422b9cecc0466195fcb12d7ffec5537/.audit-harness/CHANGELOG.md#L23-L25); [`CHANGELOG.md` L45–47](https://github.com/jeremylongshore/intent-mail/blob/7f1104576422b9cecc0466195fcb12d7ffec5537/CHANGELOG.md#L45-L47).
-- **Verification scope:** 8/8 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 4 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 14/14 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 4 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R092: intent-outreach
 
@@ -1318,14 +1328,14 @@ Repository: [jeremylongshore/intent-outreach](https://github.com/jeremylongshore
 Observed default branch: `main`; reachable commits: **152**; head: `6380ec709f001da8862a6ac066a8cebc9b1ad644`. GitHub license metadata: **NOASSERTION (GitHub did not identify an SPDX license)**. Tree: **390 files**, complete. Observation: `2026-10-12T06:30:36Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L259–261](https://github.com/jeremylongshore/intent-outreach/blob/6380ec709f001da8862a6ac066a8cebc9b1ad644/.audit-harness/scripts/emit-evidence.sh#L259-L261) (source; lexical evidence, not an operational verdict).
-- **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`evals/run.ts` L2–4](https://github.com/jeremylongshore/intent-outreach/blob/6380ec709f001da8862a6ac066a8cebc9b1ad644/evals/run.ts#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`evals/run.ts` L830–832](https://github.com/jeremylongshore/intent-outreach/blob/6380ec709f001da8862a6ac066a8cebc9b1ad644/evals/run.ts#L830-L832) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L260–262](https://github.com/jeremylongshore/intent-outreach/blob/6380ec709f001da8862a6ac066a8cebc9b1ad644/.audit-harness/scripts/emit-evidence.sh#L260-L262) (source; lexical evidence, not an operational verdict).
+- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L386–390](https://github.com/jeremylongshore/intent-outreach/blob/6380ec709f001da8862a6ac066a8cebc9b1ad644/.audit-harness/scripts/emit-evidence.sh#L386-L390) — **implementation source**. The vendored audit-harness emitter conditionally writes buffered OTEL records.
+- **Annotation:** [`.audit-harness/scripts/crap-score.py` L15–20](https://github.com/jeremylongshore/intent-outreach/blob/6380ec709f001da8862a6ac066a8cebc9b1ad644/.audit-harness/scripts/crap-score.py#L15-L20) — **capability not established by this reference**. The match is Python future-import syntax in vendored tooling.
+- **Evaluation:** [`.audit-harness/scripts/emit-evidence.sh` L192–199](https://github.com/jeremylongshore/intent-outreach/blob/6380ec709f001da8862a6ac066a8cebc9b1ad644/.audit-harness/scripts/emit-evidence.sh#L192-L199) — **implementation source**. The vendored emitter copies evaluated/skipped dimensions into gate coverage.
+- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L63–72](https://github.com/jeremylongshore/intent-outreach/blob/6380ec709f001da8862a6ac066a8cebc9b1ad644/.audit-harness/scripts/emit-evidence.sh#L63-L72) — **contract**. The vendored emitter declares in-toto statement and gate-result predicate identifiers.
+- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L259–264](https://github.com/jeremylongshore/intent-outreach/blob/6380ec709f001da8862a6ac066a8cebc9b1ad644/.audit-harness/scripts/emit-evidence.sh#L259-L264) — **capability not established by this reference**. The taxonomy reference is an explanatory comment linking the event specification.
 - **Related workflow references:** [`.github/workflows/ci.yml` L48–50](https://github.com/jeremylongshore/intent-outreach/blob/6380ec709f001da8862a6ac066a8cebc9b1ad644/.github/workflows/ci.yml#L48-L50).
 - **Release/changelog evidence:** 3 tags and 2 releases enumerated; 2 release records have lexical matches. [`.audit-harness/CHANGELOG.md` L23–25](https://github.com/jeremylongshore/intent-outreach/blob/6380ec709f001da8862a6ac066a8cebc9b1ad644/.audit-harness/CHANGELOG.md#L23-L25); [`CHANGELOG.md` L17–19](https://github.com/jeremylongshore/intent-outreach/blob/6380ec709f001da8862a6ac066a8cebc9b1ad644/CHANGELOG.md#L17-L19); [release `v0.3.0`](https://github.com/jeremylongshore/intent-outreach/releases/tag/v0.3.0); [release `v0.2.0`](https://github.com/jeremylongshore/intent-outreach/releases/tag/v0.2.0).
-- **Verification scope:** 75/75 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 4 workflow paths and 2 changelog paths were requested. 19 verified file references withheld from this projection.
+- **Verification scope:** 82/82 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 4 workflow paths and 2 changelog paths were requested. 19 verified file references withheld from this projection.
 
 ### A1-R093: intent-rollout-gate
 
@@ -1334,14 +1344,14 @@ Repository: [jeremylongshore/intent-rollout-gate](https://github.com/jeremylongs
 Observed default branch: `main`; reachable commits: **72**; head: `b10d955073c99a936ec11b8a1b1b5b295da2e7f8`. GitHub license metadata: **Apache-2.0**. Tree: **110 files**, complete. Observation: `2026-10-12T06:30:37Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`README.md` L19–21](https://github.com/jeremylongshore/intent-rollout-gate/blob/b10d955073c99a936ec11b8a1b1b5b295da2e7f8/README.md#L19-L21) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Annotation:** [`.github/workflows/release-gate-self-test.yml` L102–104](https://github.com/jeremylongshore/intent-rollout-gate/blob/b10d955073c99a936ec11b8a1b1b5b295da2e7f8/.github/workflows/release-gate-self-test.yml#L102-L104) (workflow; lexical evidence, not an operational verdict).
-- **Evaluation:** [`ci/emit-evidence.ts` L4–6](https://github.com/jeremylongshore/intent-rollout-gate/blob/b10d955073c99a936ec11b8a1b1b5b295da2e7f8/ci/emit-evidence.ts#L4-L6) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`ci/emit-evidence.ts` L3–5](https://github.com/jeremylongshore/intent-rollout-gate/blob/b10d955073c99a936ec11b8a1b1b5b295da2e7f8/ci/emit-evidence.ts#L3-L5) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`README.md` L3–5](https://github.com/jeremylongshore/intent-rollout-gate/blob/b10d955073c99a936ec11b8a1b1b5b295da2e7f8/README.md#L3-L5) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Telemetry:** [`README.md` L19–21](https://github.com/jeremylongshore/intent-rollout-gate/blob/b10d955073c99a936ec11b8a1b1b5b295da2e7f8/README.md#L19-L21) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Annotation:** [`.github/workflows/release-gate-self-test.yml` L102–104](https://github.com/jeremylongshore/intent-rollout-gate/blob/b10d955073c99a936ec11b8a1b1b5b295da2e7f8/.github/workflows/release-gate-self-test.yml#L102-L104) (workflow; lexical evidence only, not an operational verdict).
+- **Evaluation:** [`ci/emit-evidence.ts` L173–180](https://github.com/jeremylongshore/intent-rollout-gate/blob/b10d955073c99a936ec11b8a1b1b5b295da2e7f8/ci/emit-evidence.ts#L173-L180) — **implementation source**. Gate-result construction records coverage dimensions and policy/input hashes.
+- **Evidence:** [`ci/emit-evidence.ts` L81–90](https://github.com/jeremylongshore/intent-rollout-gate/blob/b10d955073c99a936ec11b8a1b1b5b295da2e7f8/ci/emit-evidence.ts#L81-L90) — **dependency only**. The producer imports kernel gate-result, bundle and canonical payload schemas.
+- **Taxonomy:** [`README.md` L3–5](https://github.com/jeremylongshore/intent-rollout-gate/blob/b10d955073c99a936ec11b8a1b1b5b295da2e7f8/README.md#L3-L5) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Related workflow references:** [`.github/workflows/ci.yml` L128–130](https://github.com/jeremylongshore/intent-rollout-gate/blob/b10d955073c99a936ec11b8a1b1b5b295da2e7f8/.github/workflows/ci.yml#L128-L130); [`.github/workflows/claim-precheck.yml` L17–19](https://github.com/jeremylongshore/intent-rollout-gate/blob/b10d955073c99a936ec11b8a1b1b5b295da2e7f8/.github/workflows/claim-precheck.yml#L17-L19); [`.github/workflows/dogfood.yml` L4–6](https://github.com/jeremylongshore/intent-rollout-gate/blob/b10d955073c99a936ec11b8a1b1b5b295da2e7f8/.github/workflows/dogfood.yml#L4-L6); [`.github/workflows/minimax-review.yml` L12–14](https://github.com/jeremylongshore/intent-rollout-gate/blob/b10d955073c99a936ec11b8a1b1b5b295da2e7f8/.github/workflows/minimax-review.yml#L12-L14); [`.github/workflows/release-gate-self-test.yml` L11–13](https://github.com/jeremylongshore/intent-rollout-gate/blob/b10d955073c99a936ec11b8a1b1b5b295da2e7f8/.github/workflows/release-gate-self-test.yml#L11-L13); [`.github/workflows/release-gate.yml` L18–20](https://github.com/jeremylongshore/intent-rollout-gate/blob/b10d955073c99a936ec11b8a1b1b5b295da2e7f8/.github/workflows/release-gate.yml#L18-L20); [`.github/workflows/release.yml` L5–7](https://github.com/jeremylongshore/intent-rollout-gate/blob/b10d955073c99a936ec11b8a1b1b5b295da2e7f8/.github/workflows/release.yml#L5-L7).
 - **Release/changelog evidence:** 7 tags and 6 releases enumerated; 4 release records have lexical matches. [`CHANGELOG.md` L13–15](https://github.com/jeremylongshore/intent-rollout-gate/blob/b10d955073c99a936ec11b8a1b1b5b295da2e7f8/CHANGELOG.md#L13-L15); [release `v0.3.2`](https://github.com/jeremylongshore/intent-rollout-gate/releases/tag/v0.3.2); [release `v0.3.1`](https://github.com/jeremylongshore/intent-rollout-gate/releases/tag/v0.3.1); [release `v0.2.0`](https://github.com/jeremylongshore/intent-rollout-gate/releases/tag/v0.2.0).
-- **Verification scope:** 25/25 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 11 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 30/30 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 11 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R094: intent-scout
 
@@ -1350,14 +1360,14 @@ Repository: [jeremylongshore/intent-scout](https://github.com/jeremylongshore/in
 Observed default branch: `main`; reachable commits: **35**; head: `9d45f1227100e617e04f33a6d668a36ba4ba1991`. GitHub license metadata: **MIT**. Tree: **119 files**, complete. Observation: `2026-10-12T06:30:37Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L259–261](https://github.com/jeremylongshore/intent-scout/blob/9d45f1227100e617e04f33a6d668a36ba4ba1991/.audit-harness/scripts/emit-evidence.sh#L259-L261) (source; lexical evidence, not an operational verdict).
+- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L386–390](https://github.com/jeremylongshore/intent-scout/blob/9d45f1227100e617e04f33a6d668a36ba4ba1991/.audit-harness/scripts/emit-evidence.sh#L386-L390) — **implementation source**. The vendored audit-harness emitter conditionally writes buffered OTEL records.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.audit-harness/scripts/emit-evidence.sh` L9–11](https://github.com/jeremylongshore/intent-scout/blob/9d45f1227100e617e04f33a6d668a36ba4ba1991/.audit-harness/scripts/emit-evidence.sh#L9-L11) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L2–4](https://github.com/jeremylongshore/intent-scout/blob/9d45f1227100e617e04f33a6d668a36ba4ba1991/.audit-harness/scripts/emit-evidence.sh#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L260–262](https://github.com/jeremylongshore/intent-scout/blob/9d45f1227100e617e04f33a6d668a36ba4ba1991/.audit-harness/scripts/emit-evidence.sh#L260-L262) (source; lexical evidence, not an operational verdict).
+- **Evaluation:** [`.audit-harness/scripts/emit-evidence.sh` L192–199](https://github.com/jeremylongshore/intent-scout/blob/9d45f1227100e617e04f33a6d668a36ba4ba1991/.audit-harness/scripts/emit-evidence.sh#L192-L199) — **implementation source**. The vendored emitter copies evaluated/skipped dimensions into gate coverage.
+- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L63–72](https://github.com/jeremylongshore/intent-scout/blob/9d45f1227100e617e04f33a6d668a36ba4ba1991/.audit-harness/scripts/emit-evidence.sh#L63-L72) — **contract**. The vendored emitter declares in-toto statement and gate-result predicate identifiers.
+- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L259–264](https://github.com/jeremylongshore/intent-scout/blob/9d45f1227100e617e04f33a6d668a36ba4ba1991/.audit-harness/scripts/emit-evidence.sh#L259-L264) — **capability not established by this reference**. The taxonomy reference is an explanatory comment linking the event specification.
 - **Related workflows:** no publishable lexical match among 1 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. [`.audit-harness/CHANGELOG.md` L23–25](https://github.com/jeremylongshore/intent-scout/blob/9d45f1227100e617e04f33a6d668a36ba4ba1991/.audit-harness/CHANGELOG.md#L23-L25).
-- **Verification scope:** 4/4 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 7/7 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R095: intent-solutions-landing
 
@@ -1366,14 +1376,14 @@ Repository: [jeremylongshore/intent-solutions-landing](https://github.com/jeremy
 Observed default branch: `main`; reachable commits: **340**; head: `4883cff31f542f6309e4da428d3f9df0851e30f9`. GitHub license metadata: **MIT**. Tree: **535 files**, complete. Observation: `2026-10-12T06:30:38Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L259–261](https://github.com/jeremylongshore/intent-solutions-landing/blob/4883cff31f542f6309e4da428d3f9df0851e30f9/.audit-harness/scripts/emit-evidence.sh#L259-L261) (source; lexical evidence, not an operational verdict).
-- **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.audit-harness/scripts/emit-evidence.sh` L9–11](https://github.com/jeremylongshore/intent-solutions-landing/blob/4883cff31f542f6309e4da428d3f9df0851e30f9/.audit-harness/scripts/emit-evidence.sh#L9-L11) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L2–4](https://github.com/jeremylongshore/intent-solutions-landing/blob/4883cff31f542f6309e4da428d3f9df0851e30f9/.audit-harness/scripts/emit-evidence.sh#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L260–262](https://github.com/jeremylongshore/intent-solutions-landing/blob/4883cff31f542f6309e4da428d3f9df0851e30f9/.audit-harness/scripts/emit-evidence.sh#L260-L262) (source; lexical evidence, not an operational verdict).
+- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L386–390](https://github.com/jeremylongshore/intent-solutions-landing/blob/4883cff31f542f6309e4da428d3f9df0851e30f9/.audit-harness/scripts/emit-evidence.sh#L386-L390) — **implementation source**. The vendored audit-harness emitter conditionally writes buffered OTEL records.
+- **Annotation:** [`.audit-harness/scripts/crap-score.py` L15–20](https://github.com/jeremylongshore/intent-solutions-landing/blob/4883cff31f542f6309e4da428d3f9df0851e30f9/.audit-harness/scripts/crap-score.py#L15-L20) — **capability not established by this reference**. The match is Python future-import syntax in vendored tooling.
+- **Evaluation:** [`.audit-harness/scripts/emit-evidence.sh` L192–199](https://github.com/jeremylongshore/intent-solutions-landing/blob/4883cff31f542f6309e4da428d3f9df0851e30f9/.audit-harness/scripts/emit-evidence.sh#L192-L199) — **implementation source**. The vendored emitter copies evaluated/skipped dimensions into gate coverage.
+- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L63–72](https://github.com/jeremylongshore/intent-solutions-landing/blob/4883cff31f542f6309e4da428d3f9df0851e30f9/.audit-harness/scripts/emit-evidence.sh#L63-L72) — **contract**. The vendored emitter declares in-toto statement and gate-result predicate identifiers.
+- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L259–264](https://github.com/jeremylongshore/intent-solutions-landing/blob/4883cff31f542f6309e4da428d3f9df0851e30f9/.audit-harness/scripts/emit-evidence.sh#L259-L264) — **capability not established by this reference**. The taxonomy reference is an explanatory comment linking the event specification.
 - **Related workflows:** no publishable lexical match among 4 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 37 tags and 37 releases enumerated; 1 release records have lexical matches. [`.audit-harness/CHANGELOG.md` L23–25](https://github.com/jeremylongshore/intent-solutions-landing/blob/4883cff31f542f6309e4da428d3f9df0851e30f9/.audit-harness/CHANGELOG.md#L23-L25); [`CHANGELOG.md` L433–435](https://github.com/jeremylongshore/intent-solutions-landing/blob/4883cff31f542f6309e4da428d3f9df0851e30f9/CHANGELOG.md#L433-L435); [`estate-bar/CHANGELOG.md` L5–7](https://github.com/jeremylongshore/intent-solutions-landing/blob/4883cff31f542f6309e4da428d3f9df0851e30f9/estate-bar/CHANGELOG.md#L5-L7); [release `v3.0.0`](https://github.com/jeremylongshore/intent-solutions-landing/releases/tag/v3.0.0).
-- **Verification scope:** 13/13 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 4 workflow paths and 4 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 19/19 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 4 workflow paths and 4 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R096: intent-vision
 
@@ -1381,15 +1391,15 @@ Repository: [jeremylongshore/intent-vision](https://github.com/jeremylongshore/i
 
 Observed default branch: `main`; reachable commits: **31**; head: `82d9a534669112d6cac59fdf3433984b43609498`. GitHub license metadata: **unclassified by GitHub**. Tree: **436 files**, complete. Observation: `2026-10-12T06:30:39Z`.
 
-- **Trace:** [`000-docs/049-DR-ADRC-production-deployment-observability.md` L335–337](https://github.com/jeremylongshore/intent-vision/blob/82d9a534669112d6cac59fdf3433984b43609498/000-docs/049-DR-ADRC-production-deployment-observability.md#L335-L337) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Telemetry:** [`packages/api/src/observability/metrics.ts` L6–8](https://github.com/jeremylongshore/intent-vision/blob/82d9a534669112d6cac59fdf3433984b43609498/packages/api/src/observability/metrics.ts#L6-L8) (source; lexical evidence, not an operational verdict).
-- **Annotation:** [`000-docs/049-DR-ADRC-production-deployment-observability.md` L114–116](https://github.com/jeremylongshore/intent-vision/blob/82d9a534669112d6cac59fdf3433984b43609498/000-docs/049-DR-ADRC-production-deployment-observability.md#L114-L116) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evaluation:** [`packages/pipeline/src/eval/index.ts` L2–4](https://github.com/jeremylongshore/intent-vision/blob/82d9a534669112d6cac59fdf3433984b43609498/packages/pipeline/src/eval/index.ts#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`000-docs/016-AA-AACR-phase-8-forecast-anomaly-eval.md` L148–150](https://github.com/jeremylongshore/intent-vision/blob/82d9a534669112d6cac59fdf3433984b43609498/000-docs/016-AA-AACR-phase-8-forecast-anomaly-eval.md#L148-L150) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Trace:** [`000-docs/049-DR-ADRC-production-deployment-observability.md` L335–337](https://github.com/jeremylongshore/intent-vision/blob/82d9a534669112d6cac59fdf3433984b43609498/000-docs/049-DR-ADRC-production-deployment-observability.md#L335-L337) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Telemetry:** [`packages/api/src/observability/metrics.ts` L4–10](https://github.com/jeremylongshore/intent-vision/blob/82d9a534669112d6cac59fdf3433984b43609498/packages/api/src/observability/metrics.ts#L4-L10) — **capability not established by this reference**. The excerpt describes a development metrics collector; its executable collector logic is not shown.
+- **Annotation:** [`000-docs/049-DR-ADRC-production-deployment-observability.md` L114–116](https://github.com/jeremylongshore/intent-vision/blob/82d9a534669112d6cac59fdf3433984b43609498/000-docs/049-DR-ADRC-production-deployment-observability.md#L114-L116) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Evaluation:** [`packages/pipeline/src/eval/index.ts` L5–7](https://github.com/jeremylongshore/intent-vision/blob/82d9a534669112d6cac59fdf3433984b43609498/packages/pipeline/src/eval/index.ts#L5-L7) — **dependency only**. The pipeline package re-exports its evaluation framework module; behavior is unassessed.
+- **Evidence:** [`000-docs/016-AA-AACR-phase-8-forecast-anomaly-eval.md` L148–150](https://github.com/jeremylongshore/intent-vision/blob/82d9a534669112d6cac59fdf3433984b43609498/000-docs/016-AA-AACR-phase-8-forecast-anomaly-eval.md#L148-L150) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 2 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 1 tags and 1 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L12–14](https://github.com/jeremylongshore/intent-vision/blob/82d9a534669112d6cac59fdf3433984b43609498/CHANGELOG.md#L12-L14).
-- **Verification scope:** 12/12 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 19/19 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R097: intentsolutions-vps-runbook
 
@@ -1398,10 +1408,10 @@ Repository: [jeremylongshore/intentsolutions-vps-runbook](https://github.com/jer
 Observed default branch: `main`; reachable commits: **1**; head: `8739c086e4277ea4a9843ba0f3ad8cf43f3b9801`. GitHub license metadata: **unclassified by GitHub**. Tree: **2 files**, complete. Observation: `2026-10-12T06:30:39Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`README.md` L23–25](https://github.com/jeremylongshore/intentsolutions-vps-runbook/blob/8739c086e4277ea4a9843ba0f3ad8cf43f3b9801/README.md#L23-L25) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Telemetry:** [`README.md` L23–25](https://github.com/jeremylongshore/intentsolutions-vps-runbook/blob/8739c086e4277ea4a9843ba0f3ad8cf43f3b9801/README.md#L23-L25) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
 - **Evaluation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evidence:** [`README.md` L33–35](https://github.com/jeremylongshore/intentsolutions-vps-runbook/blob/8739c086e4277ea4a9843ba0f3ad8cf43f3b9801/README.md#L33-L35) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evidence:** [`README.md` L33–35](https://github.com/jeremylongshore/intentsolutions-vps-runbook/blob/8739c086e4277ea4a9843ba0f3ad8cf43f3b9801/README.md#L33-L35) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 0 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
@@ -1420,7 +1430,7 @@ Observed default branch: `main`; reachable commits: **8**; head: `a68c528c586674
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`README.md` L3–5](https://github.com/jeremylongshore/intentsolutionskills/blob/a68c528c586674f2299a41dd683a975b8a040736/README.md#L3-L5) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`README.md` L3–5](https://github.com/jeremylongshore/intentsolutionskills/blob/a68c528c586674f2299a41dd683a975b8a040736/README.md#L3-L5) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 0 inspected workflow paths; this does not establish behavior or absence.
@@ -1433,15 +1443,15 @@ Repository: [jeremylongshore/irsb](https://github.com/jeremylongshore/irsb). Vis
 
 Observed default branch: `main`; reachable commits: **51**; head: `920e9382b0bebe8bdafa18d0661b5ca2ef84afd3`. GitHub license metadata: **NOASSERTION (GitHub did not identify an SPDX license)**. Tree: **908 files**, complete. Observation: `2026-10-12T06:30:41Z`.
 
-- **Trace:** [`services/solver/000-docs/025-PR-ADDM-phase-6-observability.md` L96–98](https://github.com/jeremylongshore/irsb/blob/920e9382b0bebe8bdafa18d0661b5ca2ef84afd3/services/solver/000-docs/025-PR-ADDM-phase-6-observability.md#L96-L98) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Telemetry:** [`services/solver/CHANGELOG.md` L66–68](https://github.com/jeremylongshore/irsb/blob/920e9382b0bebe8bdafa18d0661b5ca2ef84afd3/services/solver/CHANGELOG.md#L66-L68) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`README.md` L284–286](https://github.com/jeremylongshore/irsb/blob/920e9382b0bebe8bdafa18d0661b5ca2ef84afd3/README.md#L284-L286) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evidence:** [`services/solver/src/evidence/index.ts` L2–4](https://github.com/jeremylongshore/irsb/blob/920e9382b0bebe8bdafa18d0661b5ca2ef84afd3/services/solver/src/evidence/index.ts#L2-L4) (source; lexical evidence, not an operational verdict).
+- **Trace:** [`services/solver/000-docs/025-PR-ADDM-phase-6-observability.md` L96–98](https://github.com/jeremylongshore/irsb/blob/920e9382b0bebe8bdafa18d0661b5ca2ef84afd3/services/solver/000-docs/025-PR-ADDM-phase-6-observability.md#L96-L98) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Telemetry:** [`services/solver/src/obs/index.ts` L1–7](https://github.com/jeremylongshore/irsb/blob/920e9382b0bebe8bdafa18d0661b5ca2ef84afd3/services/solver/src/obs/index.ts#L1-L7) — **capability not established by this reference**. The excerpt is an observability module overview; its export list and instrumentation are not shown.
+- **Annotation:** [`services/agents/api/middleware.py` L11–16](https://github.com/jeremylongshore/irsb/blob/920e9382b0bebe8bdafa18d0661b5ca2ef84afd3/services/agents/api/middleware.py#L11-L16) — **capability not established by this reference**. The annotation match is Python future-import syntax.
+- **Evaluation:** [`services/solver/src/cli.ts` L188–192](https://github.com/jeremylongshore/irsb/blob/920e9382b0bebe8bdafa18d0661b5ca2ef84afd3/services/solver/src/cli.ts#L188-L192) — **other domain**. The solver CLI evaluates intent policy and builds an execution plan from the policy result.
+- **Evidence:** [`services/solver/src/evidence/index.ts` L5–18](https://github.com/jeremylongshore/irsb/blob/920e9382b0bebe8bdafa18d0661b5ca2ef84afd3/services/solver/src/evidence/index.ts#L5-L18) — **contract**. The evidence package exports manifest/artifact/decision schemas, a validator and associated types.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 5 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 25 tags and 1 releases enumerated; 0 release records have lexical matches. [`archive/agent-passkey/CHANGELOG.md` L45–47](https://github.com/jeremylongshore/irsb/blob/920e9382b0bebe8bdafa18d0661b5ca2ef84afd3/archive/agent-passkey/CHANGELOG.md#L45-L47); [`protocol/CHANGELOG.md` L213–215](https://github.com/jeremylongshore/irsb/blob/920e9382b0bebe8bdafa18d0661b5ca2ef84afd3/protocol/CHANGELOG.md#L213-L215); [`protocol/dashboard/CHANGELOG.md` L110–112](https://github.com/jeremylongshore/irsb/blob/920e9382b0bebe8bdafa18d0661b5ca2ef84afd3/protocol/dashboard/CHANGELOG.md#L110-L112).
-- **Verification scope:** 37/37 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 5 workflow paths and 8 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 47/47 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 5 workflow paths and 8 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R101: j-rig-skill-binary-eval
 
@@ -1449,15 +1459,15 @@ Repository: [jeremylongshore/j-rig-skill-binary-eval](https://github.com/jeremyl
 
 Observed default branch: `main`; reachable commits: **342**; head: `b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4`. GitHub license metadata: **Apache-2.0**. Tree: **627 files**, complete. Observation: `2026-10-12T06:30:42Z`.
 
-- **Trace:** [`packages/core/src/otel/names.ts` L20–22](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/packages/core/src/otel/names.ts#L20-L22) (source; lexical evidence, not an operational verdict).
-- **Telemetry:** [`scripts/otel-smoke.sh` L2–4](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/scripts/otel-smoke.sh#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Annotation:** [`packages/refiner-core/src/eval-set.ts` L21–23](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/packages/refiner-core/src/eval-set.ts#L21-L23) (source; lexical evidence, not an operational verdict).
-- **Evaluation:** [`scripts/otel-smoke.sh` L4–6](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/scripts/otel-smoke.sh#L4-L6) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`scripts/emit-evidence.ts` L3–5](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/scripts/emit-evidence.ts#L3-L5) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`scripts/otel-smoke.sh` L5–7](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/scripts/otel-smoke.sh#L5-L7) (source; lexical evidence, not an operational verdict).
+- **Trace:** [`packages/core/src/otel/names.ts` L90–97](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/packages/core/src/otel/names.ts#L90-L97) — **contract**. Runtime attribute constants include evaluation, session-trace and trace correlation identifiers.
+- **Telemetry:** [`packages/core/src/otel/emitter.ts` L92–134](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/packages/core/src/otel/emitter.ts#L92-L134) — **implementation source**. The emitter rejects missing run identifiers, adds an OTel event to an active or short-lived span, optionally writes a stderr JSON record, and catches emission errors; delivery is not exercised here.
+- **Annotation:** [`packages/refiner-core/src/eval-set.ts` L19–26](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/packages/refiner-core/src/eval-set.ts#L19-L26) — **capability not established by this reference**. The hit concerns path-annotated validation errors, not a human-labeling implementation.
+- **Evaluation:** [`scripts/otel-smoke.sh` L41–69](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/scripts/otel-smoke.sh#L41-L69) — **test or fixture**. An executable smoke harness invokes a stub evaluation and parses OTEL event lines from stderr.
+- **Evidence:** [`scripts/emit-evidence.ts` L73–80](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/scripts/emit-evidence.ts#L73-L80) — **dependency only**. The producer imports kernel bundle and statement schemas and payload types.
+- **Taxonomy:** [`scripts/otel-smoke.sh` L3–9](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/scripts/otel-smoke.sh#L3-L9) — **capability not established by this reference**. The taxonomy reference is explanatory test documentation; it does not show a classifier here.
 - **Related workflow references:** [`.github/workflows/ci.yml` L40–42](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/.github/workflows/ci.yml#L40-L42); [`.github/workflows/claim-precheck.yml` L17–19](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/.github/workflows/claim-precheck.yml#L17-L19); [`.github/workflows/minimax-review.yml` L12–14](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/.github/workflows/minimax-review.yml#L12-L14); [`.github/workflows/nightly-skill-evals.yml` L1–3](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/.github/workflows/nightly-skill-evals.yml#L1-L3); [`.github/workflows/publish-jrig-cli.yml` L3–5](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/.github/workflows/publish-jrig-cli.yml#L3-L5); [`.github/workflows/publish-pr-comment.yml` L3–5](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/.github/workflows/publish-pr-comment.yml#L3-L5); [`.github/workflows/publish-refiner.yml` L3–5](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/.github/workflows/publish-refiner.yml#L3-L5); [`.github/workflows/publish-rollout-gate.yml` L3–5](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/.github/workflows/publish-rollout-gate.yml#L3-L5); [`.github/workflows/release.yml` L3–5](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/.github/workflows/release.yml#L3-L5).
 - **Release/changelog evidence:** 63 tags and 48 releases enumerated; 48 release records have lexical matches. [`.audit-harness/CHANGELOG.md` L23–25](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/.audit-harness/CHANGELOG.md#L23-L25); [`CHANGELOG.md` L25–27](https://github.com/jeremylongshore/j-rig-skill-binary-eval/blob/b75364db5f21b874ca1f7fa12ce76c01e3c9a7b4/CHANGELOG.md#L25-L27); [release `v0.2.7`](https://github.com/jeremylongshore/j-rig-skill-binary-eval/releases/tag/untagged-21462d732cf3814aaa9d); [release `jrig-cli-v0.5.0`](https://github.com/jeremylongshore/j-rig-skill-binary-eval/releases/tag/jrig-cli-v0.5.0); [release `evidence-latest`](https://github.com/jeremylongshore/j-rig-skill-binary-eval/releases/tag/evidence-latest); tag `evidence-latest` at `98d705dc6582a54b80cee813df555e232a05621b`.
-- **Verification scope:** 141/141 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 13 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 174/174 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 13 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R102: jeremylongshore
 
@@ -1468,8 +1478,8 @@ Observed default branch: `master`; reachable commits: **46**; head: `56a4f32b80b
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`README.md` L44–46](https://github.com/jeremylongshore/jeremylongshore/blob/56a4f32b80bc74a174656c525867bf2bd92deb04/README.md#L44-L46) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evidence:** [`README.md` L44–46](https://github.com/jeremylongshore/jeremylongshore/blob/56a4f32b80bc74a174656c525867bf2bd92deb04/README.md#L44-L46) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`README.md` L44–46](https://github.com/jeremylongshore/jeremylongshore/blob/56a4f32b80bc74a174656c525867bf2bd92deb04/README.md#L44-L46) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Evidence:** [`README.md` L44–46](https://github.com/jeremylongshore/jeremylongshore/blob/56a4f32b80bc74a174656c525867bf2bd92deb04/README.md#L44-L46) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 0 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
@@ -1481,10 +1491,10 @@ Repository: [jeremylongshore/jeremylongshore.com](https://github.com/jeremylongs
 
 Observed default branch: `main`; reachable commits: **484**; head: `ac9fbce7c253d50ff41e2185f457b8356d31def8`. GitHub license metadata: **MIT**. Tree: **865 files**, complete. Observation: `2026-10-12T06:30:43Z`.
 
-- **Trace:** [`vendor/bundle/ruby/3.2.0/gems/bundler-2.6.6/CHANGELOG.md` L1315–1317](https://github.com/jeremylongshore/jeremylongshore.com/blob/ac9fbce7c253d50ff41e2185f457b8356d31def8/vendor/bundle/ruby/3.2.0/gems/bundler-2.6.6/CHANGELOG.md#L1315-L1317) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Trace:** [`vendor/bundle/ruby/3.2.0/gems/bundler-2.6.6/CHANGELOG.md` L1315–1317](https://github.com/jeremylongshore/jeremylongshore.com/blob/ac9fbce7c253d50ff41e2185f457b8356d31def8/vendor/bundle/ruby/3.2.0/gems/bundler-2.6.6/CHANGELOG.md#L1315-L1317) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
-- **Annotation:** [`vendor/bundle/ruby/3.2.0/gems/bundler-2.6.6/CHANGELOG.md` L890–892](https://github.com/jeremylongshore/jeremylongshore.com/blob/ac9fbce7c253d50ff41e2185f457b8356d31def8/vendor/bundle/ruby/3.2.0/gems/bundler-2.6.6/CHANGELOG.md#L890-L892) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evaluation:** [`vendor/bundle/ruby/3.2.0/gems/liquid-5.5.1/History.md` L30–32](https://github.com/jeremylongshore/jeremylongshore.com/blob/ac9fbce7c253d50ff41e2185f457b8356d31def8/vendor/bundle/ruby/3.2.0/gems/liquid-5.5.1/History.md#L30-L32) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Annotation:** [`vendor/bundle/ruby/3.2.0/gems/bundler-2.6.6/CHANGELOG.md` L890–892](https://github.com/jeremylongshore/jeremylongshore.com/blob/ac9fbce7c253d50ff41e2185f457b8356d31def8/vendor/bundle/ruby/3.2.0/gems/bundler-2.6.6/CHANGELOG.md#L890-L892) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Evaluation:** [`vendor/bundle/ruby/3.2.0/gems/liquid-5.5.1/History.md` L30–32](https://github.com/jeremylongshore/jeremylongshore.com/blob/ac9fbce7c253d50ff41e2185f457b8356d31def8/vendor/bundle/ruby/3.2.0/gems/liquid-5.5.1/History.md#L30-L32) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 3 inspected workflow paths; this does not establish behavior or absence.
@@ -1497,15 +1507,15 @@ Repository: [jeremylongshore/kilocode](https://github.com/jeremylongshore/kiloco
 
 Observed default branch: `main`; reachable commits: **31685**; head: `1c8fba5ab928fb653c0fd59c36c899f1e4c35c15`. GitHub license metadata: **Apache-2.0**. Tree: **5431 files**, complete. Observation: `2026-10-12T06:30:45Z`.
 
-- **Trace:** [`packages/evals/src/cli/runTaskInVscode.ts` L37–39](https://github.com/jeremylongshore/kilocode/blob/1c8fba5ab928fb653c0fd59c36c899f1e4c35c15/packages/evals/src/cli/runTaskInVscode.ts#L37-L39) (source; lexical evidence, not an operational verdict).
-- **Telemetry:** [`packages/telemetry/src/index.ts` L1–3](https://github.com/jeremylongshore/kilocode/blob/1c8fba5ab928fb653c0fd59c36c899f1e4c35c15/packages/telemetry/src/index.ts#L1-L3) (source; lexical evidence, not an operational verdict).
-- **Annotation:** [`CHANGELOG.md` L1660–1662](https://github.com/jeremylongshore/kilocode/blob/1c8fba5ab928fb653c0fd59c36c899f1e4c35c15/CHANGELOG.md#L1660-L1662) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evaluation:** [`apps/web-evals/src/app/page.tsx` L1–3](https://github.com/jeremylongshore/kilocode/blob/1c8fba5ab928fb653c0fd59c36c899f1e4c35c15/apps/web-evals/src/app/page.tsx#L1-L3) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`apps/web-evals/src/app/runs/[id]/run.tsx` L400–402](https://github.com/jeremylongshore/kilocode/blob/1c8fba5ab928fb653c0fd59c36c899f1e4c35c15/apps/web-evals/src/app/runs/%5Bid%5D/run.tsx#L400-L402) (source; lexical evidence, not an operational verdict).
+- **Trace:** [`packages/evals/src/cli/runTaskInVscode.ts` L35–41](https://github.com/jeremylongshore/kilocode/blob/1c8fba5ab928fb653c0fd59c36c899f1e4c35c15/packages/evals/src/cli/runTaskInVscode.ts#L35-L41) — **capability not established by this reference**. Trace is a VS Code logging-verbosity flag in the forked runner command; distributed tracing is not established here.
+- **Telemetry:** [`packages/telemetry/src/index.ts` L1–4](https://github.com/jeremylongshore/kilocode/blob/1c8fba5ab928fb653c0fd59c36c899f1e4c35c15/packages/telemetry/src/index.ts#L1-L4) — **dependency only**. The forked package exports telemetry clients and a telemetry service.
+- **Annotation:** [`CHANGELOG.md` L1660–1662](https://github.com/jeremylongshore/kilocode/blob/1c8fba5ab928fb653c0fd59c36c899f1e4c35c15/CHANGELOG.md#L1660-L1662) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Evaluation:** [`packages/evals/scripts/setup.sh` L5–8](https://github.com/jeremylongshore/kilocode/blob/1c8fba5ab928fb653c0fd59c36c899f1e4c35c15/packages/evals/scripts/setup.sh#L5-L8) — **implementation source**. The forked evaluation setup builds and installs the VS Code extension before entering the evaluation directory.
+- **Evidence:** [`apps/web-evals/src/app/runs/[id]/run.tsx` L398–405](https://github.com/jeremylongshore/kilocode/blob/1c8fba5ab928fb653c0fd59c36c899f1e4c35c15/apps/web-evals/src/app/runs/%5Bid%5D/run.tsx#L398-L405) — **capability not established by this reference**. Evidence is ordinary explanatory prose for a started-task UI guard.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/auto-triage.yml` L44–46](https://github.com/jeremylongshore/kilocode/blob/1c8fba5ab928fb653c0fd59c36c899f1e4c35c15/.github/workflows/auto-triage.yml#L44-L46); [`.github/workflows/code-qa.yml` L109–111](https://github.com/jeremylongshore/kilocode/blob/1c8fba5ab928fb653c0fd59c36c899f1e4c35c15/.github/workflows/code-qa.yml#L109-L111); [`.github/workflows/evals.yml` L1–3](https://github.com/jeremylongshore/kilocode/blob/1c8fba5ab928fb653c0fd59c36c899f1e4c35c15/.github/workflows/evals.yml#L1-L3).
 - **Release/changelog evidence:** 301 tags and 1 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L457–459](https://github.com/jeremylongshore/kilocode/blob/1c8fba5ab928fb653c0fd59c36c899f1e4c35c15/CHANGELOG.md#L457-L459).
-- **Verification scope:** 231/231 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 12 workflow paths and 42 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 238/238 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 12 workflow paths and 42 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R105: knowledge-work-plugins
 
@@ -1536,7 +1546,7 @@ Observed default branch: `main`; reachable commits: **10**; head: `1aeb1d91c051e
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`README.md` L20–22](https://github.com/jeremylongshore/lead-followup-system-n8n/blob/1aeb1d91c051eb7b46ed7a6929f5b31227a6fa8d/README.md#L20-L22) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`README.md` L20–22](https://github.com/jeremylongshore/lead-followup-system-n8n/blob/1aeb1d91c051eb7b46ed7a6929f5b31227a6fa8d/README.md#L20-L22) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 0 inspected workflow paths; this does not establish behavior or absence.
@@ -1589,7 +1599,7 @@ Observed default branch: `main`; reachable commits: **49**; head: `58867f12dd523
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 1 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 6 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 2/2 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 3/3 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R111: mnemos
 
@@ -1605,7 +1615,7 @@ Observed default branch: `main`; reachable commits: **65**; head: `906976eced029
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 2 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 15 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 3/3 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 6/6 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R112: moat
 
@@ -1613,15 +1623,15 @@ Repository: [jeremylongshore/moat](https://github.com/jeremylongshore/moat). Vis
 
 Observed default branch: `main`; reachable commits: **46**; head: `ea9acdbae56dfc10e58f264a597adf01225653ef`. GitHub license metadata: **NOASSERTION (GitHub did not identify an SPDX license)**. Tree: **188 files**, complete. Observation: `2026-10-12T06:30:51Z`.
 
-- **Trace:** [`CHANGELOG.md` L49–51](https://github.com/jeremylongshore/moat/blob/ea9acdbae56dfc10e58f264a597adf01225653ef/CHANGELOG.md#L49-L51) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
-- **Annotation:** [`services/trust-plane/app/scoring.py` L18–20](https://github.com/jeremylongshore/moat/blob/ea9acdbae56dfc10e58f264a597adf01225653ef/services/trust-plane/app/scoring.py#L18-L20) (source; lexical evidence, not an operational verdict).
-- **Evaluation:** [`services/trust-plane/app/scoring.py` L2–4](https://github.com/jeremylongshore/moat/blob/ea9acdbae56dfc10e58f264a597adf01225653ef/services/trust-plane/app/scoring.py#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
-- **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
+- **Trace:** [`packages/core/moat_core/models.py` L395–398](https://github.com/jeremylongshore/moat/blob/ea9acdbae56dfc10e58f264a597adf01225653ef/packages/core/moat_core/models.py#L395-L398) — **contract**. The request model documents a caller-supplied tracing identifier with a minimum-length constraint.
+- **Telemetry:** [`services/gateway/app/config.py` L29–35](https://github.com/jeremylongshore/moat/blob/ea9acdbae56dfc10e58f264a597adf01225653ef/services/gateway/app/config.py#L29-L35) — **capability not established by this reference**. The selected observability configuration only sets a log level; telemetry collection is not established.
+- **Annotation:** [`services/trust-plane/app/scoring.py` L18–23](https://github.com/jeremylongshore/moat/blob/ea9acdbae56dfc10e58f264a597adf01225653ef/services/trust-plane/app/scoring.py#L18-L23) — **capability not established by this reference**. The annotation match is Python future-import syntax.
+- **Evaluation:** [`services/trust-plane/app/scoring.py` L1–7](https://github.com/jeremylongshore/moat/blob/ea9acdbae56dfc10e58f264a597adf01225653ef/services/trust-plane/app/scoring.py#L1-L7) — **capability not established by this reference**. The excerpt documents a rolling trust scorer; its aggregation code needs a separate reference.
+- **Evidence:** [`services/gateway/app/hooks/irsb_receipt.py` L317–320](https://github.com/jeremylongshore/moat/blob/ea9acdbae56dfc10e58f264a597adf01225653ef/services/gateway/app/hooks/irsb_receipt.py#L317-L320) — **implementation source**. The receipt helper serializes sorted JSON and computes its Keccak-256 evidence hash.
+- **Taxonomy:** [`packages/core/moat_core/models.py` L57–62](https://github.com/jeremylongshore/moat/blob/ea9acdbae56dfc10e58f264a597adf01225653ef/packages/core/moat_core/models.py#L57-L62) — **contract**. ErrorTaxonomy declares coarse auth, rate-limit and timeout outcome categories.
 - **Related workflow references:** [`.github/workflows/ci.yml` L209–211](https://github.com/jeremylongshore/moat/blob/ea9acdbae56dfc10e58f264a597adf01225653ef/.github/workflows/ci.yml#L209-L211).
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L49–51](https://github.com/jeremylongshore/moat/blob/ea9acdbae56dfc10e58f264a597adf01225653ef/CHANGELOG.md#L49-L51).
-- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 36/36 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R113: myshell-handrolled-in-c
 
@@ -1637,7 +1647,7 @@ Observed default branch: `master`; reachable commits: **3**; head: `9902bbaaa20d
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 0 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 0/0 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 0 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 1/1 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 0 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R114: n8n-workflow-template
 
@@ -1663,13 +1673,13 @@ Observed default branch: `main`; reachable commits: **15**; head: `3d88871fa9e8d
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
-- **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
+- **Annotation:** [`scripts/validate_repository.py` L4–9](https://github.com/jeremylongshore/navigating-github/blob/3d88871fa9e8d15610e8b26998751a26bc4d5523/scripts/validate_repository.py#L4-L9) — **capability not established by this reference**. The match is Python future-import syntax.
 - **Evaluation:** no public positive reference in the inspected sample; absence is **not established**.
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 1 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 3/3 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 4/4 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R116: news-pipeline-n8n
 
@@ -1680,7 +1690,7 @@ Observed default branch: `main`; reachable commits: **9**; head: `12448444d530d5
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`README.md` L23–25](https://github.com/jeremylongshore/news-pipeline-n8n/blob/12448444d530d5ac85cfc096f2edbf7b8c75c470/README.md#L23-L25) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`README.md` L23–25](https://github.com/jeremylongshore/news-pipeline-n8n/blob/12448444d530d5ac85cfc096f2edbf7b8c75c470/README.md#L23-L25) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 1 inspected workflow paths; this does not establish behavior or absence.
@@ -1696,8 +1706,8 @@ Observed default branch: `main`; reachable commits: **22**; head: `016326846d001
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L197–199](https://github.com/jeremylongshore/omarchy-bazaar-entry/blob/016326846d001a96a1bdf5578ecb0d470b95b9f3/.github/workflows/minimax-review.yml#L197-L199) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L225–227](https://github.com/jeremylongshore/omarchy-bazaar-entry/blob/016326846d001a96a1bdf5578ecb0d470b95b9f3/.github/workflows/minimax-review.yml#L225-L227) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`.github/workflows/minimax-review.yml` L197–199](https://github.com/jeremylongshore/omarchy-bazaar-entry/blob/016326846d001a96a1bdf5578ecb0d470b95b9f3/.github/workflows/minimax-review.yml#L197-L199) (workflow; lexical evidence only, not an operational verdict).
+- **Evidence:** [`.github/workflows/minimax-review.yml` L225–227](https://github.com/jeremylongshore/omarchy-bazaar-entry/blob/016326846d001a96a1bdf5578ecb0d470b95b9f3/.github/workflows/minimax-review.yml#L225-L227) (workflow; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L197–199](https://github.com/jeremylongshore/omarchy-bazaar-entry/blob/016326846d001a96a1bdf5578ecb0d470b95b9f3/.github/workflows/minimax-review.yml#L197-L199).
 - **Release/changelog evidence:** 2 tags and 2 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
@@ -1711,13 +1721,13 @@ Observed default branch: `main`; reachable commits: **34**; head: `11f1230b31251
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
-- **Annotation:** [`CHANGELOG.md` L31–33](https://github.com/jeremylongshore/omarchy-capture-conveyor-entry/blob/11f1230b31251626f248f82144fd1f35754098ad/CHANGELOG.md#L31-L33) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L155–157](https://github.com/jeremylongshore/omarchy-capture-conveyor-entry/blob/11f1230b31251626f248f82144fd1f35754098ad/.github/workflows/minimax-review.yml#L155-L157) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L183–185](https://github.com/jeremylongshore/omarchy-capture-conveyor-entry/blob/11f1230b31251626f248f82144fd1f35754098ad/.github/workflows/minimax-review.yml#L183-L185) (workflow; lexical evidence, not an operational verdict).
+- **Annotation:** [`CHANGELOG.md` L31–33](https://github.com/jeremylongshore/omarchy-capture-conveyor-entry/blob/11f1230b31251626f248f82144fd1f35754098ad/CHANGELOG.md#L31-L33) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Evaluation:** [`.github/workflows/minimax-review.yml` L155–157](https://github.com/jeremylongshore/omarchy-capture-conveyor-entry/blob/11f1230b31251626f248f82144fd1f35754098ad/.github/workflows/minimax-review.yml#L155-L157) (workflow; lexical evidence only, not an operational verdict).
+- **Evidence:** [`.github/workflows/minimax-review.yml` L183–185](https://github.com/jeremylongshore/omarchy-capture-conveyor-entry/blob/11f1230b31251626f248f82144fd1f35754098ad/.github/workflows/minimax-review.yml#L183-L185) (workflow; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L155–157](https://github.com/jeremylongshore/omarchy-capture-conveyor-entry/blob/11f1230b31251626f248f82144fd1f35754098ad/.github/workflows/minimax-review.yml#L155-L157).
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L31–33](https://github.com/jeremylongshore/omarchy-capture-conveyor-entry/blob/11f1230b31251626f248f82144fd1f35754098ad/CHANGELOG.md#L31-L33).
-- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 6/6 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R119: omarchy-crew-chief-entry
 
@@ -1726,14 +1736,14 @@ Repository: [jeremylongshore/omarchy-crew-chief-entry](https://github.com/jeremy
 Observed default branch: `main`; reachable commits: **33**; head: `c677cfd29e389ddbd742fd640a2b0f25b1eb40d5`. GitHub license metadata: **MIT**. Tree: **81 files**, complete. Observation: `2026-10-12T06:30:56Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`README.md` L98–100](https://github.com/jeremylongshore/omarchy-crew-chief-entry/blob/c677cfd29e389ddbd742fd640a2b0f25b1eb40d5/README.md#L98-L100) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Telemetry:** [`README.md` L98–100](https://github.com/jeremylongshore/omarchy-crew-chief-entry/blob/c677cfd29e389ddbd742fd640a2b0f25b1eb40d5/README.md#L98-L100) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L197–199](https://github.com/jeremylongshore/omarchy-crew-chief-entry/blob/c677cfd29e389ddbd742fd640a2b0f25b1eb40d5/.github/workflows/minimax-review.yml#L197-L199) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L225–227](https://github.com/jeremylongshore/omarchy-crew-chief-entry/blob/c677cfd29e389ddbd742fd640a2b0f25b1eb40d5/.github/workflows/minimax-review.yml#L225-L227) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`bin/crew-chief-spool` L141–144](https://github.com/jeremylongshore/omarchy-crew-chief-entry/blob/c677cfd29e389ddbd742fd640a2b0f25b1eb40d5/bin/crew-chief-spool#L141-L144) — **capability not established by this reference**. Perl eval wraps JSON decoding; this is exception handling rather than a quality evaluator.
+- **Evidence:** [`.github/workflows/minimax-review.yml` L225–227](https://github.com/jeremylongshore/omarchy-crew-chief-entry/blob/c677cfd29e389ddbd742fd640a2b0f25b1eb40d5/.github/workflows/minimax-review.yml#L225-L227) (workflow; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L197–199](https://github.com/jeremylongshore/omarchy-crew-chief-entry/blob/c677cfd29e389ddbd742fd640a2b0f25b1eb40d5/.github/workflows/minimax-review.yml#L197-L199).
 - **Release/changelog evidence:** 1 tags and 1 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 8/8 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R120: omarchy-desk-transition-entry
 
@@ -1744,12 +1754,12 @@ Observed default branch: `main`; reachable commits: **36**; head: `a9e1688ae421d
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L155–157](https://github.com/jeremylongshore/omarchy-desk-transition-entry/blob/a9e1688ae421df833e98ed9803f8cbf32e5719a6/.github/workflows/minimax-review.yml#L155-L157) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L183–185](https://github.com/jeremylongshore/omarchy-desk-transition-entry/blob/a9e1688ae421df833e98ed9803f8cbf32e5719a6/.github/workflows/minimax-review.yml#L183-L185) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`.github/workflows/minimax-review.yml` L155–157](https://github.com/jeremylongshore/omarchy-desk-transition-entry/blob/a9e1688ae421df833e98ed9803f8cbf32e5719a6/.github/workflows/minimax-review.yml#L155-L157) (workflow; lexical evidence only, not an operational verdict).
+- **Evidence:** [`.github/workflows/minimax-review.yml` L183–185](https://github.com/jeremylongshore/omarchy-desk-transition-entry/blob/a9e1688ae421df833e98ed9803f8cbf32e5719a6/.github/workflows/minimax-review.yml#L183-L185) (workflow; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L155–157](https://github.com/jeremylongshore/omarchy-desk-transition-entry/blob/a9e1688ae421df833e98ed9803f8cbf32e5719a6/.github/workflows/minimax-review.yml#L155-L157).
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 6/6 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R121: omarchy-docket-entry
 
@@ -1757,15 +1767,15 @@ Repository: [jeremylongshore/omarchy-docket-entry](https://github.com/jeremylong
 
 Observed default branch: `main`; reachable commits: **32**; head: `14f11da8883c60615f6a58102cdb8340f75f60f2`. GitHub license metadata: **MIT**. Tree: **85 files**, complete. Observation: `2026-10-12T06:30:57Z`.
 
-- **Trace:** no public positive reference in the inspected sample; absence is **not established**.
+- **Trace:** [`bin/docket-login` L22–29](https://github.com/jeremylongshore/omarchy-docket-entry/blob/14f11da8883c60615f6a58102cdb8340f75f60f2/bin/docket-login#L22-L29) — **capability not established by this reference**. The login script disables shell command tracing to avoid printing credentials.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L197–199](https://github.com/jeremylongshore/omarchy-docket-entry/blob/14f11da8883c60615f6a58102cdb8340f75f60f2/.github/workflows/minimax-review.yml#L197-L199) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L225–227](https://github.com/jeremylongshore/omarchy-docket-entry/blob/14f11da8883c60615f6a58102cdb8340f75f60f2/.github/workflows/minimax-review.yml#L225-L227) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`bin/docket-secure-state` L102–109](https://github.com/jeremylongshore/omarchy-docket-entry/blob/14f11da8883c60615f6a58102cdb8340f75f60f2/bin/docket-secure-state#L102-L109) — **capability not established by this reference**. Perl eval wraps bounded state-file writes; it is language-level exception handling.
+- **Evidence:** [`.github/workflows/minimax-review.yml` L225–227](https://github.com/jeremylongshore/omarchy-docket-entry/blob/14f11da8883c60615f6a58102cdb8340f75f60f2/.github/workflows/minimax-review.yml#L225-L227) (workflow; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L197–199](https://github.com/jeremylongshore/omarchy-docket-entry/blob/14f11da8883c60615f6a58102cdb8340f75f60f2/.github/workflows/minimax-review.yml#L197-L199).
 - **Release/changelog evidence:** 1 tags and 1 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L24–26](https://github.com/jeremylongshore/omarchy-docket-entry/blob/14f11da8883c60615f6a58102cdb8340f75f60f2/CHANGELOG.md#L24-L26).
-- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 7/7 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R122: omarchy-flow-boundary-entry
 
@@ -1774,10 +1784,10 @@ Repository: [jeremylongshore/omarchy-flow-boundary-entry](https://github.com/jer
 Observed default branch: `main`; reachable commits: **40**; head: `07eade2718ee2444682f0357a200e5de89ca80fb`. GitHub license metadata: **MIT**. Tree: **69 files**, complete. Observation: `2026-10-12T06:30:58Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`README.md` L16–18](https://github.com/jeremylongshore/omarchy-flow-boundary-entry/blob/07eade2718ee2444682f0357a200e5de89ca80fb/README.md#L16-L18) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Telemetry:** [`README.md` L16–18](https://github.com/jeremylongshore/omarchy-flow-boundary-entry/blob/07eade2718ee2444682f0357a200e5de89ca80fb/README.md#L16-L18) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L155–157](https://github.com/jeremylongshore/omarchy-flow-boundary-entry/blob/07eade2718ee2444682f0357a200e5de89ca80fb/.github/workflows/minimax-review.yml#L155-L157) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L183–185](https://github.com/jeremylongshore/omarchy-flow-boundary-entry/blob/07eade2718ee2444682f0357a200e5de89ca80fb/.github/workflows/minimax-review.yml#L183-L185) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`.github/workflows/minimax-review.yml` L155–157](https://github.com/jeremylongshore/omarchy-flow-boundary-entry/blob/07eade2718ee2444682f0357a200e5de89ca80fb/.github/workflows/minimax-review.yml#L155-L157) (workflow; lexical evidence only, not an operational verdict).
+- **Evidence:** [`.github/workflows/minimax-review.yml` L183–185](https://github.com/jeremylongshore/omarchy-flow-boundary-entry/blob/07eade2718ee2444682f0357a200e5de89ca80fb/.github/workflows/minimax-review.yml#L183-L185) (workflow; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L155–157](https://github.com/jeremylongshore/omarchy-flow-boundary-entry/blob/07eade2718ee2444682f0357a200e5de89ca80fb/.github/workflows/minimax-review.yml#L155-L157).
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
@@ -1790,14 +1800,14 @@ Repository: [jeremylongshore/omarchy-foundry-entry](https://github.com/jeremylon
 Observed default branch: `main`; reachable commits: **29**; head: `3149654e685015246d919104c06fd468fc3731f4`. GitHub license metadata: **MIT**. Tree: **70 files**, complete. Observation: `2026-10-12T06:30:59Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`README.md` L23–25](https://github.com/jeremylongshore/omarchy-foundry-entry/blob/3149654e685015246d919104c06fd468fc3731f4/README.md#L23-L25) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Telemetry:** [`bin/omarchy-foundry` L307–312](https://github.com/jeremylongshore/omarchy-foundry-entry/blob/3149654e685015246d919104c06fd468fc3731f4/bin/omarchy-foundry#L307-L312) — **capability not established by this reference**. Telemetry occurs in generated prose explicitly describing a draft without telemetry.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L155–157](https://github.com/jeremylongshore/omarchy-foundry-entry/blob/3149654e685015246d919104c06fd468fc3731f4/.github/workflows/minimax-review.yml#L155-L157) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L183–185](https://github.com/jeremylongshore/omarchy-foundry-entry/blob/3149654e685015246d919104c06fd468fc3731f4/.github/workflows/minimax-review.yml#L183-L185) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`bin/omarchy-foundry` L496–501](https://github.com/jeremylongshore/omarchy-foundry-entry/blob/3149654e685015246d919104c06fd468fc3731f4/bin/omarchy-foundry#L496-L501) — **capability not established by this reference**. Perl eval wraps CLI dispatch; it is language-level exception handling.
+- **Evidence:** [`.github/workflows/minimax-review.yml` L183–185](https://github.com/jeremylongshore/omarchy-foundry-entry/blob/3149654e685015246d919104c06fd468fc3731f4/.github/workflows/minimax-review.yml#L183-L185) (workflow; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L155–157](https://github.com/jeremylongshore/omarchy-foundry-entry/blob/3149654e685015246d919104c06fd468fc3731f4/.github/workflows/minimax-review.yml#L155-L157).
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 6/6 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R124: omarchy-listening-post-entry
 
@@ -1806,14 +1816,14 @@ Repository: [jeremylongshore/omarchy-listening-post-entry](https://github.com/je
 Observed default branch: `main`; reachable commits: **44**; head: `02da2d08799d476debed507676d3ea5902005bee`. GitHub license metadata: **MIT**. Tree: **212 files**, complete. Observation: `2026-10-12T06:30:59Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`README.md` L198–200](https://github.com/jeremylongshore/omarchy-listening-post-entry/blob/02da2d08799d476debed507676d3ea5902005bee/README.md#L198-L200) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Telemetry:** [`README.md` L198–200](https://github.com/jeremylongshore/omarchy-listening-post-entry/blob/02da2d08799d476debed507676d3ea5902005bee/README.md#L198-L200) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L197–199](https://github.com/jeremylongshore/omarchy-listening-post-entry/blob/02da2d08799d476debed507676d3ea5902005bee/.github/workflows/minimax-review.yml#L197-L199) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L225–227](https://github.com/jeremylongshore/omarchy-listening-post-entry/blob/02da2d08799d476debed507676d3ea5902005bee/.github/workflows/minimax-review.yml#L225-L227) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`bin/listening-post-secure-state` L251–255](https://github.com/jeremylongshore/omarchy-listening-post-entry/blob/02da2d08799d476debed507676d3ea5902005bee/bin/listening-post-secure-state#L251-L255) — **capability not established by this reference**. Perl eval wraps JSON decoding of a state entry.
+- **Evidence:** [`.github/workflows/minimax-review.yml` L225–227](https://github.com/jeremylongshore/omarchy-listening-post-entry/blob/02da2d08799d476debed507676d3ea5902005bee/.github/workflows/minimax-review.yml#L225-L227) (workflow; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L197–199](https://github.com/jeremylongshore/omarchy-listening-post-entry/blob/02da2d08799d476debed507676d3ea5902005bee/.github/workflows/minimax-review.yml#L197-L199).
 - **Release/changelog evidence:** 2 tags and 2 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 7/7 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 5 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 11/11 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 5 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R125: omarchy-loose-ends-entry
 
@@ -1824,12 +1834,12 @@ Observed default branch: `main`; reachable commits: **24**; head: `ffead99ed58d0
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L155–157](https://github.com/jeremylongshore/omarchy-loose-ends-entry/blob/ffead99ed58d0f1acf52e95c064e897d081575a6/.github/workflows/minimax-review.yml#L155-L157) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L183–185](https://github.com/jeremylongshore/omarchy-loose-ends-entry/blob/ffead99ed58d0f1acf52e95c064e897d081575a6/.github/workflows/minimax-review.yml#L183-L185) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`.github/workflows/minimax-review.yml` L155–157](https://github.com/jeremylongshore/omarchy-loose-ends-entry/blob/ffead99ed58d0f1acf52e95c064e897d081575a6/.github/workflows/minimax-review.yml#L155-L157) (workflow; lexical evidence only, not an operational verdict).
+- **Evidence:** [`.github/workflows/minimax-review.yml` L183–185](https://github.com/jeremylongshore/omarchy-loose-ends-entry/blob/ffead99ed58d0f1acf52e95c064e897d081575a6/.github/workflows/minimax-review.yml#L183-L185) (workflow; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L155–157](https://github.com/jeremylongshore/omarchy-loose-ends-entry/blob/ffead99ed58d0f1acf52e95c064e897d081575a6/.github/workflows/minimax-review.yml#L155-L157).
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 6/6 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R126: omarchy-mlb-booth-entry
 
@@ -1840,12 +1850,12 @@ Observed default branch: `main`; reachable commits: **35**; head: `79a47e3cd1ab8
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L197–199](https://github.com/jeremylongshore/omarchy-mlb-booth-entry/blob/79a47e3cd1ab8227ce7c563ba2ed29e0d9f6bcd1/.github/workflows/minimax-review.yml#L197-L199) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L225–227](https://github.com/jeremylongshore/omarchy-mlb-booth-entry/blob/79a47e3cd1ab8227ce7c563ba2ed29e0d9f6bcd1/.github/workflows/minimax-review.yml#L225-L227) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`e2e/bin/curl` L125–130](https://github.com/jeremylongshore/omarchy-mlb-booth-entry/blob/79a47e3cd1ab8227ce7c563ba2ed29e0d9f6bcd1/e2e/bin/curl#L125-L130) — **capability not established by this reference**. Scoring refers to a baseball event in a curl test fixture.
+- **Evidence:** [`.github/workflows/minimax-review.yml` L225–227](https://github.com/jeremylongshore/omarchy-mlb-booth-entry/blob/79a47e3cd1ab8227ce7c563ba2ed29e0d9f6bcd1/.github/workflows/minimax-review.yml#L225-L227) (workflow; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L197–199](https://github.com/jeremylongshore/omarchy-mlb-booth-entry/blob/79a47e3cd1ab8227ce7c563ba2ed29e0d9f6bcd1/.github/workflows/minimax-review.yml#L197-L199).
 - **Release/changelog evidence:** 2 tags and 2 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 6/6 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R127
 
@@ -1858,14 +1868,14 @@ Repository: [jeremylongshore/omarchy-omatrail-entry](https://github.com/jeremylo
 Observed default branch: `main`; reachable commits: **80**; head: `d4667749c7f5838af94fb53d0407970a43024ce3`. GitHub license metadata: **MIT**. Tree: **173 files**, complete. Observation: `2026-10-12T06:31:02Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`README.md` L129–131](https://github.com/jeremylongshore/omarchy-omatrail-entry/blob/d4667749c7f5838af94fb53d0407970a43024ce3/README.md#L129-L131) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Annotation:** [`CHANGELOG.md` L18–20](https://github.com/jeremylongshore/omarchy-omatrail-entry/blob/d4667749c7f5838af94fb53d0407970a43024ce3/CHANGELOG.md#L18-L20) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L207–209](https://github.com/jeremylongshore/omarchy-omatrail-entry/blob/d4667749c7f5838af94fb53d0407970a43024ce3/.github/workflows/minimax-review.yml#L207-L209) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L235–237](https://github.com/jeremylongshore/omarchy-omatrail-entry/blob/d4667749c7f5838af94fb53d0407970a43024ce3/.github/workflows/minimax-review.yml#L235-L237) (workflow; lexical evidence, not an operational verdict).
+- **Telemetry:** [`README.md` L129–131](https://github.com/jeremylongshore/omarchy-omatrail-entry/blob/d4667749c7f5838af94fb53d0407970a43024ce3/README.md#L129-L131) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Annotation:** [`CHANGELOG.md` L18–20](https://github.com/jeremylongshore/omarchy-omatrail-entry/blob/d4667749c7f5838af94fb53d0407970a43024ce3/CHANGELOG.md#L18-L20) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Evaluation:** [`bin/omatrail-state` L110–114](https://github.com/jeremylongshore/omarchy-omatrail-entry/blob/d4667749c7f5838af94fb53d0407970a43024ce3/bin/omatrail-state#L110-L114) — **capability not established by this reference**. Perl eval wraps JSON decoding of saved state.
+- **Evidence:** [`.github/workflows/minimax-review.yml` L235–237](https://github.com/jeremylongshore/omarchy-omatrail-entry/blob/d4667749c7f5838af94fb53d0407970a43024ce3/.github/workflows/minimax-review.yml#L235-L237) (workflow; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L207–209](https://github.com/jeremylongshore/omarchy-omatrail-entry/blob/d4667749c7f5838af94fb53d0407970a43024ce3/.github/workflows/minimax-review.yml#L207-L209).
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L18–20](https://github.com/jeremylongshore/omarchy-omatrail-entry/blob/d4667749c7f5838af94fb53d0407970a43024ce3/CHANGELOG.md#L18-L20).
-- **Verification scope:** 31/31 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 33/33 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R129: omarchy-pit-wall-entry
 
@@ -1876,12 +1886,12 @@ Observed default branch: `main`; reachable commits: **33**; head: `f54d730648c3e
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L197–199](https://github.com/jeremylongshore/omarchy-pit-wall-entry/blob/f54d730648c3e918b61c9acde812c03b2f90fcd3/.github/workflows/minimax-review.yml#L197-L199) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L225–227](https://github.com/jeremylongshore/omarchy-pit-wall-entry/blob/f54d730648c3e918b61c9acde812c03b2f90fcd3/.github/workflows/minimax-review.yml#L225-L227) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`.github/workflows/minimax-review.yml` L197–199](https://github.com/jeremylongshore/omarchy-pit-wall-entry/blob/f54d730648c3e918b61c9acde812c03b2f90fcd3/.github/workflows/minimax-review.yml#L197-L199) (workflow; lexical evidence only, not an operational verdict).
+- **Evidence:** [`.github/workflows/minimax-review.yml` L225–227](https://github.com/jeremylongshore/omarchy-pit-wall-entry/blob/f54d730648c3e918b61c9acde812c03b2f90fcd3/.github/workflows/minimax-review.yml#L225-L227) (workflow; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L197–199](https://github.com/jeremylongshore/omarchy-pit-wall-entry/blob/f54d730648c3e918b61c9acde812c03b2f90fcd3/.github/workflows/minimax-review.yml#L197-L199).
 - **Release/changelog evidence:** 1 tags and 1 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 6/6 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R130: omarchy-quiet-queue-entry
 
@@ -1892,12 +1902,12 @@ Observed default branch: `main`; reachable commits: **38**; head: `8616c6d14779a
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L155–157](https://github.com/jeremylongshore/omarchy-quiet-queue-entry/blob/8616c6d14779a0b84859927dc083ce4af170085b/.github/workflows/minimax-review.yml#L155-L157) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L183–185](https://github.com/jeremylongshore/omarchy-quiet-queue-entry/blob/8616c6d14779a0b84859927dc083ce4af170085b/.github/workflows/minimax-review.yml#L183-L185) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`bin/quiet-queue` L79–85](https://github.com/jeremylongshore/omarchy-quiet-queue-entry/blob/8616c6d14779a0b84859927dc083ce4af170085b/bin/quiet-queue#L79-L85) — **capability not established by this reference**. Perl eval decodes a local state payload; this is not a quality evaluator.
+- **Evidence:** [`.github/workflows/minimax-review.yml` L183–185](https://github.com/jeremylongshore/omarchy-quiet-queue-entry/blob/8616c6d14779a0b84859927dc083ce4af170085b/.github/workflows/minimax-review.yml#L183-L185) (workflow; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L155–157](https://github.com/jeremylongshore/omarchy-quiet-queue-entry/blob/8616c6d14779a0b84859927dc083ce4af170085b/.github/workflows/minimax-review.yml#L155-L157).
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 6/6 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R131: omarchy-ship
 
@@ -1905,15 +1915,15 @@ Repository: [jeremylongshore/omarchy-ship](https://github.com/jeremylongshore/om
 
 Observed default branch: `main`; reachable commits: **4**; head: `83f5ed873e95c04911e46b6ad131dc6ef91daef0`. GitHub license metadata: **MIT**. Tree: **23 files**, complete. Observation: `2026-10-12T06:31:04Z`.
 
-- **Trace:** [`CHANGELOG.md` L28–30](https://github.com/jeremylongshore/omarchy-ship/blob/83f5ed873e95c04911e46b6ad131dc6ef91daef0/CHANGELOG.md#L28-L30) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Trace:** [`CHANGELOG.md` L28–30](https://github.com/jeremylongshore/omarchy-ship/blob/83f5ed873e95c04911e46b6ad131dc6ef91daef0/CHANGELOG.md#L28-L30) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
-- **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`README.md` L121–123](https://github.com/jeremylongshore/omarchy-ship/blob/83f5ed873e95c04911e46b6ad131dc6ef91daef0/README.md#L121-L123) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Annotation:** [`scripts/check-contracts.py` L34–39](https://github.com/jeremylongshore/omarchy-ship/blob/83f5ed873e95c04911e46b6ad131dc6ef91daef0/scripts/check-contracts.py#L34-L39) — **capability not established by this reference**. The annotation hit is Python future-import syntax.
+- **Evaluation:** [`README.md` L121–123](https://github.com/jeremylongshore/omarchy-ship/blob/83f5ed873e95c04911e46b6ad131dc6ef91daef0/README.md#L121-L123) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 2 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L28–30](https://github.com/jeremylongshore/omarchy-ship/blob/83f5ed873e95c04911e46b6ad131dc6ef91daef0/CHANGELOG.md#L28-L30).
-- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 6/6 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R132
 
@@ -1926,10 +1936,10 @@ Repository: [jeremylongshore/omarchy-wait-state-entry](https://github.com/jeremy
 Observed default branch: `main`; reachable commits: **19**; head: `2c84ec04540578ced9403fc74aa7c153bff7bb95`. GitHub license metadata: **MIT**. Tree: **76 files**, complete. Observation: `2026-10-12T06:31:06Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`README.md` L93–95](https://github.com/jeremylongshore/omarchy-wait-state-entry/blob/2c84ec04540578ced9403fc74aa7c153bff7bb95/README.md#L93-L95) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Telemetry:** [`README.md` L93–95](https://github.com/jeremylongshore/omarchy-wait-state-entry/blob/2c84ec04540578ced9403fc74aa7c153bff7bb95/README.md#L93-L95) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L197–199](https://github.com/jeremylongshore/omarchy-wait-state-entry/blob/2c84ec04540578ced9403fc74aa7c153bff7bb95/.github/workflows/minimax-review.yml#L197-L199) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L225–227](https://github.com/jeremylongshore/omarchy-wait-state-entry/blob/2c84ec04540578ced9403fc74aa7c153bff7bb95/.github/workflows/minimax-review.yml#L225-L227) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`.github/workflows/minimax-review.yml` L197–199](https://github.com/jeremylongshore/omarchy-wait-state-entry/blob/2c84ec04540578ced9403fc74aa7c153bff7bb95/.github/workflows/minimax-review.yml#L197-L199) (workflow; lexical evidence only, not an operational verdict).
+- **Evidence:** [`.github/workflows/minimax-review.yml` L225–227](https://github.com/jeremylongshore/omarchy-wait-state-entry/blob/2c84ec04540578ced9403fc74aa7c153bff7bb95/.github/workflows/minimax-review.yml#L225-L227) (workflow; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L197–199](https://github.com/jeremylongshore/omarchy-wait-state-entry/blob/2c84ec04540578ced9403fc74aa7c153bff7bb95/.github/workflows/minimax-review.yml#L197-L199).
 - **Release/changelog evidence:** 1 tags and 1 releases enumerated; 1 release records have lexical matches. [release `v1.0.0`](https://github.com/jeremylongshore/omarchy-wait-state-entry/releases/tag/v1.0.0).
@@ -1944,12 +1954,12 @@ Observed default branch: `main`; reachable commits: **37**; head: `09dee7afbcbe5
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L207–209](https://github.com/jeremylongshore/omarchy-widget-template/blob/09dee7afbcbe565057c9a9f744fd2eeb5af3dc4d/.github/workflows/minimax-review.yml#L207-L209) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L235–237](https://github.com/jeremylongshore/omarchy-widget-template/blob/09dee7afbcbe565057c9a9f744fd2eeb5af3dc4d/.github/workflows/minimax-review.yml#L235-L237) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`.github/workflows/minimax-review.yml` L207–209](https://github.com/jeremylongshore/omarchy-widget-template/blob/09dee7afbcbe565057c9a9f744fd2eeb5af3dc4d/.github/workflows/minimax-review.yml#L207-L209) (workflow; lexical evidence only, not an operational verdict).
+- **Evidence:** [`.github/workflows/minimax-review.yml` L235–237](https://github.com/jeremylongshore/omarchy-widget-template/blob/09dee7afbcbe565057c9a9f744fd2eeb5af3dc4d/.github/workflows/minimax-review.yml#L235-L237) (workflow; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L207–209](https://github.com/jeremylongshore/omarchy-widget-template/blob/09dee7afbcbe565057c9a9f744fd2eeb5af3dc4d/.github/workflows/minimax-review.yml#L207-L209).
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 6/6 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R135: omarchy-workspace-storyboard-entry
 
@@ -1958,14 +1968,14 @@ Repository: [jeremylongshore/omarchy-workspace-storyboard-entry](https://github.
 Observed default branch: `main`; reachable commits: **37**; head: `fadbe463f541a382c207694ac74b303e367081f0`. GitHub license metadata: **MIT**. Tree: **80 files**, complete. Observation: `2026-10-12T06:31:08Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
+- **Telemetry:** [`e2e/bin/hyprctl` L21–25](https://github.com/jeremylongshore/omarchy-workspace-storyboard-entry/blob/fadbe463f541a382c207694ac74b303e367081f0/e2e/bin/hyprctl#L21-L25) — **capability not established by this reference**. Observability is a synthetic window-title label in an end-to-end fixture.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L155–157](https://github.com/jeremylongshore/omarchy-workspace-storyboard-entry/blob/fadbe463f541a382c207694ac74b303e367081f0/.github/workflows/minimax-review.yml#L155-L157) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L183–185](https://github.com/jeremylongshore/omarchy-workspace-storyboard-entry/blob/fadbe463f541a382c207694ac74b303e367081f0/.github/workflows/minimax-review.yml#L183-L185) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`bin/workspace-storyboard-history` L75–78](https://github.com/jeremylongshore/omarchy-workspace-storyboard-entry/blob/fadbe463f541a382c207694ac74b303e367081f0/bin/workspace-storyboard-history#L75-L78) — **capability not established by this reference**. Perl eval wraps JSON decoding of a history event.
+- **Evidence:** [`.github/workflows/minimax-review.yml` L183–185](https://github.com/jeremylongshore/omarchy-workspace-storyboard-entry/blob/fadbe463f541a382c207694ac74b303e367081f0/.github/workflows/minimax-review.yml#L183-L185) (workflow; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L155–157](https://github.com/jeremylongshore/omarchy-workspace-storyboard-entry/blob/fadbe463f541a382c207694ac74b303e367081f0/.github/workflows/minimax-review.yml#L155-L157).
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L35–37](https://github.com/jeremylongshore/omarchy-workspace-storyboard-entry/blob/fadbe463f541a382c207694ac74b303e367081f0/CHANGELOG.md#L35-L37).
-- **Verification scope:** 7/7 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 3 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 10/10 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 3 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R136: omarchy-x-files-entry
 
@@ -1973,15 +1983,15 @@ Repository: [jeremylongshore/omarchy-x-files-entry](https://github.com/jeremylon
 
 Observed default branch: `main`; reachable commits: **31**; head: `7d942d7291072bd79935e239f3ef626441d0787a`. GitHub license metadata: **MIT**. Tree: **82 files**, complete. Observation: `2026-10-12T06:31:08Z`.
 
-- **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`README.md` L212–214](https://github.com/jeremylongshore/omarchy-x-files-entry/blob/7d942d7291072bd79935e239f3ef626441d0787a/README.md#L212-L214) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Trace:** [`bin/x-files-login` L13–18](https://github.com/jeremylongshore/omarchy-x-files-entry/blob/7d942d7291072bd79935e239f3ef626441d0787a/bin/x-files-login#L13-L18) — **capability not established by this reference**. The login script disables shell command tracing to avoid exposing credentials.
+- **Telemetry:** [`README.md` L212–214](https://github.com/jeremylongshore/omarchy-x-files-entry/blob/7d942d7291072bd79935e239f3ef626441d0787a/README.md#L212-L214) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L197–199](https://github.com/jeremylongshore/omarchy-x-files-entry/blob/7d942d7291072bd79935e239f3ef626441d0787a/.github/workflows/minimax-review.yml#L197-L199) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L225–227](https://github.com/jeremylongshore/omarchy-x-files-entry/blob/7d942d7291072bd79935e239f3ef626441d0787a/.github/workflows/minimax-review.yml#L225-L227) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`bin/x-files-secure-state` L105–112](https://github.com/jeremylongshore/omarchy-x-files-entry/blob/7d942d7291072bd79935e239f3ef626441d0787a/bin/x-files-secure-state#L105-L112) — **capability not established by this reference**. Perl eval wraps state-file writes; it is exception handling.
+- **Evidence:** [`.github/workflows/minimax-review.yml` L225–227](https://github.com/jeremylongshore/omarchy-x-files-entry/blob/7d942d7291072bd79935e239f3ef626441d0787a/.github/workflows/minimax-review.yml#L225-L227) (workflow; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L197–199](https://github.com/jeremylongshore/omarchy-x-files-entry/blob/7d942d7291072bd79935e239f3ef626441d0787a/.github/workflows/minimax-review.yml#L197-L199).
 - **Release/changelog evidence:** 1 tags and 1 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 8/8 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R137: oss-agent-lab
 
@@ -1991,13 +2001,13 @@ Observed default branch: `main`; reachable commits: **39**; head: `7f188f6b89300
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
-- **Annotation:** [`scoring/scorer.py` L184–186](https://github.com/jeremylongshore/oss-agent-lab/blob/7f188f6b89300523bf0e9864fc26f35a621df981/scoring/scorer.py#L184-L186) (source; lexical evidence, not an operational verdict).
-- **Evaluation:** [`scoring/index.py` L81–83](https://github.com/jeremylongshore/oss-agent-lab/blob/7f188f6b89300523bf0e9864fc26f35a621df981/scoring/index.py#L81-L83) (source; lexical evidence, not an operational verdict).
+- **Annotation:** [`scoring/scorer.py` L182–188](https://github.com/jeremylongshore/oss-agent-lab/blob/7f188f6b89300523bf0e9864fc26f35a621df981/scoring/scorer.py#L182-L188) — **capability not established by this reference**. The annotation reference is a scoring heuristic about Python type hints.
+- **Evaluation:** [`scoring/index.py` L79–86](https://github.com/jeremylongshore/oss-agent-lab/blob/7f188f6b89300523bf0e9864fc26f35a621df981/scoring/index.py#L79-L86) — **capability not established by this reference**. The excerpt documents a score-index input and output; the scoring algorithm is not shown.
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/validate.yml` L40–42](https://github.com/jeremylongshore/oss-agent-lab/blob/7f188f6b89300523bf0e9864fc26f35a621df981/.github/workflows/validate.yml#L40-L42).
 - **Release/changelog evidence:** 1 tags and 1 releases enumerated; 1 release records have lexical matches. [`CHANGELOG.md` L42–44](https://github.com/jeremylongshore/oss-agent-lab/blob/7f188f6b89300523bf0e9864fc26f35a621df981/CHANGELOG.md#L42-L44); [release `v1.0.0`](https://github.com/jeremylongshore/oss-agent-lab/releases/tag/v1.0.0).
-- **Verification scope:** 18/18 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 32/32 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R138
 
@@ -2009,15 +2019,15 @@ Repository: [jeremylongshore/perception-with-intent](https://github.com/jeremylo
 
 Observed default branch: `main`; reachable commits: **100**; head: `b812b4406c41584a095b109b41ff5dfc58700b03`. GitHub license metadata: **NOASSERTION (GitHub did not identify an SPDX license)**. Tree: **329 files**, complete. Observation: `2026-10-12T06:31:10Z`.
 
-- **Trace:** [`.github/workflows/deploy.yml` L86–88](https://github.com/jeremylongshore/perception-with-intent/blob/b812b4406c41584a095b109b41ff5dfc58700b03/.github/workflows/deploy.yml#L86-L88) (workflow; lexical evidence, not an operational verdict).
-- **Telemetry:** [`README.md` L517–519](https://github.com/jeremylongshore/perception-with-intent/blob/b812b4406c41584a095b109b41ff5dfc58700b03/README.md#L517-L519) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`README.md` L148–150](https://github.com/jeremylongshore/perception-with-intent/blob/b812b4406c41584a095b109b41ff5dfc58700b03/README.md#L148-L150) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Trace:** [`perception_app/agent_engine_app.py` L17–20](https://github.com/jeremylongshore/perception-with-intent/blob/b812b4406c41584a095b109b41ff5dfc58700b03/perception_app/agent_engine_app.py#L17-L20) — **capability not established by this reference**. The source explicitly lists OpenTelemetry instrumentation as unfinished work.
+- **Telemetry:** [`perception_app/agent_engine_app.py` L17–20](https://github.com/jeremylongshore/perception-with-intent/blob/b812b4406c41584a095b109b41ff5dfc58700b03/perception_app/agent_engine_app.py#L17-L20) — **capability not established by this reference**. The source explicitly lists OpenTelemetry instrumentation as unfinished work.
+- **Annotation:** [`perception_app/jvp_agent/tools/strategic_orchestrator.py` L3–8](https://github.com/jeremylongshore/perception-with-intent/blob/b812b4406c41584a095b109b41ff5dfc58700b03/perception_app/jvp_agent/tools/strategic_orchestrator.py#L3-L8) — **capability not established by this reference**. The annotation match is Python future-import syntax.
+- **Evaluation:** [`agent.py` L28–34](https://github.com/jeremylongshore/perception-with-intent/blob/b812b4406c41584a095b109b41ff5dfc58700b03/agent.py#L28-L34) — **capability not established by this reference**. The excerpt is an agent-responsibility description mentioning relevance scoring; scoring implementation is not shown.
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
-- **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
+- **Taxonomy:** [`scripts/seed-firestore.js` L96–101](https://github.com/jeremylongshore/perception-with-intent/blob/b812b4406c41584a095b109b41ff5dfc58700b03/scripts/seed-firestore.js#L96-L101) — **capability not established by this reference**. Taxonomy is a remote feed URL parameter in seed data.
 - **Related workflow references:** [`.github/workflows/deploy-agents.yml` L79–81](https://github.com/jeremylongshore/perception-with-intent/blob/b812b4406c41584a095b109b41ff5dfc58700b03/.github/workflows/deploy-agents.yml#L79-L81); [`.github/workflows/deploy.yml` L86–88](https://github.com/jeremylongshore/perception-with-intent/blob/b812b4406c41584a095b109b41ff5dfc58700b03/.github/workflows/deploy.yml#L86-L88).
 - **Release/changelog evidence:** 3 tags and 3 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L105–107](https://github.com/jeremylongshore/perception-with-intent/blob/b812b4406c41584a095b109b41ff5dfc58700b03/CHANGELOG.md#L105-L107).
-- **Verification scope:** 13/13 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 9 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 23/23 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 9 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R140: plane
 
@@ -2025,15 +2035,15 @@ Repository: [jeremylongshore/plane](https://github.com/jeremylongshore/plane). V
 
 Observed default branch: `preview`; reachable commits: **6988**; head: `13db2f883f141f139b106f9459c44ad030772d73`. GitHub license metadata: **AGPL-3.0**. Tree: **4929 files**, complete. Observation: `2026-10-12T06:31:10Z`.
 
-- **Trace:** [`apps/api/plane/utils/telemetry.py` L10–12](https://github.com/jeremylongshore/plane/blob/13db2f883f141f139b106f9459c44ad030772d73/apps/api/plane/utils/telemetry.py#L10-L12) (source; lexical evidence, not an operational verdict).
-- **Telemetry:** [`apps/api/plane/utils/telemetry.py` L10–12](https://github.com/jeremylongshore/plane/blob/13db2f883f141f139b106f9459c44ad030772d73/apps/api/plane/utils/telemetry.py#L10-L12) (source; lexical evidence, not an operational verdict).
-- **Annotation:** [`.github/workflows/feature-deployment.yml` L162–164](https://github.com/jeremylongshore/plane/blob/13db2f883f141f139b106f9459c44ad030772d73/.github/workflows/feature-deployment.yml#L162-L164) (workflow; lexical evidence, not an operational verdict).
+- **Trace:** [`apps/api/plane/utils/telemetry.py` L37–41](https://github.com/jeremylongshore/plane/blob/13db2f883f141f139b106f9459c44ad030772d73/apps/api/plane/utils/telemetry.py#L37-L41) — **implementation source**. The forked service constructs an OTLP span exporter and adds a batch span processor to its tracer provider.
+- **Telemetry:** [`apps/api/plane/utils/telemetry.py` L37–41](https://github.com/jeremylongshore/plane/blob/13db2f883f141f139b106f9459c44ad030772d73/apps/api/plane/utils/telemetry.py#L37-L41) — **implementation source**. The forked service constructs an OTLP span exporter and adds a batch span processor to its tracer provider.
+- **Annotation:** [`.github/workflows/feature-deployment.yml` L162–164](https://github.com/jeremylongshore/plane/blob/13db2f883f141f139b106f9459c44ad030772d73/.github/workflows/feature-deployment.yml#L162-L164) (workflow; lexical evidence only, not an operational verdict).
 - **Evaluation:** no public positive reference in the inspected sample; absence is **not established**.
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/feature-deployment.yml` L162–164](https://github.com/jeremylongshore/plane/blob/13db2f883f141f139b106f9459c44ad030772d73/.github/workflows/feature-deployment.yml#L162-L164).
 - **Release/changelog evidence:** 55 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 12/12 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 7 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 15/15 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 7 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R141
 
@@ -2045,15 +2055,15 @@ Repository: [jeremylongshore/posthog](https://github.com/jeremylongshore/posthog
 
 Observed default branch: `master`; reachable commits: **32350**; head: `9363415156300413a0eb614b70428eeae1ba2a24`. GitHub license metadata: **NOASSERTION (GitHub did not identify an SPDX license)**. Tree: **15432 files**, complete. Observation: `2026-10-12T06:31:12Z`.
 
-- **Trace:** [`ee/hogai/eval/base.py` L34–36](https://github.com/jeremylongshore/posthog/blob/9363415156300413a0eb614b70428eeae1ba2a24/ee/hogai/eval/base.py#L34-L36) (source; lexical evidence, not an operational verdict).
-- **Telemetry:** [`nodejs/src/common/tracing/otel.ts` L1–3](https://github.com/jeremylongshore/posthog/blob/9363415156300413a0eb614b70428eeae1ba2a24/nodejs/src/common/tracing/otel.ts#L1-L3) (source; lexical evidence, not an operational verdict).
-- **Annotation:** [`posthog/api/annotation.py` L15–17](https://github.com/jeremylongshore/posthog/blob/9363415156300413a0eb614b70428eeae1ba2a24/posthog/api/annotation.py#L15-L17) (source; lexical evidence, not an operational verdict).
-- **Evaluation:** [`ee/hogai/eval/base.py` L9–11](https://github.com/jeremylongshore/posthog/blob/9363415156300413a0eb614b70428eeae1ba2a24/ee/hogai/eval/base.py#L9-L11) (source; lexical evidence, not an operational verdict).
+- **Trace:** [`nodejs/src/common/tracing/otel.ts` L14–21](https://github.com/jeremylongshore/posthog/blob/9363415156300413a0eb614b70428eeae1ba2a24/nodejs/src/common/tracing/otel.ts#L14-L21) — **implementation source**. The forked tracing initializer returns early when the SDK is disabled or the OTLP endpoint is absent; its SDK/exporter imports are also present.
+- **Telemetry:** [`nodejs/src/common/tracing/otel.ts` L14–21](https://github.com/jeremylongshore/posthog/blob/9363415156300413a0eb614b70428eeae1ba2a24/nodejs/src/common/tracing/otel.ts#L14-L21) — **implementation source**. The forked tracing initializer returns early when the SDK is disabled or the OTLP endpoint is absent; its SDK/exporter imports are also present.
+- **Annotation:** [`frontend/src/models/annotationsModel.ts` L14–22](https://github.com/jeremylongshore/posthog/blob/9363415156300413a0eb614b70428eeae1ba2a24/frontend/src/models/annotationsModel.ts#L14-L22) — **other domain**. The forked analytics model defines annotation data and converts annotation timestamps into the project timezone.
+- **Evaluation:** [`.github/scripts/post-eval-summary.js` L102–108](https://github.com/jeremylongshore/posthog/blob/9363415156300413a0eb614b70428eeae1ba2a24/.github/scripts/post-eval-summary.js#L102-L108) — **implementation source**. The forked CI helper builds an AI-evaluation summary with experiment/metric counts and regression/improvement sections.
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
-- **Taxonomy:** [`ee/hogai/eval/schema.py` L11–13](https://github.com/jeremylongshore/posthog/blob/9363415156300413a0eb614b70428eeae1ba2a24/ee/hogai/eval/schema.py#L11-L13) (source; lexical evidence, not an operational verdict).
+- **Taxonomy:** [`frontend/src/taxonomy/helpers.ts` L15–20](https://github.com/jeremylongshore/posthog/blob/9363415156300413a0eb614b70428eeae1ba2a24/frontend/src/taxonomy/helpers.ts#L15-L20) — **other domain**. The forked taxonomy helper looks up analytics filter definitions by group type; this is a UI/query taxonomy.
 - **Related workflow references:** [`.github/workflows/cd-ai-evals-image.yml` L2–4](https://github.com/jeremylongshore/posthog/blob/9363415156300413a0eb614b70428eeae1ba2a24/.github/workflows/cd-ai-evals-image.yml#L2-L4); [`.github/workflows/ci-ai.yml` L17–19](https://github.com/jeremylongshore/posthog/blob/9363415156300413a0eb614b70428eeae1ba2a24/.github/workflows/ci-ai.yml#L17-L19); [`.github/workflows/ci-backend.yml` L839–841](https://github.com/jeremylongshore/posthog/blob/9363415156300413a0eb614b70428eeae1ba2a24/.github/workflows/ci-backend.yml#L839-L841); [`.github/workflows/ci-frontend.yml` L138–140](https://github.com/jeremylongshore/posthog/blob/9363415156300413a0eb614b70428eeae1ba2a24/.github/workflows/ci-frontend.yml#L138-L140); [`.github/workflows/ci-python.yml` L121–123](https://github.com/jeremylongshore/posthog/blob/9363415156300413a0eb614b70428eeae1ba2a24/.github/workflows/ci-python.yml#L121-L123); [`.github/workflows/ci-rust.yml` L210–212](https://github.com/jeremylongshore/posthog/blob/9363415156300413a0eb614b70428eeae1ba2a24/.github/workflows/ci-rust.yml#L210-L212).
 - **Release/changelog evidence:** 135 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 319/319 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 50 workflow paths and 5 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 382/382 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 50 workflow paths and 5 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R143: pr-to-prompt
 
@@ -2064,12 +2074,12 @@ Observed default branch: `main`; reachable commits: **65**; head: `c77dee8fc83ca
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`src/core/contracts/evaluator.ts` L182–184](https://github.com/jeremylongshore/pr-to-prompt/blob/c77dee8fc83ca4ad1ad1bcfae437939c427a96b9/src/core/contracts/evaluator.ts#L182-L184) (source; lexical evidence, not an operational verdict).
+- **Evaluation:** [`src/core/contracts/evaluator.ts` L184–189](https://github.com/jeremylongshore/pr-to-prompt/blob/c77dee8fc83ca4ad1ad1bcfae437939c427a96b9/src/core/contracts/evaluator.ts#L184-L189) — **contract**. The contract evaluator accepts contracts, a diff and a prompt specification and returns contract results; individual evaluation rules are outside this range.
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
-- **Taxonomy:** [`CHANGELOG.md` L79–81](https://github.com/jeremylongshore/pr-to-prompt/blob/c77dee8fc83ca4ad1ad1bcfae437939c427a96b9/CHANGELOG.md#L79-L81) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Taxonomy:** [`src/core/decisions/classifier.ts` L5–10](https://github.com/jeremylongshore/pr-to-prompt/blob/c77dee8fc83ca4ad1ad1bcfae437939c427a96b9/src/core/decisions/classifier.ts#L5-L10) — **contract**. The decision contract names four actions organized by predictability and reversibility.
 - **Related workflows:** no publishable lexical match among 5 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 8 tags and 7 releases enumerated; 2 release records have lexical matches. [`CHANGELOG.md` L79–81](https://github.com/jeremylongshore/pr-to-prompt/blob/c77dee8fc83ca4ad1ad1bcfae437939c427a96b9/CHANGELOG.md#L79-L81); [release `v0.8.0`](https://github.com/jeremylongshore/pr-to-prompt/releases/tag/v0.8.0); [release `v0.7.0`](https://github.com/jeremylongshore/pr-to-prompt/releases/tag/v0.7.0).
-- **Verification scope:** 9/9 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 5 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 14/14 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 5 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R144
 
@@ -2081,15 +2091,15 @@ Repository: [jeremylongshore/prompts-intent-solutions](https://github.com/jeremy
 
 Observed default branch: `main`; reachable commits: **38**; head: `571b5842ba418b08f295f26b4995ddf7122629f8`. GitHub license metadata: **MIT**. Tree: **324 files**, complete. Observation: `2026-10-12T06:31:15Z`.
 
-- **Trace:** [`prompts/03-cloud-observability-audit.md` L17–19](https://github.com/jeremylongshore/prompts-intent-solutions/blob/571b5842ba418b08f295f26b4995ddf7122629f8/prompts/03-cloud-observability-audit.md#L17-L19) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Telemetry:** [`prompts/03-cloud-observability-audit.md` L2–4](https://github.com/jeremylongshore/prompts-intent-solutions/blob/571b5842ba418b08f295f26b4995ddf7122629f8/prompts/03-cloud-observability-audit.md#L2-L4) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`prompts/03-cloud-observability-audit.md` L13–15](https://github.com/jeremylongshore/prompts-intent-solutions/blob/571b5842ba418b08f295f26b4995ddf7122629f8/prompts/03-cloud-observability-audit.md#L13-L15) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evidence:** [`README.md` L51–53](https://github.com/jeremylongshore/prompts-intent-solutions/blob/571b5842ba418b08f295f26b4995ddf7122629f8/README.md#L51-L53) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Trace:** [`prompts/03-cloud-observability-audit.md` L17–19](https://github.com/jeremylongshore/prompts-intent-solutions/blob/571b5842ba418b08f295f26b4995ddf7122629f8/prompts/03-cloud-observability-audit.md#L17-L19) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Telemetry:** [`prompts/03-cloud-observability-audit.md` L2–4](https://github.com/jeremylongshore/prompts-intent-solutions/blob/571b5842ba418b08f295f26b4995ddf7122629f8/prompts/03-cloud-observability-audit.md#L2-L4) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Annotation:** [`tools/generate_prompt_catalog.py` L9–14](https://github.com/jeremylongshore/prompts-intent-solutions/blob/571b5842ba418b08f295f26b4995ddf7122629f8/tools/generate_prompt_catalog.py#L9-L14) — **capability not established by this reference**. The match is Python future-import syntax.
+- **Evaluation:** [`prompts/03-cloud-observability-audit.md` L13–15](https://github.com/jeremylongshore/prompts-intent-solutions/blob/571b5842ba418b08f295f26b4995ddf7122629f8/prompts/03-cloud-observability-audit.md#L13-L15) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Evidence:** [`README.md` L51–53](https://github.com/jeremylongshore/prompts-intent-solutions/blob/571b5842ba418b08f295f26b4995ddf7122629f8/README.md#L51-L53) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 2 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 6 tags and 5 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 6/6 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 7/7 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R146: publishing-skills
 
@@ -2100,9 +2110,9 @@ Observed default branch: `main`; reachable commits: **13**; head: `43fbe3d700d0c
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`README.md` L5–7](https://github.com/jeremylongshore/publishing-skills/blob/43fbe3d700d0c658ed71acf51b8a26188b719e11/README.md#L5-L7) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evidence:** [`README.md` L9–11](https://github.com/jeremylongshore/publishing-skills/blob/43fbe3d700d0c658ed71acf51b8a26188b719e11/README.md#L9-L11) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`README.md` L11–13](https://github.com/jeremylongshore/publishing-skills/blob/43fbe3d700d0c658ed71acf51b8a26188b719e11/README.md#L11-L13) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`README.md` L5–7](https://github.com/jeremylongshore/publishing-skills/blob/43fbe3d700d0c658ed71acf51b8a26188b719e11/README.md#L5-L7) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Evidence:** [`README.md` L9–11](https://github.com/jeremylongshore/publishing-skills/blob/43fbe3d700d0c658ed71acf51b8a26188b719e11/README.md#L9-L11) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Taxonomy:** [`README.md` L11–13](https://github.com/jeremylongshore/publishing-skills/blob/43fbe3d700d0c658ed71acf51b8a26188b719e11/README.md#L11-L13) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Related workflows:** no publishable lexical match among 0 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
 - **Verification scope:** 1/1 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 0 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
@@ -2116,12 +2126,12 @@ Observed default branch: `master`; reachable commits: **129**; head: `58fa356b8d
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`README.md` L125–127](https://github.com/jeremylongshore/resume-firebase/blob/58fa356b8d7619131ad776517778b65d5d805cbe/README.md#L125-L127) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`README.md` L125–127](https://github.com/jeremylongshore/resume-firebase/blob/58fa356b8d7619131ad776517778b65d5d805cbe/README.md#L125-L127) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 5 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 5 tags and 5 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 7/7 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 5 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 10/10 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 5 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R148: resume-realtime
 
@@ -2129,7 +2139,7 @@ Repository: [jeremylongshore/resume-realtime](https://github.com/jeremylongshore
 
 Observed default branch: `main`; reachable commits: **17**; head: `db0d66c46b655fbb95facf3a5e45dedf4965bdc1`. GitHub license metadata: **MIT**. Tree: **45 files**, complete. Observation: `2026-10-12T06:31:18Z`.
 
-- **Trace:** no public positive reference in the inspected sample; absence is **not established**.
+- **Trace:** [`src/main.rs` L7–13](https://github.com/jeremylongshore/resume-realtime/blob/db0d66c46b655fbb95facf3a5e45dedf4965bdc1/src/main.rs#L7-L13) — **implementation source**. The Rust application imports and initializes its formatting tracing subscriber.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
 - **Evaluation:** no public positive reference in the inspected sample; absence is **not established**.
@@ -2137,7 +2147,7 @@ Observed default branch: `main`; reachable commits: **17**; head: `db0d66c46b655
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 2 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 3/3 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 4/4 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R149: rtfm-testing
 
@@ -2179,13 +2189,13 @@ Observed default branch: `main`; reachable commits: **32**; head: `f7e2babef3b8d
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
-- **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`README.md` L5–7](https://github.com/jeremylongshore/searchcarriers/blob/f7e2babef3b8dd147c3f3a5168290aa02e1d5b64/README.md#L5-L7) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Annotation:** [`plugins/searchcarriers-ops-reporter/scripts/field_map.py` L9–14](https://github.com/jeremylongshore/searchcarriers/blob/f7e2babef3b8dd147c3f3a5168290aa02e1d5b64/plugins/searchcarriers-ops-reporter/scripts/field_map.py#L9-L14) — **capability not established by this reference**. The match is Python future-import syntax.
+- **Evaluation:** [`scripts/sops-env` L2–8](https://github.com/jeremylongshore/searchcarriers/blob/f7e2babef3b8dd147c3f3a5168290aa02e1d5b64/scripts/sops-env#L2-L8) — **capability not established by this reference**. Evaluated appears in secret-handling documentation that says plaintext is not evaluated as shell.
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 1 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 1 tags and 0 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L89–91](https://github.com/jeremylongshore/searchcarriers/blob/f7e2babef3b8dd147c3f3a5168290aa02e1d5b64/CHANGELOG.md#L89-L91).
-- **Verification scope:** 3/3 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R152: searchcarriers-tools
 
@@ -2194,14 +2204,14 @@ Repository: [jeremylongshore/searchcarriers-tools](https://github.com/jeremylong
 Observed default branch: `main`; reachable commits: **6**; head: `579ad1d612e9fe85a6739c8bba05964475d518aa`. GitHub license metadata: **Apache-2.0**. Tree: **350 files**, complete. Observation: `2026-10-12T06:31:20Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L259–261](https://github.com/jeremylongshore/searchcarriers-tools/blob/579ad1d612e9fe85a6739c8bba05964475d518aa/.audit-harness/scripts/emit-evidence.sh#L259-L261) (source; lexical evidence, not an operational verdict).
-- **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.audit-harness/scripts/emit-evidence.sh` L9–11](https://github.com/jeremylongshore/searchcarriers-tools/blob/579ad1d612e9fe85a6739c8bba05964475d518aa/.audit-harness/scripts/emit-evidence.sh#L9-L11) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L2–4](https://github.com/jeremylongshore/searchcarriers-tools/blob/579ad1d612e9fe85a6739c8bba05964475d518aa/.audit-harness/scripts/emit-evidence.sh#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L260–262](https://github.com/jeremylongshore/searchcarriers-tools/blob/579ad1d612e9fe85a6739c8bba05964475d518aa/.audit-harness/scripts/emit-evidence.sh#L260-L262) (source; lexical evidence, not an operational verdict).
+- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L386–390](https://github.com/jeremylongshore/searchcarriers-tools/blob/579ad1d612e9fe85a6739c8bba05964475d518aa/.audit-harness/scripts/emit-evidence.sh#L386-L390) — **implementation source**. The vendored audit-harness emitter conditionally writes buffered OTEL records.
+- **Annotation:** [`plugins/searchcarriers-ops-reporter/scripts/field_map.py` L9–14](https://github.com/jeremylongshore/searchcarriers-tools/blob/579ad1d612e9fe85a6739c8bba05964475d518aa/plugins/searchcarriers-ops-reporter/scripts/field_map.py#L9-L14) — **capability not established by this reference**. The match is Python future-import syntax.
+- **Evaluation:** [`.audit-harness/scripts/emit-evidence.sh` L192–199](https://github.com/jeremylongshore/searchcarriers-tools/blob/579ad1d612e9fe85a6739c8bba05964475d518aa/.audit-harness/scripts/emit-evidence.sh#L192-L199) — **implementation source**. The vendored emitter copies evaluated/skipped dimensions into gate coverage.
+- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L63–72](https://github.com/jeremylongshore/searchcarriers-tools/blob/579ad1d612e9fe85a6739c8bba05964475d518aa/.audit-harness/scripts/emit-evidence.sh#L63-L72) — **contract**. The vendored emitter declares in-toto statement and gate-result predicate identifiers.
+- **Taxonomy:** [`.audit-harness/scripts/emit-evidence.sh` L259–264](https://github.com/jeremylongshore/searchcarriers-tools/blob/579ad1d612e9fe85a6739c8bba05964475d518aa/.audit-harness/scripts/emit-evidence.sh#L259-L264) — **capability not established by this reference**. The taxonomy reference is an explanatory comment linking the event specification.
 - **Related workflows:** no publishable lexical match among 2 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 1 tags and 1 releases enumerated; 0 release records have lexical matches. [`.audit-harness/CHANGELOG.md` L23–25](https://github.com/jeremylongshore/searchcarriers-tools/blob/579ad1d612e9fe85a6739c8bba05964475d518aa/.audit-harness/CHANGELOG.md#L23-L25); [`CHANGELOG.md` L32–34](https://github.com/jeremylongshore/searchcarriers-tools/blob/579ad1d612e9fe85a6739c8bba05964475d518aa/CHANGELOG.md#L32-L34).
-- **Verification scope:** 32/32 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 35/35 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R153
 
@@ -2233,11 +2243,11 @@ Repository: [jeremylongshore/skills](https://github.com/jeremylongshore/skills).
 
 Observed default branch: `main`; reachable commits: **47**; head: `7c71a845071e8f994253db0d26c7e36fa90e2b5e`. GitHub license metadata: **MIT**. Tree: **429 files**, complete. Observation: `2026-10-12T06:31:23Z`.
 
-- **Trace:** [`README.md` L116–118](https://github.com/jeremylongshore/skills/blob/7c71a845071e8f994253db0d26c7e36fa90e2b5e/README.md#L116-L118) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Telemetry:** [`README.md` L1011–1013](https://github.com/jeremylongshore/skills/blob/7c71a845071e8f994253db0d26c7e36fa90e2b5e/README.md#L1011-L1013) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Annotation:** [`README.md` L394–396](https://github.com/jeremylongshore/skills/blob/7c71a845071e8f994253db0d26c7e36fa90e2b5e/README.md#L394-L396) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evaluation:** [`README.md` L90–92](https://github.com/jeremylongshore/skills/blob/7c71a845071e8f994253db0d26c7e36fa90e2b5e/README.md#L90-L92) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evidence:** [`README.md` L156–158](https://github.com/jeremylongshore/skills/blob/7c71a845071e8f994253db0d26c7e36fa90e2b5e/README.md#L156-L158) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Trace:** [`README.md` L116–118](https://github.com/jeremylongshore/skills/blob/7c71a845071e8f994253db0d26c7e36fa90e2b5e/README.md#L116-L118) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Telemetry:** [`README.md` L1011–1013](https://github.com/jeremylongshore/skills/blob/7c71a845071e8f994253db0d26c7e36fa90e2b5e/README.md#L1011-L1013) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Annotation:** [`README.md` L394–396](https://github.com/jeremylongshore/skills/blob/7c71a845071e8f994253db0d26c7e36fa90e2b5e/README.md#L394-L396) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Evaluation:** [`README.md` L90–92](https://github.com/jeremylongshore/skills/blob/7c71a845071e8f994253db0d26c7e36fa90e2b5e/README.md#L90-L92) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Evidence:** [`README.md` L156–158](https://github.com/jeremylongshore/skills/blob/7c71a845071e8f994253db0d26c7e36fa90e2b5e/README.md#L156-L158) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 0 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 1 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
@@ -2249,15 +2259,15 @@ Repository: [jeremylongshore/startaitools.com](https://github.com/jeremylongshor
 
 Observed default branch: `master`; reachable commits: **1557**; head: `0a1813dd3c75658f3900733be5f97eea233ed4c0`. GitHub license metadata: **MIT**. Tree: **5215 files**, complete. Observation: `2026-10-12T06:31:24Z`.
 
-- **Trace:** [`content/posts/wild-deep-dive-3-observability.md` L55–57](https://github.com/jeremylongshore/startaitools.com/blob/0a1813dd3c75658f3900733be5f97eea233ed4c0/content/posts/wild-deep-dive-3-observability.md#L55-L57) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Telemetry:** [`CHANGELOG.md` L3586–3588](https://github.com/jeremylongshore/startaitools.com/blob/0a1813dd3c75658f3900733be5f97eea233ed4c0/CHANGELOG.md#L3586-L3588) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Annotation:** [`scripts/blog/blogpipe/evidence.py` L38–40](https://github.com/jeremylongshore/startaitools.com/blob/0a1813dd3c75658f3900733be5f97eea233ed4c0/scripts/blog/blogpipe/evidence.py#L38-L40) (source; lexical evidence, not an operational verdict).
-- **Evaluation:** [`CHANGELOG.md` L3365–3367](https://github.com/jeremylongshore/startaitools.com/blob/0a1813dd3c75658f3900733be5f97eea233ed4c0/CHANGELOG.md#L3365-L3367) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evidence:** [`scripts/blog/blogpipe/evidence.py` L1–3](https://github.com/jeremylongshore/startaitools.com/blob/0a1813dd3c75658f3900733be5f97eea233ed4c0/scripts/blog/blogpipe/evidence.py#L1-L3) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
+- **Trace:** [`content/mcp-for-beginners/04-PracticalImplementation/samples/csharp/src/ServiceDefaults/Extensions.cs` L57–64](https://github.com/jeremylongshore/startaitools.com/blob/0a1813dd3c75658f3900733be5f97eea233ed4c0/content/mcp-for-beginners/04-PracticalImplementation/samples/csharp/src/ServiceDefaults/Extensions.cs#L57-L64) — **implementation source**. A vendored documentation sample configures ASP.NET and HTTP-client tracing instrumentation; it is sample code.
+- **Telemetry:** [`content/mcp-for-beginners/04-PracticalImplementation/samples/csharp/src/ServiceDefaults/Extensions.cs` L57–64](https://github.com/jeremylongshore/startaitools.com/blob/0a1813dd3c75658f3900733be5f97eea233ed4c0/content/mcp-for-beginners/04-PracticalImplementation/samples/csharp/src/ServiceDefaults/Extensions.cs#L57-L64) — **implementation source**. A vendored documentation sample configures ASP.NET and HTTP-client tracing instrumentation; it is sample code.
+- **Annotation:** [`scripts/blog/blogpipe/evidence.py` L38–42](https://github.com/jeremylongshore/startaitools.com/blob/0a1813dd3c75658f3900733be5f97eea233ed4c0/scripts/blog/blogpipe/evidence.py#L38-L42) — **capability not established by this reference**. The annotation match is Python future-import syntax.
+- **Evaluation:** [`scripts/blog/pilot_release_gate.py` L132–137](https://github.com/jeremylongshore/startaitools.com/blob/0a1813dd3c75658f3900733be5f97eea233ed4c0/scripts/blog/pilot_release_gate.py#L132-L137) — **other domain**. The publication gate reads a post and returns a refusal verdict on read errors before inspecting its pilot marker.
+- **Evidence:** [`scripts/blog/blogpipe/evidence.py` L10–15](https://github.com/jeremylongshore/startaitools.com/blob/0a1813dd3c75658f3900733be5f97eea233ed4c0/scripts/blog/blogpipe/evidence.py#L10-L15) — **capability not established by this reference**. The excerpt documents publication-receipt semantics; executable receipt handling is not shown.
+- **Taxonomy:** [`scripts/blog/ingest-syndication-replies.py` L838–845](https://github.com/jeremylongshore/startaitools.com/blob/0a1813dd3c75658f3900733be5f97eea233ed4c0/scripts/blog/ingest-syndication-replies.py#L838-L845) — **capability not established by this reference**. Failure class occurs in explanatory recovery commentary, not a taxonomy definition.
 - **Related workflow references:** [`.github/workflows/deploy.yml` L3–5](https://github.com/jeremylongshore/startaitools.com/blob/0a1813dd3c75658f3900733be5f97eea233ed4c0/.github/workflows/deploy.yml#L3-L5).
 - **Release/changelog evidence:** 337 tags and 335 releases enumerated; 13 release records have lexical matches. [`CHANGELOG.md` L310–312](https://github.com/jeremylongshore/startaitools.com/blob/0a1813dd3c75658f3900733be5f97eea233ed4c0/CHANGELOG.md#L310-L312); [`content/mcp-for-beginners/changelog.md` L34–36](https://github.com/jeremylongshore/startaitools.com/blob/0a1813dd3c75658f3900733be5f97eea233ed4c0/content/mcp-for-beginners/changelog.md#L34-L36); [`content/mcp-for-beginners/translations/en/changelog.md` L43–45](https://github.com/jeremylongshore/startaitools.com/blob/0a1813dd3c75658f3900733be5f97eea233ed4c0/content/mcp-for-beginners/translations/en/changelog.md#L43-L45); [release `v1.29.0`](https://github.com/jeremylongshore/startaitools.com/releases/tag/v1.29.0); [release `v1.27.1`](https://github.com/jeremylongshore/startaitools.com/releases/tag/v1.27.1); [release `v1.23.0`](https://github.com/jeremylongshore/startaitools.com/releases/tag/v1.23.0).
-- **Verification scope:** 25/25 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 3 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 60/60 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 3 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R158: stci-standard-inference-token-cost-index
 
@@ -2268,12 +2278,12 @@ Observed default branch: `main`; reachable commits: **129**; head: `d432b0a05719
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`README.md` L26–28](https://github.com/jeremylongshore/stci-standard-inference-token-cost-index/blob/d432b0a0571961187e647c5468dcb6248105f2f1/README.md#L26-L28) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evidence:** [`README.md` L201–203](https://github.com/jeremylongshore/stci-standard-inference-token-cost-index/blob/d432b0a0571961187e647c5468dcb6248105f2f1/README.md#L201-L203) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`functions/main.py` L74–77](https://github.com/jeremylongshore/stci-standard-inference-token-cost-index/blob/d432b0a0571961187e647c5468dcb6248105f2f1/functions/main.py#L74-L77) — **contract**. The API dispatches the current-benchmarks route to a handler; benchmark measurement is outside the excerpt.
+- **Evidence:** [`README.md` L201–203](https://github.com/jeremylongshore/stci-standard-inference-token-cost-index/blob/d432b0a0571961187e647c5468dcb6248105f2f1/README.md#L201-L203) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 5 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 6 tags and 6 releases enumerated; 2 release records have lexical matches. [`CHANGELOG.md` L12–14](https://github.com/jeremylongshore/stci-standard-inference-token-cost-index/blob/d432b0a0571961187e647c5468dcb6248105f2f1/CHANGELOG.md#L12-L14); [release `v0.5.0`](https://github.com/jeremylongshore/stci-standard-inference-token-cost-index/releases/tag/v0.5.0); [release `v0.2.0`](https://github.com/jeremylongshore/stci-standard-inference-token-cost-index/releases/tag/v0.2.0).
-- **Verification scope:** 9/9 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 5 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 13/13 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 5 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R159: tldraw
 
@@ -2281,15 +2291,15 @@ Repository: [jeremylongshore/tldraw](https://github.com/jeremylongshore/tldraw).
 
 Observed default branch: `main`; reachable commits: **5205**; head: `988379f9c4c267f8e848ff0f09c5d29ed60cb812`. GitHub license metadata: **NOASSERTION (GitHub did not identify an SPDX license)**. Tree: **3761 files**, complete. Observation: `2026-10-12T06:31:25Z`.
 
-- **Trace:** [`apps/examples/src/examples/image-annotator/ImageAnnotationEditor.tsx` L186–188](https://github.com/jeremylongshore/tldraw/blob/988379f9c4c267f8e848ff0f09c5d29ed60cb812/apps/examples/src/examples/image-annotator/ImageAnnotationEditor.tsx#L186-L188) (source; lexical evidence, not an operational verdict).
+- **Trace:** [`apps/examples/src/examples/image-annotator/ImageAnnotationEditor.tsx` L185–191](https://github.com/jeremylongshore/tldraw/blob/988379f9c4c267f8e848ff0f09c5d29ed60cb812/apps/examples/src/examples/image-annotator/ImageAnnotationEditor.tsx#L185-L191) — **capability not established by this reference**. Tracing means drawing an SVG path around the viewport in this image editor.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
-- **Annotation:** [`apps/examples/src/examples/image-annotator/types.tsx` L1–3](https://github.com/jeremylongshore/tldraw/blob/988379f9c4c267f8e848ff0f09c5d29ed60cb812/apps/examples/src/examples/image-annotator/types.tsx#L1-L3) (source; lexical evidence, not an operational verdict).
-- **Evaluation:** [`internal/scripts/benchmark-validators.ts` L2–4](https://github.com/jeremylongshore/tldraw/blob/988379f9c4c267f8e848ff0f09c5d29ed60cb812/internal/scripts/benchmark-validators.ts#L2-L4) (source; lexical evidence, not an operational verdict).
+- **Annotation:** [`apps/examples/src/examples/image-annotator/types.tsx` L1–6](https://github.com/jeremylongshore/tldraw/blob/988379f9c4c267f8e848ff0f09c5d29ed60cb812/apps/examples/src/examples/image-annotator/types.tsx#L1-L6) — **other domain**. The forked image-annotator example defines an input image shape with source, dimensions and type.
+- **Evaluation:** [`internal/scripts/benchmark-validators.ts` L23–28](https://github.com/jeremylongshore/tldraw/blob/988379f9c4c267f8e848ff0f09c5d29ed60cb812/internal/scripts/benchmark-validators.ts#L23-L28) — **implementation source**. The forked validator benchmark repeats measured function runs using performance timing; it is a software microbenchmark.
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/checks.yml` L11–13](https://github.com/jeremylongshore/tldraw/blob/988379f9c4c267f8e848ff0f09c5d29ed60cb812/.github/workflows/checks.yml#L11-L13); [`.github/workflows/deploy-analytics.yml` L21–23](https://github.com/jeremylongshore/tldraw/blob/988379f9c4c267f8e848ff0f09c5d29ed60cb812/.github/workflows/deploy-analytics.yml#L21-L23); [`.github/workflows/deploy-bemo.yml` L13–15](https://github.com/jeremylongshore/tldraw/blob/988379f9c4c267f8e848ff0f09c5d29ed60cb812/.github/workflows/deploy-bemo.yml#L13-L15); [`.github/workflows/deploy-dotcom.yml` L15–17](https://github.com/jeremylongshore/tldraw/blob/988379f9c4c267f8e848ff0f09c5d29ed60cb812/.github/workflows/deploy-dotcom.yml#L15-L17); [`.github/workflows/playwright-dotcom.yml` L11–13](https://github.com/jeremylongshore/tldraw/blob/988379f9c4c267f8e848ff0f09c5d29ed60cb812/.github/workflows/playwright-dotcom.yml#L11-L13); [`.github/workflows/playwright-examples.yml` L11–13](https://github.com/jeremylongshore/tldraw/blob/988379f9c4c267f8e848ff0f09c5d29ed60cb812/.github/workflows/playwright-examples.yml#L11-L13); [`.github/workflows/playwright-update-snapshots.yml` L22–24](https://github.com/jeremylongshore/tldraw/blob/988379f9c4c267f8e848ff0f09c5d29ed60cb812/.github/workflows/playwright-update-snapshots.yml#L22-L24); [`.github/workflows/prune-preview-deploys.yml` L14–16](https://github.com/jeremylongshore/tldraw/blob/988379f9c4c267f8e848ff0f09c5d29ed60cb812/.github/workflows/prune-preview-deploys.yml#L14-L16); [`.github/workflows/publish-editor-extensions.yml` L11–13](https://github.com/jeremylongshore/tldraw/blob/988379f9c4c267f8e848ff0f09c5d29ed60cb812/.github/workflows/publish-editor-extensions.yml#L11-L13); [`.github/workflows/publish-templates.yml` L14–16](https://github.com/jeremylongshore/tldraw/blob/988379f9c4c267f8e848ff0f09c5d29ed60cb812/.github/workflows/publish-templates.yml#L14-L16); [`.github/workflows/staging-e2e.yml` L17–19](https://github.com/jeremylongshore/tldraw/blob/988379f9c4c267f8e848ff0f09c5d29ed60cb812/.github/workflows/staging-e2e.yml#L17-L19).
 - **Release/changelog evidence:** 276 tags and 0 releases enumerated; 0 release records have lexical matches. [`packages/editor/src/lib/editor/managers/HistoryManager/HistoryManager.test.ts` L492–494](https://github.com/jeremylongshore/tldraw/blob/988379f9c4c267f8e848ff0f09c5d29ed60cb812/packages/editor/src/lib/editor/managers/HistoryManager/HistoryManager.test.ts#L492-L494); [`packages/editor/src/lib/editor/managers/HistoryManager/HistoryManager.ts` L39–41](https://github.com/jeremylongshore/tldraw/blob/988379f9c4c267f8e848ff0f09c5d29ed60cb812/packages/editor/src/lib/editor/managers/HistoryManager/HistoryManager.ts#L39-L41).
-- **Verification scope:** 45/45 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 30 workflow paths and 6 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 48/48 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 30 workflow paths and 6 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R160: tonone
 
@@ -2297,15 +2307,15 @@ Repository: [jeremylongshore/tonone](https://github.com/jeremylongshore/tonone).
 
 Observed default branch: `main`; reachable commits: **209**; head: `b06717187547dd931a973a69b41d8a2c2013803e`. GitHub license metadata: **MIT**. Tree: **2005 files**, complete. Observation: `2026-10-12T06:31:27Z`.
 
-- **Trace:** [`team/trace/scripts/setup.sh` L3–3](https://github.com/jeremylongshore/tonone/blob/b06717187547dd931a973a69b41d8a2c2013803e/team/trace/scripts/setup.sh#L3-L3) (source; lexical evidence, not an operational verdict).
-- **Telemetry:** [`README.md` L113–115](https://github.com/jeremylongshore/tonone/blob/b06717187547dd931a973a69b41d8a2c2013803e/README.md#L113-L115) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Annotation:** [`team/cortex/scripts/cortex_agent/prompt_evaluator.py` L3–5](https://github.com/jeremylongshore/tonone/blob/b06717187547dd931a973a69b41d8a2c2013803e/team/cortex/scripts/cortex_agent/prompt_evaluator.py#L3-L5) (source; lexical evidence, not an operational verdict).
-- **Evaluation:** [`team/eval/scripts/setup.sh` L3–3](https://github.com/jeremylongshore/tonone/blob/b06717187547dd931a973a69b41d8a2c2013803e/team/eval/scripts/setup.sh#L3-L3) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`skills/cortex-eval/SKILL.md` L112–114](https://github.com/jeremylongshore/tonone/blob/b06717187547dd931a973a69b41d8a2c2013803e/skills/cortex-eval/SKILL.md#L112-L114) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Trace:** [`team/trace/scripts/setup.sh` L1–3](https://github.com/jeremylongshore/tonone/blob/b06717187547dd931a973a69b41d8a2c2013803e/team/trace/scripts/setup.sh#L1-L3) — **capability not established by this reference**. The script only prints a readiness message for a prompt-only agent; it does not implement tracing.
+- **Telemetry:** [`README.md` L113–115](https://github.com/jeremylongshore/tonone/blob/b06717187547dd931a973a69b41d8a2c2013803e/README.md#L113-L115) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Annotation:** [`team/cortex/scripts/cortex_agent/prompt_evaluator.py` L1–7](https://github.com/jeremylongshore/tonone/blob/b06717187547dd931a973a69b41d8a2c2013803e/team/cortex/scripts/cortex_agent/prompt_evaluator.py#L1-L7) — **capability not established by this reference**. The match is Python future-import syntax.
+- **Evaluation:** [`team/eval/scripts/setup.sh` L1–3](https://github.com/jeremylongshore/tonone/blob/b06717187547dd931a973a69b41d8a2c2013803e/team/eval/scripts/setup.sh#L1-L3) — **capability not established by this reference**. The script only prints readiness for prompt-only agents; it does not execute an evaluator.
+- **Evidence:** [`skills/cortex-eval/SKILL.md` L112–114](https://github.com/jeremylongshore/tonone/blob/b06717187547dd931a973a69b41d8a2c2013803e/skills/cortex-eval/SKILL.md#L112-L114) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 1 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 1 tags and 0 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L20–22](https://github.com/jeremylongshore/tonone/blob/b06717187547dd931a973a69b41d8a2c2013803e/CHANGELOG.md#L20-L22).
-- **Verification scope:** 34/34 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 42/42 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R161: tons-of-skills-marketplace
 
@@ -2313,15 +2323,15 @@ Repository: [jeremylongshore/tons-of-skills-marketplace](https://github.com/jere
 
 Observed default branch: `main`; reachable commits: **2840**; head: `0d6ff1b7183c1cf4603187fc861c46466603e1b9`. GitHub license metadata: **MIT**. Tree: **25998 files**, complete. Observation: `2026-10-12T06:31:29Z`.
 
-- **Trace:** [`skills/.curated/setting-up-distributed-tracing/scripts/setup_jaeger.py` L3–5](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/skills/.curated/setting-up-distributed-tracing/scripts/setup_jaeger.py#L3-L5) (source; lexical evidence, not an operational verdict).
-- **Telemetry:** [`tests/test_openevidence_pack_contract.py` L29–31](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/tests/test_openevidence_pack_contract.py#L29-L31) (source; lexical evidence, not an operational verdict).
-- **Annotation:** [`tests/test_grading_page_in_sync.py` L9–11](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/tests/test_grading_page_in_sync.py#L9-L11) (source; lexical evidence, not an operational verdict).
-- **Evaluation:** [`scripts/run-jrig-eval.sh` L2–4](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/scripts/run-jrig-eval.sh#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`scripts/run-jrig-eval.sh` L39–41](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/scripts/run-jrig-eval.sh#L39-L41) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`.github/workflows/minimax-review.yml` L12–14](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/minimax-review.yml#L12-L14) (workflow; lexical evidence, not an operational verdict).
+- **Trace:** [`skills/.curated/setting-up-distributed-tracing/scripts/setup_jaeger.py` L26–32](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/skills/.curated/setting-up-distributed-tracing/scripts/setup_jaeger.py#L26-L32) — **capability not established by this reference**. The excerpt writes project/skill configuration labels; a deployed trace collector is not established.
+- **Telemetry:** [`plugins/saas-packs/snowflake-pack/shared/evidence/sql/auth-login-history.sql` L1–7](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/plugins/saas-packs/snowflake-pack/shared/evidence/sql/auth-login-history.sql#L1-L7) — **capability not established by this reference**. The SQL comment explicitly excludes client telemetry; the shown query begins an account-usage projection.
+- **Annotation:** [`skills/.curated/production-upgrade/scripts/audit_evidence.py` L2–9](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/skills/.curated/production-upgrade/scripts/audit_evidence.py#L2-L9) — **capability not established by this reference**. The annotation hit is Python future-import syntax.
+- **Evaluation:** [`scripts/run-jrig-eval.sh` L61–68](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/scripts/run-jrig-eval.sh#L61-L68) — **implementation source**. The evaluation wrapper configures the artifact directory and parses skill-directory input; execution is not shown in this excerpt.
+- **Evidence:** [`scripts/run-jrig-eval.sh` L37–44](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/scripts/run-jrig-eval.sh#L37-L44) — **capability not established by this reference**. The evidence reference documents retention requirements; artifact construction and verification need another reference.
+- **Taxonomy:** [`plugins/security/penetration-tester/lib/report.py` L2–9](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/plugins/security/penetration-tester/lib/report.py#L2-L9) — **capability not established by this reference**. The excerpt documents a skill finding format and links its taxonomy specification.
 - **Related workflow references:** [`.github/workflows/auto-bump-on-pr.yml` L120–122](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/auto-bump-on-pr.yml#L120-L122); [`.github/workflows/capture-marketplace-compliance-baseline.yml` L109–109](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/capture-marketplace-compliance-baseline.yml#L109-L109); [`.github/workflows/cli-publish.yml` L158–160](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/cli-publish.yml#L158-L160); [`.github/workflows/consistency-fixture-gate.yml` L4–6](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/consistency-fixture-gate.yml#L4-L6); [`.github/workflows/emit-evidence.yml` L1–3](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/emit-evidence.yml#L1-L3); [`.github/workflows/emit-publication-evidence.yml` L1–3](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/emit-publication-evidence.yml#L1-L3); [`.github/workflows/external-sync-fs-contract.yml` L14–16](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/external-sync-fs-contract.yml#L14-L16); [`.github/workflows/jrig-proofs-test.yml` L3–5](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/jrig-proofs-test.yml#L3-L5); [`.github/workflows/kernel-shadow-validation.yml` L16–18](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/kernel-shadow-validation.yml#L16-L18); [`.github/workflows/kernel-vendor-hash.yml` L86–88](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/kernel-vendor-hash.yml#L86-L88); [`.github/workflows/minimax-review.yml` L12–14](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/minimax-review.yml#L12-L14); [`.github/workflows/pr-prescreen-respond.yml` L15–17](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/pr-prescreen-respond.yml#L15-L17); [`.github/workflows/pr-prescreen.yml` L148–150](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/pr-prescreen.yml#L148-L150); [`.github/workflows/publish-all-packages.yml` L264–266](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/publish-all-packages.yml#L264-L266); [`.github/workflows/publish-changed-packages.yml` L6–8](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/publish-changed-packages.yml#L6-L8); [`.github/workflows/publish-mcp-registry.yml` L90–92](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/publish-mcp-registry.yml#L90-L92); [`.github/workflows/release.yml` L163–165](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/release.yml#L163-L165); [`.github/workflows/skill-conform.yml` L11–13](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/skill-conform.yml#L11-L13); [`.github/workflows/skill-eval-advisory.yml` L1–3](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/skill-eval-advisory.yml#L1-L3); [`.github/workflows/sync-external.yml` L35–37](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/sync-external.yml#L35-L37); [`.github/workflows/validate-plugins.yml` L31–33](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/validate-plugins.yml#L31-L33); [`.github/workflows/windows-path-contract.yml` L12–14](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/.github/workflows/windows-path-contract.yml#L12-L14).
 - **Release/changelog evidence:** 234 tags and 218 releases enumerated; 27 release records have lexical matches. [`CHANGELOG.md` L5–7](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/CHANGELOG.md#L5-L7); [`plugins/community/skills-janitor/CHANGELOG.md` L77–79](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/plugins/community/skills-janitor/CHANGELOG.md#L77-L79); [`plugins/database/freshie-inventory-manager/CHANGELOG.md` L30–31](https://github.com/jeremylongshore/tons-of-skills-marketplace/blob/0d6ff1b7183c1cf4603187fc861c46466603e1b9/plugins/database/freshie-inventory-manager/CHANGELOG.md#L30-L31); [release `@intentsolutionsio/agency-os@0.1.12`](https://github.com/jeremylongshore/tons-of-skills-marketplace/releases/tag/%40intentsolutionsio/agency-os%400.1.12); [release `@intentsolutionsio/governed-second-brain@0.1.7`](https://github.com/jeremylongshore/tons-of-skills-marketplace/releases/tag/%40intentsolutionsio/governed-second-brain%400.1.7); [release `@intentsolutionsio/000-jeremy-content-consistency-validator@3.0.2`](https://github.com/jeremylongshore/tons-of-skills-marketplace/releases/tag/%40intentsolutionsio/000-jeremy-content-consistency-validator%403.0.2); tag `evidence-latest` at `12f47f290dbb3a6127d31dd7b3298ac4d8a4411a`.
-- **Verification scope:** 907/907 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 39 workflow paths and 21 changelog paths were requested. 1 verified file references withheld from this projection.
+- **Verification scope:** 1025/1025 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 39 workflow paths and 21 changelog paths were requested. 1 verified file references withheld from this projection.
 
 ### A1-R162: twenty-mcp
 
@@ -2332,12 +2342,12 @@ Observed default branch: `main`; reachable commits: **21**; head: `f98f20caf32bc
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`README.md` L185–187](https://github.com/jeremylongshore/twenty-mcp/blob/f98f20caf32bc935674f3b0f4ed75264385f325f/README.md#L185-L187) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`README.md` L185–187](https://github.com/jeremylongshore/twenty-mcp/blob/f98f20caf32bc935674f3b0f4ed75264385f325f/README.md#L185-L187) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 2 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 3 tags and 0 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L30–32](https://github.com/jeremylongshore/twenty-mcp/blob/f98f20caf32bc935674f3b0f4ed75264385f325f/CHANGELOG.md#L30-L32).
-- **Verification scope:** 4/4 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 7/7 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R163: ui-ux-pro-max-skill
 
@@ -2353,7 +2363,7 @@ Observed default branch: `main`; reachable commits: **92**; head: `442307554ba70
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 0 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 1/1 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 0 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 3/3 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 0 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R164: uizze
 
@@ -2362,14 +2372,14 @@ Repository: [jeremylongshore/uizze](https://github.com/jeremylongshore/uizze). V
 Observed default branch: `main`; reachable commits: **40**; head: `d2cacfdcbe25d506820fa74bae4b7678e1c05de5`. GitHub license metadata: **MIT**. Tree: **251 files**, complete. Observation: `2026-10-12T06:31:33Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`integrations/benchmark/README.md` L23–25](https://github.com/jeremylongshore/uizze/blob/d2cacfdcbe25d506820fa74bae4b7678e1c05de5/integrations/benchmark/README.md#L23-L25) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`integrations/benchmark/scripts/verify.mjs` L11–13](https://github.com/jeremylongshore/uizze/blob/d2cacfdcbe25d506820fa74bae4b7678e1c05de5/integrations/benchmark/scripts/verify.mjs#L11-L13) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`integrations/benchmark/test/benchmark.test.mjs` L39–41](https://github.com/jeremylongshore/uizze/blob/d2cacfdcbe25d506820fa74bae4b7678e1c05de5/integrations/benchmark/test/benchmark.test.mjs#L39-L41) (source; lexical evidence, not an operational verdict).
+- **Telemetry:** [`integrations/benchmark/README.md` L23–25](https://github.com/jeremylongshore/uizze/blob/d2cacfdcbe25d506820fa74bae4b7678e1c05de5/integrations/benchmark/README.md#L23-L25) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Annotation:** [`integrations/github-action/src/index.js` L68–73](https://github.com/jeremylongshore/uizze/blob/d2cacfdcbe25d506820fa74bae4b7678e1c05de5/integrations/github-action/src/index.js#L68-L73) — **other domain**. The forked GitHub Action emits severity-mapped annotations for findings and computes its failure decision.
+- **Evaluation:** [`integrations/benchmark/scripts/verify.mjs` L13–22](https://github.com/jeremylongshore/uizze/blob/d2cacfdcbe25d506820fa74bae4b7678e1c05de5/integrations/benchmark/scripts/verify.mjs#L13-L22) — **test or fixture**. The forked benchmark verifier checks a fixed benchmark version and ordered task set before loading task definitions.
+- **Evidence:** [`integrations/benchmark/scripts/benchmark-lib.mjs` L88–95](https://github.com/jeremylongshore/uizze/blob/d2cacfdcbe25d506820fa74bae4b7678e1c05de5/integrations/benchmark/scripts/benchmark-lib.mjs#L88-L95) — **implementation source**. The forked rubric validator requires binary criterion values, nontrivial evidence strings, complete criteria and a matching claimed weighted total.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 4 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 13 tags and 0 releases enumerated; 0 release records have lexical matches. [`integrations/benchmark/CHANGELOG.md` L6–7](https://github.com/jeremylongshore/uizze/blob/d2cacfdcbe25d506820fa74bae4b7678e1c05de5/integrations/benchmark/CHANGELOG.md#L6-L7).
-- **Verification scope:** 47/47 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 4 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 52/52 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 4 workflow paths and 2 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R165: vertex-ai-samples
 
@@ -2377,15 +2387,15 @@ Repository: [jeremylongshore/vertex-ai-samples](https://github.com/jeremylongsho
 
 Observed default branch: `main`; reachable commits: **4123**; head: `3e4ed5a9fded94bac8b5dbe6d8c59e8d5c5195f1`. GitHub license metadata: **Apache-2.0**. Tree: **1275 files**, complete. Observation: `2026-10-12T06:31:33Z`.
 
-- **Trace:** no public positive reference in the inspected sample; absence is **not established**.
+- **Trace:** [`community-content/tf_agents_bandits_movie_recommendation_with_kfp_and_vertex_sdk/mlops_pipeline_tf_agents_bandits_movie_recommendation/src/logger/main.py` L78–84](https://github.com/jeremylongshore/vertex-ai-samples/blob/3e4ed5a9fded94bac8b5dbe6d8c59e8d5c5195f1/community-content/tf_agents_bandits_movie_recommendation_with_kfp_and_vertex_sdk/mlops_pipeline_tf_agents_bandits_movie_recommendation/src/logger/main.py#L78-L84) — **other domain**. The forked reinforcement-learning sample replaces an observation in a trajectory TimeStep; this is an RL trajectory data helper.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
-- **Annotation:** [`README.md` L84–86](https://github.com/jeremylongshore/vertex-ai-samples/blob/3e4ed5a9fded94bac8b5dbe6d8c59e8d5c5195f1/README.md#L84-L86) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evaluation:** [`community-content/vertex_pipeline_kfpv2/evaluate-model.py` L4–6](https://github.com/jeremylongshore/vertex-ai-samples/blob/3e4ed5a9fded94bac8b5dbe6d8c59e8d5c5195f1/community-content/vertex_pipeline_kfpv2/evaluate-model.py#L4-L6) (source; lexical evidence, not an operational verdict).
+- **Annotation:** [`notebooks/community/migration/UJ13 Data Labeling task.ipynb` L1108–1109](https://github.com/jeremylongshore/vertex-ai-samples/blob/3e4ed5a9fded94bac8b5dbe6d8c59e8d5c5195f1/notebooks/community/migration/UJ13%20Data%20Labeling%20task.ipynb#L1108-L1109) — **implementation source**. The forked notebook calls the Vertex data-labeling-job API; this is unexecuted notebook source.
+- **Evaluation:** [`community-content/vertex_pipeline_kfpv2/evaluate-model.py` L16–23](https://github.com/jeremylongshore/vertex-ai-samples/blob/3e4ed5a9fded94bac8b5dbe6d8c59e8d5c5195f1/community-content/vertex_pipeline_kfpv2/evaluate-model.py#L16-L23) — **implementation source**. The forked Vertex sample loads an experiment model and invokes regression evaluation with a target field and data URIs.
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 1 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 11/11 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 37/37 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R166: walkie-talkie
 
@@ -2396,8 +2406,8 @@ Observed default branch: `main`; reachable commits: **2**; head: `0b74f4d361022f
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`README.md` L34–36](https://github.com/jeremylongshore/walkie-talkie/blob/0b74f4d361022f51297896e2ef884c0ed5bfd0df/README.md#L34-L36) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evidence:** [`README.md` L15–17](https://github.com/jeremylongshore/walkie-talkie/blob/0b74f4d361022f51297896e2ef884c0ed5bfd0df/README.md#L15-L17) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`README.md` L34–36](https://github.com/jeremylongshore/walkie-talkie/blob/0b74f4d361022f51297896e2ef884c0ed5bfd0df/README.md#L34-L36) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Evidence:** [`README.md` L15–17](https://github.com/jeremylongshore/walkie-talkie/blob/0b74f4d361022f51297896e2ef884c0ed5bfd0df/README.md#L15-L17) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 0 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
@@ -2413,11 +2423,11 @@ Observed default branch: `main`; reachable commits: **232**; head: `468ef42644f8
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
 - **Evaluation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evidence:** [`README.md` L52–54](https://github.com/jeremylongshore/wasteland/blob/468ef42644f816afcf846eae534b1d57d8d3a3e0/README.md#L52-L54) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evidence:** [`README.md` L52–54](https://github.com/jeremylongshore/wasteland/blob/468ef42644f816afcf846eae534b1d57d8d3a3e0/README.md#L52-L54) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 2 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 5 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 3/3 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 7/7 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R168
 
@@ -2432,7 +2442,7 @@ Observed default branch: `main`; reachable commits: **25**; head: `f045782a952b5
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.github/workflows/ci.yml` L232–234](https://github.com/jeremylongshore/waygate-mcp/blob/f045782a952b565b43a70cf23442e1e5801eff61/.github/workflows/ci.yml#L232-L234) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`.github/workflows/ci.yml` L232–234](https://github.com/jeremylongshore/waygate-mcp/blob/f045782a952b565b43a70cf23442e1e5801eff61/.github/workflows/ci.yml#L232-L234) (workflow; lexical evidence only, not an operational verdict).
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/ci.yml` L232–234](https://github.com/jeremylongshore/waygate-mcp/blob/f045782a952b565b43a70cf23442e1e5801eff61/.github/workflows/ci.yml#L232-L234).
@@ -2449,15 +2459,15 @@ Repository: [jeremylongshore/wild](https://github.com/jeremylongshore/wild). Vis
 
 Observed default branch: `main`; reachable commits: **115**; head: `ac8a6b442b805ccd5aa0be3775d688f42dd3a6c2`. GitHub license metadata: **MIT**. Tree: **650 files**, complete. Observation: `2026-10-12T06:31:37Z`.
 
-- **Trace:** [`lib/wild/telemetry/collector/privacy/filter.rb` L21–23](https://github.com/jeremylongshore/wild/blob/ac8a6b442b805ccd5aa0be3775d688f42dd3a6c2/lib/wild/telemetry/collector/privacy/filter.rb#L21-L23) (source; lexical evidence, not an operational verdict).
-- **Telemetry:** [`lib/wild/telemetry/analysis.rb` L3–5](https://github.com/jeremylongshore/wild/blob/ac8a6b442b805ccd5aa0be3775d688f42dd3a6c2/lib/wild/telemetry/analysis.rb#L3-L5) (source; lexical evidence, not an operational verdict).
-- **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`lib/wild/telemetry/analysis.rb` L40–42](https://github.com/jeremylongshore/wild/blob/ac8a6b442b805ccd5aa0be3775d688f42dd3a6c2/lib/wild/telemetry/analysis.rb#L40-L42) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L2–4](https://github.com/jeremylongshore/wild/blob/ac8a6b442b805ccd5aa0be3775d688f42dd3a6c2/.audit-harness/scripts/emit-evidence.sh#L2-L4) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`.audit-harness/CHANGELOG.md` L164–166](https://github.com/jeremylongshore/wild/blob/ac8a6b442b805ccd5aa0be3775d688f42dd3a6c2/.audit-harness/CHANGELOG.md#L164-L166) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Trace:** [`lib/wild/telemetry/collector/privacy/filter.rb` L19–25](https://github.com/jeremylongshore/wild/blob/ac8a6b442b805ccd5aa0be3775d688f42dd3a6c2/lib/wild/telemetry/collector/privacy/filter.rb#L19-L25) — **contract**. A privacy-filter field-name list includes stack traces and trace identifiers; trace collection is not established here.
+- **Telemetry:** [`.audit-harness/scripts/emit-evidence.sh` L184–188](https://github.com/jeremylongshore/wild/blob/ac8a6b442b805ccd5aa0be3775d688f42dd3a6c2/.audit-harness/scripts/emit-evidence.sh#L184-L188) — **implementation source**. The older vendored emitter writes a gate-evaluated OTEL record to stderr.
+- **Annotation:** [`lib/wild/admin_tools/server/tools/manage_cache.rb` L30–36](https://github.com/jeremylongshore/wild/blob/ac8a6b442b805ccd5aa0be3775d688f42dd3a6c2/lib/wild/admin_tools/server/tools/manage_cache.rb#L30-L36) — **other domain**. The MCP cache-management tool declares destructive and non-read-only annotation hints.
+- **Evaluation:** [`.audit-harness/scripts/emit-evidence.sh` L53–56](https://github.com/jeremylongshore/wild/blob/ac8a6b442b805ccd5aa0be3775d688f42dd3a6c2/.audit-harness/scripts/emit-evidence.sh#L53-L56) — **capability not established by this reference**. The evaluation match is a predicate URI rather than scoring code.
+- **Evidence:** [`.audit-harness/scripts/emit-evidence.sh` L50–56](https://github.com/jeremylongshore/wild/blob/ac8a6b442b805ccd5aa0be3775d688f42dd3a6c2/.audit-harness/scripts/emit-evidence.sh#L50-L56) — **contract**. The older vendored emitter declares signing options and in-toto/gate-result identifiers.
+- **Taxonomy:** [`.audit-harness/CHANGELOG.md` L164–166](https://github.com/jeremylongshore/wild/blob/ac8a6b442b805ccd5aa0be3775d688f42dd3a6c2/.audit-harness/CHANGELOG.md#L164-L166) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L8–10](https://github.com/jeremylongshore/wild/blob/ac8a6b442b805ccd5aa0be3775d688f42dd3a6c2/.github/workflows/minimax-review.yml#L8-L10).
 - **Release/changelog evidence:** 0 tags and 0 releases enumerated; 0 release records have lexical matches. [`.audit-harness/CHANGELOG.md` L9–11](https://github.com/jeremylongshore/wild/blob/ac8a6b442b805ccd5aa0be3775d688f42dd3a6c2/.audit-harness/CHANGELOG.md#L9-L11); [`CHANGELOG.md` L21–23](https://github.com/jeremylongshore/wild/blob/ac8a6b442b805ccd5aa0be3775d688f42dd3a6c2/CHANGELOG.md#L21-L23).
-- **Verification scope:** 141/141 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 4 workflow paths and 4 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 166/166 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 4 workflow paths and 4 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R172: wild-admin-tools-mcp
 
@@ -2465,15 +2475,15 @@ Repository: [jeremylongshore/wild-admin-tools-mcp](https://github.com/jeremylong
 
 Observed default branch: `main`; reachable commits: **34**; head: `0c647ee611b338fb5435d69abbd60362c20c6071`. GitHub license metadata: **NOASSERTION (GitHub did not identify an SPDX license)**. Tree: **143 files**, complete. Observation: `2026-10-12T06:31:38Z`.
 
-- **Trace:** [`000-docs/018-AT-ADEC-telemetry-emission-hook-interface.md` L135–137](https://github.com/jeremylongshore/wild-admin-tools-mcp/blob/0c647ee611b338fb5435d69abbd60362c20c6071/000-docs/018-AT-ADEC-telemetry-emission-hook-interface.md#L135-L137) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Telemetry:** [`000-docs/018-AT-ADEC-telemetry-emission-hook-interface.md` L1–3](https://github.com/jeremylongshore/wild-admin-tools-mcp/blob/0c647ee611b338fb5435d69abbd60362c20c6071/000-docs/018-AT-ADEC-telemetry-emission-hook-interface.md#L1-L3) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Annotation:** [`CHANGELOG.md` L14–15](https://github.com/jeremylongshore/wild-admin-tools-mcp/blob/0c647ee611b338fb5435d69abbd60362c20c6071/CHANGELOG.md#L14-L15) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L138–140](https://github.com/jeremylongshore/wild-admin-tools-mcp/blob/0c647ee611b338fb5435d69abbd60362c20c6071/.github/workflows/minimax-review.yml#L138-L140) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L230–232](https://github.com/jeremylongshore/wild-admin-tools-mcp/blob/0c647ee611b338fb5435d69abbd60362c20c6071/.github/workflows/minimax-review.yml#L230-L232) (workflow; lexical evidence, not an operational verdict).
+- **Trace:** [`000-docs/018-AT-ADEC-telemetry-emission-hook-interface.md` L135–137](https://github.com/jeremylongshore/wild-admin-tools-mcp/blob/0c647ee611b338fb5435d69abbd60362c20c6071/000-docs/018-AT-ADEC-telemetry-emission-hook-interface.md#L135-L137) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Telemetry:** [`000-docs/018-AT-ADEC-telemetry-emission-hook-interface.md` L1–3](https://github.com/jeremylongshore/wild-admin-tools-mcp/blob/0c647ee611b338fb5435d69abbd60362c20c6071/000-docs/018-AT-ADEC-telemetry-emission-hook-interface.md#L1-L3) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Annotation:** [`spec/wild_admin_tools_mcp/server/tools/manage_cache_spec.rb` L18–20](https://github.com/jeremylongshore/wild-admin-tools-mcp/blob/0c647ee611b338fb5435d69abbd60362c20c6071/spec/wild_admin_tools_mcp/server/tools/manage_cache_spec.rb#L18-L20) — **test or fixture**. The test asserts that the tool exposes a destructive annotation hint.
+- **Evaluation:** [`spec/support/test_gate.rb` L14–26](https://github.com/jeremylongshore/wild-admin-tools-mcp/blob/0c647ee611b338fb5435d69abbd60362c20c6071/spec/support/test_gate.rb#L14-L26) — **test or fixture**. The test gate returns configured allowed/denied capability results while recording calls.
+- **Evidence:** [`.github/workflows/minimax-review.yml` L230–232](https://github.com/jeremylongshore/wild-admin-tools-mcp/blob/0c647ee611b338fb5435d69abbd60362c20c6071/.github/workflows/minimax-review.yml#L230-L232) (workflow; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L138–140](https://github.com/jeremylongshore/wild-admin-tools-mcp/blob/0c647ee611b338fb5435d69abbd60362c20c6071/.github/workflows/minimax-review.yml#L138-L140).
 - **Release/changelog evidence:** 1 tags and 1 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L14–15](https://github.com/jeremylongshore/wild-admin-tools-mcp/blob/0c647ee611b338fb5435d69abbd60362c20c6071/CHANGELOG.md#L14-L15).
-- **Verification scope:** 6/6 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 10/10 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R173: wild-capability-gate
 
@@ -2484,12 +2494,12 @@ Observed default branch: `main`; reachable commits: **33**; head: `4992cef0a264f
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`lib/wild/capability_gate/evaluator.rb` L17–19](https://github.com/jeremylongshore/wild-capability-gate/blob/4992cef0a264f44cc0bd3aad81abb812ed08df8e/lib/wild/capability_gate/evaluator.rb#L17-L19) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`spec/wild/capability_gate/evaluator_spec.rb` L88–90](https://github.com/jeremylongshore/wild-capability-gate/blob/4992cef0a264f44cc0bd3aad81abb812ed08df8e/spec/wild/capability_gate/evaluator_spec.rb#L88-L90) (source; lexical evidence, not an operational verdict).
+- **Evaluation:** [`lib/wild/capability_gate/evaluator.rb` L41–46](https://github.com/jeremylongshore/wild-capability-gate/blob/4992cef0a264f44cc0bd3aad81abb812ed08df8e/lib/wild/capability_gate/evaluator.rb#L41-L46) — **other domain**. The capability evaluator starts authorization checks for known capabilities and caller grants; its domain is access policy.
+- **Evidence:** [`spec/wild/capability_gate/evaluator_spec.rb` L87–100](https://github.com/jeremylongshore/wild-capability-gate/blob/4992cef0a264f44cc0bd3aad81abb812ed08df8e/spec/wild/capability_gate/evaluator_spec.rb#L87-L100) — **test or fixture**. The capability test creates an attestation-file fixture for prerequisite checks; cryptographic attestation is not established here.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L96–98](https://github.com/jeremylongshore/wild-capability-gate/blob/4992cef0a264f44cc0bd3aad81abb812ed08df8e/.github/workflows/minimax-review.yml#L96-L98).
 - **Release/changelog evidence:** 1 tags and 1 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L23–25](https://github.com/jeremylongshore/wild-capability-gate/blob/4992cef0a264f44cc0bd3aad81abb812ed08df8e/CHANGELOG.md#L23-L25).
-- **Verification scope:** 10/10 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 14/14 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R174: wild-gap-miner
 
@@ -2498,11 +2508,11 @@ Repository: [jeremylongshore/wild-gap-miner](https://github.com/jeremylongshore/
 Observed default branch: `main`; reachable commits: **13**; head: `e54d66f3622daf57498ec3a7ee6b1c566fff6dc4`. GitHub license metadata: **NOASSERTION (GitHub did not identify an SPDX license)**. Tree: **86 files**, complete. Observation: `2026-10-12T06:31:40Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`spec/support/telemetry_fixtures.rb` L3–5](https://github.com/jeremylongshore/wild-gap-miner/blob/e54d66f3622daf57498ec3a7ee6b1c566fff6dc4/spec/support/telemetry_fixtures.rb#L3-L5) (source; lexical evidence, not an operational verdict).
+- **Telemetry:** [`lib/wild_gap_miner/models/telemetry_record.rb` L5–10](https://github.com/jeremylongshore/wild-gap-miner/blob/e54d66f3622daf57498ec3a7ee6b1c566fff6dc4/lib/wild_gap_miner/models/telemetry_record.rb#L5-L10) — **contract**. TelemetryRecord retains a record-type discriminator and the raw event input.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`lib/wild_gap_miner/scoring/priority_ranker.rb` L4–6](https://github.com/jeremylongshore/wild-gap-miner/blob/e54d66f3622daf57498ec3a7ee6b1c566fff6dc4/lib/wild_gap_miner/scoring/priority_ranker.rb#L4-L6) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`spec/support/telemetry_fixtures.rb` L73–75](https://github.com/jeremylongshore/wild-gap-miner/blob/e54d66f3622daf57498ec3a7ee6b1c566fff6dc4/spec/support/telemetry_fixtures.rb#L73-L75) (source; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`.github/workflows/minimax-review.yml` L6–8](https://github.com/jeremylongshore/wild-gap-miner/blob/e54d66f3622daf57498ec3a7ee6b1c566fff6dc4/.github/workflows/minimax-review.yml#L6-L8) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`lib/wild_gap_miner/scoring/priority_ranker.rb` L5–9](https://github.com/jeremylongshore/wild-gap-miner/blob/e54d66f3622daf57498ec3a7ee6b1c566fff6dc4/lib/wild_gap_miner/scoring/priority_ranker.rb#L5-L9) — **other domain**. The gap ranker sorts gaps and assigns ordered ranks; this is gap prioritization.
+- **Evidence:** [`lib/wild_gap_miner/scoring/severity_scorer.rb` L20–25](https://github.com/jeremylongshore/wild-gap-miner/blob/e54d66f3622daf57498ec3a7ee6b1c566fff6dc4/lib/wild_gap_miner/scoring/severity_scorer.rb#L20-L25) — **contract**. The severity scorer preserves evidence and recommendation fields when constructing an adjusted gap result.
+- **Taxonomy:** [`.github/workflows/minimax-review.yml` L6–8](https://github.com/jeremylongshore/wild-gap-miner/blob/e54d66f3622daf57498ec3a7ee6b1c566fff6dc4/.github/workflows/minimax-review.yml#L6-L8) (workflow; lexical evidence only, not an operational verdict).
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L6–8](https://github.com/jeremylongshore/wild-gap-miner/blob/e54d66f3622daf57498ec3a7ee6b1c566fff6dc4/.github/workflows/minimax-review.yml#L6-L8).
 - **Release/changelog evidence:** 1 tags and 1 releases enumerated; 1 release records have lexical matches. [`CHANGELOG.md` L29–31](https://github.com/jeremylongshore/wild-gap-miner/blob/e54d66f3622daf57498ec3a7ee6b1c566fff6dc4/CHANGELOG.md#L29-L31); [release `v0.1.0`](https://github.com/jeremylongshore/wild-gap-miner/releases/tag/v0.1.0).
 - **Verification scope:** 10/10 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
@@ -2513,15 +2523,15 @@ Repository: [jeremylongshore/wild-hook-ops](https://github.com/jeremylongshore/w
 
 Observed default branch: `main`; reachable commits: **13**; head: `f90ad3beca86b1f290318467a963f0ee91e87300`. GitHub license metadata: **NOASSERTION (GitHub did not identify an SPDX license)**. Tree: **70 files**, complete. Observation: `2026-10-12T06:31:41Z`.
 
-- **Trace:** [`.github/workflows/minimax-review.yml` L123–125](https://github.com/jeremylongshore/wild-hook-ops/blob/f90ad3beca86b1f290318467a963f0ee91e87300/.github/workflows/minimax-review.yml#L123-L125) (workflow; lexical evidence, not an operational verdict).
+- **Trace:** [`.github/workflows/minimax-review.yml` L123–125](https://github.com/jeremylongshore/wild-hook-ops/blob/f90ad3beca86b1f290318467a963f0ee91e87300/.github/workflows/minimax-review.yml#L123-L125) (workflow; lexical evidence only, not an operational verdict).
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L225–227](https://github.com/jeremylongshore/wild-hook-ops/blob/f90ad3beca86b1f290318467a963f0ee91e87300/.github/workflows/minimax-review.yml#L225-L227) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L217–219](https://github.com/jeremylongshore/wild-hook-ops/blob/f90ad3beca86b1f290318467a963f0ee91e87300/.github/workflows/minimax-review.yml#L217-L219) (workflow; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`.github/workflows/minimax-review.yml` L13–15](https://github.com/jeremylongshore/wild-hook-ops/blob/f90ad3beca86b1f290318467a963f0ee91e87300/.github/workflows/minimax-review.yml#L13-L15) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`.github/workflows/minimax-review.yml` L225–227](https://github.com/jeremylongshore/wild-hook-ops/blob/f90ad3beca86b1f290318467a963f0ee91e87300/.github/workflows/minimax-review.yml#L225-L227) (workflow; lexical evidence only, not an operational verdict).
+- **Evidence:** [`.github/workflows/minimax-review.yml` L217–219](https://github.com/jeremylongshore/wild-hook-ops/blob/f90ad3beca86b1f290318467a963f0ee91e87300/.github/workflows/minimax-review.yml#L217-L219) (workflow; lexical evidence only, not an operational verdict).
+- **Taxonomy:** [`.github/workflows/minimax-review.yml` L13–15](https://github.com/jeremylongshore/wild-hook-ops/blob/f90ad3beca86b1f290318467a963f0ee91e87300/.github/workflows/minimax-review.yml#L13-L15) (workflow; lexical evidence only, not an operational verdict).
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L13–15](https://github.com/jeremylongshore/wild-hook-ops/blob/f90ad3beca86b1f290318467a963f0ee91e87300/.github/workflows/minimax-review.yml#L13-L15).
 - **Release/changelog evidence:** 1 tags and 1 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 4/4 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R176: wild-permission-analyzer
 
@@ -2532,8 +2542,8 @@ Observed default branch: `main`; reachable commits: **14**; head: `561da62837363
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L111–113](https://github.com/jeremylongshore/wild-permission-analyzer/blob/561da62837363f52939a11e049d5b516bd71fbb1/.github/workflows/minimax-review.yml#L111-L113) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L127–129](https://github.com/jeremylongshore/wild-permission-analyzer/blob/561da62837363f52939a11e049d5b516bd71fbb1/.github/workflows/minimax-review.yml#L127-L129) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`.github/workflows/minimax-review.yml` L111–113](https://github.com/jeremylongshore/wild-permission-analyzer/blob/561da62837363f52939a11e049d5b516bd71fbb1/.github/workflows/minimax-review.yml#L111-L113) (workflow; lexical evidence only, not an operational verdict).
+- **Evidence:** [`.github/workflows/minimax-review.yml` L127–129](https://github.com/jeremylongshore/wild-permission-analyzer/blob/561da62837363f52939a11e049d5b516bd71fbb1/.github/workflows/minimax-review.yml#L127-L129) (workflow; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L111–113](https://github.com/jeremylongshore/wild-permission-analyzer/blob/561da62837363f52939a11e049d5b516bd71fbb1/.github/workflows/minimax-review.yml#L111-L113).
 - **Release/changelog evidence:** 1 tags and 1 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L33–35](https://github.com/jeremylongshore/wild-permission-analyzer/blob/561da62837363f52939a11e049d5b516bd71fbb1/CHANGELOG.md#L33-L35).
@@ -2546,14 +2556,14 @@ Repository: [jeremylongshore/wild-rails-safe-introspection-mcp](https://github.c
 Observed default branch: `main`; reachable commits: **57**; head: `f4bddf72c2565ffe5be246c747c190c726cc2bec`. GitHub license metadata: **NOASSERTION (GitHub did not identify an SPDX license)**. Tree: **114 files**, complete. Observation: `2026-10-12T06:31:42Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`CHANGELOG.md` L48–50](https://github.com/jeremylongshore/wild-rails-safe-introspection-mcp/blob/f4bddf72c2565ffe5be246c747c190c726cc2bec/CHANGELOG.md#L48-L50) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Annotation:** [`.github/workflows/minimax-review.yml` L168–170](https://github.com/jeremylongshore/wild-rails-safe-introspection-mcp/blob/f4bddf72c2565ffe5be246c747c190c726cc2bec/.github/workflows/minimax-review.yml#L168-L170) (workflow; lexical evidence, not an operational verdict).
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L120–122](https://github.com/jeremylongshore/wild-rails-safe-introspection-mcp/blob/f4bddf72c2565ffe5be246c747c190c726cc2bec/.github/workflows/minimax-review.yml#L120-L122) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L215–217](https://github.com/jeremylongshore/wild-rails-safe-introspection-mcp/blob/f4bddf72c2565ffe5be246c747c190c726cc2bec/.github/workflows/minimax-review.yml#L215-L217) (workflow; lexical evidence, not an operational verdict).
+- **Telemetry:** [`CHANGELOG.md` L48–50](https://github.com/jeremylongshore/wild-rails-safe-introspection-mcp/blob/f4bddf72c2565ffe5be246c747c190c726cc2bec/CHANGELOG.md#L48-L50) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Annotation:** [`spec/wild_rails_safe_introspection/server/tools/find_records_by_filter_spec.rb` L35–39](https://github.com/jeremylongshore/wild-rails-safe-introspection-mcp/blob/f4bddf72c2565ffe5be246c747c190c726cc2bec/spec/wild_rails_safe_introspection/server/tools/find_records_by_filter_spec.rb#L35-L39) — **test or fixture**. The test asserts read-only and non-destructive MCP annotation hints.
+- **Evaluation:** [`.github/workflows/minimax-review.yml` L120–122](https://github.com/jeremylongshore/wild-rails-safe-introspection-mcp/blob/f4bddf72c2565ffe5be246c747c190c726cc2bec/.github/workflows/minimax-review.yml#L120-L122) (workflow; lexical evidence only, not an operational verdict).
+- **Evidence:** [`.github/workflows/minimax-review.yml` L215–217](https://github.com/jeremylongshore/wild-rails-safe-introspection-mcp/blob/f4bddf72c2565ffe5be246c747c190c726cc2bec/.github/workflows/minimax-review.yml#L215-L217) (workflow; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L120–122](https://github.com/jeremylongshore/wild-rails-safe-introspection-mcp/blob/f4bddf72c2565ffe5be246c747c190c726cc2bec/.github/workflows/minimax-review.yml#L120-L122).
 - **Release/changelog evidence:** 1 tags and 1 releases enumerated; 1 release records have lexical matches. [`CHANGELOG.md` L26–28](https://github.com/jeremylongshore/wild-rails-safe-introspection-mcp/blob/f4bddf72c2565ffe5be246c747c190c726cc2bec/CHANGELOG.md#L26-L28); [release `v0.1.0`](https://github.com/jeremylongshore/wild-rails-safe-introspection-mcp/releases/tag/v0.1.0).
-- **Verification scope:** 6/6 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 8/8 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R178: wild-session-telemetry
 
@@ -2561,15 +2571,15 @@ Repository: [jeremylongshore/wild-session-telemetry](https://github.com/jeremylo
 
 Observed default branch: `main`; reachable commits: **40**; head: `14bd29ad374e51e2bad1250e99306a847f890699`. GitHub license metadata: **NOASSERTION (GitHub did not identify an SPDX license)**. Tree: **80 files**, complete. Observation: `2026-10-12T06:31:43Z`.
 
-- **Trace:** [`lib/wild_session_telemetry/privacy/filter.rb` L18–20](https://github.com/jeremylongshore/wild-session-telemetry/blob/14bd29ad374e51e2bad1250e99306a847f890699/lib/wild_session_telemetry/privacy/filter.rb#L18-L20) (source; lexical evidence, not an operational verdict).
-- **Telemetry:** [`lib/wild_session_telemetry.rb` L3–5](https://github.com/jeremylongshore/wild-session-telemetry/blob/14bd29ad374e51e2bad1250e99306a847f890699/lib/wild_session_telemetry.rb#L3-L5) (source; lexical evidence, not an operational verdict).
+- **Trace:** [`lib/wild_session_telemetry/privacy/filter.rb` L14–22](https://github.com/jeremylongshore/wild-session-telemetry/blob/14bd29ad374e51e2bad1250e99306a847f890699/lib/wild_session_telemetry/privacy/filter.rb#L14-L22) — **contract**. The privacy contract lists trace/backtrace fields among forbidden event metadata.
+- **Telemetry:** [`lib/wild_session_telemetry.rb` L3–14](https://github.com/jeremylongshore/wild-session-telemetry/blob/14bd29ad374e51e2bad1250e99306a847f890699/lib/wild_session_telemetry.rb#L3-L14) — **dependency only**. The telemetry package loads event schema, validation, storage, retention, privacy and receiver components.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`lib/wild_session_telemetry/privacy/filter.rb` L10–12](https://github.com/jeremylongshore/wild-session-telemetry/blob/14bd29ad374e51e2bad1250e99306a847f890699/lib/wild_session_telemetry/privacy/filter.rb#L10-L12) (source; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L12–14](https://github.com/jeremylongshore/wild-session-telemetry/blob/14bd29ad374e51e2bad1250e99306a847f890699/.github/workflows/minimax-review.yml#L12-L14) (workflow; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`.github/workflows/minimax-review.yml` L7–9](https://github.com/jeremylongshore/wild-session-telemetry/blob/14bd29ad374e51e2bad1250e99306a847f890699/.github/workflows/minimax-review.yml#L7-L9) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`lib/wild_session_telemetry/privacy/filter.rb` L8–12](https://github.com/jeremylongshore/wild-session-telemetry/blob/14bd29ad374e51e2bad1250e99306a847f890699/lib/wild_session_telemetry/privacy/filter.rb#L8-L12) — **contract**. The metadata allowlist names gate-evaluated result and capability fields; this is event-schema policy, not a model judge.
+- **Evidence:** [`.github/workflows/minimax-review.yml` L12–14](https://github.com/jeremylongshore/wild-session-telemetry/blob/14bd29ad374e51e2bad1250e99306a847f890699/.github/workflows/minimax-review.yml#L12-L14) (workflow; lexical evidence only, not an operational verdict).
+- **Taxonomy:** [`.github/workflows/minimax-review.yml` L7–9](https://github.com/jeremylongshore/wild-session-telemetry/blob/14bd29ad374e51e2bad1250e99306a847f890699/.github/workflows/minimax-review.yml#L7-L9) (workflow; lexical evidence only, not an operational verdict).
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L3–5](https://github.com/jeremylongshore/wild-session-telemetry/blob/14bd29ad374e51e2bad1250e99306a847f890699/.github/workflows/minimax-review.yml#L3-L5).
 - **Release/changelog evidence:** 1 tags and 1 releases enumerated; 1 release records have lexical matches. [`CHANGELOG.md` L44–46](https://github.com/jeremylongshore/wild-session-telemetry/blob/14bd29ad374e51e2bad1250e99306a847f890699/CHANGELOG.md#L44-L46); [release `v0.1.0`](https://github.com/jeremylongshore/wild-session-telemetry/releases/tag/v0.1.0).
-- **Verification scope:** 35/35 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 39/39 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R179: wild-skillops-registry
 
@@ -2578,11 +2588,11 @@ Repository: [jeremylongshore/wild-skillops-registry](https://github.com/jeremylo
 Observed default branch: `main`; reachable commits: **14**; head: `4645f079fe70b4b14026395ee99f96671db68eb2`. GitHub license metadata: **NOASSERTION (GitHub did not identify an SPDX license)**. Tree: **77 files**, complete. Observation: `2026-10-12T06:31:44Z`.
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`.github/workflows/minimax-review.yml` L92–94](https://github.com/jeremylongshore/wild-skillops-registry/blob/4645f079fe70b4b14026395ee99f96671db68eb2/.github/workflows/minimax-review.yml#L92-L94) (workflow; lexical evidence, not an operational verdict).
+- **Telemetry:** [`.github/workflows/minimax-review.yml` L92–94](https://github.com/jeremylongshore/wild-skillops-registry/blob/4645f079fe70b4b14026395ee99f96671db68eb2/.github/workflows/minimax-review.yml#L92-L94) (workflow; lexical evidence only, not an operational verdict).
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L101–103](https://github.com/jeremylongshore/wild-skillops-registry/blob/4645f079fe70b4b14026395ee99f96671db68eb2/.github/workflows/minimax-review.yml#L101-L103) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L203–205](https://github.com/jeremylongshore/wild-skillops-registry/blob/4645f079fe70b4b14026395ee99f96671db68eb2/.github/workflows/minimax-review.yml#L203-L205) (workflow; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`.github/workflows/minimax-review.yml` L151–153](https://github.com/jeremylongshore/wild-skillops-registry/blob/4645f079fe70b4b14026395ee99f96671db68eb2/.github/workflows/minimax-review.yml#L151-L153) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`.github/workflows/minimax-review.yml` L101–103](https://github.com/jeremylongshore/wild-skillops-registry/blob/4645f079fe70b4b14026395ee99f96671db68eb2/.github/workflows/minimax-review.yml#L101-L103) (workflow; lexical evidence only, not an operational verdict).
+- **Evidence:** [`.github/workflows/minimax-review.yml` L203–205](https://github.com/jeremylongshore/wild-skillops-registry/blob/4645f079fe70b4b14026395ee99f96671db68eb2/.github/workflows/minimax-review.yml#L203-L205) (workflow; lexical evidence only, not an operational verdict).
+- **Taxonomy:** [`.github/workflows/minimax-review.yml` L151–153](https://github.com/jeremylongshore/wild-skillops-registry/blob/4645f079fe70b4b14026395ee99f96671db68eb2/.github/workflows/minimax-review.yml#L151-L153) (workflow; lexical evidence only, not an operational verdict).
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L92–94](https://github.com/jeremylongshore/wild-skillops-registry/blob/4645f079fe70b4b14026395ee99f96671db68eb2/.github/workflows/minimax-review.yml#L92-L94).
 - **Release/changelog evidence:** 1 tags and 1 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
 - **Verification scope:** 6/6 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 3 changelog paths were requested. 0 verified file references withheld from this projection.
@@ -2596,8 +2606,8 @@ Observed default branch: `main`; reachable commits: **14**; head: `61deece4bd8fb
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L135–137](https://github.com/jeremylongshore/wild-test-flake-forensics/blob/61deece4bd8fb5a8e80871e993c19b27c043a011/.github/workflows/minimax-review.yml#L135-L137) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L199–201](https://github.com/jeremylongshore/wild-test-flake-forensics/blob/61deece4bd8fb5a8e80871e993c19b27c043a011/.github/workflows/minimax-review.yml#L199-L201) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`.github/workflows/minimax-review.yml` L135–137](https://github.com/jeremylongshore/wild-test-flake-forensics/blob/61deece4bd8fb5a8e80871e993c19b27c043a011/.github/workflows/minimax-review.yml#L135-L137) (workflow; lexical evidence only, not an operational verdict).
+- **Evidence:** [`.github/workflows/minimax-review.yml` L199–201](https://github.com/jeremylongshore/wild-test-flake-forensics/blob/61deece4bd8fb5a8e80871e993c19b27c043a011/.github/workflows/minimax-review.yml#L199-L201) (workflow; lexical evidence only, not an operational verdict).
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L135–137](https://github.com/jeremylongshore/wild-test-flake-forensics/blob/61deece4bd8fb5a8e80871e993c19b27c043a011/.github/workflows/minimax-review.yml#L135-L137).
 - **Release/changelog evidence:** 1 tags and 1 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L33–35](https://github.com/jeremylongshore/wild-test-flake-forensics/blob/61deece4bd8fb5a8e80871e993c19b27c043a011/CHANGELOG.md#L33-L35).
@@ -2609,15 +2619,15 @@ Repository: [jeremylongshore/wild-transcript-pipeline](https://github.com/jeremy
 
 Observed default branch: `main`; reachable commits: **12**; head: `945ac662156a5ef8634c85bffaae75b9c1f6ef2a`. GitHub license metadata: **NOASSERTION (GitHub did not identify an SPDX license)**. Tree: **71 files**, complete. Observation: `2026-10-12T06:31:45Z`.
 
-- **Trace:** no public positive reference in the inspected sample; absence is **not established**.
-- **Telemetry:** [`README.md` L18–20](https://github.com/jeremylongshore/wild-transcript-pipeline/blob/945ac662156a5ef8634c85bffaae75b9c1f6ef2a/README.md#L18-L20) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Trace:** [`lib/wild_transcript_pipeline.rb` L47–70](https://github.com/jeremylongshore/wild-transcript-pipeline/blob/945ac662156a5ef8634c85bffaae75b9c1f6ef2a/lib/wild_transcript_pipeline.rb#L47-L70) — **implementation source**. The transcript pipeline parses input through an adapter, normalizes turns, calls redaction, detects intents and extracts tool references; source presence does not prove privacy effectiveness.
+- **Telemetry:** [`README.md` L18–20](https://github.com/jeremylongshore/wild-transcript-pipeline/blob/945ac662156a5ef8634c85bffaae75b9c1f6ef2a/README.md#L18-L20) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`.github/workflows/minimax-review.yml` L131–133](https://github.com/jeremylongshore/wild-transcript-pipeline/blob/945ac662156a5ef8634c85bffaae75b9c1f6ef2a/.github/workflows/minimax-review.yml#L131-L133) (workflow; lexical evidence, not an operational verdict).
-- **Evidence:** [`.github/workflows/minimax-review.yml` L184–186](https://github.com/jeremylongshore/wild-transcript-pipeline/blob/945ac662156a5ef8634c85bffaae75b9c1f6ef2a/.github/workflows/minimax-review.yml#L184-L186) (workflow; lexical evidence, not an operational verdict).
-- **Taxonomy:** [`.github/workflows/minimax-review.yml` L15–17](https://github.com/jeremylongshore/wild-transcript-pipeline/blob/945ac662156a5ef8634c85bffaae75b9c1f6ef2a/.github/workflows/minimax-review.yml#L15-L17) (workflow; lexical evidence, not an operational verdict).
+- **Evaluation:** [`.github/workflows/minimax-review.yml` L131–133](https://github.com/jeremylongshore/wild-transcript-pipeline/blob/945ac662156a5ef8634c85bffaae75b9c1f6ef2a/.github/workflows/minimax-review.yml#L131-L133) (workflow; lexical evidence only, not an operational verdict).
+- **Evidence:** [`.github/workflows/minimax-review.yml` L184–186](https://github.com/jeremylongshore/wild-transcript-pipeline/blob/945ac662156a5ef8634c85bffaae75b9c1f6ef2a/.github/workflows/minimax-review.yml#L184-L186) (workflow; lexical evidence only, not an operational verdict).
+- **Taxonomy:** [`.github/workflows/minimax-review.yml` L15–17](https://github.com/jeremylongshore/wild-transcript-pipeline/blob/945ac662156a5ef8634c85bffaae75b9c1f6ef2a/.github/workflows/minimax-review.yml#L15-L17) (workflow; lexical evidence only, not an operational verdict).
 - **Related workflow references:** [`.github/workflows/minimax-review.yml` L15–17](https://github.com/jeremylongshore/wild-transcript-pipeline/blob/945ac662156a5ef8634c85bffaae75b9c1f6ef2a/.github/workflows/minimax-review.yml#L15-L17).
 - **Release/changelog evidence:** 1 tags and 1 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 4/4 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 8/8 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 2 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R182: x-bug-triage-plugin
 
@@ -2628,12 +2638,12 @@ Observed default branch: `main`; reachable commits: **66**; head: `06f262b4150e0
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`README.md` L24–26](https://github.com/jeremylongshore/x-bug-triage-plugin/blob/06f262b4150e08df087649bf63df77160de0f6e0/README.md#L24-L26) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evidence:** [`README.md` L57–59](https://github.com/jeremylongshore/x-bug-triage-plugin/blob/06f262b4150e08df087649bf63df77160de0f6e0/README.md#L57-L59) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`README.md` L24–26](https://github.com/jeremylongshore/x-bug-triage-plugin/blob/06f262b4150e08df087649bf63df77160de0f6e0/README.md#L24-L26) (documentation-or-config; lexical evidence only, not an operational verdict).
+- **Evidence:** [`mcp/triage-server/server.ts` L23–33](https://github.com/jeremylongshore/x-bug-triage-plugin/blob/06f262b4150e08df087649bf63df77160de0f6e0/mcp/triage-server/server.ts#L23-L33) — **dependency only**. The triage server imports evidence-tier assignment/sorting helpers and a repository-evidence type.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 4 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 25 tags and 25 releases enumerated; 1 release records have lexical matches. [`CHANGELOG.md` L147–149](https://github.com/jeremylongshore/x-bug-triage-plugin/blob/06f262b4150e08df087649bf63df77160de0f6e0/CHANGELOG.md#L147-L149); [release `v0.1.0`](https://github.com/jeremylongshore/x-bug-triage-plugin/releases/tag/v0.1.0).
-- **Verification scope:** 8/8 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 4 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 9/9 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 4 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R183: xireactor-brilliant
 
@@ -2643,13 +2653,13 @@ Observed default branch: `main`; reachable commits: **7**; head: `574ca316373702
 
 - **Trace:** no public positive reference in the inspected sample; absence is **not established**.
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
-- **Annotation:** [`README.md` L43–45](https://github.com/jeremylongshore/xireactor-brilliant/blob/574ca31637370204a5c1c84ca0618a65399d811e/README.md#L43-L45) (documentation-or-config; lexical evidence, not an operational verdict).
-- **Evaluation:** [`README.md` L3–5](https://github.com/jeremylongshore/xireactor-brilliant/blob/574ca31637370204a5c1c84ca0618a65399d811e/README.md#L3-L5) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Annotation:** [`mcp/server.py` L3–8](https://github.com/jeremylongshore/xireactor-brilliant/blob/574ca31637370204a5c1c84ca0618a65399d811e/mcp/server.py#L3-L8) — **capability not established by this reference**. The annotation match is Python future-import syntax.
+- **Evaluation:** [`README.md` L3–5](https://github.com/jeremylongshore/xireactor-brilliant/blob/574ca31637370204a5c1c84ca0618a65399d811e/README.md#L3-L5) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 1 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 2 tags and 0 releases enumerated; 0 release records have lexical matches. No publishable positive reference in the inspected release/changelog material.
-- **Verification scope:** 2/2 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 5/5 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 1 workflow paths and 0 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ### A1-R184: zcf
 
@@ -2657,18 +2667,18 @@ Repository: [jeremylongshore/zcf](https://github.com/jeremylongshore/zcf). Visib
 
 Observed default branch: `main`; reachable commits: **391**; head: `83390947ff22bcbb05e82d0766999ed7a42f6591`. GitHub license metadata: **MIT**. Tree: **710 files**, complete. Observation: `2026-10-12T06:31:47Z`.
 
-- **Trace:** [`.bmad-core/tasks/trace-requirements.md` L3–5](https://github.com/jeremylongshore/zcf/blob/83390947ff22bcbb05e82d0766999ed7a42f6591/.bmad-core/tasks/trace-requirements.md#L3-L5) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Trace:** [`.bmad-core/tasks/trace-requirements.md` L3–5](https://github.com/jeremylongshore/zcf/blob/83390947ff22bcbb05e82d0766999ed7a42f6591/.bmad-core/tasks/trace-requirements.md#L3-L5) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Telemetry:** no public positive reference in the inspected sample; absence is **not established**.
 - **Annotation:** no public positive reference in the inspected sample; absence is **not established**.
-- **Evaluation:** [`CHANGELOG.md` L2291–2293](https://github.com/jeremylongshore/zcf/blob/83390947ff22bcbb05e82d0766999ed7a42f6591/CHANGELOG.md#L2291-L2293) (documentation-or-config; lexical evidence, not an operational verdict).
+- **Evaluation:** [`CHANGELOG.md` L2291–2293](https://github.com/jeremylongshore/zcf/blob/83390947ff22bcbb05e82d0766999ed7a42f6591/CHANGELOG.md#L2291-L2293) (documentation-or-config; lexical evidence only, not an operational verdict).
 - **Evidence:** no public positive reference in the inspected sample; absence is **not established**.
 - **Taxonomy:** no public positive reference in the inspected sample; absence is **not established**.
 - **Related workflows:** no publishable lexical match among 3 inspected workflow paths; this does not establish behavior or absence.
 - **Release/changelog evidence:** 81 tags and 0 releases enumerated; 0 release records have lexical matches. [`CHANGELOG.md` L2291–2293](https://github.com/jeremylongshore/zcf/blob/83390947ff22bcbb05e82d0766999ed7a42f6591/CHANGELOG.md#L2291-L2293).
-- **Verification scope:** 8/8 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
+- **Verification scope:** 11/11 Contents requests returned HTTP 200; 0 other filename candidates remain uninspected. All 3 workflow paths and 1 changelog paths were requested. 0 verified file references withheld from this projection.
 
 ## Acceptance and next action
 
 Metadata and visibility cover every accessible owned repository in this census. Source references are verified at immutable commits, with sampling limits, restricted records and failed requests stated explicitly. Related workflows and release/changelog evidence are included per repository.
 
-**Remaining work:** review the semantic relevance of lexical hits; resolve repository categories that have no confirmed source reference and any failed Contents requests; establish a durable restricted-annex disposition; obtain owner sign-off on this complete audit package. A1 remains in progress. A2 is a separate organization audit. A3 must not begin until both audits have the required owner sign-off. This draft does not satisfy that gate.
+**Remaining gate:** owner review and explicit sign-off on the public report, the restricted annex and the documented search limits. All selected Contents requests succeeded, and representative semantic review is complete; those facts do not imply an exhaustive code audit. The full archive remains in the lab’s ignored `.private/trace-intel-A1-2026-10-12/expansion-v4/` directory, with hashes recorded on the bead. A1 remains in progress. A2 is a separate organization audit. A3 must not begin until both audits have the required owner sign-off. This draft does not satisfy that gate.
