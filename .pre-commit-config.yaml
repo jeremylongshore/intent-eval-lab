@@ -1,15 +1,15 @@
 # Pre-commit framework — local fast gates before push.
 # Reference: https://pre-commit.com
 #
-# Install once per checkout:
+# Optional framework setup:
 #   pip install --user pre-commit  (or: pipx install pre-commit)
-#   pre-commit install
 #
-# After that, hooks run automatically on `git commit`.
-# Run manually:  pre-commit run --all-files
+# The tracked Beads pre-commit hook runs the public scrub independently.
+# See CONTRIBUTING.md for core.hooksPath setup; do not replace managed hooks.
+# Run the additional framework checks manually: pre-commit run --all-files
 #
-# Posture: existing framework is advisory on first install; the public-surface
-# scrub hook is blocking whenever this framework is installed.
+# Posture: the additional framework is optional; the public scrub blocks commits
+# whenever the tracked repository hooks are enabled, even without this framework.
 
 repos:
   # Public-Flip Gate #3 (109-AT-DECR §7): changed-lines PII/secret scrub.

@@ -120,3 +120,9 @@ ci/canonical-payload.test.mjs
 ci/canonical-payload.fixture.json
 ci/package.json
 ci/package-lock.json
+
+# Local public-content enforcement must remain reachable outside Beads fallback.
+.beads/hooks/pre-commit
+scripts/public-surface-scan.py
+scripts/public-surface-policy.json
+scripts/tests/test_git_public_hook.py
