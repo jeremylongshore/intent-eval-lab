@@ -135,6 +135,10 @@ sequence:
 | [`../SAK-DASHBOARD.md`](../SAK-DASHBOARD.md)               | Machine-rendered SAK dashboard (root-level): phase status · Phase-4 state machine · 12 leading indicators · FTE-week cost ledger · SAK bead state · coverage-map state. DERIVED — never hand-edit; regenerate with `scripts/render-sak-dashboard.py` from `../SAK-STATE.json` + the committed indicator registry + the lineage coverage map. Spec: `033-PP-PLAN-...md` § 14.13.1. |
 | [`../docs/detector-health.md`](../docs/detector-health.md) | Machine-rendered detector-health composite dashboard. DERIVED — regenerate with `scripts/detector-health.py`. Spec: `057-AT-SPEC-...md`.                                                                                                                                                                                                                                          |
 
+## Trace intelligence operational references
+
+- [Incident and corruption-response runbook](./trace-intel-incident-runbook.md) — K10 severity classification, recovery procedures, postmortems and audit receipts; supplements existing estate incident authority.
+
 ## Filing convention
 
 ```text
