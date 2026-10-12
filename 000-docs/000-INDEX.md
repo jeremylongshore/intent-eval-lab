@@ -135,6 +135,13 @@ sequence:
 | [`../SAK-DASHBOARD.md`](../SAK-DASHBOARD.md)               | Machine-rendered SAK dashboard (root-level): phase status · Phase-4 state machine · 12 leading indicators · FTE-week cost ledger · SAK bead state · coverage-map state. DERIVED — never hand-edit; regenerate with `scripts/render-sak-dashboard.py` from `../SAK-STATE.json` + the committed indicator registry + the lineage coverage map. Spec: `033-PP-PLAN-...md` § 14.13.1. |
 | [`../docs/detector-health.md`](../docs/detector-health.md) | Machine-rendered detector-health composite dashboard. DERIVED — regenerate with `scripts/detector-health.py`. Spec: `057-AT-SPEC-...md`.                                                                                                                                                                                                                                          |
 
+## Trace-intelligence audit artifacts
+
+- [A1 account repository audit](./trace-intel-A1-jeremylongshore-audit.md) — draft
+  census and pinned evidence references for 184 repositories. Owner sign-off and
+  the separate A2 organization audit remain required before A3 begins. The exact
+  filename is prescribed by bead `bd_000-projects-h08j.8.1`.
+
 ## Filing convention
 
 ```text
