@@ -33,10 +33,10 @@ jobs:
           fi
 
       - name: Checkout caller repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Checkout canonical gate source
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: jeremylongshore/intent-eval-lab
           ref: ${{ inputs.gate_ref }}
