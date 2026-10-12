@@ -126,3 +126,7 @@ ci/package-lock.json
 scripts/public-surface-scan.py
 scripts/public-surface-policy.json
 scripts/tests/test_git_public_hook.py
+
+# Captured bytes must survive optional formatting; pin policy and live fixture.
+.pre-commit-config.yaml
+scripts/check-hygiene-preservation.py

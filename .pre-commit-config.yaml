@@ -30,7 +30,13 @@ repos:
     hooks:
       - id: ruff
         args: [--fix]
+        # Preserve captured/signed bytes and vendored code. Apply this only to
+        # mutating hooks; syntax, conflict and public-content checks still run.
+        exclude: &immutable_bytes >-
+          (?x)^(?:archive/raw/|specs/_vendor/|_vendor/|\.audit-harness/|
+          research/.*/results/|evidence/.*\.(?:json|jsonl)$)
       - id: ruff-format
+        exclude: *immutable_bytes
 
   # ---------------------------------------------------------------------------
   # L2 doc-quality (markdown + prose)
@@ -49,8 +55,10 @@ repos:
     rev: v5.0.0
     hooks:
       - id: trailing-whitespace
-        exclude: \.md$  # markdownlint handles MD009; avoid double-fix
+        exclude: *immutable_bytes
+        exclude_types: [markdown]  # markdownlint handles MD009; avoid double-fix
       - id: end-of-file-fixer
+        exclude: *immutable_bytes
       - id: check-yaml
       - id: check-toml
       - id: check-merge-conflict

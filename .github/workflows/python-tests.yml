@@ -150,3 +150,20 @@ jobs:
         run: pytest scripts/tests/ -v --tb=short
       - name: Vendored capture provenance integrity
         run: python3 scripts/check-vendor-meta-integrity.py
+
+  hygiene-preservation:
+    name: Captured evidence byte preservation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+      - run: pip install --no-cache-dir 'pre-commit==4.3.0'
+      # Hook dependencies may download here; the fixture never runs live models
+      # or changes the repository's captured evidence.
+      - name: Exercise configured hooks against immutable and authored fixtures
+        run: npm exec --yes --package npm@10.9.2 -- python3 scripts/check-hygiene-preservation.py
