@@ -191,11 +191,14 @@ demonstrated 3 green days, so a flaky new gate never blocks merges during burn-i
 ## 8. Local fast loop (before push)
 
 ```bash
-# Install the pre-commit framework once per checkout:
-pip install --user pre-commit && pre-commit install
+# Install the optional framework; retain the managed Git hooks (CONTRIBUTING.md):
+pip install --user pre-commit==4.3.0
 
-# Run all local gates manually:
+# Run all local gates manually (may format authored files; inspect the diff):
 pre-commit run --all-files
+
+# Prove byte preservation using the actual hooks in a disposable Git fixture:
+python3 scripts/check-hygiene-preservation.py
 
 # Workflow-YAML lint (mirrors lint.yml):
 pip install --user yamllint==1.38.0

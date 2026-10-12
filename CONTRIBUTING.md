@@ -73,6 +73,24 @@ npm exec --yes --package npm@10.9.2 -- pre-commit run --all-files
 This does not change the globally installed npm version.
 The alternative `lefthook.yml` remains available for contributors who intentionally manage their own hook chain; do not run competing installers over the tracked Beads hooks.
 
+### Preserve captured evidence
+
+The optional framework's mutating hooks exclude `archive/raw/`, `specs/_vendor/`,
+`_vendor/`, `.audit-harness/`, `research/**/results/`, and JSON/JSONL records under
+`evidence/`. Their exact bytes carry capture hashes, vendor provenance or signed
+evidence. Update them through the owning capture, re-vendoring or signing process.
+Read-only syntax/conflict checks and the existing public-content scrub still run
+under their own policies. Authored scripts, tests, configuration and evidence
+README files remain subject to formatting checks.
+
+For a focused change, use `pre-commit run --files PATH...`. A full
+`pre-commit run --all-files` can still fix pre-existing formatting in authored
+files; review those changes separately and do not commit unrelated cleanup.
+The prior baseline run changed 165 files across captures and authored content;
+protecting evidence does not settle the remaining source-formatting backlog.
+Run `python3 scripts/check-hygiene-preservation.py` to exercise the real configured
+hooks in a disposable Git fixture and verify captured bytes stay unchanged.
+
 ## Sandbox contributions
 
 If you're contributing a new experiment sandbox:
