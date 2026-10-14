@@ -1,5 +1,13 @@
 # Intent Eval Lab
 
+<!-- intent-select-partner:start -->
+
+[![Intent Solutions: Claude Partner Network Select Services Partner](https://raw.githubusercontent.com/intent-solutions-io/.github/b82af5d3e7951d85e39ea9e65cc24ee8278722a7/assets/brand/claude-select-partner.svg)](https://intentsolutions.io/)
+
+Intent Solutions is a Claude Partner Network Select Services Partner.
+
+<!-- intent-select-partner:end -->
+
 Part of the **[Intent Eval Platform](https://github.com/intent-solutions-io/intent-eval-platform)** — the umbrella mapping the five repos that converge via a shared Evidence Bundle schema (the contracts kernel `intent-eval-core` plus this lab, `audit-harness`, `j-rig-skill-binary-eval`, and `intent-rollout-gate`; `intent-eval-dashboard` is the 6th platform repo, separate from the convergence taxonomy).
 
 A research umbrella for measuring AI plugin, agent, and MCP server quality across CLI runtimes — Claude Code, Gemini CLI, GitHub Copilot CLI, and OpenAI Codex CLI.
