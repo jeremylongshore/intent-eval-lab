@@ -1,30 +1,26 @@
 #!/usr/bin/env python3
-"""analyze.py — Phase A.0 pre-registered statistical analysis.
+"""Analyze a complete Phase A.0 cohort without overwriting historical evidence.
 
-Reads on-disk arm-a + arm-b results, applies the pre-registered tests
-from RESULTS-TEMPLATE.md, emits results/aggregated/statistics.json and
-results/aggregated/decision.json.
+Retains the implemented estimators: Shapiro on paired differences; paired
+one-sided t-test for normal differences, otherwise one-sided signed rank;
+pooled effect size; unadjusted K contrasts; independent Welch tests per stratum.
+These differ from parts of RESULTS-TEMPLATE.md. The accepted-flag summary is
+not a five-dimension Goodhart audit. See README for the unresolved methodology
+and historical-baseline review. A threshold result does not ratify those gaps.
 
-Pre-registered tests (locked by DESIGN.md before any data collected):
-1. Per-K Arm A mean delta + std
-2. Per-specimen Arm A best-K vs Arm B final score
-3. Shapiro-Wilk normality check on (B - A_best) deltas
-4. One-sided t-test (Welch's) — null: Refiner ≤ Naive; alt: Refiner > Naive
-   Wilcoxon signed-rank if Shapiro p ≤ 0.05
-5. Cohen's d effect size
-6. K-sweep diminishing returns: sequential contrasts (K=0 vs K=3, K=3 vs K=8, K=8 vs K=16)
-7. Two-way ANOVA: stratum × arm
-8. 5-dim Bonferroni Goodhart audit: field_completeness, deprecated_count,
-   is_extras_count, security_findings, marketplace_pass
-9. Apply DR-028 P0-RATIFY-3 decision rule:
-     naive_lift_pct = max(0, mean(arm_a_score_delta)) / projected_refiner_lift_pp
-     DESCOPE if naive_lift_pct > 0.70
+The DR-028 mechanical rule remains max(0, mean(A best-K delta)) / 1.5 > 0.70.
+Missing, inconsistent or non-finite evidence cannot produce a decision.
 """
 
 from __future__ import annotations
 
+import argparse
+import datetime as dt
 import json
+import math
+import sys
 from collections import defaultdict
+from fractions import Fraction
 from pathlib import Path
 from typing import Any
 
@@ -35,53 +31,146 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 ARM_A_DIR = REPO_ROOT / "results" / "arm-a" / "nvidia-llama-70b"
 ARM_B_DIR = REPO_ROOT / "results" / "arm-b" / "nvidia-llama-70b"
 OUT_DIR = REPO_ROOT / "results" / "aggregated"
-OUT_DIR.mkdir(parents=True, exist_ok=True)
+MANIFEST = REPO_ROOT / "corpus" / "manifest.json"
+K_VALUES = {0, 3, 8, 16}
 
 PROJECTED_REFINER_LIFT_PP = 1.5  # Q1 pre-registered
 DESCOPE_THRESHOLD_FRACTION = 0.70  # DR-028 P0-RATIFY-3
 ALPHA = 0.05
 
 
+class AnalysisInputError(ValueError):
+    """Inputs cannot support the registered complete-cohort decision."""
+
+
+def read_json(path: Path) -> Any:
+    def reject_constant(value: str) -> None:
+        raise AnalysisInputError(f"{path}: non-finite JSON number {value}")
+
+    def unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+        result: dict[str, Any] = {}
+        for key, item in pairs:
+            if key in result:
+                raise AnalysisInputError(f"{path}: duplicate JSON key {key}")
+            result[key] = item
+        return result
+
+    try:
+        value = json.loads(path.read_text(), parse_constant=reject_constant, object_pairs_hook=unique_object)
+        # Also catches numeric overflow such as 1e999, which parse_constant does not.
+        json.dumps(value, allow_nan=False)
+        return value
+    except (OSError, ValueError) as exc:
+        raise AnalysisInputError(f"Cannot read finite JSON from {path}: {exc}") from exc
+
+
+def number(record: dict[str, Any], key: str) -> float:
+    value = record.get(key)
+    if isinstance(value, bool) or not isinstance(value, int | float) or abs(value) > 100 or not math.isfinite(value):
+        raise AnalysisInputError(f"{key} must be a finite number")
+    return float(value)
+
+
+def measurement(record: Any, final_key: str) -> tuple[float, float, float]:
+    if not isinstance(record, dict):
+        raise AnalysisInputError("Score record must be an object")
+    baseline = number(record, "baseline_marketplace_score_pct")
+    final = number(record, final_key)
+    delta = number(record, "delta_marketplace_score_pct")
+    if not (0 <= baseline <= 100 and 0 <= final <= 100):
+        raise AnalysisInputError("Scores must be between 0 and 100")
+    if not math.isclose(final - baseline, delta, rel_tol=0, abs_tol=1e-9):
+        raise AnalysisInputError("Score delta does not equal final minus baseline")
+    return baseline, final, delta
+
+
 def load_arm_a() -> dict[str, Any]:
     """Return {specimen_sha8: {k: {delta, baseline, candidate, score_dict}}}."""
     data: dict[str, Any] = defaultdict(dict)
-    for score_file in ARM_A_DIR.rglob("score.json"):
-        parts = score_file.parts
-        sha8 = parts[-3]
-        k_part = next((p for p in parts if p.startswith("k=")), None)
-        if not k_part:
-            continue
-        k = int(k_part[2:])
-        score = json.loads(score_file.read_text())
-        if "delta_marketplace_score_pct" in score:
-            data[sha8][k] = {
-                "delta": score["delta_marketplace_score_pct"],
-                "baseline": score["baseline_marketplace_score_pct"],
-                "candidate": score["marketplace_score_pct"],
-                "field_completeness": score.get("field_completeness", 0),
-                "deprecated_count": score.get("deprecated_field_count", 0),
-                "is_extras": score.get("is_extras_present", 0),
-                "security_findings": score.get("security_finding_count", 0),
-                "marketplace_pass": score.get("marketplace_pass", False),
-            }
+    for score_file in sorted(ARM_A_DIR.rglob("score.json")):
+        parts = score_file.relative_to(ARM_A_DIR).parts
+        if len(parts) != 3 or parts[1] not in {f"k={k}" for k in K_VALUES}:
+            raise AnalysisInputError(f"Unexpected Arm A score path: {score_file}")
+        sha8, k = parts[0], int(parts[1][2:])
+        score = read_json(score_file)
+        baseline, candidate, delta = measurement(score, "marketplace_score_pct")
+        data[sha8][k] = {
+            "delta": delta,
+            "baseline": baseline,
+            "candidate": candidate,
+            "field_completeness": score.get("field_completeness", 0),
+            "deprecated_count": score.get("deprecated_field_count", 0),
+            "is_extras": score.get("is_extras_present", 0),
+            "security_findings": score.get("security_finding_count", 0),
+            "marketplace_pass": score.get("marketplace_pass", False),
+        }
     return dict(data)
 
 
 def load_arm_b() -> dict[str, Any]:
     """Return {specimen_sha8: {delta, baseline, final, accepted, stratum}}."""
-    summary = json.loads((ARM_B_DIR / "_summary.json").read_text())
+    summary = read_json(ARM_B_DIR / "_summary.json")
+    if not isinstance(summary, dict) or not isinstance(summary.get("per_specimen_results"), list):
+        raise AnalysisInputError("Arm B summary must contain per_specimen_results")
+    if summary.get("dry_run") is True or summary.get("error_count", 0) != 0:
+        raise AnalysisInputError("Arm B summary contains dry-run data or errors")
     out: dict[str, Any] = {}
     for rec in summary.get("per_specimen_results", []):
-        sha8 = rec["sha8"]
+        baseline, final, delta = measurement(rec, "final_marketplace_score_pct")
+        sha8 = rec.get("sha8")
+        if not isinstance(sha8, str) or not sha8 or sha8 in out:
+            raise AnalysisInputError("Arm B specimen IDs must be present and unique")
+        if (
+            not isinstance(rec.get("accepted"), bool)
+            or not isinstance(rec.get("stratum"), str)
+            or rec["stratum"] not in {"A", "B", "C"}
+        ):
+            raise AnalysisInputError(f"Arm B {sha8} needs an accepted boolean and registered stratum")
         out[sha8] = {
-            "delta": rec.get("delta_marketplace_score_pct", 0),
-            "baseline": rec.get("baseline_marketplace_score_pct", 0),
-            "final": rec.get("final_marketplace_score_pct", 0),
-            "accepted": rec.get("accepted", False),
-            "stratum": rec.get("stratum", "?"),
+            "delta": delta,
+            "baseline": baseline,
+            "final": final,
+            "accepted": rec["accepted"],
+            "stratum": rec["stratum"],
             "iterations_to_accept": rec.get("iterations_to_accept"),
         }
     return out
+
+
+def validate_cohort(arm_a: dict[str, Any], arm_b: dict[str, Any]) -> None:
+    """A decision requires the registered 60 specimens and all four K values.
+
+    DESIGN section 6 permits reporting failed/excluded samples, but exclusions
+    cannot silently become a successful complete-experiment decision here.
+    """
+    manifest = read_json(MANIFEST)
+    strata = manifest.get("strata") if isinstance(manifest, dict) else None
+    if not isinstance(strata, dict) or set(strata) != {"A", "B", "C"}:
+        raise AnalysisInputError("Manifest must declare strata A, B and C")
+    expected: dict[str, str] = {}
+    for stratum, records in strata.items():
+        if not isinstance(records, list) or len(records) != 20:
+            raise AnalysisInputError("Registered cohort requires 20 specimens per stratum")
+        for record in records:
+            sha = record.get("sha256") if isinstance(record, dict) else None
+            if not isinstance(sha, str) or len(sha) != 64 or any(c not in "0123456789abcdef" for c in sha):
+                raise AnalysisInputError("Manifest requires complete lowercase SHA-256 specimen IDs")
+            if sha[:8] in expected:
+                raise AnalysisInputError("Manifest specimen prefixes must be unique")
+            expected[sha[:8]] = stratum
+    for name, arm in (("A", arm_a), ("B", arm_b)):
+        if set(arm) != set(expected):
+            raise AnalysisInputError(
+                f"Arm {name} cohort mismatch: missing {len(set(expected) - set(arm))}, "
+                f"unexpected {len(set(arm) - set(expected))}; no decision emitted"
+            )
+    for sha8, stratum in expected.items():
+        if set(arm_a[sha8]) != K_VALUES:
+            raise AnalysisInputError(f"Arm A {sha8} lacks the complete registered K sweep")
+        if arm_b[sha8]["stratum"] != stratum:
+            raise AnalysisInputError(f"Arm B {sha8} stratum differs from the manifest")
+        if any(rec["baseline"] != arm_b[sha8]["baseline"] for rec in arm_a[sha8].values()):
+            raise AnalysisInputError(f"Incomparable baseline scores for specimen {sha8}")
 
 
 def cohen_d(a: list[float], b: list[float]) -> float:
@@ -94,9 +183,12 @@ def cohen_d(a: list[float], b: list[float]) -> float:
     return float((b_arr.mean() - a_arr.mean()) / pooled_std)
 
 
-def main() -> int:
+def analyze() -> int:
+    if any((OUT_DIR / name).exists() for name in ("statistics.json", "decision.json")):
+        raise AnalysisInputError("Output already exists; use a fresh output directory, never overwrite evidence")
     arm_a = load_arm_a()
     arm_b = load_arm_b()
+    validate_cohort(arm_a, arm_b)
 
     print(f"Loaded Arm A: {len(arm_a)} specimens")
     print(f"Loaded Arm B: {len(arm_b)} specimens")
@@ -120,7 +212,7 @@ def main() -> int:
 
     # 2. Per-specimen Arm A best-K vs Arm B
     paired = []
-    for sha8 in set(arm_a.keys()) & set(arm_b.keys()):
+    for sha8 in sorted(arm_a):
         # best-K = K with maximum delta (least negative or most positive)
         by_k = arm_a[sha8]
         best_k = max(by_k.keys(), key=lambda k: by_k[k]["delta"])
@@ -151,10 +243,10 @@ def main() -> int:
         shapiro_p = 1.0
     normality_pass = shapiro_p > 0.05
 
-    # 4. Primary test: one-sided t-test (Welch's), null Refiner ≤ Naive
-    # If non-normal, Wilcoxon signed-rank (one-sided)
+    # Preserve the implemented estimator; correct its label, not its method.
+    # The normal branch differs from the independent-sample template; see README.
     if normality_pass:
-        primary_test_name = "Welch's one-sided t-test (B > A)"
+        primary_test_name = "Paired one-sided t-test (B > A)"
         t_result = stats.ttest_rel(b_finals, a_best, alternative="greater")
         primary_stat = float(t_result.statistic)
         primary_p = float(t_result.pvalue)
@@ -165,9 +257,7 @@ def main() -> int:
             primary_stat = float(w_result.statistic)
             primary_p = float(w_result.pvalue)
         except ValueError as e:
-            primary_test_name += f" — FAILED: {e}"
-            primary_stat = 0.0
-            primary_p = 1.0
+            raise AnalysisInputError(f"Primary signed-rank test could not be computed: {e}") from e
 
     significant = primary_p < ALPHA
 
@@ -194,7 +284,7 @@ def main() -> int:
                     "significant": float(t.pvalue) < ALPHA,
                 }
 
-    # 7. Two-way ANOVA: stratum × arm (approximate via 2-way independent groups)
+    # 7. Independent Welch tests within strata; this is NOT a two-way ANOVA.
     # Build long-form: each row is (specimen, arm, stratum, delta)
     strata_arm_deltas = defaultdict(list)
     for p in paired:
@@ -218,19 +308,12 @@ def main() -> int:
                 "significant": float(t_strat.pvalue) < ALPHA,
             }
 
-    # 8. 5-dim Bonferroni Goodhart audit
-    # Did Arm B gain on marketplace_score_pct by degrading any other dimension?
-    # We have per-(specimen, K) Arm A score breakdowns. For Arm B we have
-    # only the final marketplace_score_pct + accepted flag; the score-N.json
-    # files per iteration capture the full breakdown. For v0.1 of analysis,
-    # we use the headline marketplace_score_pct + accepted to check whether
-    # B's accepted edits maintained the no-loss-on-other-dims invariant.
-    # Cross-check via final.md if Goodhart concern surfaces in later review.
+    # 8. Accepted-flag summary only. No dimension-level Goodhart test is run.
     goodhart_summary = {
+        "status": "not_performed",
         "approach": "v0.1 — uses Arm B per-specimen final accepted flag as proxy",
-        "note": "Full 5-dim audit requires reading per-iteration score-N.json files; "
-        "deferred to follow-up bead. Acceptance gate already enforces strict "
-        "improvement on marketplace_score_pct + non-degradation on the 4 other dims.",
+        "note": "Full 5-dim audit requires dimension-level evidence and remains pending "
+        "in bd_000-projects-436s. Accepted flags alone do not establish non-degradation.",
         "accepted_specimens": sum(1 for p in paired if p["b_accepted"]),
         "accepted_rate": sum(1 for p in paired if p["b_accepted"]) / max(1, len(paired)),
     }
@@ -238,12 +321,18 @@ def main() -> int:
     # 9. Decision rule
     a_mean_overall = float(np.mean([p["a_delta_best_k"] for p in paired]))
     b_mean_overall = float(np.mean([p["b_delta"] for p in paired]))
-    naive_lift_pp = max(0.0, a_mean_overall)
-    naive_lift_pct_of_projected = naive_lift_pp / PROJECTED_REFINER_LIFT_PP
-    descope = naive_lift_pct_of_projected > DESCOPE_THRESHOLD_FRACTION
+    # Compare the recorded decimal observations exactly at the strict threshold;
+    # binary floating-point rounding must not turn equality into DESCOPE.
+    exact_a_mean = sum(Fraction(str(value)) for value in a_best) / len(a_best)
+    naive_lift_pp = float(max(Fraction(0), exact_a_mean))
+    naive_lift_pct_of_projected = float(max(Fraction(0), exact_a_mean) / Fraction(str(PROJECTED_REFINER_LIFT_PP)))
+    descope = max(Fraction(0), exact_a_mean) > Fraction(str(PROJECTED_REFINER_LIFT_PP)) * Fraction(
+        str(DESCOPE_THRESHOLD_FRACTION)
+    )
 
     decision = {
         "outcome": "DESCOPE" if descope else "PROCEED",
+        "methodology_status": "unreconciled — see statistics.methodology_limits; not authorization",
         "naive_lift_pp": naive_lift_pp,
         "refiner_lift_pp": b_mean_overall,
         "projected_refiner_lift_pp": PROJECTED_REFINER_LIFT_PP,
@@ -263,7 +352,7 @@ def main() -> int:
 
     stats_out = {
         "schema_version": "phase-a-0-statistics/v0.1",
-        "generated_at": "2026-05-31",
+        "generated_at": dt.datetime.now(dt.UTC).isoformat(),
         "n_specimens_paired": n_paired,
         "per_k_arm_a": {str(k): v for k, v in per_k_stats.items()},
         "primary_paired_test": {
@@ -280,6 +369,13 @@ def main() -> int:
         "per_stratum_test": anova_summary,
         "goodhart_audit": goodhart_summary,
         "decision": decision,
+        "methodology_limits": {
+            "normal_branch": "Implemented paired t-test retained; independent-sample template differs; adjudication pending",
+            "stratum_tests": "Independent Welch tests, not the template's two-way ANOVA",
+            "k_contrasts": "Unadjusted one-sided p-values, not the template's Bonferroni-adjusted comparisons",
+            "goodhart": "Accepted-flag summary only; five-dimension audit not performed",
+            "authority": "Mechanical threshold result is not methodology ratification or Phase B authorization",
+        },
         "raw_means": {
             "arm_a_best_k_mean": a_mean_overall,
             "arm_b_mean": b_mean_overall,
@@ -287,14 +383,19 @@ def main() -> int:
         },
     }
 
-    (OUT_DIR / "statistics.json").write_text(json.dumps(stats_out, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    (OUT_DIR / "decision.json").write_text(json.dumps(decision, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    # Serialize both before writing either; non-finite results never become evidence.
+    statistics_json = json.dumps(stats_out, indent=2, sort_keys=True, allow_nan=False) + "\n"
+    decision_json = json.dumps(decision, indent=2, sort_keys=True, allow_nan=False) + "\n"
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    for name, content in (("statistics.json", statistics_json), ("decision.json", decision_json)):
+        with (OUT_DIR / name).open("x", encoding="utf-8") as handle:
+            handle.write(content)
     print(f"\n✓ Wrote {OUT_DIR / 'statistics.json'}")
     print(f"✓ Wrote {OUT_DIR / 'decision.json'}")
 
     # Console summary
     print("\n" + "=" * 64)
-    print("PHASE A.0 PRE-REGISTERED ANALYSIS RESULT")
+    print("PHASE A.0 ANALYSIS RESULT — METHODOLOGY UNRECONCILED")
     print("=" * 64)
     print(f"n_paired_specimens: {n_paired}")
     print(f"Arm A best-K mean delta: {a_mean_overall:+.3f} pp")
@@ -306,9 +407,10 @@ def main() -> int:
     print(f"  p-value:               {primary_p:.6f}")
     print(f"  significant (α=0.05):  {significant}")
     print(f"Shapiro-Wilk normality:  p={shapiro_p:.4f} (normal: {normality_pass})")
-    print(f"Goodhart accept rate:    {goodhart_summary['accepted_rate']:.1%}")
+    print(f"Accepted-flag rate:      {goodhart_summary['accepted_rate']:.1%} (Goodhart audit not performed)")
     print()
     print(f"DECISION: {decision['outcome']}")
+    print(f"  methodology_status: {decision['methodology_status']}")
     print(f"  naive_lift_pp:                       {naive_lift_pp:+.3f}")
     print(f"  naive_lift_pct_of_projected:         {naive_lift_pct_of_projected:.1%}")
     print(f"  refiner_lift_pp:                     {b_mean_overall:+.3f}")
@@ -317,5 +419,20 @@ def main() -> int:
     return 0
 
 
+def main() -> int:
+    try:
+        return analyze()
+    except (AnalysisInputError, OSError, ValueError) as exc:
+        print(f"Analysis refused: {exc}", file=sys.stderr)
+        return 2
+
+
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Analyze a complete Phase A.0 cohort without overwriting evidence")
+    parser.add_argument("--arm-a", type=Path, default=ARM_A_DIR)
+    parser.add_argument("--arm-b", type=Path, default=ARM_B_DIR)
+    parser.add_argument("--manifest", type=Path, default=MANIFEST)
+    parser.add_argument("--out", type=Path, required=True, help="Fresh output directory; existing evidence is refused")
+    args = parser.parse_args()
+    ARM_A_DIR, ARM_B_DIR, MANIFEST, OUT_DIR = args.arm_a, args.arm_b, args.manifest, args.out
     raise SystemExit(main())
