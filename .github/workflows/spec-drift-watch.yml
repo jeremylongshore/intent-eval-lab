@@ -55,6 +55,7 @@ on:
       - 'scripts/lineage-log.py'
       - 'scripts/emit-snapshot-currency.py'
       - 'scripts/projection-freshness.py'
+      - 'scripts/snapshot-review.py'
       - 'scripts/lib/**'
       - 'scripts/extract-agent-definition-projection.py'
       - 'scripts/extract-hook-config-projection.py'
@@ -76,6 +77,7 @@ on:
       - 'scripts/lineage-log.py'
       - 'scripts/emit-snapshot-currency.py'
       - 'scripts/projection-freshness.py'
+      - 'scripts/snapshot-review.py'
       - 'scripts/lib/**'
       - 'scripts/extract-agent-definition-projection.py'
       - 'scripts/extract-hook-config-projection.py'
@@ -812,35 +814,29 @@ jobs:
             exit 0
           fi
 
+          # Compare the actual pushed promotion commit, not a stale previous
+          # report or the mutable working tree. Report failures remain visible.
+          review_dir="${RUNNER_TEMP}/snapshot-review-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          if ! python3 scripts/snapshot-review.py \
+              --base "origin/${GITHUB_REF_NAME}" --head FETCH_HEAD \
+              --repository "${GITHUB_REPOSITORY}" \
+              --run-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+              --out-dir "${review_dir}"; then
+            echo "::error::snapshot review could not bind the promotion; refusing a misleading PR summary"
+            exit 1
+          fi
+          echo "review_dir=${review_dir}" >> "${GITHUB_OUTPUT}"
+          body_file="${review_dir}/pr-body.md"
+
           existing="$(gh pr list --head "${PROMO_BRANCH}" --base "${GITHUB_REF_NAME}" \
                         --state open --json number --jq '.[0].number' 2>/dev/null || true)"
           if [[ -n "${existing}" ]]; then
-            echo "Promotion PR #${existing} already open — branch updated in place."
+            # Every run refreshes the existing machine-authored body as well as
+            # the branch. No gh pr merge/auto-merge path exists here.
+            gh pr edit "${existing}" --body-file "${body_file}" || exit 1
             echo "pr=${existing}" >> "${GITHUB_OUTPUT}"
             exit 0
           fi
-
-          body_file="$(mktemp)"
-          {
-            echo "Automated spec-currency promotion opened by \`spec-drift-watch\`."
-            echo
-            echo "Carries the watcher's commit-backs: tier-1 archive records, any tier-2"
-            echo "vendored-snapshot promotion, the append-only lineage log, the"
-            echo "snapshot-currency evidence row, the liveness heartbeat, and the"
-            echo "detector-health dashboard."
-            echo
-            echo "**Review this as a spec advance, not as bookkeeping.** Merging it moves the"
-            echo "baseline that every downstream validator treats as normative. Check what"
-            echo "actually changed shape before merging; prefer under-folding to over-folding."
-            echo
-            echo "The branch is force-updated by each scheduled run, so this PR stays current"
-            echo "until it is merged. Do not push to it by hand."
-            echo
-            echo "Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
-            echo
-            echo "- Jeremy Longshore"
-            echo "intentsolutions.io"
-          } > "${body_file}"
 
           if pr_url="$(gh pr create --base "${GITHUB_REF_NAME}" --head "${PROMO_BRANCH}" \
                 --title "chore(spec-drift): promote captured upstream snapshots + watcher state" \
@@ -849,6 +845,14 @@ jobs:
           else
             echo "::warning::promotion branch pushed, but opening the PR failed — review and merge ${PROMO_BRANCH} by hand. Detail: ${pr_url}"
           fi
+
+      - name: Upload snapshot review
+        if: always() && steps.promote.outputs.review_dir != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: snapshot-review
+          path: ${{ steps.promote.outputs.review_dir }}
+          if-no-files-found: error
 
       - name: Upload promotion delta artifact (branch-push failure fallback)
         if: always() && steps.promote.outputs.push_failed == 'true'
