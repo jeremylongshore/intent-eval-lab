@@ -11,6 +11,17 @@ Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skelet
 
 ### Added
 
+#### Phase A.0 analysis input guard (2026-10-19)
+
+- Refuse incomplete or incomparable registered cohorts, missing/non-finite
+  measurements and invalid computed statistics before emitting a decision.
+  Require fresh output paths and preserve existing historical evidence.
+- Label the retained estimators accurately and expose unresolved template and
+  Goodhart-audit differences. Compare the strict scalar threshold without
+  binary-rounding ambiguity. Historical baseline mismatches and DR-036 impact
+  remain under review in `bd_000-projects-436s`; this is not a new ratification.
+  Refs bead `bd_000-projects-1j6k`.
+
 #### Phase A.0 offline coverage (2026-10-19)
 
 - Exercise analysis pairing, best-K selection, decision arithmetic and scorer
