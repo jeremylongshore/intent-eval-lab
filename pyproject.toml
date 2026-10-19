@@ -98,13 +98,10 @@ parallel = true
 concurrency = ["multiprocessing"]
 
 [tool.coverage.report]
-# LOCAL floor. Locally the suite measures ~66-68% because the cross-repo IS
-# validator + fixtures and the model-provider keys are both present, so the
-# arm-runner subprocesses actually execute. CI cannot reach either, measures
-# ~40%, and therefore passes `--fail-under=0` to switch this off for CI only
-# (see .github/workflows/python-tests.yml). Do NOT lower this number to make CI
-# green — that would weaken the local gate to paper over an environment limit.
-# Ratchet UP in follow-up PRs as un-tested branches land tests.
+# Shared local/CI floor. Offline analysis and scorer-adapter contracts exercise
+# deterministic behavior without provider keys or an external marketplace clone.
+# Real-validator integration tests remain separate and skip without that clone.
+# The CI job remains advisory, but no longer overrides this floor with zero.
 fail_under = 60
 precision = 1
 show_missing = true

@@ -26,3 +26,29 @@
 ## CTO gates before Session 2 (per DESIGN.md § 9)
 
 5 open items must resolve.
+
+## Offline test coverage
+
+From the repository root, install the test dependencies declared in
+`.github/workflows/python-tests.yml`, then run:
+
+```bash
+COVERAGE_PROCESS_START="$PWD/pyproject.toml" PYTHONPATH="$PWD" coverage run -m pytest research/phase-a-0-baseline/tests/
+coverage combine
+coverage report
+```
+
+The same 60% floor applies locally and in the advisory CI job. Analysis tests
+use synthetic on-disk measurements and the real NumPy/SciPy calculations;
+scorer-adapter tests use an explicitly synthetic validator process to verify
+routing, parsing and provenance. They do not prove marketplace integration,
+statistical validity, live provider behavior or experiment outcomes. The four
+separate real-validator tests still require the marketplace checkout.
+
+The coverage repair was verified with networking disabled and the developer's
+home directory hidden: 43.1% before the new contracts, 61.2% after. No coverage
+exclusions, research results, analysis rules or provider behavior changed.
+Refs bead `bd_000-projects-js4x`.
+
+Analysis input sufficiency and statistical-claim corrections are tracked
+separately in `bd_000-projects-1j6k`; coverage does not settle those findings.

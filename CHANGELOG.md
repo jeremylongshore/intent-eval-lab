@@ -11,6 +11,14 @@ Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skelet
 
 ### Added
 
+#### Phase A.0 offline coverage (2026-10-19)
+
+- Exercise analysis pairing, best-K selection, decision arithmetic and scorer
+  tier/provenance behavior with nine offline contracts. Restore the existing
+  60% coverage floor inside the advisory Python CI lane; no exclusions or
+  branch-protection requirements change. Real-validator integration remains
+  separate. Refs bead `bd_000-projects-js4x`.
+
 #### Canonical dashboard producer (2026-10-12)
 
 - Bind complete kernel-valid statement payloads in signed `iel` bundle metadata;
