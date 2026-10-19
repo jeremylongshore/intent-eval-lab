@@ -92,6 +92,8 @@ ttest = "ttest"
 requireds = "requireds"
 # Citation author surname (research bibliography + README).
 suh = "suh"
+# TeX file-read primitive in the frozen adversarial document corpus.
+openin = "openin"
 
 [files]
 # Skip vendored snapshots, generated output, lockfiles, the bead store, and the

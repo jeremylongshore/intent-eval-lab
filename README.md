@@ -32,6 +32,7 @@ intent-eval-lab/
 ├── research/        ← literature surveys, paper notes, competitive landscape
 ├── sandboxes/       ← per-experiment dirs (one dated subdir per run)
 ├── evidence/        ← captured telemetry, OTEL traces, JSON evidence (mostly gitignored)
+├── evals/           ← versioned evaluation corpora with frozen inputs and labels
 ├── scripts/         ← reusable test harness, OTEL probes, prompt-suite runners
 └── projects/        ← symlinks to constituent project repos (gitignored — see below)
 ```
@@ -39,6 +40,8 @@ intent-eval-lab/
 `specs/` is the **normative output** of the lab — currently shipping module 1 ([`mcp-plugin-observability/`](./specs/mcp-plugin-observability/)) at `v0.1.0-draft`, with placeholder modules for `validator-contract-reliability/`, `forecasting-drift-detection/`, and `decentralized-crypto-evaluation/` reserving the structural slots for future engagements. See [`specs/README.md`](./specs/README.md) for the module index and authoring conventions.
 
 `projects/` is filesystem-only — the constituent projects keep their own GitHub remotes. The lab is a research umbrella over them, not a monorepo.
+
+Shared corpora: [drift classification v1](evals/drift-classification/v1/README.md) and [adversarial documents v1](evals/adversarial-documents/v1/README.md). The document corpus is an unmeasured synthetic seed covering prompt injection, TeX file reads, remote fetches, and benign controls.
 
 ## Topics in scope
 
