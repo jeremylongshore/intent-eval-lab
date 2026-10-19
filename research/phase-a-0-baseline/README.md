@@ -62,6 +62,12 @@ invalid JSON, non-finite values and inconsistent score deltas fail with exit 2.
 Partial cohorts may be reported descriptively under DESIGN section 6; this
 command does not turn those exclusions into a complete-experiment decision.
 
+Each Arm A slot must include `response.json` with a boolean `dry_run: false`.
+Each Arm B specimen must include `proposal-0.json`, and every saved proposal
+must declare `dry_run: false`. Missing or ambiguous response provenance is
+refused. This check catches simulations retained when a later real invocation
+resumes a run; the latest summary's flag cannot establish earlier records.
+
 Use a fresh output directory. Existing statistics or decisions are never
 replaced, and non-finite calculated statistics are refused before either output
 is written. For example, from this research directory:

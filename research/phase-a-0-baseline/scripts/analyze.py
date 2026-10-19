@@ -171,6 +171,21 @@ def validate_cohort(arm_a: dict[str, Any], arm_b: dict[str, Any]) -> None:
             raise AnalysisInputError(f"Arm B {sha8} stratum differs from the manifest")
         if any(rec["baseline"] != arm_b[sha8]["baseline"] for rec in arm_a[sha8].values()):
             raise AnalysisInputError(f"Incomparable baseline scores for specimen {sha8}")
+        # A resumed real run can retain earlier simulated records. Summaries
+        # describe the latest invocation, so inspect each persisted response.
+        for k in sorted(K_VALUES):
+            require_real_response(ARM_A_DIR / sha8 / f"k={k}" / "response.json")
+        proposal_dir = ARM_B_DIR / sha8
+        require_real_response(proposal_dir / "proposal-0.json")
+        for proposal in sorted(proposal_dir.glob("proposal-*.json")):
+            if proposal.name != "proposal-0.json":
+                require_real_response(proposal)
+
+
+def require_real_response(path: Path) -> None:
+    response = read_json(path)
+    if not isinstance(response, dict) or response.get("dry_run") is not False:
+        raise AnalysisInputError(f"{path}: response must explicitly declare dry_run=false")
 
 
 def cohen_d(a: list[float], b: list[float]) -> float:
