@@ -192,8 +192,11 @@ def build_report(root: Path, base: str, head: str) -> dict[str, Any]:
             )
         )
         row["diff_lines"] = len(diff)
-        row["diff_excerpt"] = "\n".join(line[:300] for line in diff[:16])[:2200]
-        row["diff_excerpt_truncated"] = len(diff) > 16 or any(len(line) > 300 for line in diff[:16])
+        excerpt = "\n".join(line[:300] for line in diff[:16])
+        row["diff_excerpt"] = excerpt[:2200]
+        row["diff_excerpt_truncated"] = (
+            len(diff) > 16 or any(len(line) > 300 for line in diff[:16]) or len(excerpt) > 2200
+        )
         rows.append(row)
     return {
         "schema": "snapshot-review/v1",

@@ -118,6 +118,20 @@ def test_byte_only_change_never_becomes_textual_approval(repository):
     assert "Byte-only" in report["surfaces"][0]["reason"]
 
 
+def test_total_excerpt_budget_discloses_truncation(repository):
+    root, _ = repository
+    capture(root, ("a" * 200 + "\n") * 6)
+    base = commit(root)
+    capture(root, ("b" * 200 + "\n") * 6)
+    report = review.build_report(root, base, commit(root))
+    row = report["surfaces"][0]
+    assert row["diff_lines"] <= 16 and len(row["diff_excerpt"]) == 2200
+    assert row["diff_excerpt_truncated"] is True
+    assert "Excerpt truncated" in review.render(
+        report, "test/review", "https://github.com/test/review/actions/runs/123"
+    )
+
+
 def test_no_snapshot_change_and_reused_output(repository, tmp_path):
     root, base = repository
     assert review.build_report(root, base, base)["surfaces"] == []
