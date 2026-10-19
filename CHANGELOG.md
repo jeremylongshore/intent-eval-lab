@@ -13,6 +13,9 @@ Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skelet
 
 #### Phase A.0 analysis input guard (2026-10-19)
 
+- Check saved Arm A responses and Arm B proposals for explicit real-run flags;
+  refuse missing, ambiguous or simulated records even after a later real run
+  writes a new summary. Follow-up to PR #407's provenance review.
 - Refuse incomplete or incomparable registered cohorts, missing/non-finite
   measurements and invalid computed statistics before emitting a decision.
   Require fresh output paths and preserve existing historical evidence.

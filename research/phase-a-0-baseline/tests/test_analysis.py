@@ -108,6 +108,7 @@ def seed_pairs(analysis: ModuleType, best: list[float], improvements: list[float
     for i, (a, improvement) in enumerate(zip(best, improvements, strict=True)):
         for position, k in enumerate((0, 3, 8, 16)):
             delta = a - (3 - position) * (0.2 + (i % 6) * 0.01)
+            write_json(analysis.ARM_A_DIR / f"{i:08x}" / f"k={k}" / "response.json", {"dry_run": False})
             write_json(
                 analysis.ARM_A_DIR / f"{i:08x}" / f"k={k}" / "score.json",
                 {
@@ -116,6 +117,7 @@ def seed_pairs(analysis: ModuleType, best: list[float], improvements: list[float
                     "marketplace_score_pct": 80 + delta,
                 },
             )
+        write_json(analysis.ARM_B_DIR / f"{i:08x}" / "proposal-0.json", {"dry_run": False})
         records.append(
             {
                 "sha8": f"{i:08x}",
@@ -348,3 +350,37 @@ def test_cli_refuses_empty_input_without_an_output(analysis: ModuleType, tmp_pat
     assert run.returncode == 2
     assert "cohort mismatch" in run.stderr
     assert not (tmp_path / "cli-output").exists()
+
+
+@pytest.mark.parametrize("arm", ["A", "B"])
+@pytest.mark.parametrize("defect", ["simulated", "missing-file", "missing-flag", "string-flag", "non-object"])
+def test_per_record_provenance_refuses_resumed_simulation(analysis: ModuleType, arm: str, defect: str) -> None:
+    seed_pairs(analysis, [i / 100 for i in range(60)], [0.1] * 59 + [10])
+    # A later real run's summary does not change saved per-record provenance.
+    write_json(analysis.ARM_A_DIR / "_summary.json", {"dry_run": False})
+    summary_path = analysis.ARM_B_DIR / "_summary.json"
+    summary = json.loads(summary_path.read_text())
+    summary["dry_run"] = False
+    write_json(summary_path, summary)
+    path = (
+        analysis.ARM_A_DIR / "00000000" / "k=0" / "response.json"
+        if arm == "A"
+        else analysis.ARM_B_DIR / "00000000" / "proposal-0.json"
+    )
+    if defect == "missing-file":
+        path.unlink()
+    else:
+        content = {
+            "simulated": {"dry_run": True},
+            "missing-flag": {},
+            "string-flag": {"dry_run": "false"},
+            "non-object": [],
+        }[defect]
+        write_json(path, content)
+    assert_refused(analysis)
+
+
+def test_later_simulated_arm_b_proposal_is_refused(analysis: ModuleType) -> None:
+    seed_pairs(analysis, [i / 100 for i in range(60)], [0.1] * 59 + [10])
+    write_json(analysis.ARM_B_DIR / "00000000" / "proposal-3.json", {"dry_run": True})
+    assert_refused(analysis)
