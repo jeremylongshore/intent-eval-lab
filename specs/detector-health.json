@@ -10,28 +10,33 @@
       "target_pct": 100.0
     },
     "no-fetch-error-streaks": {
-      "detail": "all 16 tracked surfaces under the streak threshold (3)",
-      "pass": true,
+      "detail": "effectively unmonitored (fetch_error_streak >= 3): anthropic-engineering (streak=4)",
+      "pass": false,
       "streak_threshold": 3,
-      "surfaces_at_or_over_threshold": []
+      "surfaces_at_or_over_threshold": [
+        {
+          "fetch_error_streak": 4,
+          "surface": "anthropic-engineering"
+        }
+      ]
     },
     "watcher-run-recent": {
-      "detail": "last successful watcher run 2026-10-01T09:24:18Z was 59.5h ago (max gap 26h)",
-      "gap_hours": 59.5,
-      "last_run_utc": "2026-10-01T09:24:18Z",
+      "detail": "last successful watcher run 2026-10-24T13:14:09Z was 0.0h ago (max gap 26h)",
+      "gap_hours": 0.0,
+      "last_run_utc": "2026-10-24T13:14:09Z",
       "max_gap_hours": 26.0,
-      "pass": false
+      "pass": true
     }
   },
   "drift_rows": [
     {
       "adopted": true,
       "authority_tier": "official-spec",
-      "baseline_sha256": "4c649bdf0e0a51c9e215d9f91009ecdca05ee9d073edb6f37c20265bbd829e11",
+      "baseline_sha256": "9a67de89132948b2300b8dc87b93817971d47f9be89b644444965881a8dfde16",
       "contract": "skill-frontmatter",
       "divergences_outstanding": 7,
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
+      "last_ok_utc": "2026-10-24T13:14:01Z",
       "monitored": true,
       "surface": "agentskills-spec"
     },
@@ -41,30 +46,30 @@
       "baseline_sha256": "f99507064aeba1e13c4ff77d3b1d84a9f74a575bbeb088038dbaa505a31ae70f",
       "contract": "cross-cutting-signal",
       "divergences_outstanding": 0,
-      "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
+      "fetch_error_streak": 4,
+      "last_ok_utc": "2026-10-20T09:20:58Z",
       "monitored": true,
       "surface": "anthropic-engineering"
     },
     {
       "adopted": false,
       "authority_tier": "changelog",
-      "baseline_sha256": "c2073a2eb811b9322317fe8496bfa38634984a3de1147cc8ef3439f91e0be9a1",
+      "baseline_sha256": "27d7a0e1d5c1b98cce5153a4c9e467e8a361550c4cfe9d0aa471f46b8dc0ed83",
       "contract": "version-signal",
       "divergences_outstanding": 0,
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
+      "last_ok_utc": "2026-10-24T13:14:01Z",
       "monitored": true,
       "surface": "claude-code-changelog"
     },
     {
       "adopted": false,
       "authority_tier": "changelog",
-      "baseline_sha256": "5fef7bd6468ec2c512217b6e4f12e63754c137f92039b03f6f119183e6f94f82",
+      "baseline_sha256": "c7bd3bb68246a448a938b39de32c8dccced86dc5aaface5d3d3cf19fb2185b46",
       "contract": "version-signal",
       "divergences_outstanding": 0,
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
+      "last_ok_utc": "2026-10-24T13:14:01Z",
       "monitored": true,
       "surface": "claude-code-npm"
     },
@@ -75,40 +80,40 @@
       "contract": "version-signal",
       "divergences_outstanding": 0,
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
+      "last_ok_utc": "2026-10-24T13:14:01Z",
       "monitored": true,
       "surface": "claude-code-releases"
     },
     {
       "adopted": true,
       "authority_tier": "reference",
-      "baseline_sha256": "755e30355fb80abada5a6a5ec10fe491cc1a57bf123232c80d1cc68312869ae5",
+      "baseline_sha256": "47ffc799070326108bbd3811db73d26f9a4cd68168078095d923a2ba710fdd8a",
       "contract": "hook-config",
       "divergences_outstanding": 1,
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
+      "last_ok_utc": "2026-10-24T13:14:01Z",
       "monitored": true,
       "surface": "claude-hooks"
     },
     {
       "adopted": true,
       "authority_tier": "reference",
-      "baseline_sha256": "41ea72eb329492a8530f2d4730b093e930151422003f161656297e44cecbf074",
+      "baseline_sha256": "0b062367ed54712ecd9e1a3d6b5d67e4eedc860e01962202176ce5e48f1915dc",
       "contract": "hook-config",
       "divergences_outstanding": 0,
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
+      "last_ok_utc": "2026-10-24T13:14:01Z",
       "monitored": true,
       "surface": "claude-settings"
     },
     {
       "adopted": false,
       "authority_tier": "reference",
-      "baseline_sha256": "efdc415213d82e2aefd6f144f78b3d806fec595a89ff4e5cd0a7a665a11d2a70",
+      "baseline_sha256": "acb1f1388ee96a516f707c42bac1e834b22df90081e5c2eccb90a2f76a5430f6",
       "contract": "skill-frontmatter",
       "divergences_outstanding": 0,
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
+      "last_ok_utc": "2026-10-24T13:14:01Z",
       "monitored": true,
       "surface": "claude-slash-commands"
     },
@@ -119,7 +124,7 @@
       "contract": "mcp-config",
       "divergences_outstanding": 0,
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
+      "last_ok_utc": "2026-10-24T13:14:01Z",
       "monitored": true,
       "surface": "mcp-releases"
     },
@@ -130,51 +135,51 @@
       "contract": "mcp-config",
       "divergences_outstanding": 1,
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
+      "last_ok_utc": "2026-10-24T13:14:01Z",
       "monitored": true,
       "surface": "mcp-schema-ts"
     },
     {
       "adopted": true,
       "authority_tier": "official-spec",
-      "baseline_sha256": "82e9c63ce6ba6ee69af70a1518bf3d559368174a3d9d76032caf7c5fff9f2040",
+      "baseline_sha256": "0a674a6a344259e49118e29a1f7b36092c9bb617ae3ed6c425bcc11c7aa8e372",
       "contract": "mcp-config",
       "divergences_outstanding": 0,
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
+      "last_ok_utc": "2026-10-24T13:14:01Z",
       "monitored": true,
       "surface": "mcp-spec-docs"
     },
     {
       "adopted": true,
       "authority_tier": "anthropic-doc",
-      "baseline_sha256": "acc3a81d482fc3bace77b88453a3c4c4460dc2e427255e0fb5fd628c3d24032d",
+      "baseline_sha256": "3bfadf3faa9855e57a39b355200bb3c837df6c7a0048a1d3dbbef810c2c542ae",
       "contract": "skill-frontmatter",
       "divergences_outstanding": 0,
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
+      "last_ok_utc": "2026-10-24T13:14:01Z",
       "monitored": true,
       "surface": "platform-skills-overview"
     },
     {
       "adopted": true,
       "authority_tier": "reference",
-      "baseline_sha256": "0597250fec9a5eb9734df9c6821409431623604656129cf8e462f93460db6a84",
+      "baseline_sha256": "8375e712c31dcea2ba3c032862bb85a3983693edd2f874690d5c196f8c0f4a8a",
       "contract": "marketplace-catalog",
       "divergences_outstanding": 1,
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
+      "last_ok_utc": "2026-10-24T13:14:01Z",
       "monitored": true,
       "surface": "plugin-marketplaces"
     },
     {
       "adopted": true,
       "authority_tier": "reference",
-      "baseline_sha256": "45289e551da96e9c4a3a5968b3bdcdd7fd766f0c735c019f60d71d06f28a58d1",
+      "baseline_sha256": "3b72923e29d936fcb96146aae7b745e04486ac0367c5e3018739816f6cb85184",
       "contract": "plugin-manifest",
       "divergences_outstanding": 1,
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
+      "last_ok_utc": "2026-10-24T13:14:01Z",
       "monitored": true,
       "surface": "plugins-reference"
     },
@@ -185,46 +190,46 @@
       "contract": "skill-frontmatter",
       "divergences_outstanding": 0,
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
+      "last_ok_utc": "2026-10-24T13:14:01Z",
       "monitored": true,
       "surface": "skills-releases"
     },
     {
       "adopted": true,
       "authority_tier": "reference",
-      "baseline_sha256": "436c792e87396a1c929af41f4dbae943d61757e9575728ad40ac5fa7c48a4393",
+      "baseline_sha256": "d66f847bed2cd73de0a45f29bf9c8dff7782dc7b66dc63d8285176ae6a176cdb",
       "contract": "agent-definition",
       "divergences_outstanding": 1,
       "fetch_error_streak": 0,
-      "last_ok_utc": "2026-10-01T09:24:11Z",
+      "last_ok_utc": "2026-10-24T13:14:01Z",
       "monitored": true,
       "surface": "sub-agents"
     }
   ],
-  "evaluated_at": "2026-10-03T20:55:04Z",
+  "evaluated_at": "2026-10-24T13:14:13Z",
   "failing_conditions": [
-    "watcher-run-recent"
+    "no-fetch-error-streaks"
   ],
   "health_version": "detector-health/v1",
   "inputs": {
-    "specs/lineage/coverage-map.json": "2bfe03661739fe23cddf68ec03e13b366cca21cd9e9612d3971f626208e195a3",
-    "specs/snapshots/.sha/agentskills-spec.sha": "66fc6dc4df96ffe8919fbeb2f8f898efc37a7a57c3325c86b84f597b0eedb6fb",
+    "specs/lineage/coverage-map.json": "dc8f5dc3e5215d950d1eb48da8689f3c55a6935aa873e07b8a4f868f1dfc2940",
+    "specs/snapshots/.sha/agentskills-spec.sha": "0b0b69f755a7e1ad98e29396439f0e991ef1aa95132bd5c76a5074c744b4372f",
     "specs/snapshots/.sha/anthropic-engineering.sha": "f7b2166fb88215842ced23bb35ac38bbc13c313fb4a0fd862032c5684ebd33db",
-    "specs/snapshots/.sha/claude-code-changelog.sha": "66f89f825675db077c2c0d8c92bd3eeedab229241f9891d4b2ba285478ddd750",
-    "specs/snapshots/.sha/claude-code-npm.sha": "9d990e863d9e95f8ce656ed48ea2db77bc662b65d53366baf6cacf20219d915c",
+    "specs/snapshots/.sha/claude-code-changelog.sha": "eb6f7afef9c66c1441ae810cd51193ebd50e74028ef7208ee3e3341788e35fd6",
+    "specs/snapshots/.sha/claude-code-npm.sha": "938246c4ee50c1fd20c786b02a6a4982349e2f0abea0eae5e1c90a4fa63d7f01",
     "specs/snapshots/.sha/claude-code-releases.sha": "40e6fa03facce13fbf32fa6edcbab623dd49c3579d7e1d72e64c983a68bf8807",
-    "specs/snapshots/.sha/claude-hooks.sha": "7ff75d9440eb62ee45485a76d3c4db1df6ba11889141d4754c4bcbe623c66db4",
-    "specs/snapshots/.sha/claude-settings.sha": "ca5a1aab975cb68b23533e093c281f63790828248c46cbc8d2f2071948844edd",
-    "specs/snapshots/.sha/claude-slash-commands.sha": "e021c1ffb0be1d32fd4bea932e220b95542f12a43bc91ddcb8467702da1f57c2",
+    "specs/snapshots/.sha/claude-hooks.sha": "2d61cc8f11db3f0476e78cfdbdc07f5941cb328f347af57420ef808a5f8d2699",
+    "specs/snapshots/.sha/claude-settings.sha": "e2a1992464736b931dcca496c05ec59dd672df24120c932399c5a465e8541701",
+    "specs/snapshots/.sha/claude-slash-commands.sha": "a44b7cfdfbe37dd75a37f6b194d4930ecd5e499957642ee012806cd5222d3420",
     "specs/snapshots/.sha/mcp-releases.sha": "abacf9472a98686b4a292a255a81707532fbb14a1eeaf4976cc0a93cb2428a29",
     "specs/snapshots/.sha/mcp-schema-ts.sha": "6592b802b9642ebac9abe3eb72a78a19ecca69947e2d32ed592ceb0e1ae5e5e3",
-    "specs/snapshots/.sha/mcp-spec-docs.sha": "913a48ec27a0dfde95e7182ed923667e27ddd45b5447fdfa81866ffd12dd2789",
-    "specs/snapshots/.sha/platform-skills-overview.sha": "d29b126e3d65e234d1488b7828ae3ff79da3035090e80527652edb25b7b5e31d",
-    "specs/snapshots/.sha/plugin-marketplaces.sha": "b782478aea4ffb27fcd85a5af99b4ac920129566b6d1103897e4950065922382",
-    "specs/snapshots/.sha/plugins-reference.sha": "e7b73a5d908fe1843ffb0b05d4b8604b8b8ed42b0e648d03a634050908a275db",
+    "specs/snapshots/.sha/mcp-spec-docs.sha": "71a31c56713ef1ac6ae7fc7937997761a766535558ed5fed424e81ee6c58b343",
+    "specs/snapshots/.sha/platform-skills-overview.sha": "f2934143f966c5a2b33b902b549d6bb7225be3057bb0ab5c5827f2dae73c3bd8",
+    "specs/snapshots/.sha/plugin-marketplaces.sha": "620032fa2d30d50610f5b1922db686bfd8a2f83d502037f22f12d05df80fa1f0",
+    "specs/snapshots/.sha/plugins-reference.sha": "8b97a2419440557b8b4dc491296263058aac14244d2b741612200e323240b3c5",
     "specs/snapshots/.sha/skills-releases.sha": "698ed71afca22f55068c34b7d92ea5b6551f6bd4ce8a126a5b1b4c68de349668",
-    "specs/snapshots/.sha/sub-agents.sha": "fdf672a4d9fd2b950616c5fd26ef48f934b62829d05b9a4bdb06e8a4fde851fc",
-    "specs/snapshots/.state.json": "3eabee89b237aae9ac4bdb88d804318d0495e94bb73c6b4062754ba5d34086ac",
+    "specs/snapshots/.sha/sub-agents.sha": "edd272ce0a14f11101e0a1b378d25783f526d804b9907e9f145a26cc507a38ee",
+    "specs/snapshots/.state.json": "1c096aeb455994798ed16c4fec83cd98db82140e7427a27cc549f2d7874c84ce",
     "specs/upstream-surface-registry.v1.json": "511fb917b16fe20fddf34c80b01f014d8fba7303d8f9185dc02d5c22f824fae5"
   },
   "lineage": {
