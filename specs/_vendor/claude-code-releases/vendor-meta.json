@@ -1,7 +1,7 @@
 {
   "surface_id": "claude-code-releases",
-  "sha256": "50b16eb98e07bcf3a44f3e9914cea13995405fd576cd8b35c5c0387bcf01d6d4",
-  "bytes": 184539,
-  "updated_at": "2026-10-01T09:24:14Z",
-  "source_raw_record": "archive/raw/claude-code-releases/20261001T092414Z.meta.json"
+  "sha256": "f669b6a4cacbd4d9d67e7b1df3bcbd91fede2e845f9eff016fe85b7877556654",
+  "bytes": 78839,
+  "updated_at": "2026-10-24T13:14:04Z",
+  "source_raw_record": "archive/raw/claude-code-releases/20261024T131404Z.meta.json"
 }
