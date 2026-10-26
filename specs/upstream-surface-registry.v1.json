@@ -424,7 +424,7 @@
         "urls": [
           "https://www.anthropic.com/engineering"
         ],
-        "expect_regex": "href=\"/engineering/[a-z0-9-]+\"",
+        "expect_regex": "(?s)(?=.*<link\\b[^>]*rel=\"canonical\"[^>]*href=\"https://www\\.anthropic\\.com/engineering/?\")(?=.*<main\\b[^>]*>(?:(?!</main>).)*href=\"/(?:engineering|research)/[A-Za-z0-9-]+\")",
         "min_bytes": 16384,
         "ext": ".html"
       }

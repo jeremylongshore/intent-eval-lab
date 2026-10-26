@@ -11,6 +11,16 @@ Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skelet
 
 ### Added
 
+#### Engineering index article extraction (2026-10-26)
+
+- Recover the engineering watcher's featured-article signal after the index
+  moved article paths under `/research/`. Scope selection to the engineering
+  page and its featured carousel; reject missing or ambiguous signals.
+- Preserve the exact legacy sentinel and frozen baseline hash. Capture-shape
+  checks accept both path layouts and require the engineering canonical URL.
+  No retained baseline, watcher timestamp or upstream content is promoted.
+  Refs `compile-then-govern-v0y`.
+
 #### Phase A.0 analysis input guard (2026-10-19)
 
 - Check saved Arm A responses and Arm B proposals for explicit real-run flags;

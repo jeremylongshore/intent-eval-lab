@@ -108,6 +108,9 @@ credentials/
 # ignored; only this sanitized bundle is intentionally reviewable.
 !evidence/phase5-dogfood/audit-tests-minimax-m3.bundle.json
 
+# Sanitized engineering-index probes are durable, author-run review evidence.
+!evidence/engineering-index-recovery/observations-2026-10-26.json
+
 # bbb-seed-v1 was closed unmerged (PR #230): the brain is internal-only, so no
 # public corpus exists. Local residue (a person-name list and brain-derived
 # candidate docs) must never be committed to this public repo.

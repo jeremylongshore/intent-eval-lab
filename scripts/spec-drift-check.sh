@@ -99,10 +99,10 @@ fetch_platform_skills_overview() {
 }
 
 fetch_anthropic_engineering() {
-  # Top article slug sentinel — extract the first article link, hash that.
+  # Current featured engineering articles use /research/ paths. Scope to the
+  # engineering index's featured cards, never arbitrary navigation links.
   curl -fsSL "https://www.anthropic.com/engineering" \
-    | grep -oE 'href="/engineering/[a-z0-9-]+"' \
-    | head -1 \
+    | python3 "${SCRIPT_DIR}/extract-engineering-article.py" \
     | hash_nonempty
 }
 

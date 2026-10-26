@@ -1,0 +1,41 @@
+{
+  "record": "engineering-index-recovery/v1",
+  "base_commit": "dd42d4598b4ef1eadef143b31ef5eab1e2de6d13",
+  "scope": "Unsigned author-run offline extraction evidence; no baseline acceptance or article-content compatibility claim",
+  "parser": "scripts/extract-engineering-article.py",
+  "parser_sha256": "1cb49b92c5cd17b23b96a9e2111697bf698c2ed659284a7bed6dd67173c6e6c8",
+  "parser_git_blob_sha1": "161d92dbdbe4229a3c0c9c067f7aa454c1a673cd",
+  "probes": [
+    {
+      "label": "frozen",
+      "input_sha256": "5369ffb2a2e807d79a9a6b21da66ef150eb3dd282fe9c34ad50648411e3e5930",
+      "input_bytes": 176546,
+      "legacy_sentinel": "href=\"/engineering/how-we-contain-claude\"\n",
+      "legacy_extraction": "nonempty",
+      "current_exit": 0,
+      "current_sentinel": "href=\"/engineering/how-we-contain-claude\"\n",
+      "current_sentinel_sha256": "f99507064aeba1e13c4ff77d3b1d84a9f74a575bbeb088038dbaa505a31ae70f",
+      "capture_classification": "FETCH_OK",
+      "retained_baseline_sha256": "f99507064aeba1e13c4ff77d3b1d84a9f74a575bbeb088038dbaa505a31ae70f"
+    },
+    {
+      "label": "current",
+      "input_sha256": "7eddb2b5ab97a3f22f80c4b73be36a5300b49107a989eefcdd3d59e518054fd9",
+      "input_bytes": 392385,
+      "legacy_sentinel": null,
+      "legacy_extraction": "indeterminate: pattern absent, no hash emitted",
+      "current_exit": 0,
+      "current_sentinel": "href=\"/research/redesigning-source-control\"\n",
+      "current_sentinel_sha256": "8a107e996deccd328e89f3f5899fefe1a7a77237332e80e8c777f6309294b422",
+      "capture_classification": "FETCH_OK",
+      "source": {
+        "url": "https://www.anthropic.com/engineering",
+        "finalUrl": "https://www.anthropic.com/engineering",
+        "observed": "2026-10-26T19:46:51.641662+00:00",
+        "status": 200,
+        "sha256": "7eddb2b5ab97a3f22f80c4b73be36a5300b49107a989eefcdd3d59e518054fd9",
+        "bytes": 392385
+      }
+    }
+  ]
+}
