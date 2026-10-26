@@ -249,7 +249,7 @@
     {
       "name": "plugins-reference",
       "contract": "plugin-manifest",
-      "url": "https://code.claude.com/docs/en/plugins-reference.md",
+      "url": "https://code.claude.com/docs/en/plugins/manifest-reference.md",
       "machine_readable": false,
       "wave": 2,
       "authority_tier": "reference",
@@ -267,12 +267,17 @@
       "capture": {
         "kind": "http",
         "urls": [
-          "https://code.claude.com/docs/en/plugins-reference.md"
+          "https://code.claude.com/docs/en/plugins/manifest-reference.md"
         ],
         "expect_regex": "(?m)^#{1,3} ",
         "min_bytes": 4096,
         "ext": ".md",
-        "expect_title": "(?i)^Plugins reference$"
+        "expect_title": "(?i)^(?:Plugins reference|Plugin manifest reference)$"
+      },
+      "reference_migration": {
+        "observed_on": "2026-10-26",
+        "previous_url": "https://code.claude.com/docs/en/plugins-reference.md",
+        "reason": "Canonical manifest reference now has a unified Fields table; legacy capture title remains recognized without rewriting frozen evidence."
       }
     },
     {
@@ -307,7 +312,7 @@
     {
       "name": "plugin-marketplaces",
       "contract": "marketplace-catalog",
-      "url": "https://code.claude.com/docs/en/plugin-marketplaces.md",
+      "url": "https://code.claude.com/docs/en/plugins/marketplace-reference.md",
       "machine_readable": false,
       "wave": 2,
       "authority_tier": "reference",
@@ -325,12 +330,17 @@
       "capture": {
         "kind": "http",
         "urls": [
-          "https://code.claude.com/docs/en/plugin-marketplaces.md"
+          "https://code.claude.com/docs/en/plugins/marketplace-reference.md"
         ],
         "expect_regex": "(?m)^#{1,3} ",
         "min_bytes": 4096,
         "ext": ".md",
-        "expect_title": "(?i)^Create and distribute a plugin marketplace$"
+        "expect_title": "(?i)^(?:Create and distribute a plugin marketplace|Marketplace reference)$"
+      },
+      "reference_migration": {
+        "observed_on": "2026-10-26",
+        "previous_url": "https://code.claude.com/docs/en/plugin-marketplaces.md",
+        "reason": "Previous URL now serves a creation guide. Capture the linked normative marketplace reference; guide title is deliberately refused. Frozen historical captures remain unchanged."
       }
     },
     {

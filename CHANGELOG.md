@@ -17,9 +17,21 @@ Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skelet
   moved article paths under `/research/`. Scope selection to the engineering
   page and its featured carousel; reject missing or ambiguous signals.
 - Preserve the exact legacy sentinel and frozen baseline hash. Capture-shape
-  checks accept both path layouts and require the engineering canonical URL.
+  checks accept both path layouts with a canonical-shaped markup heuristic;
+  the offline HTML parser performs the stricter source identity checks.
   No retained baseline, watcher timestamp or upstream content is promoted.
   Refs `compile-then-govern-v0y`.
+
+#### Current reference layout recovery (2026-10-26)
+
+- Recover agent, plugin and marketplace reference extraction after upstream page
+  reorganization. Keep historical frozen outputs unchanged, reject ambiguous or
+  missing normative facts, and preserve marketplace strict-table result cells.
+  Capture the canonical manifest and marketplace reference URLs, with historical
+  title compatibility and creation-guide refusal. Requiredness omitted by the
+  current reference stays unspecified; no snapshot or kernel promotion is implied.
+  Refs `compile-then-govern-14z`; evidence and scope are recorded in
+  `000-docs/119-AT-RPRT-reference-layout-recovery-2026-10-26.md`.
 
 #### Phase A.0 analysis input guard (2026-10-19)
 
