@@ -260,6 +260,13 @@ def _current_anchor(section: list[str], marker: str, what: str) -> str:
     return matches[0]
 
 
+def _current_section(lines: list[str], heading: str, stop_prefixes: tuple[str, ...]) -> list[str]:
+    visible = [line.strip() for line, fenced in zip(lines, _fence_mask(lines), strict=True) if not fenced]
+    if visible.count(heading) != 1:
+        _refuse(f"{heading}: missing/duplicate normative section")
+    return _section(lines, heading, stop_prefixes)
+
+
 def _current_fields(section: list[str], required: list[str], what: str) -> dict[str, Any]:
     header, rows = _table(section, what, require_backtick=False)
     if header != _FIELD_COLUMNS:
@@ -296,7 +303,7 @@ def _extract_current_reference_doc(lines: list[str]) -> dict[str, Any]:
     ]
     if any(headings.count(heading) != 1 for heading in mandatory):
         _refuse("missing/duplicate normative marketplace section")
-    top_section = _section(lines, "## Top-level fields", ("## ",))
+    top_section = _current_section(lines, "## Top-level fields", ("## ",))
     _current_anchor(top_section, "`name`, `owner`, and `plugins` are required.", "top-level required set")
     top = _current_fields(top_section, ["name", "owner", "plugins"], "top-level fields")
     owner_description = top["owner"]["description"]
@@ -318,15 +325,17 @@ def _extract_current_reference_doc(lines: list[str]) -> dict[str, Any]:
         if "Alternate location" not in top[name]["description"]:
             _refuse("metadata back-compat explanation missing")
 
-    catalog_section = _section(lines, "## Marketplace file", ("## ",))
-    reserved = _section(catalog_section, "### Reserved names", ("## ", "### "))
+    catalog_section = _current_section(lines, "## Marketplace file", ("## ",))
+    reserved = _current_section(catalog_section, "### Reserved names", ("## ", "### "))
     rules = [
         line[2:]
         for line, fenced in zip(reserved, _fence_mask(reserved), strict=True)
         if line.startswith("* ") and not fenced
     ]
-    if not rules or not any("Official marketplace names" in rule for rule in rules):
-        _refuse("reserved-name rules missing")
+    categories = ("Official marketplace names", "Community marketplace names", "Plugin directory names")
+    for category in categories:
+        if sum(rule.startswith(f"**{category}**:") for rule in rules) != 1:
+            _refuse(f"{category}: missing/duplicate reserved-name rule")
     # Keep the conditional rules too: names alone lose source/version qualifications.
     reserved_names = []
     for rule in rules:
@@ -335,13 +344,13 @@ def _extract_current_reference_doc(lines: list[str]) -> dict[str, Any]:
         ):
             reserved_names.extend(_BACKTICK.findall(rule.split(". Reserved", 1)[0]))
 
-    entries = _section(lines, _ENTRIES_HEADING, ("## ",))
+    entries = _current_section(lines, _ENTRIES_HEADING, ("## ",))
     _current_anchor(entries, "`name` and `source` are required.", "entry required set")
     fields = _current_fields(entries, ["name", "source"], "entry fields")
     inheritance = _current_anchor(entries, "an entry also accepts every", "manifest inheritance")
     if "directory listing fields" not in inheritance or "plugin.json" not in inheritance:
         _refuse("manifest inheritance/exclusion reference missing")
-    strict = _section(entries, _STRICT_SUB, ("## ", "### "))
+    strict = _current_section(entries, _STRICT_SUB, ("## ", "### "))
     _current_anchor(strict, "`strict: true`, the default", "strict default")
     if (
         sum(
@@ -366,7 +375,7 @@ def _extract_current_reference_doc(lines: list[str]) -> dict[str, Any]:
     if any(len(row) != 4 or not row[3] for row in strict_rows):
         _refuse("strict truth table result missing")
 
-    sources = _section(lines, _SOURCES_HEADING, ("## ",))
+    sources = _current_section(lines, _SOURCES_HEADING, ("## ",))
     header, source_rows = _table(sources, "plugin-source summary", require_backtick=False)
     if header != ["Type", "Fields", "Notes"] or len(source_rows) != 7:
         _refuse("plugin-source summary must cover seven forms")
@@ -393,7 +402,7 @@ def _extract_current_reference_doc(lines: list[str]) -> dict[str, Any]:
             != 1
         ):
             _refuse(f"{name}: missing/duplicate source section")
-        sec = _section(sources, f"### {name} plugin source", ("## ", "### "))
+        sec = _current_section(sources, f"### {name} plugin source", ("## ", "### "))
         example = _first_json_example(sec, name)
         if not isinstance(example, dict) or not isinstance(example.get("source"), dict):
             _refuse(f"{name}: source object example missing")
@@ -415,8 +424,10 @@ def _extract_current_reference_doc(lines: list[str]) -> dict[str, Any]:
         }
         if not summary[name] or len(set(summary[name])) != len(summary[name]):
             _refuse(f"{name}: empty/duplicate field inventory")
-    _current_anchor(sources, "Claude Code checks out `sha`", "sha precedence")
-    relative = _section(sources, "### Relative path plugin source", ("## ", "### "))
+    _current_anchor(
+        sources, "When you set both `ref` and `sha`, Claude Code checks out `sha`.", "sha precedence"
+    )
+    relative = _current_section(sources, "### Relative path plugin source", ("## ", "### "))
     relative_example = _first_json_example(relative, "relative path")
     if not isinstance(relative_example, dict) or not isinstance(relative_example.get("source"), str):
         _refuse("relative path example missing")
@@ -424,7 +435,7 @@ def _extract_current_reference_doc(lines: list[str]) -> dict[str, Any]:
     if not all(token in relative_row[2] for token in ("`./`", "`metadata.pluginRoot`", '`"."`')):
         _refuse("relative path alternatives missing")
     # Scope boundary is load-bearing: do not merge the later settings-source table.
-    _section(lines, "## Marketplace sources", ("## ",))
+    _current_section(lines, "## Marketplace sources", ("## ",))
     return {
         "catalog": {
             "metadata_backcompat_fields": ["description", "version"],
@@ -455,7 +466,7 @@ def _extract_current_reference_doc(lines: list[str]) -> dict[str, Any]:
             },
             "sha_wins_over_ref": True,
             "git_subdir_url_accepts_github_shorthand_and_ssh": None,
-            "git_subdir_url_description": "\n".join(_section(sources, "### git-subdir plugin source", ("## ", "### "))),
+            "git_subdir_url_description": "\n".join(_current_section(sources, "### git-subdir plugin source", ("## ", "### "))),
         },
     }
 

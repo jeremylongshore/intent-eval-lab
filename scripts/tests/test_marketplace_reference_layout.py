@@ -95,7 +95,7 @@ Apart from the [directory listing fields](fixture), an entry also accepts every 
     }
     for name, fields in sources.items():
         doc += f"| `{name}` | " + ", ".join(f"`{f}`" for f in fields) + " | Fixture source. |\n"
-    doc += """When pinned, Claude Code checks out `sha`.
+    doc += """When you set both `ref` and `sha`, Claude Code checks out `sha`.
 ### Relative path plugin source
 ```json
 {"name":"fixture", "source":"./fixture"}
@@ -164,7 +164,10 @@ def test_complete_current_inventory_and_no_invented_requiredness(tmp_path):
         ("### npm plugin source", "### Package source guide"),
         ('{"source":{"source":"npm"}}', '{"source":{"source":"url"}}'),
         ("`ref` and `sha` are optional.", "No optionality statement."),
-        ("When pinned, Claude Code checks out `sha`.", "No pin precedence."),
+        ("When you set both `ref` and `sha`, Claude Code checks out `sha`.", "No pin precedence."),
+        ("When you set both `ref` and `sha`, ", "When pinned, "),
+        ("* **Community marketplace names**: `fixture-community`. Reserved under that condition.", ""),
+        ("* **Plugin directory names**: `fixture-directory`. Reserved under that condition.", ""),
         ('; `"."` is the root.', "."),
         ("## Marketplace sources", "## Setup guide"),
         ("## Top-level fields", "## Top-level fields\n## Top-level fields"),
@@ -190,4 +193,45 @@ def test_fenced_prose_cannot_rescue_a_missing_normative_anchor(tmp_path):
     text = reference().replace("`name` and `source` are required.", "```text\n`name` and `source` are required.\n```")
     with pytest.raises(SystemExit) as exc:
         extract(tmp_path, text)
+    assert exc.value.code == 2
+
+
+CURRENT_SUBSECTIONS = [
+    "### Reserved names",
+    "### Strict mode",
+    "### Relative path plugin source",
+    *[f"### {name} plugin source" for name in ("github", "url", "git-subdir", "npm", "archive", "command")],
+]
+
+
+@pytest.mark.parametrize("heading", CURRENT_SUBSECTIONS)
+@pytest.mark.parametrize("mutation", ["duplicate", "fenced-only"])
+def test_current_subsection_must_have_one_visible_anchor(tmp_path, heading, mutation):
+    original = reference()
+    if mutation == "duplicate":
+        start = original.index(heading)
+        end = original.find("\n##", start + len(heading))
+        assert end != -1
+        section = original[start:end]
+        text = original[:end] + "\n" + section + original[end:]
+    else:
+        text = original.replace(heading, f"```markdown\n{heading}\n```")
+    with pytest.raises(SystemExit) as exc:
+        extract(tmp_path, text)
+    assert exc.value.code == 2
+
+
+@pytest.mark.parametrize("heading", CURRENT_SUBSECTIONS)
+def test_fenced_subsection_decoy_does_not_override_visible_anchor(tmp_path, heading):
+    original = reference()
+    decoy = f"```markdown\n{heading}\nConflicting example, not normative prose.\n```\n"
+    assert extract(tmp_path, decoy + original) == extract(tmp_path, original)
+
+
+@pytest.mark.parametrize("category", ["Official marketplace names", "Community marketplace names", "Plugin directory names"])
+def test_repeated_reserved_rule_category_refuses_even_with_one_heading(tmp_path, category):
+    text = reference()
+    line = next(line for line in text.splitlines() if line.startswith(f"* **{category}**:"))
+    with pytest.raises(SystemExit) as exc:
+        extract(tmp_path, text.replace(line, line + "\n" + line))
     assert exc.value.code == 2
