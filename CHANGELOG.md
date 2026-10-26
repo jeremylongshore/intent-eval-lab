@@ -13,9 +13,9 @@ Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skelet
 
 #### Engineering index article extraction (2026-10-26)
 
-- Recover the engineering watcher's featured-article signal after the index
-  moved article paths under `/research/`. Scope selection to the engineering
-  page and its featured carousel; reject missing or ambiguous signals.
+- Recover the engineering watcher's featured-article signal after the observed
+  first featured link used a `/research/` path. Select the recognized engineering
+  carousel or legacy main-content link; reject unsupported or ambiguous signals.
 - Preserve the exact legacy sentinel and frozen baseline hash. Capture-shape
   checks accept both path layouts with a canonical-shaped markup heuristic;
   the offline HTML parser performs the stricter source identity checks.

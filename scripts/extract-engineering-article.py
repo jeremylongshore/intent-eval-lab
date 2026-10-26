@@ -3,8 +3,8 @@
 
 Offline stdin parser. Exit 2 means indeterminate and emits no stdout. The
 sentinel retains the old grep output bytes, including its trailing newline.
-Current featured cards use /research/ paths; selecting any research link would
-mistake site navigation for an engineering article.
+The observed first featured link uses a /research/ path; selecting any research
+link would mistake site navigation for an engineering article.
 """
 
 from __future__ import annotations

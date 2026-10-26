@@ -99,8 +99,8 @@ fetch_platform_skills_overview() {
 }
 
 fetch_anthropic_engineering() {
-  # Current featured engineering articles use /research/ paths. Scope to the
-  # engineering index's featured cards, never arbitrary navigation links.
+  # The observed first featured link uses a /research/ path. Scope to the
+  # recognized engineering carousel or legacy main link, not navigation.
   curl -fsSL "https://www.anthropic.com/engineering" \
     | python3 "${SCRIPT_DIR}/extract-engineering-article.py" \
     | hash_nonempty

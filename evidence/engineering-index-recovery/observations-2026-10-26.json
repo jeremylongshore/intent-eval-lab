@@ -3,8 +3,8 @@
   "base_commit": "dd42d4598b4ef1eadef143b31ef5eab1e2de6d13",
   "scope": "Unsigned author-run offline extraction evidence; no baseline acceptance or article-content compatibility claim",
   "parser": "scripts/extract-engineering-article.py",
-  "parser_sha256": "1cb49b92c5cd17b23b96a9e2111697bf698c2ed659284a7bed6dd67173c6e6c8",
-  "parser_git_blob_sha1": "161d92dbdbe4229a3c0c9c067f7aa454c1a673cd",
+  "parser_sha256": "8c7ca45cda383f047c27c1203363f21a328e738373f534dbaf8f550d6fa245fb",
+  "parser_git_blob_sha1": "8dccd37baf5047157ad2fb368837fb991fc1eaa5",
   "probes": [
     {
       "label": "frozen",
@@ -39,5 +39,6 @@
     }
   ],
   "capture_config_sha256": "db76fcf8672fafe9ed2709391af3580a6eed5781803f0bd1e19bc0896eaa2214",
-  "capture_scope": "Regex heuristic over canonical-shaped and main-shaped markup, not DOM identity proof; pure parser performs stricter checks."
+  "capture_scope": "Regex heuristic over canonical-shaped and main-shaped markup, not DOM identity proof; pure parser performs stricter checks.",
+  "base_commit_scope": "Historical frozen-input baseline; current parser identity is bound by parser_sha256 and parser_git_blob_sha1, not base_commit."
 }
