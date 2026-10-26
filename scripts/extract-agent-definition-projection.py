@@ -87,6 +87,7 @@ PROJECTION_VERSION = "spec-projection/v1"
 
 # Mechanical anchors in the sub-agents doc.
 _TABLE_HEADING = "#### Supported frontmatter fields"
+_TABLE_HEADING_ALIASES = ("### Frontmatter reference",)
 # The 2026-09-30 capture renders this heading as raw HTML with new visible text
 # ("Frontmatter reference") but the SAME fragment id. The id is what other pages
 # link to (#supported-frontmatter-fields), so it is the steadier anchor; the
@@ -127,27 +128,37 @@ def _section(
     heading: str,
     stop_prefixes: tuple[str, ...],
     html_anchor: re.Pattern[str] | None = None,
+    aliases: tuple[str, ...] = (),
 ) -> list[str]:
     """Slice the section under `heading` (up to the next same-or-higher heading).
 
     `html_anchor` also accepts the heading rendered as raw HTML, matched by its
     fragment id; HTML headings then also end the section.
     """
-    start = next(
-        (
-            i
-            for i, ln in enumerate(lines)
-            if ln.strip() == heading or (html_anchor is not None and html_anchor.match(ln.strip()))
-        ),
-        None,
-    )
+    mask, inside = [], False
+    for line in lines:
+        if line.lstrip().startswith("```"):
+            mask.append(True)
+            inside = not inside
+        else:
+            mask.append(inside)
+    starts = [
+        i
+        for i, line in enumerate(lines)
+        if not mask[i]
+        and (line.strip() in (heading, *aliases) or (html_anchor is not None and html_anchor.match(line.strip())))
+    ]
     if html_anchor is not None:
         stop_prefixes = stop_prefixes + _HTML_HEADING
-    if start is None:
-        print(f"ERROR: {heading!r} anchor not found in the sub-agents doc", file=sys.stderr)
+    if len(starts) != 1:
+        print(
+            f"ERROR: {heading!r} anchor must occur exactly once in the sub-agents doc (found {len(starts)})",
+            file=sys.stderr,
+        )
         sys.exit(2)
+    start = starts[0]
     end = next(
-        (i for i in range(start + 1, len(lines)) if lines[i].startswith(stop_prefixes)),
+        (i for i in range(start + 1, len(lines)) if not mask[i] and lines[i].startswith(stop_prefixes)),
         len(lines),
     )
     return lines[start:end]
@@ -249,6 +260,7 @@ def _example_frontmatter(section: list[str]) -> dict[str, str]:
 
 
 def _model_facts(section: list[str]) -> dict[str, Any]:
+    section = _visible_reference_lines(section)
     alias_line = next((ln for ln in section if _ALIAS_MARKER in ln), None)
     if alias_line is None:
         print(f"ERROR: {_ALIAS_MARKER!r} anchor not found in the Choose-a-model section", file=sys.stderr)
@@ -260,11 +272,25 @@ def _model_facts(section: list[str]) -> dict[str, Any]:
     }
 
 
+def _visible_reference_lines(lines: list[str]) -> list[str]:
+    result, inside = [], False
+    for line in lines:
+        if line.lstrip().startswith("```"):
+            inside = not inside
+            result.append("")
+        else:
+            result.append("" if inside else line)
+    return result
+
+
 def extract_reference_doc(doc_path: str) -> dict[str, Any]:
     with open(doc_path, encoding="utf-8") as fh:
         lines = fh.read().splitlines()
 
-    table_section = _section(lines, _TABLE_HEADING, ("## ", "### ", "#### "), _TABLE_HEADING_HTML)
+    table_section = _section(
+        lines, _TABLE_HEADING, ("## ", "### ", "#### "), _TABLE_HEADING_HTML, _TABLE_HEADING_ALIASES
+    )
+    table_section = _visible_reference_lines(table_section)
     if _REQUIRED_SENTENCE not in "\n".join(table_section):
         print(f"ERROR: required-set anchor {_REQUIRED_SENTENCE!r} not found", file=sys.stderr)
         sys.exit(2)

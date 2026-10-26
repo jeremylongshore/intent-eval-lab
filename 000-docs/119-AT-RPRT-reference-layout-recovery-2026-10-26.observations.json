@@ -1,0 +1,333 @@
+{
+  "record": "reference-layout-recovery/v1",
+  "base_commit": "dd42d4598b4ef1eadef143b31ef5eab1e2de6d13",
+  "observed_on": "2026-10-26",
+  "scope": "Actual private captured reference-doc extraction. Not compatibility certification, baseline promotion, kernel edit or deployment. Unsigned author-recorded evidence; mutable sources may later differ. Full response and projection bytes are not redistributed.",
+  "captures": [
+    {
+      "contract": "agent-definition",
+      "source": {
+        "url": "https://code.claude.com/docs/en/sub-agents.md",
+        "finalUrl": "https://code.claude.com/docs/en/sub-agents.md",
+        "observed": "2026-10-26T19:46:51.378159+00:00",
+        "status": 200,
+        "sha256": "d66f847bed2cd73de0a45f29bf9c8dff7782dc7b66dc63d8285176ae6a176cdb",
+        "bytes": 116355
+      },
+      "extractor": "scripts/extract-agent-definition-projection.py",
+      "extractor_sha256": "c5abfbb4a4aed29db400ee41c331874053d13f04a8c2391ab7479c045bd522f7",
+      "outcome": "extracted",
+      "documented_fields": {
+        "name": {
+          "required": true
+        },
+        "description": {
+          "required": true
+        },
+        "tools": {
+          "required": false
+        },
+        "disallowedTools": {
+          "required": false
+        },
+        "model": {
+          "required": false
+        },
+        "permissionMode": {
+          "required": false
+        },
+        "maxTurns": {
+          "required": false
+        },
+        "autoCompactWindow": {
+          "required": false
+        },
+        "skills": {
+          "required": false
+        },
+        "mcpServers": {
+          "required": false
+        },
+        "hooks": {
+          "required": false
+        },
+        "memory": {
+          "required": false
+        },
+        "background": {
+          "required": false
+        },
+        "omitClaudeMd": {
+          "required": false
+        },
+        "effort": {
+          "required": false
+        },
+        "isolation": {
+          "required": false
+        },
+        "color": {
+          "required": false
+        },
+        "initialPrompt": {
+          "required": false
+        },
+        "experimental": {
+          "required": false
+        }
+      },
+      "field_count": 19,
+      "baseline_result": {
+        "outcome": "indeterminate",
+        "exit": 2,
+        "error": "ERROR: '#### Supported frontmatter fields' anchor not found in the sub-agents doc",
+        "extractor_sha256": "ed4f9915eb804e1f49e48ed75fea6a9317360f465af241431f09611765f0b4a3"
+      }
+    },
+    {
+      "contract": "plugin-manifest",
+      "source": {
+        "url": "https://code.claude.com/docs/en/plugins/manifest-reference.md",
+        "finalUrl": "https://code.claude.com/docs/en/plugins/manifest-reference.md",
+        "observed": "2026-10-26T21:57:38.740825+00:00",
+        "status": 200,
+        "sha256": "a10a371d18d571e769f99720d4402f3ec13ceb668561266f57145cfa940fa4ed",
+        "bytes": 43335
+      },
+      "extractor": "scripts/extract-plugin-manifest-projection.py",
+      "extractor_sha256": "08a3aa199d5b9b402dacdf7702cc402a80d6f5faccba86bdd8e961f958e56fa5",
+      "outcome": "extracted",
+      "documented_fields": {
+        "$schema": {
+          "required": false,
+          "type": "String"
+        },
+        "name": {
+          "required": true,
+          "type": "String"
+        },
+        "displayName": {
+          "required": false,
+          "type": "String"
+        },
+        "version": {
+          "required": false,
+          "type": "String"
+        },
+        "description": {
+          "required": false,
+          "type": "String"
+        },
+        "author": {
+          "required": false,
+          "type": "Object"
+        },
+        "homepage": {
+          "required": false,
+          "type": "String"
+        },
+        "repository": {
+          "required": false,
+          "type": "String"
+        },
+        "license": {
+          "required": false,
+          "type": "String"
+        },
+        "keywords": {
+          "required": false,
+          "type": "Array of strings"
+        },
+        "metadata": {
+          "required": false,
+          "type": "Object"
+        },
+        "icon": {
+          "required": false,
+          "type": "String"
+        },
+        "documentationUrl": {
+          "required": false,
+          "type": "String"
+        },
+        "supportUrl": {
+          "required": false,
+          "type": "String"
+        },
+        "privacyPolicyUrl": {
+          "required": false,
+          "type": "String"
+        },
+        "termsOfServiceUrl": {
+          "required": false,
+          "type": "String"
+        },
+        "defaultEnabled": {
+          "required": false,
+          "type": "Boolean"
+        },
+        "dependencies": {
+          "required": false,
+          "type": "Array of strings or objects"
+        },
+        "settings": {
+          "required": false,
+          "type": "Object"
+        },
+        "userConfig": {
+          "required": false,
+          "type": "Object"
+        },
+        "types": {
+          "required": false,
+          "type": "Path"
+        },
+        "channels": {
+          "required": false,
+          "type": "Array of objects"
+        },
+        "skills": {
+          "required": false,
+          "type": "Path, or array of paths"
+        },
+        "commands": {
+          "required": false,
+          "type": "Path, array of paths, or object"
+        },
+        "agents": {
+          "required": false,
+          "type": "Path, or array of paths"
+        },
+        "hooks": {
+          "required": false,
+          "type": "Path, object, or array of either"
+        },
+        "mcpServers": {
+          "required": false,
+          "type": "Path, object, or array of either"
+        },
+        "lspServers": {
+          "required": false,
+          "type": "Path, object, or array of either"
+        },
+        "outputStyles": {
+          "required": false,
+          "type": "Path, or array of paths"
+        },
+        "workflows": {
+          "required": false,
+          "type": "Path, or array of paths"
+        },
+        "experimental": {
+          "required": false,
+          "type": "Object"
+        },
+        "experimental.themes": {
+          "required": false,
+          "type": "Path, or array of paths"
+        },
+        "experimental.monitors": {
+          "required": false,
+          "type": "Path, or inline array"
+        },
+        "experimental.evals": {
+          "required": false,
+          "type": "Path, or array of paths"
+        }
+      },
+      "field_count": 34,
+      "baseline_result": {
+        "outcome": "indeterminate",
+        "exit": 2,
+        "error": "ERROR: '## Plugin manifest schema' anchor not found in the plugins-reference doc",
+        "extractor_sha256": "18e969959500988f1f79ee9973d9e73d49bc215dc3e7ce77fb7e712c602cf6a5"
+      }
+    },
+    {
+      "contract": "marketplace-catalog",
+      "source": {
+        "url": "https://code.claude.com/docs/en/plugins/marketplace-reference.md",
+        "finalUrl": "https://code.claude.com/docs/en/plugins/marketplace-reference.md",
+        "observed": "2026-10-26T21:57:38.939766+00:00",
+        "status": 200,
+        "sha256": "2b353a0f227f1637b8c5f5709d3de843054a31c81e38d769d00fb00544f3635c",
+        "bytes": 48331
+      },
+      "extractor": "scripts/extract-marketplace-catalog-projection.py",
+      "extractor_sha256": "19669ecd3dba8d78e8bf408968352974c37edb2fe8afe21afa7ecdabb3ca2320",
+      "outcome": "extracted",
+      "top_level_fields": [
+        "$schema",
+        "allowCrossMarketplaceDependenciesOn",
+        "description",
+        "forceRemoveDeletedPlugins",
+        "metadata.description",
+        "metadata.pluginRoot",
+        "metadata.version",
+        "name",
+        "owner",
+        "plugins",
+        "renames",
+        "version"
+      ],
+      "direct_entry_fields": [
+        "category",
+        "defaultEnabled",
+        "dependencies",
+        "description",
+        "displayName",
+        "headers",
+        "headersHelper",
+        "metadata",
+        "name",
+        "relevance",
+        "source",
+        "strict",
+        "tags",
+        "version"
+      ],
+      "object_source_fields": {
+        "github": [
+          "ref",
+          "repo",
+          "sha"
+        ],
+        "url": [
+          "ref",
+          "sha",
+          "url"
+        ],
+        "git-subdir": [
+          "path",
+          "ref",
+          "sha",
+          "url"
+        ],
+        "npm": [
+          "package",
+          "registry",
+          "version"
+        ],
+        "archive": [
+          "sha256",
+          "url"
+        ],
+        "command": [
+          "command",
+          "mode",
+          "timeout"
+        ]
+      },
+      "source_forms": 7,
+      "strict_case_count": 4,
+      "strict_result_cells_preserved": true,
+      "old_guide_refusal_exit": 2,
+      "baseline_result": {
+        "outcome": "indeterminate",
+        "exit": 2,
+        "error": "ERROR: '## Marketplace schema' anchor not found in the plugin-marketplaces doc",
+        "extractor_sha256": "7461a00cb95e94e19cb1bb378423660952d2d604427bd36c42a1f3f7b8587372"
+      }
+    }
+  ]
+}
