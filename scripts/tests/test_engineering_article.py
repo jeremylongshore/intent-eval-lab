@@ -75,6 +75,24 @@ def test_capture_shape_requires_index_identity_and_supports_both_path_layouts():
     assert not re.search(pattern, page(carousel()).replace('href=', 'data-href='))
 
 
+@pytest.mark.parametrize("canonical", [False, True])
+def test_large_changed_page_rejection_does_not_retry_whole_body_lookaheads(canonical):
+    code = """
+import json,re,sys
+registry=json.load(open(sys.argv[1]))
+pattern=next(s['capture']['expect_regex'] for s in registry['surfaces'] if s['name']=='anthropic-engineering')
+body='x'*(512*1024)
+if sys.argv[2]=='True':
+    body='<link rel="canonical" href="https://www.anthropic.com/engineering"><main>'+body+'</main>'
+assert re.search(pattern,body) is None
+"""
+    result = subprocess.run(
+        [sys.executable, '-c', code, str(ROOT / 'specs/upstream-surface-registry.v1.json'), str(canonical)],
+        capture_output=True, text=True, timeout=2,
+    )
+    assert result.returncode == 0, result.stderr
+
+
 @pytest.mark.parametrize(
     "text",
     [
