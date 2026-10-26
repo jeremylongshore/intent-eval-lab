@@ -235,3 +235,13 @@ def test_repeated_reserved_rule_category_refuses_even_with_one_heading(tmp_path,
     with pytest.raises(SystemExit) as exc:
         extract(tmp_path, text.replace(line, line + "\n" + line))
     assert exc.value.code == 2
+
+
+@pytest.mark.parametrize("row", range(4))
+def test_each_strict_result_cell_is_preserved_independently(tmp_path, row):
+    results = ["Use entry.", "Append except hooks.", "Use manifest.", "Refuse conflict."]
+    text = reference().replace(results[row], f"Distinct source result {row}.")
+    actual = extract(tmp_path, text)["plugin_entry"]["strict_cases"]
+    expected = results.copy()
+    expected[row] = f"Distinct source result {row}."
+    assert [case["Result"] for case in actual] == expected

@@ -63,6 +63,10 @@ subject to the owning review, changelog and CI gates. They retain the same surfa
 identities and reference authority tier. They do not authorize kernel adoption:
 [052, The three tiers](052-AT-SPEC-fetch-failure-taxonomy-and-three-tier-archive-2026-06-12.md#the-three-tiers-promotion-is-one-directional)
 requires a separate tier-3 review and release path.
+The bounded component bug-fix routing is recorded in the
+[Class 3 ledger](SOLO-DECISIONS.md), under Blueprint A § 2.3; this repair does not
+amend ratified governance. Exactly-once validation covers consumed layout anchors;
+unlisted sections are not validated and extraction does not certify full coverage.
 
 Local test counts and static checks in the PR are author-reported runs. Independent
 GitHub evidence for the pre-review-fix head `103ba83` includes
