@@ -45,5 +45,74 @@
     "max_input_bytes": 4194304,
     "max_open_elements": 256,
     "refusal": "Exit 2 without stdout when either bound is exceeded"
+  },
+  "availability_regressions": {
+    "scope": "Unsigned author-run offline before/after probes; no third-party certification or universal runtime bound. Timed-out subprocesses were killed and reaped by subprocess.run.",
+    "baseline_commit": "79a2b9c632292c8355685ba1843cd1ba39c369a8",
+    "baseline_parser_sha256": "8c7ca45cda383f047c27c1203363f21a328e738373f534dbaf8f550d6fa245fb",
+    "candidate_parser_sha256": "a6582279ee7f85c2befacba5ccc1c2bad110e6a8f071ec5339ebb70fdb81c6ef",
+    "observed_source_commit": "4e4396a7f99b37488a610ac699dcc4903d4be3d4",
+    "probes": [
+      {
+        "case": "repeated-main",
+        "input_bytes": 96067,
+        "input_sha256": "f47d804429d4b5e1bdf25bf8fff94e7bf81da803d2a3c8733d7ea15b1982fbb2",
+        "timeout_seconds": 2,
+        "recipe_source": "scripts/tests/test_engineering_article.py",
+        "recipe": "test_many_main_markers_do_not_restart_full_body_search[<main>]",
+        "baseline": {
+          "exit": null,
+          "stdout": null,
+          "timed_out": true,
+          "elapsed_seconds": 2.0055
+        },
+        "candidate": {
+          "exit": 0,
+          "stdout": "False\n",
+          "timed_out": false,
+          "elapsed_seconds": 0.0417
+        }
+      },
+      {
+        "case": "deep-nesting",
+        "input_bytes": 88608,
+        "input_sha256": "6086cbfa6324ec8eb153f650b464226ecb4d041d869b51fca6402a55c337b300",
+        "timeout_seconds": 2,
+        "recipe_source": "scripts/tests/test_engineering_article.py",
+        "recipe": "test_excessive_nesting_is_indeterminate_before_quadratic_ancestor_work",
+        "baseline": {
+          "exit": null,
+          "stdout": null,
+          "timed_out": true,
+          "elapsed_seconds": 2.0051
+        },
+        "candidate": {
+          "exit": 2,
+          "stdout": "",
+          "timed_out": false,
+          "elapsed_seconds": 0.0391
+        }
+      },
+      {
+        "case": "oversized-valid-prefix",
+        "input_bytes": 4194305,
+        "input_sha256": "08e3ca378125c62ec797f213f79328c0367e9ba0a475123d82d61621083c5b14",
+        "timeout_seconds": 2,
+        "recipe_source": "scripts/tests/test_engineering_article.py",
+        "recipe": "test_input_byte_limit_accepts_boundary_and_refuses_overflow[1]",
+        "baseline": {
+          "exit": 0,
+          "stdout": "href=\"/research/First-article\"\n",
+          "timed_out": false,
+          "elapsed_seconds": 0.0665
+        },
+        "candidate": {
+          "exit": 2,
+          "stdout": "",
+          "timed_out": false,
+          "elapsed_seconds": 0.0529
+        }
+      }
+    ]
   }
 }

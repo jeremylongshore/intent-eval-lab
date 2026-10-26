@@ -18,7 +18,7 @@ Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skelet
   carousel or legacy main-content link; reject unsupported or ambiguous signals.
 - Preserve the exact legacy sentinel and frozen baseline hash. Capture-shape
   checks accept both path layouts with a canonical-shaped markup heuristic;
-  the offline HTML parser performs the stricter source identity checks.
+  the offline HTML parser performs the checks of the declared canonical URL.
   Bound parser input to 4 MiB and 256 open elements; excess input is
   indeterminate. Cache parser context and constrain repeated-main regex work.
   No retained baseline, watcher timestamp or upstream content is promoted.

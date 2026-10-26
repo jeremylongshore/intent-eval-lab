@@ -41,13 +41,15 @@ signal is evidence for review, not baseline acceptance or article-content analys
 
 [The execution record](../evidence/engineering-index-recovery/observations-2026-10-26.json)
 binds the actual input digests, parser source, outputs and exit codes. These are
-unsigned author-run observations. Current raw HTML remains private; the historical
+unsigned author-run observations. The canonical URL is a declared content marker;
+HTTP origin, final URL, status and transport provenance are separate fetch metadata.
+Current raw HTML remains private; the historical
 capture was already tracked. Mutable URLs may later yield different bodies.
 
 The capture-shape hint supports both path layouts and looks for canonical-shaped
 markup plus a signal within main-shaped markup. Attribute boundaries reject
 `data-rel` and `data-href` decoys. This remains a regex heuristic; the pure HTML
-parser provides the stricter identity and article selection. The byte floor is
+parser provides the stricter declared-canonical checks and article selection. The byte floor is
 unchanged. The unsigned author observation record reports that both actual
 captures classify `FETCH_OK` under the updated hint; the pure parser provides the
 stricter article selection. The shape hint alone does not establish extraction or
