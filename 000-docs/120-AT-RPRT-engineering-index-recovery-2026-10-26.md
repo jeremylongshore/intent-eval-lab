@@ -24,6 +24,14 @@ legacy page from a newer page that lost its carousel but retains a legacy link.
 Without either supported signal, or with ambiguous structure, it returns exit 2
 without stdout; curl failure remains a failed watcher extraction.
 
+Parser input is capped at 4 MiB and 256 simultaneously open elements. Overflow
+is indeterminate (exit 2 without stdout), even when a valid article prefix exists.
+Context flags and indexed open-tag positions avoid full ancestor scans for each
+start or unmatched end tag. The capture hint commits to the first main-shaped
+area, and canonical attribute searches stay within each link-shaped tag. Timed
+synthetic controls cover repeated main markers, deep nesting, unmatched closes,
+and the input-size boundary; they do not establish a universal CPU-time bound.
+
 The actual frozen engineering capture still produces exactly the original
 `href="/engineering/how-we-contain-claude"` sentinel with its trailing newline,
 matching the retained baseline hash. The unsigned author observation record

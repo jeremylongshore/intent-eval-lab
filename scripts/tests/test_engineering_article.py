@@ -135,3 +135,45 @@ def test_watcher_uses_the_parser_and_preserves_fetch_failure(tmp_path):
     result = subprocess.run(['bash', '-c', failed, str(ROOT / 'scripts/spec-drift-check.sh')], env=env, capture_output=True, text=True)
     assert result.returncode != 0
     assert result.stdout == ''
+
+
+@pytest.mark.parametrize('marker', ['<main>', '<main'])
+def test_many_main_markers_do_not_restart_full_body_search(marker):
+    code = '''
+import json,re,sys
+registry=json.load(open(sys.argv[1]))
+pattern=next(s['capture']['expect_regex'] for s in registry['surfaces'] if s['name']=='anthropic-engineering')
+body='<link rel="canonical" href="https://www.anthropic.com/engineering">'+sys.argv[2]*16000
+assert re.search(pattern,body) is None
+'''
+    result = subprocess.run(
+        [sys.executable, '-c', code, str(ROOT / 'specs/upstream-surface-registry.v1.json'), marker],
+        capture_output=True, text=True, timeout=2,
+    )
+    assert result.returncode == 0, result.stderr
+
+
+def test_excessive_nesting_is_indeterminate_before_quadratic_ancestor_work():
+    body = page('<div>' * 8000 + carousel() + '</div>' * 8000)
+    result = subprocess.run([sys.executable, str(SCRIPT)], input=body, text=True, capture_output=True, timeout=2)
+    assert result.returncode == 2
+    assert result.stdout == ''
+    assert 'nesting' in result.stderr
+
+
+def test_many_unmatched_closing_tags_preserve_context_without_stack_rescans():
+    body = page('<div>' * 64 + '</absent>' * 60000 + carousel() + '</div>' * 64)
+    result = subprocess.run([sys.executable, str(SCRIPT)], input=body, text=True, capture_output=True, timeout=2)
+    assert result.returncode == 0, result.stderr
+    assert result.stdout == 'href="/research/First-article"\n'
+
+
+@pytest.mark.parametrize('extra', [0, 1])
+def test_input_byte_limit_accepts_boundary_and_refuses_overflow(extra):
+    prefix = page(carousel())
+    body = prefix + 'x' * (4 * 1024 * 1024 + extra - len(prefix))
+    result = subprocess.run([sys.executable, str(SCRIPT)], input=body, text=True, capture_output=True, timeout=2)
+    assert result.returncode == (0 if extra == 0 else 2), result.stderr
+    assert result.stdout == ('href="/research/First-article"\n' if extra == 0 else '')
+    if extra:
+        assert 'size' in result.stderr

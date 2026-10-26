@@ -3,8 +3,8 @@
   "base_commit": "dd42d4598b4ef1eadef143b31ef5eab1e2de6d13",
   "scope": "Unsigned author-run offline extraction evidence; no baseline acceptance or article-content compatibility claim",
   "parser": "scripts/extract-engineering-article.py",
-  "parser_sha256": "8c7ca45cda383f047c27c1203363f21a328e738373f534dbaf8f550d6fa245fb",
-  "parser_git_blob_sha1": "8dccd37baf5047157ad2fb368837fb991fc1eaa5",
+  "parser_sha256": "a6582279ee7f85c2befacba5ccc1c2bad110e6a8f071ec5339ebb70fdb81c6ef",
+  "parser_git_blob_sha1": "05cf8e011e663b1c0494447819bcbde3772658bc",
   "probes": [
     {
       "label": "frozen",
@@ -38,7 +38,12 @@
       }
     }
   ],
-  "capture_config_sha256": "db76fcf8672fafe9ed2709391af3580a6eed5781803f0bd1e19bc0896eaa2214",
-  "capture_scope": "Regex heuristic over canonical-shaped and main-shaped markup, not DOM identity proof; pure parser performs stricter checks.",
-  "base_commit_scope": "Historical frozen-input baseline; current parser identity is bound by parser_sha256 and parser_git_blob_sha1, not base_commit."
+  "capture_config_sha256": "69d930d8ef097acdaf3b31b0921694ba23f11e6d26cf9c0c2ff7c3a9d5b9eed6",
+  "capture_scope": "Regex heuristic over one canonical-shaped link and supported path in the first main-shaped area, not DOM identity proof; commits to that first area instead of retrying later main markers. Pure parser performs stricter checks.",
+  "base_commit_scope": "Historical frozen-input baseline; current parser identity is bound by parser_sha256 and parser_git_blob_sha1, not base_commit.",
+  "parser_limits": {
+    "max_input_bytes": 4194304,
+    "max_open_elements": 256,
+    "refusal": "Exit 2 without stdout when either bound is exceeded"
+  }
 }
