@@ -11,6 +11,17 @@ Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skelet
 
 ### Added
 
+#### Current reference layout recovery (2026-10-26)
+
+- Recover agent, plugin and marketplace reference extraction after upstream page
+  reorganization. Keep historical frozen outputs unchanged, reject ambiguous or
+  missing normative facts, and preserve marketplace strict-table result cells.
+  Capture the canonical manifest and marketplace reference URLs, with historical
+  title compatibility and creation-guide refusal. Requiredness omitted by the
+  current reference stays unspecified; no snapshot or kernel promotion is implied.
+  Refs `compile-then-govern-14z`; evidence and scope are recorded in
+  `000-docs/119-AT-RPRT-reference-layout-recovery-2026-10-26.md`.
+
 #### Phase A.0 analysis input guard (2026-10-19)
 
 - Check saved Arm A responses and Arm B proposals for explicit real-run flags;

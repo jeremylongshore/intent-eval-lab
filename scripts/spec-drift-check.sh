@@ -168,7 +168,7 @@ fetch_claude_slash_commands() {
 
 fetch_plugins_reference() {
   # Claude Code plugin.json manifest reference — .md shim.
-  curl -fsSL "https://code.claude.com/docs/en/plugins-reference.md" \
+  curl -fsSL "https://code.claude.com/docs/en/plugins/manifest-reference.md" \
     | sha256sum | awk '{print $1}'
 }
 
@@ -180,7 +180,7 @@ fetch_sub_agents() {
 
 fetch_plugin_marketplaces() {
   # Claude Code plugin-marketplaces (marketplace-catalog) reference — .md shim.
-  curl -fsSL "https://code.claude.com/docs/en/plugin-marketplaces.md" \
+  curl -fsSL "https://code.claude.com/docs/en/plugins/marketplace-reference.md" \
     | sha256sum | awk '{print $1}'
 }
 
