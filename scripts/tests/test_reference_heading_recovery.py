@@ -106,6 +106,47 @@ def load_plugin():
     return module
 
 
+@pytest.mark.parametrize("contract", ["agent", "plugin"])
+@pytest.mark.parametrize("declaration", ["`version` is also required.", "`name` is not required."])
+def test_required_set_rejects_contradictory_same_line_clauses(tmp_path, contract, declaration):
+    module = load_agent() if contract == "agent" else load_plugin()
+    original = module._FIXTURE_DOC if contract == "agent" else PLUGIN_CURRENT
+    anchor = module._REQUIRED_SENTENCE if contract == "agent" else "`name` is the only required key."
+    path = tmp_path / "contradiction.md"
+    path.write_text(original.replace(anchor, anchor + " " + declaration))
+    with pytest.raises(SystemExit) as exc:
+        module.extract_reference_doc(str(path))
+    assert exc.value.code == 2
+
+
+@pytest.mark.parametrize("contract", ["agent", "plugin"])
+def test_tilde_fences_cannot_supply_required_set(tmp_path, contract):
+    module = load_agent() if contract == "agent" else load_plugin()
+    original = module._FIXTURE_DOC if contract == "agent" else PLUGIN_CURRENT
+    anchor = module._REQUIRED_SENTENCE if contract == "agent" else "`name` is the only required key."
+    path = tmp_path / "quoted.md"
+    path.write_text(original.replace(anchor, "~~~text\n" + anchor + "\n~~~"))
+    with pytest.raises(SystemExit) as exc:
+        module.extract_reference_doc(str(path))
+    assert exc.value.code == 2
+
+
+@pytest.mark.parametrize(
+    "lines,expected",
+    [
+        (["~~~~text", "### Hidden", "~~~", "### Still hidden", "~~~~", "### Visible"], [True] * 5 + [False]),
+        (["````markdown", "~~~", "```", "### Hidden", "`````", "### Visible"], [True] * 5 + [False]),
+        (["  ~~~text", "### Hidden", "   ~~~", "### Visible"], [True, True, True, False]),
+        (["~~~", "### Hidden"], [True, True]),
+        (["```tag`invalid", "### Visible"], [False, False]),
+        (["~~~", "```", "### Hidden", "~~~", "### Visible"], [True, True, True, True, False]),
+    ],
+)
+def test_fence_delimiters_do_not_expose_quoted_normative_headings(lines, expected):
+    module = load_agent()
+    assert module.reference_markdown.fence_mask(lines) == expected
+
+
 def test_plugin_unified_table_preserves_all_documented_types(tmp_path):
     module = load_plugin()
     path = tmp_path / "plugin.md"

@@ -245,3 +245,18 @@ def test_each_strict_result_cell_is_preserved_independently(tmp_path, row):
     expected = results.copy()
     expected[row] = f"Distinct source result {row}."
     assert [case["Result"] for case in actual] == expected
+
+
+@pytest.mark.parametrize("declaration", ["`version` is also required.", "`name` is not required."])
+def test_contradictory_requiredness_on_the_same_line_refuses(tmp_path, declaration):
+    text = reference().replace("`name` and `source` are required.", "`name` and `source` are required. " + declaration)
+    with pytest.raises(SystemExit) as exc:
+        extract(tmp_path, text)
+    assert exc.value.code == 2
+
+
+def test_tilde_fenced_requiredness_cannot_supply_normative_prose(tmp_path):
+    text = reference().replace("`name` and `source` are required.", "~~~text\n`name` and `source` are required.\n~~~")
+    with pytest.raises(SystemExit) as exc:
+        extract(tmp_path, text)
+    assert exc.value.code == 2

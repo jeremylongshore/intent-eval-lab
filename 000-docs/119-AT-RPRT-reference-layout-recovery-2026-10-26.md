@@ -67,6 +67,11 @@ The bounded component bug-fix routing is recorded in the
 [Class 3 ledger](SOLO-DECISIONS.md), under Blueprint A § 2.3; this repair does not
 amend ratified governance. Exactly-once validation covers consumed layout anchors;
 unlisted sections are not validated and extraction does not certify full coverage.
+Shared Markdown visibility recognizes backtick and tilde fences with matching
+delimiter character and length. Bounded required-field clause checks reject
+additional required fields and denials of required fields in visible prose,
+including contradictory statements on the same line. These checks do not claim
+general natural-language interpretation of arbitrary future prose.
 
 Local test counts and static checks in the PR are author-reported runs. Independent
 GitHub evidence for the pre-review-fix head `103ba83` includes

@@ -77,7 +77,7 @@ from typing import Any
 # already scripts/) but is loaded by file path under pytest, where it is not.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from lib import captured_source  # noqa: E402
+from lib import captured_source, reference_markdown  # noqa: E402
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_VENDOR_DIR = os.path.join(REPO_ROOT, "specs", "_vendor", "upstream", "agent-definition")
@@ -135,13 +135,7 @@ def _section(
     `html_anchor` also accepts the heading rendered as raw HTML, matched by its
     fragment id; HTML headings then also end the section.
     """
-    mask, inside = [], False
-    for line in lines:
-        if line.lstrip().startswith("```"):
-            mask.append(True)
-            inside = not inside
-        else:
-            mask.append(inside)
+    mask = reference_markdown.fence_mask(lines)
     starts = [
         i
         for i, line in enumerate(lines)
@@ -273,14 +267,7 @@ def _model_facts(section: list[str]) -> dict[str, Any]:
 
 
 def _visible_reference_lines(lines: list[str]) -> list[str]:
-    result, inside = [], False
-    for line in lines:
-        if line.lstrip().startswith("```"):
-            inside = not inside
-            result.append("")
-        else:
-            result.append("" if inside else line)
-    return result
+    return reference_markdown.visible_lines(lines)
 
 
 def extract_reference_doc(doc_path: str) -> dict[str, Any]:
@@ -291,7 +278,9 @@ def extract_reference_doc(doc_path: str) -> dict[str, Any]:
         lines, _TABLE_HEADING, ("## ", "### ", "#### "), _TABLE_HEADING_HTML, _TABLE_HEADING_ALIASES
     )
     table_section = _visible_reference_lines(table_section)
-    if _REQUIRED_SENTENCE not in "\n".join(table_section):
+    if _REQUIRED_SENTENCE not in "\n".join(table_section) or not reference_markdown.required_set_matches(
+        table_section, {"name", "description"}
+    ):
         print(f"ERROR: required-set anchor {_REQUIRED_SENTENCE!r} not found", file=sys.stderr)
         sys.exit(2)
 

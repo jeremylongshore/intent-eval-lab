@@ -68,7 +68,7 @@ from typing import Any
 # already scripts/) but is loaded by file path under pytest, where it is not.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from lib import captured_source  # noqa: E402
+from lib import captured_source, reference_markdown  # noqa: E402
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_VENDOR_DIR = os.path.join(REPO_ROOT, "specs", "_vendor", "upstream", "plugin-manifest")
@@ -297,15 +297,7 @@ def _reference_error(message: str) -> None:
 
 
 def _visible_reference_lines(lines: list[str]) -> list[str]:
-    """Mask fenced examples so quoted headings cannot select a document layout."""
-    result, inside = [], False
-    for line in lines:
-        if line.lstrip().startswith("```"):
-            inside = not inside
-            result.append("")
-        else:
-            result.append("" if inside else line)
-    return result
+    return reference_markdown.visible_lines(lines)
 
 
 def _current_section(lines: list[str], heading: str) -> list[str]:
@@ -349,7 +341,9 @@ def _extract_current_reference(lines: list[str]) -> dict[str, Any]:
     field_section = _current_section(lines, "## Fields")
     file_section = _current_section(lines, "## Manifest file")
     text = "\n".join(_visible_reference_lines(field_section))
-    if not re.search(r"`name` is the only required (?:key|field)\b", text):
+    if not re.search(r"`name` is the only required (?:key|field)\b", text) or not reference_markdown.required_set_matches(
+        field_section, {"name"}
+    ):
         _reference_error("current Fields section lost its explicit name-only required set")
     fields: dict[str, dict[str, Any]] = {}
     for cells in _current_field_rows(field_section):

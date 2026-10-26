@@ -93,7 +93,7 @@ from typing import Any
 # already scripts/) but is loaded by file path under pytest, where it is not.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from lib import captured_source  # noqa: E402
+from lib import captured_source, reference_markdown  # noqa: E402
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_VENDOR_DIR = os.path.join(REPO_ROOT, "specs", "_vendor", "upstream", "marketplace-catalog")
@@ -148,16 +148,7 @@ _KEBAB = re.compile(r"[a-z0-9]([a-z0-9-]*[a-z0-9])?")
 
 
 def _fence_mask(lines: list[str]) -> list[bool]:
-    """True for every line inside a ``` code fence (the page embeds json/bash
-    examples whose '#'/'|' lines would fake headings or table rows)."""
-    mask, inside = [], False
-    for ln in lines:
-        if _FENCE.match(ln.strip()):
-            mask.append(True)  # fence delimiters themselves never match headings
-            inside = not inside
-        else:
-            mask.append(inside)
-    return mask
+    return reference_markdown.fence_mask(lines)
 
 
 def _section(lines: list[str], heading: str, stop_prefixes: tuple[str, ...]) -> list[str]:
@@ -305,6 +296,8 @@ def _extract_current_reference_doc(lines: list[str]) -> dict[str, Any]:
         _refuse("missing/duplicate normative marketplace section")
     top_section = _current_section(lines, "## Top-level fields", ("## ",))
     _current_anchor(top_section, "`name`, `owner`, and `plugins` are required.", "top-level required set")
+    if not reference_markdown.required_set_matches(top_section, {"name", "owner", "plugins"}):
+        _refuse("contradictory top-level required set")
     top = _current_fields(top_section, ["name", "owner", "plugins"], "top-level fields")
     owner_description = top["owner"]["description"]
     if "`name` is required; `email` and `url` are optional" not in owner_description:
@@ -346,6 +339,8 @@ def _extract_current_reference_doc(lines: list[str]) -> dict[str, Any]:
 
     entries = _current_section(lines, _ENTRIES_HEADING, ("## ",))
     _current_anchor(entries, "`name` and `source` are required.", "entry required set")
+    if not reference_markdown.required_set_matches(entries, {"name", "source"}):
+        _refuse("contradictory entry required set")
     fields = _current_fields(entries, ["name", "source"], "entry fields")
     inheritance = _current_anchor(entries, "an entry also accepts every", "manifest inheritance")
     if "directory listing fields" not in inheritance or "plugin.json" not in inheritance:
