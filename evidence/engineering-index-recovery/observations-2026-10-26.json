@@ -37,5 +37,7 @@
         "bytes": 392385
       }
     }
-  ]
+  ],
+  "capture_config_sha256": "b623fdc1c4478d35235d24a6710b73dcfccbe03146c38f605e755735f2ffe907",
+  "capture_scope": "Regex heuristic over canonical-shaped and main-shaped markup, not DOM identity proof; pure parser performs stricter checks."
 }

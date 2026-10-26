@@ -10,8 +10,8 @@ state_label: INFORMATIVE
 
 Bead `compile-then-govern-v0y`, discovered during `compile-then-govern-8pg`.
 
-The captured engineering index now links featured articles under `/research/`.
-The baseline watcher's `/engineering/<slug>` pattern finds nothing in the actual
+The observed first featured link uses `/research/`.
+The baseline watcher's `/engineering/<slug>` relative-href pattern finds nothing in the actual
 HTTP 200 response. That remains an extraction failure, not an empty hash or a
 clean comparison.
 
@@ -32,8 +32,10 @@ binds the actual input digests, parser source, outputs and exit codes. These are
 unsigned author-run observations. Current raw HTML remains private; the historical
 capture was already tracked. Mutable URLs may later yield different bodies.
 
-The capture-shape hint supports both path layouts, requires index identity and
-looks for the signal within main content. The byte floor is unchanged. Both actual
+The capture-shape hint supports both path layouts and looks for canonical-shaped
+markup plus a signal within main-shaped markup. Attribute boundaries reject
+`data-rel` and `data-href` decoys. This remains a regex heuristic; the pure HTML
+parser provides the stricter identity and article selection. The byte floor is unchanged. Both actual
 captures classify `FETCH_OK` under the updated hint; the pure parser provides the
 stricter article selection. The shape hint alone does not establish extraction or
 compatibility. The detector-health document is regenerated at its retained

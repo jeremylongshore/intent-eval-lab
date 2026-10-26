@@ -71,6 +71,8 @@ def test_capture_shape_requires_index_identity_and_supports_both_path_layouts():
     assert re.search(pattern, page('<a href="/engineering/old">Legacy</a>'))
     assert not re.search(pattern, '<a href="/research/decoy">Not the index</a>')
     assert not re.search(pattern, page('No article links.'))
+    assert not re.search(pattern, page(carousel()).replace('rel="canonical"', 'data-rel="canonical"'))
+    assert not re.search(pattern, page(carousel()).replace('href=', 'data-href='))
 
 
 @pytest.mark.parametrize(
