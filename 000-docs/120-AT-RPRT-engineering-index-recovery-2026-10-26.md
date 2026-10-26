@@ -16,14 +16,18 @@ HTTP 200 response. That remains an extraction failure, not an empty hash or a
 clean comparison.
 
 The replacement offline parser requires the engineering canonical URL and one
-complete main content area. For the current layout, one engineering featured
-carousel must supply matching first image and title links. Navigation and unrelated
-research links do not select the signal. Missing or ambiguous structure returns
-exit 2 without stdout; curl failure remains a failed watcher extraction.
+complete main content area. When a recognized `HeroCarousel` is present,
+exactly one carousel must have the Engineering topic and matching first image and
+title article links. Otherwise the parser falls back to the first legacy
+`/engineering/<slug>` link within that sole main area. It cannot distinguish a
+legacy page from a newer page that lost its carousel but retains a legacy link.
+Without either supported signal, or with ambiguous structure, it returns exit 2
+without stdout; curl failure remains a failed watcher extraction.
 
 The actual frozen engineering capture still produces exactly the original
 `href="/engineering/how-we-contain-claude"` sentinel with its trailing newline,
-matching the retained baseline hash. The current captured body produces
+matching the retained baseline hash. The unsigned author observation record
+reports that the current captured body produces
 `href="/research/redesigning-source-control"` with a trailing newline. A changed
 signal is evidence for review, not baseline acceptance or article-content analysis.
 
@@ -35,7 +39,8 @@ capture was already tracked. Mutable URLs may later yield different bodies.
 The capture-shape hint supports both path layouts and looks for canonical-shaped
 markup plus a signal within main-shaped markup. Attribute boundaries reject
 `data-rel` and `data-href` decoys. This remains a regex heuristic; the pure HTML
-parser provides the stricter identity and article selection. The byte floor is unchanged. Both actual
+parser provides the stricter identity and article selection. The byte floor is
+unchanged. The unsigned author observation record reports that both actual
 captures classify `FETCH_OK` under the updated hint; the pure parser provides the
 stricter article selection. The shape hint alone does not establish extraction or
 compatibility. The detector-health document is regenerated at its retained
