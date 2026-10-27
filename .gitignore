@@ -108,6 +108,10 @@ credentials/
 # ignored; only this sanitized bundle is intentionally reviewable.
 !evidence/phase5-dogfood/audit-tests-minimax-m3.bundle.json
 
+# Sanitized engineering-index probes are durable, author-run review evidence.
+!evidence/engineering-index-recovery/observations-2026-10-26.json
+
+
 # Sanitized author-run reference-layout probes are durable review evidence.
 # Keep raw upstream bodies and generated projection payloads private.
 !evidence/reference-layout-recovery/observations-2026-10-26.json
