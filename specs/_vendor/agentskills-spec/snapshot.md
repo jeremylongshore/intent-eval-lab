@@ -34,29 +34,27 @@ The `SKILL.md` file must contain YAML frontmatter followed by Markdown content.
 | `metadata` | No | Arbitrary key-value mapping for additional metadata (a map from string keys to string values). |
 | `allowed-tools` | No | Space-separated string of pre-approved tools the skill may use. (Experimental) |
 
-<Card>
-  **Minimal example:**
-
-  ```markdown SKILL.md theme={null}
-  ---
-  name: skill-name
-  description: A description of what this skill does and when to use it.
-  ---
-  ```
-
-  **Example with optional fields:**
-
-  ```markdown SKILL.md theme={null}
-  ---
-  name: pdf-processing
-  description: Extract PDF text, fill forms, merge files. Use when handling PDFs.
-  license: Apache-2.0
-  metadata:
-    author: example-org
-    version: "1.0"
-  ---
-  ```
-</Card>
+> **Minimal example:**
+>
+> ```markdown SKILL.md theme={null}
+> ---
+> name: skill-name
+> description: A description of what this skill does and when to use it.
+> ---
+> ```
+>
+> **Example with optional fields:**
+>
+> ```markdown SKILL.md theme={null}
+> ---
+> name: pdf-processing
+> description: Extract PDF text, fill forms, merge files. Use when handling PDFs.
+> license: Apache-2.0
+> metadata:
+>   author: example-org
+>   version: "1.0"
+> ---
+> ```
 
 #### `name` field
 
@@ -68,35 +66,33 @@ The required `name` field:
 * Must not contain consecutive hyphens (`--`)
 * Must match the parent directory name
 
-<Card>
-  **Valid examples:**
-
-  ```yaml theme={null}
-  name: pdf-processing
-  ```
-
-  ```yaml theme={null}
-  name: data-analysis
-  ```
-
-  ```yaml theme={null}
-  name: code-review
-  ```
-
-  **Invalid examples:**
-
-  ```yaml theme={null}
-  name: PDF-Processing  # uppercase not allowed
-  ```
-
-  ```yaml theme={null}
-  name: -pdf  # cannot start with hyphen
-  ```
-
-  ```yaml theme={null}
-  name: pdf--processing  # consecutive hyphens not allowed
-  ```
-</Card>
+> **Valid examples:**
+>
+> ```yaml theme={null}
+> name: pdf-processing
+> ```
+>
+> ```yaml theme={null}
+> name: data-analysis
+> ```
+>
+> ```yaml theme={null}
+> name: code-review
+> ```
+>
+> **Invalid examples:**
+>
+> ```yaml theme={null}
+> name: PDF-Processing  # uppercase not allowed
+> ```
+>
+> ```yaml theme={null}
+> name: -pdf  # cannot start with hyphen
+> ```
+>
+> ```yaml theme={null}
+> name: pdf--processing  # consecutive hyphens not allowed
+> ```
 
 #### `description` field
 
@@ -106,19 +102,17 @@ The required `description` field:
 * Should describe both what the skill does and when to use it
 * Should include specific keywords that help agents identify relevant tasks
 
-<Card>
-  **Good example:**
-
-  ```yaml theme={null}
-  description: Extracts text and tables from PDF files, fills PDF forms, and merges multiple PDFs. Use when working with PDF documents or when the user mentions PDFs, forms, or document extraction.
-  ```
-
-  **Poor example:**
-
-  ```yaml theme={null}
-  description: Helps with PDFs.
-  ```
-</Card>
+> **Good example:**
+>
+> ```yaml theme={null}
+> description: Extracts text and tables from PDF files, fills PDF forms, and merges multiple PDFs. Use when working with PDF documents or when the user mentions PDFs, forms, or document extraction.
+> ```
+>
+> **Poor example:**
+>
+> ```yaml theme={null}
+> description: Helps with PDFs.
+> ```
 
 #### `license` field
 
@@ -127,13 +121,11 @@ The optional `license` field:
 * Specifies the license applied to the skill
 * We recommend keeping it short (either the name of a license or the name of a bundled license file)
 
-<Card>
-  **Example:**
-
-  ```yaml theme={null}
-  license: Proprietary. LICENSE.txt has complete terms
-  ```
-</Card>
+> **Example:**
+>
+> ```yaml theme={null}
+> license: Proprietary. LICENSE.txt has complete terms
+> ```
 
 #### `compatibility` field
 
@@ -143,25 +135,23 @@ The optional `compatibility` field:
 * Should only be included if your skill has specific environment requirements
 * Can indicate intended product, required system packages, network access needs, etc.
 
-<Card>
-  **Examples:**
+> **Examples:**
+>
+> ```yaml theme={null}
+> compatibility: Designed for Claude Code (or similar products)
+> ```
+>
+> ```yaml theme={null}
+> compatibility: Requires git, docker, jq, and access to the internet
+> ```
+>
+> ```yaml theme={null}
+> compatibility: Requires Python 3.14+ and uv
+> ```
 
-  ```yaml theme={null}
-  compatibility: Designed for Claude Code (or similar products)
-  ```
-
-  ```yaml theme={null}
-  compatibility: Requires git, docker, jq, and access to the internet
-  ```
-
-  ```yaml theme={null}
-  compatibility: Requires Python 3.14+ and uv
-  ```
-</Card>
-
-<Note>
-  Most skills do not need the `compatibility` field.
-</Note>
+> [!NOTE]
+>
+> Most skills do not need the `compatibility` field.
 
 #### `metadata` field
 
@@ -171,15 +161,13 @@ The optional `metadata` field:
 * Clients can use this to store additional properties not defined by the Agent Skills spec
 * We recommend making your key names reasonably unique to avoid accidental conflicts
 
-<Card>
-  **Example:**
-
-  ```yaml theme={null}
-  metadata:
-    author: example-org
-    version: "1.0"
-  ```
-</Card>
+> **Example:**
+>
+> ```yaml theme={null}
+> metadata:
+>   author: example-org
+>   version: "1.0"
+> ```
 
 #### `allowed-tools` field
 
@@ -188,13 +176,11 @@ The optional `allowed-tools` field:
 * A space-separated string of tools that are pre-approved to run
 * Experimental. Support for this field may vary between agent implementations
 
-<Card>
-  **Example:**
-
-  ```yaml theme={null}
-  allowed-tools: Bash(git:*) Bash(jq:*) Read
-  ```
-</Card>
+> **Example:**
+>
+> ```yaml theme={null}
+> allowed-tools: Bash(git:*) Bash(jq:*) Read
+> ```
 
 ### Body content
 
