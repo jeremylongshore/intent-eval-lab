@@ -2,13 +2,12 @@
   "_type": "https://in-toto.io/Statement/v1",
   "predicate": {
     "advisory_severity": "warn",
-    "commit_sha": "07aaa72757567d697f12bb4caf032d1afcbfae53",
+    "commit_sha": "79b6f89ae0187f1f88935b84b70879e3984b0004",
     "coverage": {
       "dimensions_evaluated": [
         "claude-code-changelog",
         "claude-code-npm",
         "platform-skills-overview",
-        "anthropic-engineering",
         "skills-releases",
         "agentskills-spec",
         "mcp-schema-ts",
@@ -22,9 +21,11 @@
         "mcp-releases",
         "claude-code-releases"
       ],
-      "dimensions_skipped": []
+      "dimensions_skipped": [
+        "anthropic-engineering"
+      ]
     },
-    "evaluated_at": "2026-10-01T09:24:13.000Z",
+    "evaluated_at": "2026-10-30T15:46:55.000Z",
     "gate_decision": "advisory",
     "gate_id": "spec-drift-watch:ci:snapshot-currency",
     "gate_name": "spec-snapshot-currency",
@@ -33,31 +34,31 @@
       "snapshot-drift:claude-code-npm",
       "snapshot-drift:platform-skills-overview",
       "snapshot-drift:agentskills-spec",
-      "snapshot-drift:mcp-schema-ts",
       "snapshot-drift:mcp-spec-docs",
       "snapshot-drift:claude-hooks",
       "snapshot-drift:claude-settings",
       "snapshot-drift:claude-slash-commands",
       "snapshot-drift:plugins-reference",
       "snapshot-drift:sub-agents",
-      "snapshot-drift:plugin-marketplaces"
+      "snapshot-drift:plugin-marketplaces",
+      "unobserved-surfaces:anthropic-engineering"
     ],
     "gate_version": "1.0.0",
-    "input_hash": "sha256:6979763a29c6b7f993872509727f1d74c19977c7b0e63cb6b12ae071600c227b",
+    "input_hash": "sha256:78e1bc6cb19bf629994a01a9380a41bb55095a622e32bfe3e27ad5501c4eaab6",
     "metadata": {
       "authority": "Blueprint B § 7.4 (gate-result/v1); DR-010 Q3 unification thesis",
-      "checked_at": "2026-10-01T09:24:11Z",
+      "checked_at": "2026-10-30T15:46:52Z",
       "sources_total": 16
     },
-    "policy_hash": "sha256:611ea9b0e9c7e07b3405bf8a29332861aad42164b960ab6d0b9dd6d8db072139",
-    "policy_ref": "sha256:611ea9b0e9c7e07b3405bf8a29332861aad42164b960ab6d0b9dd6d8db072139:scripts/spec-drift-check.sh",
+    "policy_hash": "sha256:017ccad9dc494f12116e572c6b8edd0f50c5f781c742566110507fdfd36866eb",
+    "policy_ref": "sha256:017ccad9dc494f12116e572c6b8edd0f50c5f781c742566110507fdfd36866eb:scripts/spec-drift-check.sh",
     "runner": "spec-drift-watch@1.0.0"
   },
   "predicateType": "https://evals.intentsolutions.io/gate-result/v1",
   "subject": [
     {
       "digest": {
-        "sha256": "6979763a29c6b7f993872509727f1d74c19977c7b0e63cb6b12ae071600c227b"
+        "sha256": "78e1bc6cb19bf629994a01a9380a41bb55095a622e32bfe3e27ad5501c4eaab6"
       },
       "name": "spec-drift-watch:ci:snapshot-currency"
     }

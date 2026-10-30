@@ -4,7 +4,7 @@
   <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/releases"/>
   <link type="application/atom+xml" rel="self" href="https://github.com/anthropics/skills/releases.atom"/>
   <title>Release notes from skills</title>
-  <updated>2026-10-01T09:24:14Z</updated>
+  <updated>2026-10-30T15:46:56Z</updated>
 </feed>
 
 <?xml version="1.0" encoding="UTF-8"?>
@@ -13,7 +13,98 @@
   <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commits/main"/>
   <link type="application/atom+xml" rel="self" href="https://github.com/anthropics/skills/commits/main.atom"/>
   <title>Recent Commits to skills:main</title>
-  <updated>2026-09-29T02:20:03Z</updated>
+  <updated>2026-10-28T19:20:38Z</updated>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/ca45fc496a3436251f191354091d557da31c15b5</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/ca45fc496a3436251f191354091d557da31c15b5"/>
+    <title>
+        Update mcp-builder skill: teach v2 of the MCP TypeScript SDK (#2087)
+    </title>
+    <updated>2026-10-28T19:20:38Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/3823880?s=30&amp;v=4"/>
+    <author>
+      <name>felixweinberger</name>
+      <uri>https://github.com/felixweinberger</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Update mcp-builder skill: teach v2 of the MCP TypeScript SDK (#2087)
+
+* Update mcp-builder skill: add a TypeScript SDK v2 guide
+
+Adds reference/node_mcp_server_v2.md for @modelcontextprotocol/server, tells SKILL.md readers how to choose between v1 and v2, and links each version&amp;#39;s docs. The v1 guide is unchanged apart from a note pointing new servers to v2.
+
+* Update mcp-builder skill: tell v1 users that SDK v2 exists
+
+When a TypeScript project already depends on @modelcontextprotocol/sdk, the agent tells the user once that v2 is the current stable release, that v1 gets only bug and security fixes, and how to migrate with the codemod, then continues with v1 unless asked to migrate.
+
+* Update mcp-builder skill: rewrite the v2 guide around the SDK examples
+
+Rebuilds reference/node_mcp_server_v2.md on patterns from the MCP TypeScript SDK examples: a server factory, a fetch-based API helper, tool design guidance, one complete stdio + HTTP example, bearer auth, resources and prompts, and a self-check script that verifies the built server. Links SDK example stories for advanced features. SKILL.md points v2 projects to the self-check.
+
+* Update mcp-builder skill: review fixes for the TypeScript SDK v2 guide
+
+---------
+
+Co-authored-by: Konstantin Konstantinov &amp;lt;konstantin@mach5technology.com&amp;gt;&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/dbd4588f9e1033efb41dad4bef2f7947c8993d44</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/dbd4588f9e1033efb41dad4bef2f7947c8993d44"/>
+    <title>
+        Update claude-api skill: dynamic workflows and the four workflow quic…
+    </title>
+    <updated>2026-10-09T18:45:49Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/286490957?s=30&amp;v=4"/>
+    <author>
+      <name>cj-ant</name>
+      <uri>https://github.com/cj-ant</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Update claude-api skill: dynamic workflows and the four workflow quickstarts (#1995)
+
+Sync of the bundled claude-api skill: the Managed Agents dynamic workflows
+guidance, the four dynamic-workflow quickstart templates, and the limited-
+networking web-tool rules. Public-only trims in SKILL.md, shared/evals/ and
+shared/model-migration.md are preserved.
+
+Co-authored-by: Claude &amp;lt;noreply@anthropic.com&amp;gt;&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/9d630808e4add0a7146de4af9384155d5dee350a</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/9d630808e4add0a7146de4af9384155d5dee350a"/>
+    <title>
+        Update claude-api skill: Claude Haiku 5.5 as the current Haiku, Manag…
+    </title>
+    <updated>2026-10-09T10:06:51Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/122662504?s=30&amp;v=4"/>
+    <author>
+      <name>rlancemartin</name>
+      <uri>https://github.com/rlancemartin</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Update claude-api skill: Claude Haiku 5.5 as the current Haiku, Managed Agents and preserved-thinking fixes (#1991)&lt;/pre&gt;
+    </content>
+  </entry>
+  <entry>
+    <id>tag:github.com,2008:Grit::Commit/683bc88e56f3e09ba94f7055977f3d3aa499f202</id>
+    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/683bc88e56f3e09ba94f7055977f3d3aa499f202"/>
+    <title>
+        Update claude-api skill: managed-agents-onboard from a quickstart nam…
+    </title>
+    <updated>2026-10-05T13:46:42Z</updated>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/286490957?s=30&amp;v=4"/>
+    <author>
+      <name>cj-ant</name>
+      <uri>https://github.com/cj-ant</uri>
+    </author>
+    <content type="html">
+      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Update claude-api skill: managed-agents-onboard from a quickstart name or a URL (#1962)
+
+Co-authored-by: Claude Fable 5.1 &amp;lt;noreply@anthropic.com&amp;gt;&lt;/pre&gt;
+    </content>
+  </entry>
   <entry>
     <id>tag:github.com,2008:Grit::Commit/8a1541c4a3ffa5a20a5a91de0dcf3f0bab1d1ef4</id>
     <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/8a1541c4a3ffa5a20a5a91de0dcf3f0bab1d1ef4"/>
@@ -525,117 +616,6 @@ Trim the skill docs to the guidance that earns its place.&lt;/pre&gt;
     </author>
     <content type="html">
       &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Update claude-api skill: per-SDK doc split, code_execution_20260521, platform-availability, onboarding streamline (#1363)&lt;/pre&gt;
-    </content>
-  </entry>
-  <entry>
-    <id>tag:github.com,2008:Grit::Commit/57546260929473d4e0d1c1bb75297be2fdfa1949</id>
-    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/57546260929473d4e0d1c1bb75297be2fdfa1949"/>
-    <title>
-        Update claude-api skill: scheduled deployments, vault env-var credent…
-    </title>
-    <updated>2026-06-09T20:35:16Z</updated>
-    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/122662504?s=30&amp;v=4"/>
-    <author>
-      <name>rlancemartin</name>
-      <uri>https://github.com/rlancemartin</uri>
-    </author>
-    <content type="html">
-      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Update claude-api skill: scheduled deployments, vault env-var credentials, system.message events (#1297)
-
-- Add Managed Agents scheduled deployments: new
-  shared/managed-agents-scheduled-deployments.md (cron schedules, deployment
-  runs, pause/auto-pause), Deployments and Deployment Runs API reference,
-  beta-header coverage, and SKILL.md routing
-- Vault environment_variable credentials: secrets substituted at egress with
-  networking allowlists; secrets guidance in tools, client-patterns, and
-  onboarding docs rewritten around them; self-hosted sandbox caveats noted
-- Add system.message event for mid-session system prompt updates (Opus 4.8
-  only) to the events guide and API reference&lt;/pre&gt;
-    </content>
-  </entry>
-  <entry>
-    <id>tag:github.com,2008:Grit::Commit/2235be7c60b551f5de82ade908fd3816455afcda</id>
-    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/2235be7c60b551f5de82ade908fd3816455afcda"/>
-    <title>
-        Update frontend-design skill (#1293)
-    </title>
-    <updated>2026-06-09T19:33:41Z</updated>
-    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/22250112?s=30&amp;v=4"/>
-    <author>
-      <name>williamqian12</name>
-      <uri>https://github.com/williamqian12</uri>
-    </author>
-    <content type="html">
-      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Update frontend-design skill (#1293)&lt;/pre&gt;
-    </content>
-  </entry>
-  <entry>
-    <id>tag:github.com,2008:Grit::Commit/5d25128289ff72bc9c7839ac3d245f4d57515447</id>
-    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/5d25128289ff72bc9c7839ac3d245f4d57515447"/>
-    <title>
-        Update claude-api skill: Claude Fable 5 and Claude Mythos 5 (#1294)
-    </title>
-    <updated>2026-06-09T17:34:55Z</updated>
-    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/122662504?s=30&amp;v=4"/>
-    <author>
-      <name>rlancemartin</name>
-      <uri>https://github.com/rlancemartin</uri>
-    </author>
-    <content type="html">
-      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Update claude-api skill: Claude Fable 5 and Claude Mythos 5 (#1294)
-
-- Add Claude Fable 5 and Claude Mythos 5 to the model tables with pricing,
-  context window, and model-selection guidance
-- Document Fable-specific API behavior: always-on adaptive thinking (explicit
-  disabled returns 400), protected-thinking display and replay rules, new
-  tokenizer (~30% more tokens), refusal stop reason with server-side fallbacks
-  and SDK fallback middleware, 30-day data-retention requirement
-- Add the full Migrating to Claude Fable 5 guide section and checklist,
-  including the Mythos Preview migration path
-- Refresh skill trigger description, effort/compaction/task-budget notes,
-  caching minimums, structured-output and dynamic-filtering support tables&lt;/pre&gt;
-    </content>
-  </entry>
-  <entry>
-    <id>tag:github.com,2008:Grit::Commit/c30d329f5814647c1e2f071020c1e8c1c9893ef1</id>
-    <link type="text/html" rel="alternate" href="https://github.com/anthropics/skills/commit/c30d329f5814647c1e2f071020c1e8c1c9893ef1"/>
-    <title>
-        Update claude-api skill: auth, cloud providers, Managed Agents fixes,…
-    </title>
-    <updated>2026-06-07T20:21:33Z</updated>
-    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/122662504?s=30&amp;v=4"/>
-    <author>
-      <name>rlancemartin</name>
-      <uri>https://github.com/rlancemartin</uri>
-    </author>
-    <content type="html">
-      &lt;pre style=&#39;white-space:pre-wrap;width:81ex&#39;&gt;Update claude-api skill: auth, cloud providers, Managed Agents fixes, token counting (#1276)
-
-* Sync claude-api skill with latest upstream updates
-
-- Add token-counting.md and SKILL.md trigger description update
-- Add auth guidance: env credential resolution, ant auth login, OAuth/WIF doc links, 401 causes
-- Add mid-conversation system messages (beta) to prompt-caching, agent-design, SKILL.md, Python/TS READMEs
-- Add cache pre-warming (max_tokens: 0) section to prompt-caching
-- Add Managed Agents pre-flight viability check to onboarding and overview
-- Add Bedrock model-ID section to model-migration; add Bedrock row to live-sources
-- Add /claude-api migrate subcommand row and migrate-entry callout
-- Fix MA networking config: limited type with allow_package_managers/allow_mcp_servers
-- Bump MA create-operations rate limit to 300 RPM
-- Fix MA SDK drift: sessions.events.stream(), event.name, typed event arrays
-- Add SDK coverage: stop_details, error .type, C# tool runner + MA support, Go model constants, Java 2.34.0, client config, response helpers, auto-pagination, advisor tool
-- Move Sonnet 4 / Opus 4 to deprecated in models.md
-
-* Add Anthropic CLI and Claude Platform on AWS docs to claude-api skill
-
-- Add shared/anthropic-cli.md: install, auth profiles, OAuth scopes, command
-  structure, version-controlled Managed Agents resources, credential traps
-- Add shared/claude-platform-on-aws.md: AnthropicAWS clients, SigV4 auth,
-  workspace_id, regions, feature availability
-- Restore cross-references to both files throughout SKILL.md and the
-  managed-agents docs (previously rewritten to live-sources.md pointers)
-- Restore Claude Platform on AWS provider taxonomy in SKILL.md, the
-  migration-guide section, and live-sources rows&lt;/pre&gt;
     </content>
   </entry>
 </feed>
