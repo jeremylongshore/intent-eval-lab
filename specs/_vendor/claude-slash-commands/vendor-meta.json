@@ -1,7 +1,7 @@
 {
   "surface_id": "claude-slash-commands",
-  "sha256": "5bab300fa2392fe456e6a4834a6672290bcf971af49b34ed98fe61945bfeeb7a",
-  "bytes": 100594,
-  "updated_at": "2026-10-01T09:24:14Z",
-  "source_raw_record": "archive/raw/claude-slash-commands/20261001T092414Z.meta.json"
+  "sha256": "977bb9f8d6a004c37e6731afd94bc3ad7bba1e64a2b2d7e7f22df910d4b06287",
+  "bytes": 119044,
+  "updated_at": "2026-11-05T17:16:58Z",
+  "source_raw_record": "archive/raw/claude-slash-commands/20261105T171658Z.meta.json"
 }

@@ -1,8 +1,8 @@
 {
   "_generated": "GENERATED-DO-NOT-EDIT \u2014 derived projection of the append-only lineage log (specs/lineage/log.jsonl). Regenerate: python3 scripts/lineage-log.py project-coverage. Normative spec: 000-docs/054-AT-SPEC-lineage-log-and-derived-coverage-map-2026-06-12.md",
   "derived_from": {
-    "last_event_id": 665,
-    "line_count": 665,
+    "last_event_id": 903,
+    "line_count": 903,
     "log": "specs/lineage/log.jsonl"
   },
   "projection_version": "lineage-coverage/v1",
@@ -61,9 +61,9 @@
       ],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-09-29T09:23:10Z",
-        "event_id": 641,
-        "upstream_version": "4c649bdf0e0a51c9e215d9f91009ecdca05ee9d073edb6f37c20265bbd829e11"
+        "at": "2026-10-31T15:14:56Z",
+        "event_id": 869,
+        "upstream_version": "bf4137a702014f82a022de532e597c5f92ea86fb53fe29ea27bee3bbc1d19738"
       }
     },
     "anthropic-engineering": {
@@ -74,9 +74,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-09-29T09:23:10Z",
-        "event_id": 650,
-        "upstream_version": "5369ffb2a2e807d79a9a6b21da66ef150eb3dd282fe9c34ad50648411e3e5930"
+        "at": "2026-11-05T17:16:58Z",
+        "event_id": 903,
+        "upstream_version": "2c4f9fb30989dcec2a63f4bcbdbe8df5de8fcb740151679d419f207b8adaa703"
       }
     },
     "claude-code-changelog": {
@@ -87,9 +87,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-10-01T09:24:14Z",
-        "event_id": 663,
-        "upstream_version": "da05018aedf08212a86cb8c26aa88fa9676fbc3bda86ece9687c4c222bdcf6cc"
+        "at": "2026-11-04T17:01:39Z",
+        "event_id": 896,
+        "upstream_version": "cd5d1dc88811ed306250cbbe0be98d59c72405637ab1b1caaddfd47df1ba5136"
       }
     },
     "claude-code-npm": {
@@ -100,9 +100,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-10-01T09:24:14Z",
-        "event_id": 664,
-        "upstream_version": "81c44075767fedc9620201c429807fa71fdcb4bc16291dd8c83f50bc2feda877"
+        "at": "2026-11-04T17:01:39Z",
+        "event_id": 897,
+        "upstream_version": "ac5c00ac15409c8c8b831f0ca0e3bad2a54b95f76e0c87e3208e4d43373fb239"
       }
     },
     "claude-code-releases": {
@@ -113,9 +113,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-10-01T09:24:14Z",
-        "event_id": 665,
-        "upstream_version": "50b16eb98e07bcf3a44f3e9914cea13995405fd576cd8b35c5c0387bcf01d6d4"
+        "at": "2026-11-04T17:01:39Z",
+        "event_id": 898,
+        "upstream_version": "6b4e64e9c1ce92dc1fce3ecc2ab53df8abbc57bffccef840f4a3583003cb837d"
       }
     },
     "claude-hooks": {
@@ -136,9 +136,9 @@
       ],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-10-01T09:24:14Z",
-        "event_id": 661,
-        "upstream_version": "94e33cf5e328fb21343332d39fe2093becb27bf9e93b8c3601b2787468eea839"
+        "at": "2026-11-04T17:01:39Z",
+        "event_id": 893,
+        "upstream_version": "54d66bf143d888ac0c554becf7cb2762d8265f412a3dc7fde4908e8d1499bcfc"
       }
     },
     "claude-settings": {
@@ -165,9 +165,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-10-01T09:24:14Z",
-        "event_id": 662,
-        "upstream_version": "5bab300fa2392fe456e6a4834a6672290bcf971af49b34ed98fe61945bfeeb7a"
+        "at": "2026-11-05T17:16:58Z",
+        "event_id": 902,
+        "upstream_version": "977bb9f8d6a004c37e6731afd94bc3ad7bba1e64a2b2d7e7f22df910d4b06287"
       }
     },
     "mcp-releases": {
@@ -220,9 +220,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-10-01T09:24:14Z",
-        "event_id": 660,
-        "upstream_version": "c644267bb54a83e0c50917c422a6774d7c9b1df2ebd18f12ec1f56c5a51c1991"
+        "at": "2026-11-05T17:16:58Z",
+        "event_id": 901,
+        "upstream_version": "ed815353d1d319f6b0b4a3a5ccc879b354ee6039232ecba086f426cdc87825e8"
       }
     },
     "platform-skills-overview": {
@@ -259,9 +259,9 @@
       ],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-09-23T09:21:33Z",
-        "event_id": 607,
-        "upstream_version": "f7edcac19aec227330f4df149ed11c9fa4c657cef58ac2719d20d4bb4d153663"
+        "at": "2026-10-27T15:16:51Z",
+        "event_id": 842,
+        "upstream_version": "2b353a0f227f1637b8c5f5709d3de843054a31c81e38d769d00fb00544f3635c"
       }
     },
     "plugins-reference": {
@@ -282,9 +282,9 @@
       ],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-09-23T09:21:33Z",
-        "event_id": 605,
-        "upstream_version": "1238bc6136ac0e8bb86fef61a6d488b4f9936d150a8dcd03fd7742bc338802af"
+        "at": "2026-11-04T17:01:39Z",
+        "event_id": 894,
+        "upstream_version": "b0f8e2f9c1e5c05b3fd975f15a6c85fb9bae15cc81b07b90137b065af09b7fce"
       }
     },
     "skills-releases": {
@@ -298,9 +298,9 @@
       "divergences_outstanding": [],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-10-01T09:24:14Z",
-        "event_id": 659,
-        "upstream_version": "2577ae88cd215c1287f46675461a210e3b6b2de146d436426d24cee0b0847255"
+        "at": "2026-11-05T17:16:58Z",
+        "event_id": 900,
+        "upstream_version": "a943ebb2bab6dd9457a93bbc210690ed506ce875127e79fcf77dac4aeb213ee7"
       }
     },
     "sub-agents": {
@@ -321,9 +321,9 @@
       ],
       "last_fetch_degraded": null,
       "last_snapshot_updated": {
-        "at": "2026-09-30T09:22:40Z",
-        "event_id": 655,
-        "upstream_version": "f7a49266d42328f2a24ab778e2c28689d527b57da737e52b8928f6e275ca01e3"
+        "at": "2026-11-04T17:01:39Z",
+        "event_id": 895,
+        "upstream_version": "db8a532d4c04d8cec27622b3afd68f86f8d96efa121f4b498dcb430e2bc543b8"
       }
     }
   }
