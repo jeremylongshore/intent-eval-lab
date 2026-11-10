@@ -71,7 +71,7 @@
     },
     "preconditions": {
       "type": "object",
-      "description": "The advisory->blocking flip exit preconditions (plan 048 v8 Delta 3, revising plan 033 \u00a7 14.4c). Used to gate the READY-TO-FLIP -> BLOCKING transition. (a) coverage is the only precondition the 30-day calendar ceiling can disposition (flip with the long tail quarantined); (c) zero-open-P0 and (d) governance-triple sign-off are HARD gates the ceiling never overrides. DR-049 D-SAK-6 additionally makes complete community notice evidence and the 14-day publication window non-overridable; evaluation requires an explicit timestamp.",
+      "description": "The advisory->blocking flip exit preconditions (plan 048 v8 Delta 3, revising plan 033 \u00a7 14.4c). Used to gate the READY-TO-FLIP -> BLOCKING transition. (a) coverage is the only precondition the 30-day calendar ceiling can disposition (flip with the long tail quarantined); (c) zero-open-P0 and (d) governance-triple sign-off are HARD gates the ceiling never overrides. DR-049 D-SAK-6 additionally makes complete community notice evidence and the 14-day publication window non-overridable; evaluation requires an explicit timestamp. New flips also require flip_evidence under DR-049/DR-081: 30-day advisory observation, deterministic agreement, published measurements, tested append-only rollback and bound governance approvals.",
       "additionalProperties": false,
       "properties": {
         "coverage_corpus_pass_pct": {
@@ -121,12 +121,15 @@
         },
         "community_notice": {
           "$ref": "#/$defs/communityNotice"
+        },
+        "flip_evidence": {
+          "$ref": "#/$defs/flipEvidence"
         }
       }
     },
     "governanceSignoff": {
       "type": "object",
-      "description": "Precondition (d) HARD: the CTO + CISO + VP DevRel triple sign-off (plan 033 \u00a7 14.12). All three must be present for the advisory->blocking flip. STUB INTERFACE: the flip-emission code reads these three booleans + their reference fields; the upstream source of truth for a recorded sign-off is an ISEDC Decision Record (AT-DECR). Until a live governance-signoff source exists, this block is hand-maintained in SAK-STATE.json and the three booleans default false.",
+      "description": "Legacy governance flags remain operator-maintained and must be exactly true for a flip. New flips additionally require evidence-bound CTO/CISO/VP DevRel approval records in flip_evidence; this offline schema does not authenticate them.",
       "additionalProperties": false,
       "required": [
         "cto",
@@ -197,6 +200,10 @@
           "type": "string",
           "pattern": "^[0-9a-f]{64}$",
           "description": "For a new blocking flip, the reviewed community notice manifest retained by the transition emitter. Historical transitions remain unchanged."
+        },
+        "flip_evidence_manifest_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
         }
       }
     },
@@ -571,6 +578,520 @@
         }
       },
       "description": "DR-049 D-SAK-6 reviewed publication and delivery evidence. The digest covers this object excluding vp_devrel_review using sorted compact ASCII JSON. These are operator attestations, not cryptographic authentication or live URL verification. Missing evidence always refuses a flip."
+    },
+    "flipEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "change_sha256",
+        "deviation_report_sha256",
+        "notice_manifest_sha256",
+        "measured_at",
+        "valid_until",
+        "advisory",
+        "deterministic_folds",
+        "artifacts",
+        "security_checks_day_zero",
+        "rollback",
+        "coverage_disposition",
+        "approvals"
+      ],
+      "properties": {
+        "change_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "deviation_report_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "notice_manifest_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "measured_at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+        },
+        "valid_until": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+        },
+        "advisory": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "started_at",
+            "observed_through",
+            "continuous"
+          ],
+          "properties": {
+            "started_at": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+            },
+            "observed_through": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+            },
+            "continuous": {
+              "const": true
+            }
+          }
+        },
+        "deterministic_folds": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "total",
+            "agreed"
+          ],
+          "properties": {
+            "total": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "agreed": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          }
+        },
+        "artifacts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "agreement",
+            "shadow_log",
+            "false_reject_report",
+            "p0_report"
+          ],
+          "properties": {
+            "agreement": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "url",
+                "sha256",
+                "published_at"
+              ],
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri",
+                  "pattern": "^https://[^\\s]+$"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "published_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+                }
+              }
+            },
+            "shadow_log": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "url",
+                "sha256",
+                "published_at"
+              ],
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri",
+                  "pattern": "^https://[^\\s]+$"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "published_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+                }
+              }
+            },
+            "false_reject_report": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "url",
+                "sha256",
+                "published_at"
+              ],
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri",
+                  "pattern": "^https://[^\\s]+$"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "published_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+                }
+              }
+            },
+            "p0_report": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "url",
+                "sha256",
+                "published_at"
+              ],
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri",
+                  "pattern": "^https://[^\\s]+$"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "published_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+                }
+              }
+            }
+          }
+        },
+        "security_checks_day_zero": {
+          "const": true
+        },
+        "rollback": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "strategy",
+            "implemented",
+            "tested",
+            "tested_at",
+            "receipt"
+          ],
+          "properties": {
+            "strategy": {
+              "const": "append-only-supersession"
+            },
+            "implemented": {
+              "const": true
+            },
+            "tested": {
+              "const": true
+            },
+            "tested_at": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+            },
+            "receipt": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "url",
+                "sha256",
+                "published_at"
+              ],
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri",
+                  "pattern": "^https://[^\\s]+$"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "published_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+                }
+              }
+            }
+          }
+        },
+        "coverage_disposition": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "decision",
+                "reviewed_at",
+                "decision_record",
+                "quarantine_report",
+                "corpus_size",
+                "passed_files",
+                "quarantined_files",
+                "quarantine_mode"
+              ],
+              "properties": {
+                "decision": {
+                  "const": "flip-with-quarantine"
+                },
+                "reviewed_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "decision_record": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "url",
+                    "sha256",
+                    "published_at"
+                  ],
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "format": "uri",
+                      "pattern": "^https://[^\\s]+$"
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "published_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+                    }
+                  }
+                },
+                "quarantine_report": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "url",
+                    "sha256",
+                    "published_at"
+                  ],
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "format": "uri",
+                      "pattern": "^https://[^\\s]+$"
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "published_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+                    }
+                  }
+                },
+                "corpus_size": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "passed_files": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "quarantined_files": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "pattern": "^\\S+$"
+                  }
+                },
+                "quarantine_mode": {
+                  "const": "advisory-only"
+                }
+              }
+            }
+          ]
+        },
+        "approvals": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "cto",
+            "ciso",
+            "vp_devrel"
+          ],
+          "properties": {
+            "cto": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "approved",
+                "manifest_sha256",
+                "signed_at",
+                "decision_record"
+              ],
+              "properties": {
+                "approved": {
+                  "const": true
+                },
+                "manifest_sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "signed_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "decision_record": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "url",
+                    "sha256",
+                    "published_at"
+                  ],
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "format": "uri",
+                      "pattern": "^https://[^\\s]+$"
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "published_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+                    }
+                  }
+                }
+              }
+            },
+            "ciso": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "approved",
+                "manifest_sha256",
+                "signed_at",
+                "decision_record"
+              ],
+              "properties": {
+                "approved": {
+                  "const": true
+                },
+                "manifest_sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "signed_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "decision_record": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "url",
+                    "sha256",
+                    "published_at"
+                  ],
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "format": "uri",
+                      "pattern": "^https://[^\\s]+$"
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "published_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+                    }
+                  }
+                }
+              }
+            },
+            "vp_devrel": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "approved",
+                "manifest_sha256",
+                "signed_at",
+                "decision_record"
+              ],
+              "properties": {
+                "approved": {
+                  "const": true
+                },
+                "manifest_sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "signed_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "decision_record": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "url",
+                    "sha256",
+                    "published_at"
+                  ],
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "format": "uri",
+                      "pattern": "^https://[^\\s]+$"
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "published_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
