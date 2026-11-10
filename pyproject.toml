@@ -101,7 +101,7 @@ concurrency = ["multiprocessing"]
 # Shared local/CI floor. Offline analysis and scorer-adapter contracts exercise
 # deterministic behavior without provider keys or an external marketplace clone.
 # Real-validator integration tests remain separate and skip without that clone.
-# The CI job remains advisory, but no longer overrides this floor with zero.
+# The CI job is blocking and uses this same floor without an override.
 fail_under = 60
 precision = 1
 show_missing = true

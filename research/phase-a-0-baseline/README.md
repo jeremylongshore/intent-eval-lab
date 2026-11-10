@@ -38,7 +38,7 @@ coverage combine
 coverage report
 ```
 
-The same 60% floor applies locally and in the advisory CI job. Analysis tests
+The same 60% floor applies locally and in the blocking CI job. Analysis tests
 use synthetic on-disk measurements and the real NumPy/SciPy calculations;
 scorer-adapter tests use an explicitly synthetic validator process to verify
 routing, parsing and provenance. They do not prove marketplace integration,
