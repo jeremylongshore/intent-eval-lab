@@ -16,10 +16,8 @@ name: Schema drift guard
 # fields fails this gate.
 
 on:
+  # Required checks must report on every PR, including unrelated changes.
   pull_request:
-    paths:
-      - 'specs/evidence-bundle/**'
-      - '.github/workflows/schema-drift.yml'
   push:
     branches: [main]
     paths:

@@ -5,8 +5,7 @@ on:
   # PR to main, not just PRs that touch Python paths. A path-filtered required
   # check is SKIPPED on unrelated PRs and never reports, blocking the PR
   # forever. The push: trigger keeps its path filter (no required-check
-  # semantics on push). mypy + pytest stay advisory (continue-on-error in their
-  # jobs) — they may run on every PR but never block.
+  # semantics on push). mypy stays advisory; both pytest jobs are blocking.
   # No `branches:` filter on purpose: with `branches: [main]` a stacked PR whose
   # base is another feature branch gets no checks at all. Push builds stay on main.
   pull_request:
@@ -15,6 +14,8 @@ on:
     paths:
       - "research/phase-a-0-baseline/**/*.py"
       - "pyproject.toml"
+      - "scripts/**/*.py"
+      - ".github/workflows/python-tests.yml"
 
 permissions:
   contents: read
@@ -53,17 +54,15 @@ jobs:
       - run: mypy research/phase-a-0-baseline/scripts/
 
   # ---------------------------------------------------------------------------
-  # L3 unit tests + subprocess coverage (advisory job, shared 60% floor).
+  # L3 unit tests + subprocess coverage (blocking job, shared 60% floor).
   # ---------------------------------------------------------------------------
   pytest:
     name: pytest + coverage (research/phase-a-0-baseline)
     runs-on: ubuntu-latest
-    # Keep this job advisory; branch-protection policy is unchanged. The shared
-    # 60% coverage floor now applies here as well as locally. Offline analysis
+    # The shared 60% coverage floor applies here as well as locally. Offline analysis
     # and scorer-adapter contracts reach it without provider keys or the external
     # marketplace checkout. The four real-validator integrations still skip when
     # that checkout is absent; synthetic adapter data is not integration evidence.
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
@@ -104,7 +103,7 @@ jobs:
   # that this machinery's correctness now rests on. A regression lock that does
   # not run is not a lock, so it gets its own job here.
   #
-  # NOT continue-on-error, unlike the coverage job above: these are offline,
+  # Like the coverage job above, these tests are blocking: they are offline,
   # deterministic, and dependency-light (stdlib + pytest + pyyaml), so there is
   # no environment limit to excuse a failure. Promoting it to a REQUIRED check in
   # branch protection is an owner action.
