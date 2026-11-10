@@ -22,17 +22,17 @@ No clock is read implicitly.
 The canonical shape is `$defs.communityNotice` in [sak-state.schema.json](../specs/state-machines/schema/sak-state.schema.json).
 The [synthetic fixture](../scripts/tests/fixtures/sak-community-notice-valid.json) demonstrates the full structure using example.org URLs; it is never activation evidence.
 
-| Field | Meaning |
-| --- | --- |
-| `blocking_change_sha256` | Current proposed blocking-change digest in preconditions |
-| `shadow_deviation_report_sha256` | Current reviewed shadow-report digest in preconditions |
-| `community_notice.change_sha256` | Must match the proposed change |
-| `community_notice.deviation_report` | HTTPS report URL and matching SHA-256 |
-| `community_notice.artifacts` | Four mandatory publication objects, each with URL, SHA-256 and `published_at`; pinned issue also has `pinned_at` |
-| `community_notice.not_before` | Announced earliest activation timestamp |
-| `community_notice.affected_authors` | Unique stable author identifiers from the reviewed report |
-| `community_notice.notifications` | Exactly one author ID, HTTPS delivery receipt URL and `sent_at` per affected author |
-| `community_notice.vp_devrel_review` | Manifest digest, HTTPS decision-record URL and `signed_at` |
+| Field                               | Meaning                                                                                                          |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `blocking_change_sha256`            | Current proposed blocking-change digest in preconditions                                                         |
+| `shadow_deviation_report_sha256`    | Current reviewed shadow-report digest in preconditions                                                           |
+| `community_notice.change_sha256`    | Must match the proposed change                                                                                   |
+| `community_notice.deviation_report` | HTTPS report URL and matching SHA-256                                                                            |
+| `community_notice.artifacts`        | Four mandatory publication objects, each with URL, SHA-256 and `published_at`; pinned issue also has `pinned_at` |
+| `community_notice.not_before`       | Announced earliest activation timestamp                                                                          |
+| `community_notice.affected_authors` | Unique stable author identifiers from the reviewed report                                                        |
+| `community_notice.notifications`    | Exactly one author ID, HTTPS delivery receipt URL and `sent_at` per affected author                              |
+| `community_notice.vp_devrel_review` | Manifest digest, HTTPS decision-record URL and `signed_at`                                                       |
 
 Evidence URLs require HTTPS, a hostname and no embedded credentials.
 Direct notices must follow the last public publication/pinning and precede the VP DevRel review.
