@@ -2,9 +2,12 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://evals.intentsolutions.io/state-machines/sak-state/v1",
   "title": "SAK Phase-4 advisory->blocking flip state (sak-state/v1)",
-  "description": "Validates the hand-maintained SAK-STATE.json. The normative authority for the state machine is plan 033 v7 § 14.4.shadow (the lifecycle diagram), § 14.4c + plan 048 v8 Delta 3 (the advisory->blocking flip exit preconditions: (a) coverage calendar-dispositionable, (c) zero-open-P0 HARD, (d) governance-triple sign-off HARD), § 14.4.rollback (rollback protocol + ROLLED-BACK semantics), and plan 048 v8 Delta 4 / § 14.31 (lifecycle-states). This is DISTINCT from the 13-entity runtime state machine at specs/state-machines/transition-table.v1.json (Blueprint B). This schema is consumed by scripts/sak-state-machine.py (transition emit/validation) and is compatible with the SAK-STATE.json shape that scripts/render-sak-dashboard.py already reads.",
+  "description": "Validates the hand-maintained SAK-STATE.json. The normative authority for the state machine is plan 033 v7 \u00a7 14.4.shadow (the lifecycle diagram), \u00a7 14.4c + plan 048 v8 Delta 3 (the advisory->blocking flip exit preconditions: (a) coverage calendar-dispositionable, (c) zero-open-P0 HARD, (d) governance-triple sign-off HARD), \u00a7 14.4.rollback (rollback protocol + ROLLED-BACK semantics), and plan 048 v8 Delta 4 / \u00a7 14.31 (lifecycle-states). This is DISTINCT from the 13-entity runtime state machine at specs/state-machines/transition-table.v1.json (Blueprint B). This schema is consumed by scripts/sak-state-machine.py (transition emit/validation) and is compatible with the SAK-STATE.json shape that scripts/render-sak-dashboard.py already reads.",
   "type": "object",
-  "required": ["state_version", "state_machine"],
+  "required": [
+    "state_version",
+    "state_machine"
+  ],
   "additionalProperties": true,
   "properties": {
     "_comment": {
@@ -23,16 +26,27 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["phase", "status"],
+        "required": [
+          "phase",
+          "status"
+        ],
         "additionalProperties": true,
         "properties": {
-          "phase": { "type": "string" },
-          "status": { "type": "string" },
-          "detail": { "type": "string" }
+          "phase": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          }
         }
       }
     },
-    "state_machine": { "$ref": "#/$defs/stateMachine" },
+    "state_machine": {
+      "$ref": "#/$defs/stateMachine"
+    },
     "cost_ledger": {
       "type": "object"
     },
@@ -43,7 +57,7 @@
   "$defs": {
     "lifecycleState": {
       "type": "string",
-      "description": "The eight states of the SAK Phase-4 advisory->blocking flip lifecycle (plan 033 v7 § 14.4.shadow). The five named in the prompt brief (ADVISORY, ADVISORY-W-A, SHADOW-MODE, READY-TO-FLIP, BLOCKING) plus the canonical diagram's ADVISORY-W-AB (both waves done) and HOLDING (audit branch off SHADOW-MODE), plus ROLLED-BACK (reachable from the gated states).",
+      "description": "The eight states of the SAK Phase-4 advisory->blocking flip lifecycle (plan 033 v7 \u00a7 14.4.shadow). The five named in the prompt brief (ADVISORY, ADVISORY-W-A, SHADOW-MODE, READY-TO-FLIP, BLOCKING) plus the canonical diagram's ADVISORY-W-AB (both waves done) and HOLDING (audit branch off SHADOW-MODE), plus ROLLED-BACK (reachable from the gated states).",
       "enum": [
         "ADVISORY",
         "ADVISORY-W-A",
@@ -57,47 +71,83 @@
     },
     "preconditions": {
       "type": "object",
-      "description": "The advisory->blocking flip exit preconditions (plan 048 v8 Delta 3, revising plan 033 § 14.4c). Used to gate the READY-TO-FLIP -> BLOCKING transition. (a) coverage is the only precondition the 30-day calendar ceiling can disposition (flip with the long tail quarantined); (c) zero-open-P0 and (d) governance-triple sign-off are HARD gates the ceiling never overrides.",
+      "description": "The advisory->blocking flip exit preconditions (plan 048 v8 Delta 3, revising plan 033 \u00a7 14.4c). Used to gate the READY-TO-FLIP -> BLOCKING transition. (a) coverage is the only precondition the 30-day calendar ceiling can disposition (flip with the long tail quarantined); (c) zero-open-P0 and (d) governance-triple sign-off are HARD gates the ceiling never overrides. DR-049 D-SAK-6 additionally makes complete community notice evidence and the 14-day publication window non-overridable; evaluation requires an explicit timestamp.",
       "additionalProperties": false,
       "properties": {
         "coverage_corpus_pass_pct": {
-          "type": ["number", "null"],
+          "type": [
+            "number",
+            "null"
+          ],
           "description": "Precondition (a): fraction of corpus passing the kernel schema in advisory + shadow modes, as a percentage. >= 99.5 satisfies (a); below it the flip MAY still fire only via the 30-day calendar ceiling with the long tail quarantined.",
           "minimum": 0,
           "maximum": 100
         },
         "shadow_days_complete": {
-          "type": ["integer", "null"],
-          "description": "Precondition (b): calendar days of shadow mode completed. >= 7 with deviation < 0.5% satisfies (b) (plan 033 § 14.4b.5).",
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Precondition (b): calendar days of shadow mode completed. >= 7 with deviation < 0.5% satisfies (b) (plan 033 \u00a7 14.4b.5).",
           "minimum": 0
         },
         "shadow_deviation_pct": {
-          "type": ["number", "null"],
+          "type": [
+            "number",
+            "null"
+          ],
           "description": "Precondition (b): dual-validator deviation rate during shadow mode, as a percentage. < 0.5 satisfies (b).",
           "minimum": 0,
           "maximum": 100
         },
         "open_p0_count": {
-          "type": ["integer", "null"],
-          "description": "Precondition (c) HARD: count of open P0 issues in the schema-revision-candidates queue (plan 048 § 14.A.3). Must be 0 to flip; the calendar ceiling never overrides this.",
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Precondition (c) HARD: count of open P0 issues in the schema-revision-candidates queue (plan 048 \u00a7 14.A.3). Must be 0 to flip; the calendar ceiling never overrides this.",
           "minimum": 0
         },
         "governance_signoff": {
           "$ref": "#/$defs/governanceSignoff"
+        },
+        "blocking_change_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "shadow_deviation_report_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "community_notice": {
+          "$ref": "#/$defs/communityNotice"
         }
       }
     },
     "governanceSignoff": {
       "type": "object",
-      "description": "Precondition (d) HARD: the CTO + CISO + VP DevRel triple sign-off (plan 033 § 14.12). All three must be present for the advisory->blocking flip. STUB INTERFACE: the flip-emission code reads these three booleans + their reference fields; the upstream source of truth for a recorded sign-off is an ISEDC Decision Record (AT-DECR). Until a live governance-signoff source exists, this block is hand-maintained in SAK-STATE.json and the three booleans default false.",
+      "description": "Precondition (d) HARD: the CTO + CISO + VP DevRel triple sign-off (plan 033 \u00a7 14.12). All three must be present for the advisory->blocking flip. STUB INTERFACE: the flip-emission code reads these three booleans + their reference fields; the upstream source of truth for a recorded sign-off is an ISEDC Decision Record (AT-DECR). Until a live governance-signoff source exists, this block is hand-maintained in SAK-STATE.json and the three booleans default false.",
       "additionalProperties": false,
-      "required": ["cto", "ciso", "vp_devrel"],
+      "required": [
+        "cto",
+        "ciso",
+        "vp_devrel"
+      ],
       "properties": {
-        "cto": { "type": "boolean" },
-        "ciso": { "type": "boolean" },
-        "vp_devrel": { "type": "boolean" },
+        "cto": {
+          "type": "boolean"
+        },
+        "ciso": {
+          "type": "boolean"
+        },
+        "vp_devrel": {
+          "type": "boolean"
+        },
         "decision_record_ref": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "description": "Pointer to the AT-DECR Decision Record recording the triple sign-off (e.g. '044-AT-DECR-...'). Required-by-convention once all three booleans are true; advisory otherwise."
         }
       }
@@ -106,10 +156,19 @@
       "type": "object",
       "description": "One recorded state transition. Append-only history; each entry records the from/to states, the trigger event, when it fired, and (for the flip) a reference to the governing Decision Record / Evidence Bundle.",
       "additionalProperties": false,
-      "required": ["from", "to", "event", "at"],
+      "required": [
+        "from",
+        "to",
+        "event",
+        "at"
+      ],
       "properties": {
-        "from": { "$ref": "#/$defs/lifecycleState" },
-        "to": { "$ref": "#/$defs/lifecycleState" },
+        "from": {
+          "$ref": "#/$defs/lifecycleState"
+        },
+        "to": {
+          "$ref": "#/$defs/lifecycleState"
+        },
         "event": {
           "type": "string",
           "description": "The transition event name (e.g. 'wave-a-merged', 'enable-shadow', 'governance-triple-signs', 'regression-detected'). One of the events enumerated in scripts/sak-state-machine.py LEGAL_TRANSITIONS.",
@@ -121,12 +180,23 @@
           "minLength": 1
         },
         "reason": {
-          "type": ["string", "null"],
-          "description": "Free-text rationale; required for ROLLED-BACK entries (plan 033 § 14.4.rollback records the reason in an AT-DECR-phase-4c-rollback DR)."
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Free-text rationale; required for ROLLED-BACK entries (plan 033 \u00a7 14.4.rollback records the reason in an AT-DECR-phase-4c-rollback DR)."
         },
         "decision_record_ref": {
-          "type": ["string", "null"],
-          "description": "Pointer to the kernel-side Decision Record this transition emitted (plan 033 § 14.4.shadow: 'Each transition emits a kernel-side Decision Record + Evidence Bundle entry.')."
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Pointer to the kernel-side Decision Record this transition emitted (plan 033 \u00a7 14.4.shadow: 'Each transition emits a kernel-side Decision Record + Evidence Bundle entry.')."
+        },
+        "community_notice_manifest_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "For a new blocking flip, the reviewed community notice manifest retained by the transition emitter. Historical transitions remain unchanged."
         }
       }
     },
@@ -134,7 +204,11 @@
       "type": "object",
       "description": "The SAK Phase-4 flip state machine. current_state must be one of the eight lifecycle states; states is the declared lifecycle ordering; preconditions carries the flip-gate inputs; transition_history is the append-only record of transitions taken.",
       "additionalProperties": false,
-      "required": ["machine", "current_state", "states"],
+      "required": [
+        "machine",
+        "current_state",
+        "states"
+      ],
       "properties": {
         "_comment": {
           "type": "string"
@@ -144,7 +218,9 @@
           "description": "Human-readable machine name.",
           "minLength": 1
         },
-        "current_state": { "$ref": "#/$defs/lifecycleState" },
+        "current_state": {
+          "$ref": "#/$defs/lifecycleState"
+        },
         "entered_at": {
           "type": "string",
           "description": "When current_state was entered (ISO date or date-time)."
@@ -156,22 +232,30 @@
         "states": {
           "type": "array",
           "description": "The declared lifecycle states in nominal forward order. Every entry must be a valid lifecycle state; every state in current_state must appear here.",
-          "items": { "$ref": "#/$defs/lifecycleState" },
+          "items": {
+            "$ref": "#/$defs/lifecycleState"
+          },
           "minItems": 2,
           "uniqueItems": true
         },
-        "preconditions": { "$ref": "#/$defs/preconditions" },
+        "preconditions": {
+          "$ref": "#/$defs/preconditions"
+        },
         "transition_history": {
           "type": "array",
           "description": "Append-only record of transitions taken to reach current_state.",
-          "items": { "$ref": "#/$defs/transition" }
+          "items": {
+            "$ref": "#/$defs/transition"
+          }
         },
-        "rollback": { "$ref": "#/$defs/rollbackRecord" }
+        "rollback": {
+          "$ref": "#/$defs/rollbackRecord"
+        }
       }
     },
     "rollbackRecord": {
       "type": "object",
-      "description": "The SAK Phase-4c rollback record stamped by scripts/sak-kernel-gate-revert.py when a gate is reverted to ROLLED-BACK (plan 033 v7 § 14.4.rollback class 3 + plan 048 v8 § 14.4c). Present only after a kernel-gate-revert. Carries the governance-triple authorization, the revert reason/target, and the ISEDC Class-2 retrospective deadline (revert_at + 7 calendar days). The kernel-side Evidence Bundle 'rolled-back-superseded' superseding event is owned by the kernel emitter (F-MK-005); this record only carries the intent (affected_window + superseding_signing_mode), never a Rekor write.",
+      "description": "The SAK Phase-4c rollback record stamped by scripts/sak-kernel-gate-revert.py when a gate is reverted to ROLLED-BACK (plan 033 v7 \u00a7 14.4.rollback class 3 + plan 048 v8 \u00a7 14.4c). Present only after a kernel-gate-revert. Carries the governance-triple authorization, the revert reason/target, and the ISEDC Class-2 retrospective deadline (revert_at + 7 calendar days). The kernel-side Evidence Bundle 'rolled-back-superseded' superseding event is owned by the kernel emitter (F-MK-005); this record only carries the intent (affected_window + superseding_signing_mode), never a Rekor write.",
       "additionalProperties": false,
       "required": [
         "reverted_at",
@@ -190,7 +274,7 @@
         },
         "reason": {
           "type": "string",
-          "description": "Free-text rationale for the revert (required — plan 033 § 14.4.rollback records the reason).",
+          "description": "Free-text rationale for the revert (required \u2014 plan 033 \u00a7 14.4.rollback records the reason).",
           "minLength": 1
         },
         "reverted_gate": {
@@ -199,43 +283,63 @@
           "minLength": 1
         },
         "reverted_version": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "description": "The gate/schema version reverted (e.g. 'authoring/v1')."
         },
-        "from_state": { "$ref": "#/$defs/lifecycleState" },
-        "to_state": { "$ref": "#/$defs/lifecycleState" },
+        "from_state": {
+          "$ref": "#/$defs/lifecycleState"
+        },
+        "to_state": {
+          "$ref": "#/$defs/lifecycleState"
+        },
         "decision_record_ref": {
-          "type": ["string", "null"],
-          "description": "Pointer to the AT-DECR-phase-4c-rollback-NNN Decision Record (plan 033 § 14.4.rollback class 3 (b))."
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Pointer to the AT-DECR-phase-4c-rollback-NNN Decision Record (plan 033 \u00a7 14.4.rollback class 3 (b))."
         },
         "governance_signoff": {
           "type": "object",
           "description": "The CTO + CISO + VP-DevRel triple that authorized this revert (all three true; the revert is refused otherwise).",
           "additionalProperties": false,
-          "required": ["cto", "ciso", "vp_devrel"],
+          "required": [
+            "cto",
+            "ciso",
+            "vp_devrel"
+          ],
           "properties": {
-            "cto": { "type": "boolean" },
-            "ciso": { "type": "boolean" },
-            "vp_devrel": { "type": "boolean" }
+            "cto": {
+              "type": "boolean"
+            },
+            "ciso": {
+              "type": "boolean"
+            },
+            "vp_devrel": {
+              "type": "boolean"
+            }
           }
         },
         "retrospective_due_at": {
           "type": "string",
-          "description": "ISO date the ISEDC Class-2 retrospective must be opened by = reverted_at + 7 calendar days (plan 033 § 14.4.rollback class 3 (d)).",
+          "description": "ISO date the ISEDC Class-2 retrospective must be opened by = reverted_at + 7 calendar days (plan 033 \u00a7 14.4.rollback class 3 (d)).",
           "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
         },
         "retrospective_window_days": {
           "type": "integer",
-          "description": "The retrospective window in calendar days (7 per § 14.4.rollback class 3 (d)).",
+          "description": "The retrospective window in calendar days (7 per \u00a7 14.4.rollback class 3 (d)).",
           "minimum": 0
         },
         "retrospective_class": {
           "type": "string",
-          "description": "The ISEDC retrospective class triggered by the rollback (Class-2 per § 14.4.rollback class 3 (d))."
+          "description": "The ISEDC retrospective class triggered by the rollback (Class-2 per \u00a7 14.4.rollback class 3 (d))."
         },
         "affected_window": {
           "type": "object",
-          "description": "The BLOCKING-window the kernel-side emitter must mark 'rolled-back-superseded' (recorded intent only — NOT a Rekor write; the superseding envelope event is owned by the kernel emitter per F-MK-005).",
+          "description": "The BLOCKING-window the kernel-side emitter must mark 'rolled-back-superseded' (recorded intent only \u2014 NOT a Rekor write; the superseding envelope event is owned by the kernel emitter per F-MK-005).",
           "additionalProperties": true
         },
         "superseding_signing_mode": {
@@ -243,6 +347,230 @@
           "description": "The signing_mode the kernel emitter applies to affected_window attestations ('rolled-back-superseded'). Present only when affected_window is set."
         }
       }
+    },
+    "communityNotice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "change_sha256",
+        "deviation_report",
+        "not_before",
+        "artifacts",
+        "affected_authors",
+        "notifications",
+        "vp_devrel_review"
+      ],
+      "properties": {
+        "change_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "deviation_report": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "url",
+            "sha256"
+          ],
+          "properties": {
+            "url": {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https://[^\\s]+$"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        },
+        "not_before": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+        },
+        "artifacts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kernel_changelog",
+            "marketplace_changelog",
+            "pinned_issue",
+            "fix_it_guide"
+          ],
+          "properties": {
+            "kernel_changelog": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "url",
+                "sha256",
+                "published_at"
+              ],
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri",
+                  "pattern": "^https://[^\\s]+$"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "published_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+                }
+              }
+            },
+            "marketplace_changelog": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "url",
+                "sha256",
+                "published_at"
+              ],
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri",
+                  "pattern": "^https://[^\\s]+$"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "published_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+                }
+              }
+            },
+            "pinned_issue": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "url",
+                "sha256",
+                "published_at",
+                "pinned_at"
+              ],
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri",
+                  "pattern": "^https://[^\\s]+$"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "published_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+                },
+                "pinned_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+                }
+              }
+            },
+            "fix_it_guide": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "url",
+                "sha256",
+                "published_at"
+              ],
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri",
+                  "pattern": "^https://[^\\s]+$"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "published_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+                }
+              }
+            }
+          }
+        },
+        "affected_authors": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^\\S+$",
+            "minLength": 1
+          }
+        },
+        "notifications": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "author_id",
+              "receipt_url",
+              "sent_at"
+            ],
+            "properties": {
+              "author_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "receipt_url": {
+                "type": "string",
+                "format": "uri",
+                "pattern": "^https://[^\\s]+$"
+              },
+              "sent_at": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+              }
+            }
+          }
+        },
+        "vp_devrel_review": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "manifest_sha256",
+            "decision_record_url",
+            "signed_at"
+          ],
+          "properties": {
+            "manifest_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "decision_record_url": {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https://[^\\s]+$"
+            },
+            "signed_at": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+            }
+          }
+        }
+      },
+      "description": "DR-049 D-SAK-6 reviewed publication and delivery evidence. The digest covers this object excluding vp_devrel_review using sorted compact ASCII JSON. These are operator attestations, not cryptographic authentication or live URL verification. Missing evidence always refuses a flip."
     }
   }
 }

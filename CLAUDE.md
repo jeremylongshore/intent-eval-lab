@@ -16,6 +16,8 @@ A research umbrella for vendor-neutral evaluation methodology around AI plugins,
 
 The active master blueprint is [`112-PP-PLAN-eval-platform-evolution-smevals-parity-and-superiority-2026-08-01.md`](./000-docs/112-PP-PLAN-eval-platform-evolution-smevals-parity-and-superiority-2026-08-01.md), plan `IEP-EVAL-EVOLUTION-001`, master bead `bd_000-projects-htjt`. It is the coordination authority for the six sibling repositories: each implementation uses its own feature branch, traceable commit footer, draft PR, and repo-local quality gates. Do not collapse this work into a monorepo or bypass the existing canonical kernel and Evidence Bundle boundaries.
 
+The SAK community-notice evidence gate is documented in [doc 121](000-docs/121-AT-SPEC-sak-community-notice-gate-2026-11-10.md). Its implementation does not authorize blocking activation.
+
 ## Five-repo convergence (Phase A complete 2026-05-13; intent-rollout-gate added 2026-05-12)
 
 This repo is the **methodology + specs umbrella** in the five-repo convergence vision: the canonical contracts kernel (`intent-eval-core`) + `intent-eval-lab` + `audit-harness` + `j-rig-skill-binary-eval` + `intent-rollout-gate`. The architectural insight: the repos compose via a shared schema (the **Evidence Bundle**), not via package consolidation. Convergence happens at the schema layer. (`intent-eval-dashboard` is the 6th platform repo — the reports hub at `labs.intentsolutions.io` — separate from the 5-repo convergence taxonomy.) See the umbrella `~/000-projects/intent-eval-platform/CLAUDE.md` § "5-repo target" for the full taxonomy.
