@@ -17,6 +17,7 @@ Normative authority (all in 000-docs/):
                                  overrides.
   - plan 033 v7 § 14.4.rollback — rollback protocol + ROLLED-BACK semantics
   - plan 048 v8 Delta 4 / § 14.31 — authoring/v1 lifecycle-states
+  - DR-049 D-SAK-6 — complete public and direct notice before blocking
 
 The machine (plan 033 § 14.4.shadow), formalized:
 
@@ -41,8 +42,8 @@ Design choices made where the plan is under-specified (documented in the PR):
     in the prompt's 5-state subset but IS in § 14.4.shadow, so it is modeled.
     Its only exit is back to SHADOW-MODE (audit cleared) — it can never flip
     directly to BLOCKING.
-  - The only HARD-gated transition is READY-TO-FLIP -> BLOCKING. Its three hard
-    preconditions are (c) open_p0_count == 0 and (d) the full CTO+CISO+VP-DevRel
+  - The only HARD-gated transition is READY-TO-FLIP -> BLOCKING. Its modeled hard
+    preconditions include community notice (DR-049 D-SAK-6), (c) open_p0_count == 0 and (d) the full CTO+CISO+VP-DevRel
     triple sign-off; precondition (a) coverage is checked but is
     calendar-dispositionable (a flip with coverage < 99.5% is allowed only when
     the caller passes allow_calendar_ceiling=True, which quarantines the long
@@ -59,21 +60,134 @@ The module is import-safe and offline. The CLI exposes:
     --validate <file>      jsonschema-validate a SAK-STATE.json against the schema
     --show                 print the legal-transition table
 
-No network, no writes unless --emit is used with an explicit output path.
+No network or CLI writes. Library emit() returns a new state; callers own persistence.
+This notice gate does not authenticate receipts or certify the other charter gates.
 """
 
 from __future__ import annotations
 
 import argparse
 import copy
+import hashlib
 import json
 import os
 import sys
 from dataclasses import dataclass, field
+from datetime import UTC, datetime, timedelta
+from urllib.parse import urlsplit
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_STATE = os.path.join(REPO_ROOT, "SAK-STATE.json")
 SCHEMA_PATH = os.path.join(REPO_ROOT, "specs", "state-machines", "schema", "sak-state.schema.json")
+
+# The schema is loaded once; transition evaluation remains deterministic and offline.
+with open(SCHEMA_PATH, encoding="utf-8") as _schema_file:
+    _NOTICE_SCHEMA = json.load(_schema_file)["$defs"]["communityNotice"]
+NOTICE_WINDOW = timedelta(days=14)
+NOTICE_AUTHORITY = (
+    "https://github.com/jeremylongshore/intent-eval-lab/blob/main/000-docs/"
+    "049-AT-DECR-isedc-class-1-charter-ratification-2026-06-10.md#L136"
+)
+
+
+def notice_manifest_sha256(notice: dict) -> str:
+    """Bind review to every evidence field except the review itself; no signing claim."""
+    manifest = {key: value for key, value in notice.items() if key != "vp_devrel_review"}
+    encoded = json.dumps(manifest, sort_keys=True, separators=(",", ":"), ensure_ascii=True, allow_nan=False)
+    return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def _notice_time(value: str, *, allow_date: bool = False) -> datetime:
+    # Explicit date-only transition timestamps mean midnight UTC, never local time.
+    if allow_date and len(value) == 10:
+        return datetime.fromisoformat(value).replace(tzinfo=UTC)
+    result = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    if result.tzinfo is None:
+        raise ValueError("timezone required")
+    return result.astimezone(UTC)
+
+
+def community_notice_reasons(preconditions: dict, at: str | None) -> list[str]:
+    """DR-049 D-SAK-6 hard gate. Receipts are reviewed inputs, not verified deliveries."""
+
+    def refused(detail: str) -> str:
+        return f"community_notice: {detail}; authority: {NOTICE_AUTHORITY}"
+
+    notice = preconditions.get("community_notice")
+    try:
+        import jsonschema
+    except ImportError:
+        return [refused("jsonschema is required to validate notice evidence")]
+    validator = jsonschema.Draft7Validator(_NOTICE_SCHEMA, format_checker=jsonschema.FormatChecker())
+    errors = sorted(validator.iter_errors(notice), key=lambda error: str(list(error.path)))
+    if errors:
+        return [refused(f"{'/'.join(map(str, error.path)) or '<root>'}: {error.message}") for error in errors]
+    try:
+        now = _notice_time(at, allow_date=True) if isinstance(at, str) else None
+    except (ValueError, OverflowError):
+        now = None
+    if now is None:
+        return [refused("an explicit valid evaluation timestamp with timezone is required")]
+
+    reasons: list[str] = []
+    urls = [item["url"] for item in notice["artifacts"].values()]
+    urls += [notice["deviation_report"]["url"], notice["vp_devrel_review"]["decision_record_url"]]
+    urls += [item["receipt_url"] for item in notice["notifications"]]
+    for url in urls:
+        try:
+            parsed = urlsplit(url)
+            valid = parsed.scheme == "https" and parsed.hostname and parsed.username is None and parsed.password is None
+        except ValueError:
+            valid = False
+        if not valid:
+            reasons.append(refused("evidence URLs require HTTPS, a hostname and no embedded credentials"))
+    if notice["change_sha256"] != preconditions.get("blocking_change_sha256"):
+        reasons.append(refused("change_sha256 does not match the proposed blocking change"))
+    if notice["deviation_report"]["sha256"] != preconditions.get("shadow_deviation_report_sha256"):
+        reasons.append(refused("deviation_report/sha256 does not match the current affected-author inventory"))
+    review = notice["vp_devrel_review"]
+    if review["manifest_sha256"] != notice_manifest_sha256(notice):
+        reasons.append(refused("vp_devrel_review/manifest_sha256 does not bind this notice evidence"))
+
+    timestamps = [item["published_at"] for item in notice["artifacts"].values()]
+    timestamps += [notice["artifacts"]["pinned_issue"]["pinned_at"], notice["not_before"], review["signed_at"]]
+    timestamps += [item["sent_at"] for item in notice["notifications"]]
+    try:
+        for timestamp in timestamps:
+            _notice_time(timestamp)
+    except (ValueError, OverflowError):
+        return [*reasons, refused("evidence contains an unsupported or invalid timestamp")]
+
+    # Use the LAST publication/pinning, so an older changelog cannot start the clock early.
+    published = [_notice_time(artifact["published_at"]) for artifact in notice["artifacts"].values()]
+    issue = notice["artifacts"]["pinned_issue"]
+    pinned = _notice_time(issue["pinned_at"])
+    if pinned < _notice_time(issue["published_at"]):
+        reasons.append(refused("artifacts/pinned_issue/pinned_at precedes publication"))
+    last_publication = max(*published, pinned)
+    not_before = _notice_time(notice["not_before"])
+    try:
+        window_end = last_publication + NOTICE_WINDOW
+    except OverflowError:
+        return [*reasons, refused("publication timestamp cannot support a 14-day window")]
+    if not_before < window_end:
+        reasons.append(refused("not_before must provide at least 14 full days after every publication and pin"))
+    if now < max(not_before, window_end):
+        reasons.append(refused("the public notice window has not elapsed"))
+    signed = _notice_time(review["signed_at"])
+    if not last_publication <= signed <= now:
+        reasons.append(refused("vp_devrel_review/signed_at must follow publication and not be in the future"))
+
+    affected = set(notice["affected_authors"])
+    delivered = [item["author_id"] for item in notice["notifications"]]
+    if len(delivered) != len(set(delivered)) or set(delivered) != affected:
+        reasons.append(refused("notifications must cover each affected author exactly once with no extra authors"))
+    for item in notice["notifications"]:
+        sent = _notice_time(item["sent_at"])
+        if not last_publication <= sent <= min(now, signed):
+            reasons.append(refused("notifications/sent_at must follow publication and precede the VP DevRel review"))
+    return reasons
+
 
 # ── The lifecycle ────────────────────────────────────────────────────────────
 
@@ -182,12 +296,14 @@ def can_flip(
     state_machine: dict,
     *,
     allow_calendar_ceiling: bool = False,
+    at: str | None = None,
 ) -> TransitionDecision:
     """Evaluate the advisory->blocking flip (READY-TO-FLIP -> BLOCKING).
 
     Hard gates (plan 048 Delta 3 — the calendar ceiling NEVER overrides these):
       (c) open_p0_count == 0
       (d) full CTO + CISO + VP-DevRel triple sign-off
+      DR-049 complete notice evidence and 14 elapsed days at explicit `at`
     Calendar-dispositionable gate:
       (a) coverage >= 99.5%  — UNLESS allow_calendar_ceiling=True, in which case
           a flip below the floor is permitted (the long tail is quarantined).
@@ -216,6 +332,9 @@ def can_flip(
         reasons.append(
             "precondition (d) unmet: governance triple sign-off incomplete (missing: " + ", ".join(missing) + ")"
         )
+
+    # Community publication and author notice are HARD gates; no calendar override.
+    reasons.extend(community_notice_reasons(pre, at))
 
     # (a) coverage — calendar-dispositionable.
     coverage = pre.get("coverage_corpus_pass_pct")
@@ -267,6 +386,7 @@ def evaluate(
     event: str,
     *,
     allow_calendar_ceiling: bool = False,
+    at: str | None = None,
 ) -> TransitionDecision:
     """Evaluate whether `event` is a legal, precondition-satisfied transition
     out of state_machine['current_state']. Pure — never mutates input."""
@@ -299,7 +419,7 @@ def evaluate(
 
     # Precondition gates layered on top of the legal-edge check.
     if event == FLIP_EVENT:
-        decision = can_flip(state_machine, allow_calendar_ceiling=allow_calendar_ceiling)
+        decision = can_flip(state_machine, allow_calendar_ceiling=allow_calendar_ceiling, at=at)
         # can_flip already encodes from_state == READY-TO-FLIP + the gates.
         return decision
 
@@ -342,7 +462,7 @@ def emit(
         )
 
     sm = state["state_machine"]
-    decision = evaluate(sm, event, allow_calendar_ceiling=allow_calendar_ceiling)
+    decision = evaluate(sm, event, allow_calendar_ceiling=allow_calendar_ceiling, at=at)
     if decision.rejected:
         raise TransitionError(decision)
 
@@ -356,6 +476,8 @@ def emit(
         "reason": reason,
         "decision_record_ref": decision_record_ref,
     }
+    if event == FLIP_EVENT:
+        record["community_notice_manifest_sha256"] = notice_manifest_sha256(sm["preconditions"]["community_notice"])
     new_sm["current_state"] = decision.to_state
     new_sm["entered_at"] = at
     history = new_sm.get("transition_history")
@@ -425,7 +547,7 @@ def cmd_self_test() -> int:  # noqa: C901 - linear self-test, readability over d
             print(f"self-test FAIL: {label}")
             failures += 1
 
-    # ── Fixtures (no I/O; pure dicts) ─────────────────────────────────────────
+    # ── Fixtures (synthetic local evidence; no network) ─────────────────────────────────────────
     def sm(state: str, **pre_overrides: object) -> dict:
         """Build a minimal state_machine dict at `state` with full sign-off +
         clean preconditions, then apply overrides into preconditions."""
@@ -436,6 +558,7 @@ def cmd_self_test() -> int:  # noqa: C901 - linear self-test, readability over d
             "open_p0_count": 0,
             "governance_signoff": {"cto": True, "ciso": True, "vp_devrel": True, "decision_record_ref": "044-AT-DECR"},
         }
+        pre.update(_load_json(os.path.join(REPO_ROOT, "scripts/tests/fixtures/sak-community-notice-valid.json")))
         pre.update(pre_overrides)
         return {
             "machine": "SAK advisory -> blocking flip (Phase 4)",
@@ -475,8 +598,8 @@ def cmd_self_test() -> int:  # noqa: C901 - linear self-test, readability over d
     d = evaluate(sm("SHADOW-MODE"), "teleport")
     check("unknown event rejected from SHADOW-MODE", d.rejected)
 
-    # 6. Flip with all preconditions met passes.
-    d = evaluate(sm("READY-TO-FLIP"), FLIP_EVENT)
+    # 6. Flip with the modeled preconditions met passes.
+    d = evaluate(sm("READY-TO-FLIP"), FLIP_EVENT, at="2026-07-01")
     check("flip passes with coverage+zero-P0+full-signoff", d.allowed and d.to_state == "BLOCKING")
 
     # 7. Flip with an OPEN P0 rejected (HARD gate (c)).
@@ -497,7 +620,9 @@ def cmd_self_test() -> int:  # noqa: C901 - linear self-test, readability over d
 
     # 10. Sub-floor coverage rejected without ceiling; permitted with ceiling.
     d_no = evaluate(sm("READY-TO-FLIP", coverage_corpus_pass_pct=98.0), FLIP_EVENT)
-    d_yes = evaluate(sm("READY-TO-FLIP", coverage_corpus_pass_pct=98.0), FLIP_EVENT, allow_calendar_ceiling=True)
+    d_yes = evaluate(
+        sm("READY-TO-FLIP", coverage_corpus_pass_pct=98.0), FLIP_EVENT, allow_calendar_ceiling=True, at="2026-07-01"
+    )
     check("coverage < 99.5% rejected without calendar ceiling", d_no.rejected and any("(a)" in r for r in d_no.reasons))
     check("coverage < 99.5% permitted WITH calendar ceiling (quarantine long tail)", d_yes.allowed)
 

@@ -119,3 +119,14 @@ The `-s` flag appends a `Signed-off-by: Your Name <your@email>` line. By signing
 ## Code of Conduct
 
 This project follows the Contributor Covenant. See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). By participating you agree to uphold it.
+
+## Marketplace acceptance and exception requests
+
+The IS marketplace acceptance gate is stricter than Anthropic's minimum requirements by design.
+Passing or failing this gate describes IS marketplace acceptance, not universal validity for every agent host.
+Before blocking activation, diagnostics must identify the failed marketplace field, link its governing 6767-h section, and link this exception guidance.
+
+To request an exception, open an [intent-eval-core issue](https://github.com/jeremylongshore/intent-eval-core/issues/new) with the schema/profile version, failed field pointer, diagnostic, governing 6767-h section, a minimal sanitized example and the rationale for an exception.
+Do not include secrets or private author data.
+A request does not grant a waiver; maintainers must record the authorized disposition and its scope before applying it.
+The [community-notice evidence contract](000-docs/121-AT-SPEC-sak-community-notice-gate-2026-11-10.md) describes the separate pre-announcement gate.

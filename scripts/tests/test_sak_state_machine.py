@@ -42,6 +42,7 @@ def _state_machine(ssm: ModuleType, state: str, **pre_overrides: object) -> dict
             "decision_record_ref": "044-AT-DECR",
         },
     }
+    pre.update(json.loads((REPO_ROOT / "scripts/tests/fixtures/sak-community-notice-valid.json").read_text()))
     pre.update(pre_overrides)
     return {
         "machine": "SAK advisory -> blocking flip (Phase 4)",
@@ -103,7 +104,7 @@ def test_dispositions_resolved_passes_with_zero_p0(ssm: ModuleType) -> None:
 
 
 def test_flip_passes_with_all_preconditions_met(ssm: ModuleType) -> None:
-    decision = ssm.evaluate(_state_machine(ssm, "READY-TO-FLIP"), ssm.FLIP_EVENT)
+    decision = ssm.evaluate(_state_machine(ssm, "READY-TO-FLIP"), ssm.FLIP_EVENT, at="2026-07-01")
     assert decision.allowed is True
     assert decision.to_state == "BLOCKING"
 
@@ -180,6 +181,7 @@ def test_subfloor_coverage_permitted_with_calendar_ceiling(ssm: ModuleType) -> N
         _state_machine(ssm, "READY-TO-FLIP", coverage_corpus_pass_pct=98.0),
         ssm.FLIP_EVENT,
         allow_calendar_ceiling=True,
+        at="2026-07-01",
     )
     assert decision.allowed is True
     assert decision.to_state == "BLOCKING"
@@ -319,3 +321,124 @@ def test_invalid_state_machine_missing_required_field_rejected(ssm: ModuleType, 
     bad_path.write_text(json.dumps(bad), encoding="utf-8")
     errors = ssm.validate_state_file(str(bad_path), ssm.SCHEMA_PATH)
     assert errors != []
+
+
+def test_flip_without_community_notice_is_refused_even_with_calendar_ceiling(ssm: ModuleType) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP", community_notice=None)
+    decision = ssm.evaluate(sm, ssm.FLIP_EVENT, allow_calendar_ceiling=True, at="2026-07-01")
+    assert decision.rejected
+    assert any("community_notice" in reason for reason in decision.reasons)
+
+
+def _review_notice(ssm: ModuleType, sm: dict) -> None:
+    notice = sm["preconditions"]["community_notice"]
+    notice["vp_devrel_review"]["manifest_sha256"] = ssm.notice_manifest_sha256(notice)
+
+
+@pytest.mark.parametrize("ceiling", [False, True])
+@pytest.mark.parametrize(
+    "at,allowed",
+    [
+        (None, False),
+        ("invalid", False),
+        ("2026-06-15T00:00:00", False),
+        ("2026-06-14T23:59:59Z", False),
+        ("2026-06-15T00:00:00Z", True),
+        ("2026-06-14T19:00:00-05:00", True),
+    ],
+)
+def test_notice_window_is_fourteen_full_days(ssm: ModuleType, at: str | None, allowed: bool, ceiling: bool) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP")
+    decision = ssm.evaluate(sm, ssm.FLIP_EVENT, at=at, allow_calendar_ceiling=ceiling)
+    assert decision.allowed is allowed
+
+
+@pytest.mark.parametrize("surface", ["kernel_changelog", "marketplace_changelog", "pinned_issue", "fix_it_guide"])
+def test_every_publication_surface_is_required(ssm: ModuleType, surface: str) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP")
+    del sm["preconditions"]["community_notice"]["artifacts"][surface]
+    _review_notice(ssm, sm)
+    assert ssm.evaluate(sm, ssm.FLIP_EVENT, at="2026-07-01", allow_calendar_ceiling=True).rejected
+
+
+@pytest.mark.parametrize(
+    "path,value",
+    [
+        (("not_before",), "2026-06-14T23:59:59Z"),
+        (("not_before",), "2026-08-01T00:00:00Z"),
+        (("artifacts", "fix_it_guide", "published_at"), "2026-06-02T00:00:00Z"),
+        (("artifacts", "pinned_issue", "pinned_at"), "2026-05-31T00:00:00Z"),
+        (("artifacts", "pinned_issue", "pinned_at"), "2026-06-30T00:00:00Z"),
+        (("artifacts", "kernel_changelog", "published_at"), "9999-12-31T00:00:00Z"),
+        (("vp_devrel_review", "signed_at"), "2026-05-31T23:59:59Z"),
+        (("vp_devrel_review", "signed_at"), "2026-07-02T00:00:00Z"),
+        (("notifications", 0, "sent_at"), "2026-05-31T23:59:59Z"),
+        (("notifications", 0, "sent_at"), "2026-07-02T00:00:00Z"),
+        (("notifications", 0, "sent_at"), "2026-06-02T00:00:00Z"),
+        (("artifacts", "kernel_changelog", "url"), "file:///not-public"),
+        (("artifacts", "kernel_changelog", "url"), "https:///missing-host"),
+        (("artifacts", "kernel_changelog", "url"), "https://user:fixture@example.org/receipt"),
+        (("artifacts", "kernel_changelog", "published_at"), "2026-06-01"),
+        (("artifacts", "kernel_changelog", "published_at"), "2026-06-01T00:00:00"),
+        (("change_sha256",), "d" * 64),
+        (("deviation_report", "sha256"), "d" * 64),
+        (("notifications",), []),
+        (("affected_authors",), ["fixture-author", "missed-author"]),
+    ],
+)
+def test_notice_evidence_cannot_be_overridden_by_calendar_ceiling(ssm: ModuleType, path: tuple, value: object) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP")
+    node = sm["preconditions"]["community_notice"]
+    for key in path[:-1]:
+        node = node[key]
+    node[path[-1]] = value
+    _review_notice(ssm, sm)
+    decision = ssm.evaluate(sm, ssm.FLIP_EVENT, at="2026-07-01", allow_calendar_ceiling=True)
+    assert decision.rejected
+    assert any("community_notice" in reason and "049-AT-DECR" in reason for reason in decision.reasons)
+
+
+def test_notice_review_does_not_survive_a_changed_artifact(ssm: ModuleType) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP")
+    sm["preconditions"]["community_notice"]["artifacts"]["fix_it_guide"]["sha256"] = "e" * 64
+    decision = ssm.evaluate(sm, ssm.FLIP_EVENT, at="2026-07-01")
+    assert decision.rejected
+    assert any("manifest_sha256" in reason for reason in decision.reasons)
+
+
+def test_notice_delivery_inventory_is_exact_and_allows_reviewed_empty_scope(ssm: ModuleType) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP")
+    notice = sm["preconditions"]["community_notice"]
+    notice["notifications"].append(copy.deepcopy(notice["notifications"][0]))
+    _review_notice(ssm, sm)
+    assert ssm.evaluate(sm, ssm.FLIP_EVENT, at="2026-07-01").rejected
+    notice["notifications"] = []
+    notice["affected_authors"] = []
+    _review_notice(ssm, sm)
+    assert ssm.evaluate(sm, ssm.FLIP_EVENT, at="2026-07-01").allowed
+
+
+def test_emit_uses_transition_time_and_preserves_state_when_notice_is_early(ssm: ModuleType) -> None:
+    state = {"state_machine": _state_machine(ssm, "READY-TO-FLIP")}
+    before = copy.deepcopy(state)
+    with pytest.raises(ssm.TransitionError, match="public notice window"):
+        ssm.emit(state, ssm.FLIP_EVENT, at="2026-06-14T23:59:59Z")
+    assert state == before
+    emitted = ssm.emit(state, ssm.FLIP_EVENT, at="2026-06-15T00:00:00Z")
+    assert emitted["state_machine"]["current_state"] == "BLOCKING"
+    assert emitted["state_machine"]["transition_history"][-1][
+        "community_notice_manifest_sha256"
+    ] == ssm.notice_manifest_sha256(state["state_machine"]["preconditions"]["community_notice"])
+    assert state == before
+
+
+def test_emitted_notice_receipt_is_schema_valid(ssm: ModuleType, tmp_path: Path) -> None:
+    state = json.loads((REPO_ROOT / "SAK-STATE.json").read_text())
+    state["state_machine"] = _state_machine(ssm, "READY-TO-FLIP")
+    emitted = ssm.emit(state, ssm.FLIP_EVENT, at="2026-07-01T00:00:00Z")
+    path = tmp_path / "state.json"
+    path.write_text(json.dumps(emitted))
+    assert ssm.validate_state_file(str(path)) == []
+    emitted["state_machine"]["transition_history"][-1]["community_notice_manifest_sha256"] = "invalid"
+    path.write_text(json.dumps(emitted))
+    assert ssm.validate_state_file(str(path))

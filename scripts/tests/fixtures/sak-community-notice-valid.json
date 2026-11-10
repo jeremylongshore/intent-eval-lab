@@ -1,0 +1,50 @@
+{
+  "blocking_change_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "shadow_deviation_report_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "community_notice": {
+    "change_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "deviation_report": {
+      "url": "https://example.org/deviations",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "not_before": "2026-06-15T00:00:00Z",
+    "artifacts": {
+      "kernel_changelog": {
+        "url": "https://example.org/kernel_changelog",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "published_at": "2026-06-01T00:00:00Z"
+      },
+      "marketplace_changelog": {
+        "url": "https://example.org/marketplace_changelog",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "published_at": "2026-06-01T00:00:00Z"
+      },
+      "pinned_issue": {
+        "url": "https://example.org/pinned_issue",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "published_at": "2026-06-01T00:00:00Z",
+        "pinned_at": "2026-06-01T00:00:00Z"
+      },
+      "fix_it_guide": {
+        "url": "https://example.org/fix_it_guide",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "published_at": "2026-06-01T00:00:00Z"
+      }
+    },
+    "affected_authors": [
+      "fixture-author"
+    ],
+    "notifications": [
+      {
+        "author_id": "fixture-author",
+        "receipt_url": "https://example.org/delivery",
+        "sent_at": "2026-06-01T01:00:00Z"
+      }
+    ],
+    "vp_devrel_review": {
+      "manifest_sha256": "b9cd15e3cd7f30ebdae3a9f908ee67bf830916ebfc79423844bac166a5963cf1",
+      "decision_record_url": "https://example.org/review",
+      "signed_at": "2026-06-01T01:00:00Z"
+    }
+  }
+}
