@@ -53,8 +53,8 @@ An authorized operator must verify artifact hashes, continued availability, repo
 Replacing an artifact or expanding the affected-author inventory requires reviewed replacement evidence; a stored digest alone does not detect changes at a remote URL.
 
 This implementation does not certify every ratified flip prerequisite.
-The remaining advisory-soak, deterministic-agreement, reviewed coverage-disposition and tested append-only rollback enforcement is tracked in `bd_000-projects-3kye.16`.
-Governance booleans remain the existing hand-maintained stub.
+The advisory-soak, deterministic-agreement, reviewed coverage-disposition and tested append-only rollback enforcement is specified in [doc 122](122-AT-SPEC-sak-flip-prerequisite-evidence-2026-11-10.md), tracked in `bd_000-projects-3kye.16`.
+Governance inputs remain operator-maintained; the full flip gate additionally requires three evidence-bound approval records.
 Do not use an allowed library result as authorization to activate blocking.
 
 The full `3kye.9` acceptance also requires author-facing diagnostics linking the failed marketplace field, its 6767-h section and the [contributor exception note](../CONTRIBUTING.md#marketplace-acceptance-and-exception-requests), plus actual cross-repository publication, direct delivery, co-sign and elapsed-window evidence.
