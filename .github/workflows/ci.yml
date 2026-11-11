@@ -10,6 +10,12 @@ on:
 permissions:
   contents: read
 
+# Only superseded PR validation is disposable. Keep every main/scheduled run
+# independent so evidence for distinct commits is never canceled or replaced.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   validate-docs:
     name: Validate specs and docs
