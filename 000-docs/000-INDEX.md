@@ -175,3 +175,8 @@ Examples:
 - `004-AA-AACR-first-experimental-run-2026-05-15.md`
 
 Date suffix is recommended for documents that capture a specific moment in time. Methodology / reference docs can omit the date.
+
+## Trace intelligence pilot proposals
+
+- [J1 pilot selection](./trace-intel-J1-pilot-selection.md) — unsigned proposal for one evaluator and one repository; owner decision and execution authorization pending.
+- [J2 pilot criteria](./trace-intel-J2-pilot-criteria.md) — proposed measurable criteria mapped to F2–F7, separate fixture qualification and real seven-day observation, abort and rollback.
