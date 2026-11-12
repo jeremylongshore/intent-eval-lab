@@ -175,3 +175,7 @@ Examples:
 - `004-AA-AACR-first-experimental-run-2026-05-15.md`
 
 Date suffix is recommended for documents that capture a specific moment in time. Methodology / reference docs can omit the date.
+
+## Trace intelligence discovery audits
+
+- [A2 organization audit](./trace-intel-A2-intent-solutions-io-audit.md) — 43-repository pinned source inventory; public identities only, private details retained in a restricted owner annex. Draft; owner sign-off pending and A3 held.
