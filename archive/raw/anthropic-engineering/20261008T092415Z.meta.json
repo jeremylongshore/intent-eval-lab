@@ -1,0 +1,12 @@
+{
+  "record": "20261008T092415Z",
+  "surface_id": "anthropic-engineering",
+  "url": "https://www.anthropic.com/engineering",
+  "fetched_at": "2026-10-08T09:24:15Z",
+  "status": "FETCH_OK",
+  "http_code": 200,
+  "sha256": "171ade0d0e7ce65b7f4b12a8fb4ee0ac958570e16020fcd2cb36d2985de689f3",
+  "bytes": 138998,
+  "body_stored": true,
+  "body_ref": "20261008T092415Z"
+}
