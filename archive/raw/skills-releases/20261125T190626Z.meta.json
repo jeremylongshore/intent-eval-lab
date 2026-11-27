@@ -1,0 +1,12 @@
+{
+  "record": "20261125T190626Z",
+  "surface_id": "skills-releases",
+  "url": "https://github.com/anthropics/skills/releases.atom + commits/main.atom",
+  "fetched_at": "2026-11-25T19:06:26Z",
+  "status": "FETCH_OK",
+  "http_code": 200,
+  "sha256": "2d450590184e8863e261cffabd6d41d06c7d72474214c173ff8d77fb3bc8f320",
+  "bytes": 34435,
+  "body_stored": true,
+  "body_ref": "20261125T190626Z"
+}

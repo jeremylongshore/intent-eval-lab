@@ -1,0 +1,12 @@
+{
+  "record": "20261114T091135Z",
+  "surface_id": "claude-code-changelog",
+  "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",
+  "fetched_at": "2026-11-14T09:11:35Z",
+  "status": "FETCH_OK",
+  "http_code": 200,
+  "sha256": "162c169ef6210093e02b77453a2e44cae2561c40c5350c02688100a08c08cd83",
+  "bytes": 1255016,
+  "body_stored": true,
+  "body_ref": "20261114T091135Z"
+}

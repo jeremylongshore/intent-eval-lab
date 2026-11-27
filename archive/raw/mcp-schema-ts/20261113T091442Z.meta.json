@@ -1,0 +1,12 @@
+{
+  "record": "20261113T091442Z",
+  "surface_id": "mcp-schema-ts",
+  "url": "https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/schema/draft/schema.ts",
+  "fetched_at": "2026-11-13T09:14:42Z",
+  "status": "FETCH_OK",
+  "http_code": 200,
+  "sha256": "d1c5f24bc13789dd9cfec824397a9b6f2c8bee342626854ee66f443370d6b291",
+  "bytes": 99112,
+  "body_stored": false,
+  "body_ref": "20261110T165723Z"
+}

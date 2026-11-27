@@ -1,0 +1,12 @@
+{
+  "record": "20261118T091338Z",
+  "surface_id": "plugins-reference",
+  "url": "https://code.claude.com/docs/en/plugins/manifest-reference.md",
+  "fetched_at": "2026-11-18T09:13:38Z",
+  "status": "FETCH_OK",
+  "http_code": 200,
+  "sha256": "2cd1435b248ca3e037b0b62b2d4e6a720791829959483d6940c7c4e3596314ce",
+  "bytes": 43262,
+  "body_stored": true,
+  "body_ref": "20261118T091338Z"
+}

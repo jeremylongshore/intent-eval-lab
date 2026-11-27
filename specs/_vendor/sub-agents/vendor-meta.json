@@ -1,7 +1,7 @@
 {
   "surface_id": "sub-agents",
-  "sha256": "f7a49266d42328f2a24ab778e2c28689d527b57da737e52b8928f6e275ca01e3",
-  "bytes": 107123,
-  "updated_at": "2026-09-30T09:22:40Z",
-  "source_raw_record": "archive/raw/sub-agents/20260930T092240Z.meta.json"
+  "sha256": "9e223cb6656a18c9244ce019fdd1635871f1dd96ba0425dcff64a965978f1e5a",
+  "bytes": 114798,
+  "updated_at": "2026-11-25T19:06:26Z",
+  "source_raw_record": "archive/raw/sub-agents/20261125T190626Z.meta.json"
 }

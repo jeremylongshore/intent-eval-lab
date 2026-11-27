@@ -1,7 +1,7 @@
 {
   "surface_id": "anthropic-engineering",
-  "sha256": "5369ffb2a2e807d79a9a6b21da66ef150eb3dd282fe9c34ad50648411e3e5930",
-  "bytes": 176546,
-  "updated_at": "2026-09-29T09:23:10Z",
-  "source_raw_record": "archive/raw/anthropic-engineering/20260929T092310Z.meta.json"
+  "sha256": "500cf31e94a94e361cd56cc4546ecb28e1a2aa4de2f04e933531809d6b8db8e5",
+  "bytes": 332553,
+  "updated_at": "2026-11-26T18:56:49Z",
+  "source_raw_record": "archive/raw/anthropic-engineering/20261126T185649Z.meta.json"
 }
