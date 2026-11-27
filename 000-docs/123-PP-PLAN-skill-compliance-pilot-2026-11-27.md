@@ -1,6 +1,16 @@
+---
+title: Skill compliance pilot — evidence before enforcement
+date: 2026-11-27
+status: INFORMATIVE
+state_label: INFORMATIVE
+bead: bd_000-projects-4jc7x
+---
+
+> **State label: INFORMATIVE.** Bounded implementation plan and evaluation method; no new binding platform policy.
+
 # Skill compliance pilot: evidence before enforcement
 
-Status: implementation pilot. Task authority: `bd_000-projects-4jc7x`, mirrored
+Implementation scope: pilot. Task authority: `bd_000-projects-4jc7x`, mirrored
 in [lab issue 421](https://github.com/jeremylongshore/intent-eval-lab/issues/421).
 This document records the bounded implementation plan and evaluation method;
 Beads owns delivery state and verification receipts.

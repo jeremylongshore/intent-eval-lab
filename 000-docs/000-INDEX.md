@@ -1,6 +1,6 @@
 # 000-INDEX — Intent Eval Lab Docs
 
-Skill compliance pilot: [123 — evidence before enforcement](123-PP-PLAN-skill-compliance-pilot-2026-11-27.md).
+Skill compliance pilot (INFORMATIVE): [123 — evidence before enforcement](123-PP-PLAN-skill-compliance-pilot-2026-11-27.md).
 
 Index of numbered docs in this directory. Add new docs as they land.
 
