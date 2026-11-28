@@ -1,6 +1,9 @@
 name: CI
 
 on:
+  # Re-run the same validation on a selected branch or tag when push CI is absent.
+  # This event adds no jobs, permissions, publication or policy exceptions.
+  workflow_dispatch:
   push:
     branches: [main]
   # No `branches:` filter on purpose: with `branches: [main]` a stacked PR whose
