@@ -1,7 +1,7 @@
 {
   "surface_id": "mcp-schema-ts",
-  "sha256": "8cf7e2b82126f3c7c59a9bb77aafb9ca733306f9585a6ff66567af3d3286b876",
-  "bytes": 99482,
-  "updated_at": "2026-11-25T19:06:26Z",
-  "source_raw_record": "archive/raw/mcp-schema-ts/20261125T190626Z.meta.json"
+  "sha256": "b2d3a00d4094e413a48628560fec60652169a3d2b427e8c629238e13f987723f",
+  "bytes": 98406,
+  "updated_at": "2026-07-29T09:58:01Z",
+  "source_raw_record": "archive/raw/mcp-schema-ts/20260729T095801Z.meta.json"
 }
