@@ -189,3 +189,8 @@ Date suffix is recommended for documents that capture a specific moment in time.
 ## Trace intelligence discovery audits
 
 - [A2 organization audit](./trace-intel-A2-intent-solutions-io-audit.md) — 43-repository pinned source inventory; public identities only, private details retained in a restricted owner annex. Draft; owner sign-off pending and A3 held.
+
+## Trace intelligence pilot proposals
+
+- [J1 pilot selection](./trace-intel-J1-pilot-selection.md) — unsigned proposal for one evaluator and one repository; owner decision and execution authorization pending.
+- [J2 pilot criteria](./trace-intel-J2-pilot-criteria.md) — proposed measurable criteria mapped to F2–F7, separate fixture qualification and real seven-day observation, abort and rollback.
