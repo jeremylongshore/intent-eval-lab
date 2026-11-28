@@ -256,10 +256,12 @@ def _model_facts(section: list[str]) -> dict[str, Any]:
     section = _visible_reference_lines(section)
     bullets = [ln.removeprefix("* **Model alias**: ") for ln in section if ln.startswith("* **Model alias**: ")]
     if len(bullets) != 1:
-        raise ValueError("Expected exactly one Model alias bullet in the Choose-a-model section")
+        print("ERROR: Expected exactly one Model alias bullet in the Choose-a-model section", file=sys.stderr)
+        sys.exit(2)
     values = re.sub(r"^(?:Use|use) one of the available aliases: ", "", bullets[0])
     if not re.fullmatch(r"`[\w-]+`(?:(?:, |, or | or )`[\w-]+`)*", values):
-        raise ValueError("Model alias bullet does not contain a closed list")
+        print("ERROR: Model alias bullet does not contain a closed list", file=sys.stderr)
+        sys.exit(2)
     aliases = _BACKTICK.findall(values)
     return {
         "model_aliases_documented": aliases,
