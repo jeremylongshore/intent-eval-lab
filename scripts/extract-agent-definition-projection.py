@@ -98,7 +98,6 @@ _EXAMPLE_HEADING = "### Write subagent files"
 _MODEL_HEADING = "### Choose a model"
 _REQUIRED_SENTENCE = "Only `name` and `description` are required."
 _EXPECTED_COLUMNS = ["Field", "Required", "Description"]
-_ALIAS_MARKER = "available aliases: "
 _INHERIT_BULLET = "* **inherit**:"
 _FENCE_OPEN_MD = re.compile(r"^```(markdown|yaml)\b")
 _FENCE_CLOSE = re.compile(r"^```\s*$")
@@ -255,14 +254,16 @@ def _example_frontmatter(section: list[str]) -> dict[str, str]:
 
 def _model_facts(section: list[str]) -> dict[str, Any]:
     section = _visible_reference_lines(section)
-    alias_line = next((ln for ln in section if _ALIAS_MARKER in ln), None)
-    if alias_line is None:
-        print(f"ERROR: {_ALIAS_MARKER!r} anchor not found in the Choose-a-model section", file=sys.stderr)
-        sys.exit(2)
-    aliases = _BACKTICK.findall(alias_line[alias_line.find(_ALIAS_MARKER) + len(_ALIAS_MARKER) :])
+    bullets = [ln.removeprefix("* **Model alias**: ") for ln in section if ln.startswith("* **Model alias**: ")]
+    if len(bullets) != 1:
+        raise ValueError("Expected exactly one Model alias bullet in the Choose-a-model section")
+    values = re.sub(r"^(?:Use|use) one of the available aliases: ", "", bullets[0])
+    if not re.fullmatch(r"`[\w-]+`(?:(?:, |, or | or )`[\w-]+`)*", values):
+        raise ValueError("Model alias bullet does not contain a closed list")
+    aliases = _BACKTICK.findall(values)
     return {
         "model_aliases_documented": aliases,
-        "model_inherit_documented": any(ln.startswith(_INHERIT_BULLET) for ln in section),
+        "model_inherit_documented": any(ln.startswith((_INHERIT_BULLET, "* **`inherit`**:")) for ln in section),
     }
 
 
