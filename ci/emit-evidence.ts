@@ -5,11 +5,10 @@
  *
  * ── Why CI-only, in ci/ ──
  *
- * intent-eval-lab is a spec/docs/Python repo with NO package.json and NO node
- * build. This emitter imports `@intentsolutions/core` (kernel validators), so CI
- * installs the kernel with `npm i --no-save @intentsolutions/core@<v>` just for
- * the emit job — see `.github/workflows/release.yml`. `ci/` is not shipped
- * anywhere; nothing about the lab's published surface changes.
+ * intent-eval-lab is a spec/docs/Python repo with no root Node package or build.
+ * This private emitter installs kernel 0.10.0 through ci/package-lock.json
+ * (`npm ci --prefix ci --ignore-scripts`). PR and release CI exercise the same
+ * frozen dependencies. The ci/ package is private and never published.
  *
  * ── Gate selection (honest spec-integrity, no fake evidence) ──
  *
@@ -36,7 +35,9 @@
  *      detection surface without duplicating it.
  *
  * Output (gitignored build/), contract, and canonicalisation are identical to the
- * iec/iah emitters; see those for the field-by-field rationale. Signing + Rekor +
+ * iec/iah emitters. Each evidence-payload-<i>.json holds the kernel-valid
+ * statement array addressed by the signed storage_key; gateResults is a
+ * checked predicate projection. Signing + Rekor +
  * assembly happen in CI; this script does NO crypto.
  *
  * Usage:
@@ -52,6 +53,11 @@ import {
   GATE_RESULT_V1_URI,
 } from '@intentsolutions/core/validators/v1/gate-result-v1';
 import { EvidenceBundleSchema } from '@intentsolutions/core/validators/v1/evidence-bundle';
+import {
+  EvidenceBundlePayloadSchema,
+  IN_TOTO_STATEMENT_V1_TYPE,
+  type EvidenceBundlePayload,
+} from '@intentsolutions/core/validators/v1/evidence-statement';
 
 const GITHUB_REPO = 'jeremylongshore/intent-eval-lab';
 const REPO_KEY = 'iel';
@@ -115,6 +121,7 @@ export interface EmitRow {
   readonly bundle: unknown;
   readonly canonicalBundle: string;
   readonly gateResult: unknown;
+  readonly evidencePayload: EvidenceBundlePayload;
   readonly sourceSha: string;
 }
 
@@ -144,23 +151,44 @@ export function buildGateResult(o: GateOutcome, ctx: EmitContext): Record<string
   return body;
 }
 
+/** Wrap one gate predicate in the kernel's invariant-checked statement array. */
+export function buildEvidencePayload(gateResult: Record<string, unknown>): EvidenceBundlePayload {
+  const body = GateResultV1Schema.parse(gateResult);
+  return EvidenceBundlePayloadSchema.parse([
+    {
+      _type: IN_TOTO_STATEMENT_V1_TYPE,
+      subject: [{ name: body.gate_id, digest: { sha256: body.input_hash.slice(7) } }],
+      predicateType: GATE_RESULT_V1_URI,
+      predicate: body,
+    },
+  ]);
+}
+
+/** Derive signed metadata from the complete ordered statement payload. */
+export function evidencePayloadMetadata(payloadRaw: unknown) {
+  const payload = EvidenceBundlePayloadSchema.parse(payloadRaw);
+  const subjects = new Map(
+    payload.flatMap((statement) =>
+      statement.subject.map((subject) => [stableStringify(subject), subject] as const),
+    ),
+  );
+  return {
+    predicate_uri_set: [...new Set(payload.map((statement) => statement.predicateType))],
+    row_count: payload.length,
+    subject_set: [...subjects.values()],
+    storage_key: `sha256:${sha256Hex(stableStringify(payloadRaw))}`,
+  };
+}
+
 export function buildEvidenceBundle(
-  gateResult: Record<string, unknown>,
+  evidencePayload: EvidenceBundlePayload,
   ctx: EmitContext,
 ): Record<string, unknown> {
-  const grHashHex = sha256Hex(stableStringify(gateResult));
-  const inputHash = String(gateResult['input_hash']);
-  const subjectDigest = inputHash.startsWith('sha256:')
-    ? inputHash.slice('sha256:'.length)
-    : inputHash;
   const bundle: Record<string, unknown> = {
     id: uuidv7(ctx.nowMs, ctx.rand16()),
     eval_run_id: uuidv7(ctx.nowMs, ctx.rand16()),
     created_at: ctx.nowIso,
-    predicate_uri_set: [GATE_RESULT_V1_URI],
-    row_count: 1,
-    subject_set: [{ name: String(gateResult['gate_id']), digest: { sha256: subjectDigest } }],
-    storage_key: `sha256:${grHashHex}`,
+    ...evidencePayloadMetadata(evidencePayload),
     signing_mode: 'rekor_production',
     rekor_log_indices: [],
     verification_status: 'unverified',
@@ -172,12 +200,14 @@ export function buildEvidenceBundle(
 
 export function buildRows(outcomes: readonly GateOutcome[], ctx: EmitContext): EmitRow[] {
   return outcomes.map((o) => {
-    const gateResult = buildGateResult(o, ctx);
-    const bundle = buildEvidenceBundle(gateResult, ctx);
+    const evidencePayload = buildEvidencePayload(buildGateResult(o, ctx));
+    const gateResult = evidencePayload[0]!.predicate;
+    const bundle = buildEvidenceBundle(evidencePayload, ctx);
     return {
       bundle,
       canonicalBundle: stableStringify(bundle),
       gateResult,
+      evidencePayload,
       sourceSha: ctx.sourceSha,
     };
   });
@@ -185,10 +215,15 @@ export function buildRows(outcomes: readonly GateOutcome[], ctx: EmitContext): E
 
 export interface ManifestSkeleton {
   readonly repo: string;
-  readonly signing: { readonly issuer: string; readonly subject: string; readonly workflowRef: string };
+  readonly signing: {
+    readonly issuer: string;
+    readonly subject: string;
+    readonly workflowRef: string;
+  };
   readonly rows: readonly {
     readonly bundleFile: string;
     readonly gateResults: readonly unknown[];
+    readonly evidencePayload: EvidenceBundlePayload;
     readonly sourceSha: string;
   }[];
 }
@@ -207,9 +242,23 @@ export function writeEmit(rows: readonly EmitRow[], ref: string, outDir: string)
     const bundleFile = `bundle-${i}.json`;
     writeFileSync(join(outDir, bundleFile), row.canonicalBundle, 'utf8');
     writeFileSync(join(outDir, `gate-result-${i}.json`), stableStringify(row.gateResult), 'utf8');
-    return { bundleFile, gateResults: [row.gateResult], sourceSha: row.sourceSha };
+    writeFileSync(
+      join(outDir, `evidence-payload-${i}.json`),
+      stableStringify(row.evidencePayload),
+      'utf8',
+    );
+    return {
+      bundleFile,
+      gateResults: [row.gateResult],
+      evidencePayload: row.evidencePayload,
+      sourceSha: row.sourceSha,
+    };
   });
-  const skeleton: ManifestSkeleton = { repo: REPO_KEY, signing: signingClaims(ref), rows: skeletonRows };
+  const skeleton: ManifestSkeleton = {
+    repo: REPO_KEY,
+    signing: signingClaims(ref),
+    rows: skeletonRows,
+  };
   writeFileSync(join(outDir, 'manifest-skeleton.json'), JSON.stringify(skeleton, null, 2), 'utf8');
   return skeleton;
 }
@@ -514,7 +563,10 @@ if (invokedDirectly) {
   try {
     process.exit(main(process.argv.slice(2)));
   } catch (err: unknown) {
-    console.error('emit-evidence FAILED (fail-closed):', err instanceof Error ? err.message : String(err));
+    console.error(
+      'emit-evidence FAILED (fail-closed):',
+      err instanceof Error ? err.message : String(err),
+    );
     process.exit(1);
   }
 }

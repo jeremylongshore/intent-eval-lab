@@ -93,7 +93,7 @@ from typing import Any
 # already scripts/) but is loaded by file path under pytest, where it is not.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from lib import captured_source  # noqa: E402
+from lib import captured_source, reference_markdown  # noqa: E402
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_VENDOR_DIR = os.path.join(REPO_ROOT, "specs", "_vendor", "upstream", "marketplace-catalog")
@@ -148,16 +148,7 @@ _KEBAB = re.compile(r"[a-z0-9]([a-z0-9-]*[a-z0-9])?")
 
 
 def _fence_mask(lines: list[str]) -> list[bool]:
-    """True for every line inside a ``` code fence (the page embeds json/bash
-    examples whose '#'/'|' lines would fake headings or table rows)."""
-    mask, inside = [], False
-    for ln in lines:
-        if _FENCE.match(ln.strip()):
-            mask.append(True)  # fence delimiters themselves never match headings
-            inside = not inside
-        else:
-            mask.append(inside)
-    return mask
+    return reference_markdown.fence_mask(lines)
 
 
 def _section(lines: list[str], heading: str, stop_prefixes: tuple[str, ...]) -> list[str]:
@@ -247,7 +238,248 @@ def _first_json_example(section: list[str], what: str) -> Any:
         sys.exit(2)
 
 
+def _refuse(message: str) -> None:
+    print(f"ERROR: {message}", file=sys.stderr)
+    sys.exit(2)
+
+
+def _current_anchor(section: list[str], marker: str, what: str) -> str:
+    visible = [line for line, fenced in zip(section, _fence_mask(section), strict=True) if not fenced]
+    matches = [line for line in visible if marker in line]
+    if len(matches) != 1:
+        _refuse(f"{what}: missing or ambiguous normative prose anchor")
+    return matches[0]
+
+
+def _current_section(lines: list[str], heading: str, stop_prefixes: tuple[str, ...]) -> list[str]:
+    visible = [line.strip() for line, fenced in zip(lines, _fence_mask(lines), strict=True) if not fenced]
+    if visible.count(heading) != 1:
+        _refuse(f"{heading}: missing/duplicate normative section")
+    return _section(lines, heading, stop_prefixes)
+
+
+def _current_fields(section: list[str], required: list[str], what: str) -> dict[str, Any]:
+    header, rows = _table(section, what, require_backtick=False)
+    if header != _FIELD_COLUMNS:
+        _refuse(f"{what}: field table columns changed")
+    fields: dict[str, Any] = {}
+    for cells in rows:
+        if len(cells) != 3:
+            _refuse(f"{what}: expected three cells per field")
+        names = _BACKTICK.findall(cells[0])
+        if not names:
+            _refuse(f"{what}: field identity missing")
+        for name in names:
+            if name in fields:
+                _refuse(f"{what}: duplicate field {name}")
+            fields[name] = {
+                "required": name in required,
+                "source": "documented",
+                "type": cells[1],
+                "description": cells[2],
+            }
+    if not set(required).issubset(fields):
+        _refuse(f"{what}: required fields missing from table")
+    return fields
+
+
+def _extract_current_reference_doc(lines: list[str]) -> dict[str, Any]:
+    headings = [line.strip() for line, fenced in zip(lines, _fence_mask(lines), strict=True) if not fenced]
+    mandatory = [
+        "## Top-level fields",
+        _ENTRIES_HEADING,
+        _SOURCES_HEADING,
+        "## Marketplace file",
+        "## Marketplace sources",
+    ]
+    if any(headings.count(heading) != 1 for heading in mandatory):
+        _refuse("missing/duplicate normative marketplace section")
+    top_section = _current_section(lines, "## Top-level fields", ("## ",))
+    _current_anchor(top_section, "`name`, `owner`, and `plugins` are required.", "top-level required set")
+    if not reference_markdown.required_set_matches(top_section, {"name", "owner", "plugins"}):
+        _refuse("contradictory top-level required set")
+    top = _current_fields(top_section, ["name", "owner", "plugins"], "top-level fields")
+    owner_description = top["owner"]["description"]
+    if "`name` is required; `email` and `url` are optional" not in owner_description:
+        _refuse("owner required/optional facts missing")
+    # The current page specifies owner members in prose, but no member type table.
+    owner = {
+        name: {
+            "required": name == "name",
+            "source": "documented",
+            "type": None,
+            "type_status": "not specified in reference",
+        }
+        for name in ("name", "email", "url")
+    }
+    if not {"metadata.description", "metadata.version"}.issubset(top):
+        _refuse("metadata back-compat fields missing")
+    for name in ("metadata.description", "metadata.version"):
+        if "Alternate location" not in top[name]["description"]:
+            _refuse("metadata back-compat explanation missing")
+
+    catalog_section = _current_section(lines, "## Marketplace file", ("## ",))
+    reserved = _current_section(catalog_section, "### Reserved names", ("## ", "### "))
+    rules = [
+        line[2:]
+        for line, fenced in zip(reserved, _fence_mask(reserved), strict=True)
+        if line.startswith("* ") and not fenced
+    ]
+    categories = ("Official marketplace names", "Community marketplace names", "Plugin directory names")
+    for category in categories:
+        if sum(rule.startswith(f"**{category}**:") for rule in rules) != 1:
+            _refuse(f"{category}: missing/duplicate reserved-name rule")
+    # Keep the conditional rules too: names alone lose source/version qualifications.
+    reserved_names = []
+    for rule in rules:
+        if rule.startswith(
+            ("**Official marketplace names**:", "**Community marketplace names**:", "**Plugin directory names**:")
+        ):
+            reserved_names.extend(_BACKTICK.findall(rule.split(". Reserved", 1)[0]))
+
+    entries = _current_section(lines, _ENTRIES_HEADING, ("## ",))
+    _current_anchor(entries, "`name` and `source` are required.", "entry required set")
+    if not reference_markdown.required_set_matches(entries, {"name", "source"}):
+        _refuse("contradictory entry required set")
+    fields = _current_fields(entries, ["name", "source"], "entry fields")
+    inheritance = _current_anchor(entries, "an entry also accepts every", "manifest inheritance")
+    if "directory listing fields" not in inheritance or "plugin.json" not in inheritance:
+        _refuse("manifest inheritance/exclusion reference missing")
+    strict = _current_section(entries, _STRICT_SUB, ("## ", "### "))
+    _current_anchor(strict, "`strict: true`, the default", "strict default")
+    if (
+        sum(
+            line.strip() == _STRICT_SUB
+            for line, fenced in zip(entries, _fence_mask(entries), strict=True)
+            if not fenced
+        )
+        != 1
+    ):
+        _refuse("duplicate strict section")
+    strict_header, strict_rows = _table(strict, "strict truth table", require_backtick=False)
+    if strict_header != ["`strict`", "`plugin.json`", "Entry component fields", "Result"]:
+        _refuse("strict truth table columns changed")
+    cases = [
+        ("any", "absent", "any"),
+        ("`true`, the default", "present", "any"),
+        ("`false`", "present", "none"),
+        ("`false`", "present", "one or more"),
+    ]
+    if len(strict_rows) != 4 or [tuple(row[:3]) for row in strict_rows] != cases:
+        _refuse("strict truth table missing/ambiguous case")
+    if any(len(row) != 4 or not row[3] for row in strict_rows):
+        _refuse("strict truth table result missing")
+
+    sources = _current_section(lines, _SOURCES_HEADING, ("## ",))
+    header, source_rows = _table(sources, "plugin-source summary", require_backtick=False)
+    if header != ["Type", "Fields", "Notes"] or len(source_rows) != 7:
+        _refuse("plugin-source summary must cover seven forms")
+    summary: dict[str, list[str]] = {}
+    for row in source_rows:
+        if len(row) != 3:
+            _refuse("plugin-source summary row malformed")
+        name = _BACKTICK.findall(row[0])
+        key = name[0] if len(name) == 1 else row[0]
+        if key in summary:
+            _refuse("duplicate plugin-source form")
+        summary[key] = _BACKTICK.findall(row[1])
+    names = ["github", "url", "git-subdir", "npm", "archive", "command"]
+    if set(summary) != {"Relative path", *names}:
+        _refuse("unknown/missing plugin-source form")
+    objects = {}
+    for name in names:
+        if (
+            sum(
+                line.strip() == f"### {name} plugin source"
+                for line, fenced in zip(sources, _fence_mask(sources), strict=True)
+                if not fenced
+            )
+            != 1
+        ):
+            _refuse(f"{name}: missing/duplicate source section")
+        sec = _current_section(sources, f"### {name} plugin source", ("## ", "### "))
+        example = _first_json_example(sec, name)
+        if not isinstance(example, dict) or not isinstance(example.get("source"), dict):
+            _refuse(f"{name}: source object example missing")
+        if example["source"].get("source") != name:
+            _refuse(f"{name}: source discriminator differs")
+        prose = "\n".join(line for line, fenced in zip(sec, _fence_mask(sec), strict=True) if not fenced)
+        # No '?' markers or Required/Optional table remains. Preserve the complete
+        # field inventory without guessing requiredness from examples/defaults.
+        optional = []
+        if name == "github":
+            _current_anchor(sec, "`ref` and `sha` are optional.", "github optional fields")
+            optional = ["ref", "sha"]
+        objects[name] = {
+            "required": [],
+            "optional": optional,
+            "requiredness_unspecified": sorted(set(summary[name]) - set(optional)),
+            "documented_fields": sorted(summary[name]),
+            "description": prose,
+        }
+        if not summary[name] or len(set(summary[name])) != len(summary[name]):
+            _refuse(f"{name}: empty/duplicate field inventory")
+    _current_anchor(
+        sources, "When you set both `ref` and `sha`, Claude Code checks out `sha`.", "sha precedence"
+    )
+    relative = _current_section(sources, "### Relative path plugin source", ("## ", "### "))
+    relative_example = _first_json_example(relative, "relative path")
+    if not isinstance(relative_example, dict) or not isinstance(relative_example.get("source"), str):
+        _refuse("relative path example missing")
+    relative_row = next(row for row in source_rows if row[0] == "Relative path")
+    if not all(token in relative_row[2] for token in ("`./`", "`metadata.pluginRoot`", '`"."`')):
+        _refuse("relative path alternatives missing")
+    # Scope boundary is load-bearing: do not merge the later settings-source table.
+    _current_section(lines, "## Marketplace sources", ("## ",))
+    return {
+        "catalog": {
+            "metadata_backcompat_fields": ["description", "version"],
+            "reserved_names": reserved_names,
+            "reserved_name_rules": rules,
+            "top_level_fields": top,
+        },
+        "owner_fields": owner,
+        "plugin_entry": {
+            "fields": fields,
+            "manifest_passthrough_documented": True,
+            "manifest_passthrough_reference": inheritance,
+            "marketplace_specific_fields": None,
+            "marketplace_specific_fields_status": "not exhaustively enumerated by current reference",
+            "strict_default": "true",
+            "strict_values": ["true", "false"],
+            "strict_cases": [dict(zip(strict_header, row, strict=True)) for row in strict_rows],
+        },
+        "sources": {
+            "discriminator_key": "source",
+            "forms_count": 7,
+            "object_types": objects,
+            "domain": "plugin sources, not marketplace settings sources",
+            "relative_path": {
+                "type": "string",
+                "alternatives_description": relative_row[2],
+                "description": "\n".join(relative),
+            },
+            "sha_wins_over_ref": True,
+            "git_subdir_url_accepts_github_shorthand_and_ssh": None,
+            "git_subdir_url_description": "\n".join(_current_section(sources, "### git-subdir plugin source", ("## ", "### "))),
+        },
+    }
+
+
 def extract_reference_doc(doc_path: str) -> dict[str, Any]:
+    with open(doc_path, encoding="utf-8") as fh:
+        lines = fh.read().splitlines()
+    headings = [line.strip() for line, fenced in zip(lines, _fence_mask(lines), strict=True) if not fenced]
+    legacy = _SCHEMA_HEADING in headings
+    current = "## Top-level fields" in headings
+    if legacy == current:
+        _refuse("missing or ambiguous normative marketplace reference layout")
+    if current:
+        return _extract_current_reference_doc(lines)
+    return _extract_legacy_reference_doc(doc_path)
+
+
+def _extract_legacy_reference_doc(doc_path: str) -> dict[str, Any]:
     with open(doc_path, encoding="utf-8") as fh:
         lines = fh.read().splitlines()
 
@@ -546,7 +778,7 @@ def build_projection(vendor_dir: str, reference_doc_path: str | None = None) -> 
         f"{stype}:{field}"
         for stype, fields in sample_facts["object_source_fields_observed"].items()
         if stype in object_types
-        for field in set(fields) - set(object_types[stype]["required"]) - set(object_types[stype]["optional"])
+        for field in set(fields) - set(object_types[stype]["required"]) - set(object_types[stype]["optional"]) - set(object_types[stype].get("requiredness_unspecified", []))
     )
 
     return {

@@ -1,5 +1,13 @@
 # Intent Eval Lab
 
+<!-- intent-select-partner:start -->
+
+[![Intent Solutions: Claude Partner Network Select Services Partner](https://raw.githubusercontent.com/intent-solutions-io/.github/b82af5d3e7951d85e39ea9e65cc24ee8278722a7/assets/brand/claude-select-partner.svg)](https://intentsolutions.io/)
+
+Intent Solutions is a Claude Partner Network Select Services Partner.
+
+<!-- intent-select-partner:end -->
+
 Part of the **[Intent Eval Platform](https://github.com/intent-solutions-io/intent-eval-platform)** — the umbrella mapping the five repos that converge via a shared Evidence Bundle schema (the contracts kernel `intent-eval-core` plus this lab, `audit-harness`, `j-rig-skill-binary-eval`, and `intent-rollout-gate`; `intent-eval-dashboard` is the 6th platform repo, separate from the convergence taxonomy).
 
 A research umbrella for measuring AI plugin, agent, and MCP server quality across CLI runtimes — Claude Code, Gemini CLI, GitHub Copilot CLI, and OpenAI Codex CLI.
@@ -24,6 +32,7 @@ intent-eval-lab/
 ├── research/        ← literature surveys, paper notes, competitive landscape
 ├── sandboxes/       ← per-experiment dirs (one dated subdir per run)
 ├── evidence/        ← captured telemetry, OTEL traces, JSON evidence (mostly gitignored)
+├── evals/           ← versioned evaluation corpora with frozen inputs and labels
 ├── scripts/         ← reusable test harness, OTEL probes, prompt-suite runners
 └── projects/        ← symlinks to constituent project repos (gitignored — see below)
 ```
@@ -31,6 +40,8 @@ intent-eval-lab/
 `specs/` is the **normative output** of the lab — currently shipping module 1 ([`mcp-plugin-observability/`](./specs/mcp-plugin-observability/)) at `v0.1.0-draft`, with placeholder modules for `validator-contract-reliability/`, `forecasting-drift-detection/`, and `decentralized-crypto-evaluation/` reserving the structural slots for future engagements. See [`specs/README.md`](./specs/README.md) for the module index and authoring conventions.
 
 `projects/` is filesystem-only — the constituent projects keep their own GitHub remotes. The lab is a research umbrella over them, not a monorepo.
+
+Shared corpora: [drift classification v1](evals/drift-classification/v1/README.md) and [adversarial documents v1](evals/adversarial-documents/v1/README.md). The document corpus is an unmeasured synthetic seed covering prompt injection, TeX file reads, remote fetches, and benign controls.
 
 ## Topics in scope
 
@@ -71,3 +82,5 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution model and convention
 ## Author
 
 Jeremy Longshore — [intentsolutions.io](https://intentsolutions.io) · [startaitools.com](https://startaitools.com)
+
+Private release evidence: [canonical dashboard producer guide](000-docs/118-AT-SPEC-canonical-dashboard-evidence-2026-10-12.md).

@@ -18,13 +18,8 @@ name: Partner-name guard
 # source of truth for the human-driven scrub).
 
 on:
+  # Required checks must report on every PR, including unrelated changes.
   pull_request:
-    paths:
-      - '000-docs/**'
-      - 'specs/**'
-      - 'README.md'
-      - 'CLAUDE.md'
-      - 'KNOWN-ISSUES.md'
   push:
     branches: [main]
     paths:

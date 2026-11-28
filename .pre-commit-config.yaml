@@ -1,15 +1,15 @@
 # Pre-commit framework — local fast gates before push.
 # Reference: https://pre-commit.com
 #
-# Install once per checkout:
+# Optional framework setup:
 #   pip install --user pre-commit  (or: pipx install pre-commit)
-#   pre-commit install
 #
-# After that, hooks run automatically on `git commit`.
-# Run manually:  pre-commit run --all-files
+# The tracked Beads pre-commit hook runs the public scrub independently.
+# See CONTRIBUTING.md for core.hooksPath setup; do not replace managed hooks.
+# Run the additional framework checks manually: pre-commit run --all-files
 #
-# Posture: existing framework is advisory on first install; the public-surface
-# scrub hook is blocking whenever this framework is installed.
+# Posture: the additional framework is optional; the public scrub blocks commits
+# whenever the tracked repository hooks are enabled, even without this framework.
 
 repos:
   # Public-Flip Gate #3 (109-AT-DECR §7): changed-lines PII/secret scrub.
@@ -30,7 +30,13 @@ repos:
     hooks:
       - id: ruff
         args: [--fix]
+        # Preserve captured/signed bytes and vendored code. Apply this only to
+        # mutating hooks; syntax, conflict and public-content checks still run.
+        exclude: &immutable_bytes >-
+          (?x)^(?:archive/raw/|specs/_vendor/|_vendor/|\.audit-harness/|
+          research/.*/results/|evidence/.*\.(?:json|jsonl)$)
       - id: ruff-format
+        exclude: *immutable_bytes
 
   # ---------------------------------------------------------------------------
   # L2 doc-quality (markdown + prose)
@@ -49,8 +55,10 @@ repos:
     rev: v5.0.0
     hooks:
       - id: trailing-whitespace
-        exclude: \.md$  # markdownlint handles MD009; avoid double-fix
+        exclude: *immutable_bytes
+        exclude_types: [markdown]  # markdownlint handles MD009; avoid double-fix
       - id: end-of-file-fixer
+        exclude: *immutable_bytes
       - id: check-yaml
       - id: check-toml
       - id: check-merge-conflict

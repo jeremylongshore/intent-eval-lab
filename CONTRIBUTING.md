@@ -47,13 +47,49 @@ inside that block. A mutated or partial block is a fail-closed anomaly.
 
 ## Local git hooks (optional)
 
-This repo ships a [lefthook](https://lefthook.dev/) config (`lefthook.yml`) that mirrors the cheap, staged-only subset of the CI gates — the partner-name vendor-generic grep, the vendored audit-harness hash-pin verify, the AI-escape scan, and lightweight `ruff` / `markdownlint` / `yamllint` on staged files. It is **opt-in and advisory**: the authoritative gates run in CI, and nothing breaks if you never install the hooks.
+The tracked `.beads/hooks/` scripts preserve Beads integration and run the public-surface scrub before commits.
+Enable them from the primary checkout or a linked worktree:
 
 ```bash
-lefthook install   # one-time, per checkout
+lab_primary=$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)")
+git config --local core.hooksPath "$lab_primary/.beads/hooks"
+git config --show-origin --get core.hooksPath
 ```
 
-The repo also ships a [pre-commit](https://pre-commit.com) config (`.pre-commit-config.yaml`) covering `ruff` + `markdownlint` + hygiene hooks. Both write to `.git/hooks` and the last installer wins — pick one. `lefthook.yml` is the audit-harness-aligned option and additionally wires the partner-name grep + harness-hash verify + escape-scan, so it is preferred for parity with the rest of the platform.
+Run this setup again after relocating the primary checkout; Git retains an absolute path that does not follow a move.
+Linked worktrees share this configuration, while the scrub resolves the current worktree and checks its staged changes.
+Keep the repository-owned scrub after the managed Beads section: it must still run if `bd` is unavailable, its database is uninitialized, or its hook times out.
+Python 3 is required; a missing scanner, interpreter or policy blocks the commit.
+CI remains authoritative for contributors who have not enabled local hooks.
+
+The optional [pre-commit](https://pre-commit.com) framework adds `ruff`, Markdown and hygiene checks.
+Run `pre-commit run --all-files` manually instead of replacing the managed Git hooks.
+If the framework's Node bootstrap rejects `--ignore-prepublish` with the system npm, use an isolated compatible npm invocation:
+
+```bash
+npm exec --yes --package npm@10.9.2 -- pre-commit run --all-files
+```
+
+This does not change the globally installed npm version.
+The alternative `lefthook.yml` remains available for contributors who intentionally manage their own hook chain; do not run competing installers over the tracked Beads hooks.
+
+### Preserve captured evidence
+
+The optional framework's mutating hooks exclude `archive/raw/`, `specs/_vendor/`,
+`_vendor/`, `.audit-harness/`, `research/**/results/`, and JSON/JSONL records under
+`evidence/`. Their exact bytes carry capture hashes, vendor provenance or signed
+evidence. Update them through the owning capture, re-vendoring or signing process.
+Read-only syntax/conflict checks and the existing public-content scrub still run
+under their own policies. Authored scripts, tests, configuration and evidence
+README files remain subject to formatting checks.
+
+For a focused change, use `pre-commit run --files PATH...`. A full
+`pre-commit run --all-files` can still fix pre-existing formatting in authored
+files; review those changes separately and do not commit unrelated cleanup.
+The prior baseline run changed 165 files across captures and authored content;
+protecting evidence does not settle the remaining source-formatting backlog.
+Run `python3 scripts/check-hygiene-preservation.py` to exercise the real configured
+hooks in a disposable Git fixture and verify captured bytes stay unchanged.
 
 ## Sandbox contributions
 
@@ -83,3 +119,14 @@ The `-s` flag appends a `Signed-off-by: Your Name <your@email>` line. By signing
 ## Code of Conduct
 
 This project follows the Contributor Covenant. See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). By participating you agree to uphold it.
+
+## Marketplace acceptance and exception requests
+
+The IS marketplace acceptance gate is stricter than Anthropic's minimum requirements by design.
+Passing or failing this gate describes IS marketplace acceptance, not universal validity for every agent host.
+Before blocking activation, diagnostics must identify the failed marketplace field, link its governing 6767-h section, and link this exception guidance.
+
+To request an exception, open an [intent-eval-core issue](https://github.com/jeremylongshore/intent-eval-core/issues/new) with the schema/profile version, failed field pointer, diagnostic, governing 6767-h section, a minimal sanitized example and the rationale for an exception.
+Do not include secrets or private author data.
+A request does not grant a waiver; maintainers must record the authorized disposition and its scope before applying it.
+The [community-notice evidence contract](000-docs/121-AT-SPEC-sak-community-notice-gate-2026-11-10.md) describes the separate pre-announcement gate.

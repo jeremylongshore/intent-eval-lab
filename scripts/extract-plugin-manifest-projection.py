@@ -68,7 +68,7 @@ from typing import Any
 # already scripts/) but is loaded by file path under pytest, where it is not.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from lib import captured_source  # noqa: E402
+from lib import captured_source, reference_markdown  # noqa: E402
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_VENDOR_DIR = os.path.join(REPO_ROOT, "specs", "_vendor", "upstream", "plugin-manifest")
@@ -229,6 +229,14 @@ def _dotted_keys(manifest: dict[str, Any]) -> list[str]:
 def extract_reference_doc(doc_path: str) -> dict[str, Any]:
     with open(doc_path, encoding="utf-8") as fh:
         text = fh.read()
+    lines = text.splitlines()
+    visible = _visible_reference_lines(lines)
+    legacy = [line for line in visible if line.strip() == _SECTION_HEADING]
+    current = [line for line in visible if line.strip() == "## Fields"]
+    if current:
+        if legacy or len(current) != 1:
+            _reference_error("ambiguous legacy/current manifest field sections")
+        return _extract_current_reference(lines)
     section = _manifest_section(text.splitlines())
     section_text = "\n".join(section)
 
@@ -280,6 +288,114 @@ def extract_reference_doc(doc_path: str) -> dict[str, Any]:
         "unrecognized_top_level_ignored": _UNRECOGNIZED_SENTENCE in section_text,
         "wrong_type_fails": any(sentence in section_text for sentence in _WRONG_TYPE_SENTENCES),
         "wrong_type_ignored_fields": _wrong_type_ignored_fields(section),
+    }
+
+
+def _reference_error(message: str) -> None:
+    print(f"ERROR: {message}", file=sys.stderr)
+    sys.exit(2)
+
+
+def _visible_reference_lines(lines: list[str]) -> list[str]:
+    return reference_markdown.visible_lines(lines)
+
+
+def _current_section(lines: list[str], heading: str) -> list[str]:
+    visible = _visible_reference_lines(lines)
+    starts = [i for i, line in enumerate(visible) if line.strip() == heading]
+    if len(starts) != 1:
+        _reference_error(f"{heading!r} must occur exactly once (found {len(starts)})")
+    start = starts[0]
+    end = next((i for i in range(start + 1, len(lines)) if visible[i].startswith("## ")), len(lines))
+    return lines[start:end]
+
+
+def _current_field_rows(section: list[str]) -> list[list[str]]:
+    section = _visible_reference_lines(section)
+    start = next((i for i, line in enumerate(section) if line.lstrip().startswith("|")), None)
+    if start is None or _split_row(section[start]) != ["Field", "Type", "Description"]:
+        _reference_error("current Fields table columns changed")
+    separator = _split_row(section[start + 1]) if start + 1 < len(section) else []
+    if len(separator) != 3 or not all(re.fullmatch(r":?-+:?", cell) for cell in separator):
+        _reference_error("current Fields table separator is missing")
+    rows = []
+    for line in section[start + 2:]:
+        if not line.lstrip().startswith("|"):
+            break
+        cells = _split_row(line)
+        if len(cells) != 3 or not _BACKTICK.findall(cells[0]):
+            _reference_error("current Fields table has a malformed or unnamed row")
+        rows.append(cells)
+    if not rows:
+        _reference_error("current Fields table has no data rows")
+    return rows
+
+
+def _extract_current_reference(lines: list[str]) -> dict[str, Any]:
+    """Read the unified normative table without inventing the removed groups.
+
+    The current example is illustrative, not a 'complete schema'. Record its
+    fields separately and keep every row in the authoritative Fields table.
+    Legacy extraction and its frozen projection remain unchanged.
+    """
+    field_section = _current_section(lines, "## Fields")
+    file_section = _current_section(lines, "## Manifest file")
+    text = "\n".join(_visible_reference_lines(field_section))
+    if not re.search(r"`name` is the only required (?:key|field)\b", text) or not reference_markdown.required_set_matches(
+        field_section, {"name"}
+    ):
+        _reference_error("current Fields section lost its explicit name-only required set")
+    fields: dict[str, dict[str, Any]] = {}
+    for cells in _current_field_rows(field_section):
+        names = _BACKTICK.findall(cells[0])
+        if len(cells) != 3 or len(names) != 1 or not cells[1].strip():
+            _reference_error("current Fields table has an unsupported or ambiguous row")
+        field = names[0]
+        if field in fields:
+            _reference_error(f"duplicate current manifest field: {field}")
+        entry: dict[str, Any] = {
+            "required": field == "name", "source": "documented", "table": "fields", "type": cells[1],
+        }
+        enum, candidates = _enum_from_description(cells[2])
+        if enum:
+            entry["enum"] = enum
+        elif candidates:
+            entry.update(enum_candidates=candidates, enum_clause_open=True)
+        fields[field] = entry
+    if "name" not in fields:
+        _reference_error("current Fields table is missing its required name row")
+
+    file_text = "\n".join(_visible_reference_lines(file_section))
+    facts = {
+        "manifest_optional": _MANIFEST_OPTIONAL_SENTENCE in file_text,
+        "unrecognized_top_level_ignored": "unrecognized top-level key is stripped" in file_text,
+        "wrong_type_fails": "manifest has a type mismatch" in file_text,
+    }
+    if not all(facts.values()):
+        _reference_error("current Manifest file section lost a required optionality/validation rule")
+    start = next((i for i, line in enumerate(file_section) if _FENCE_OPEN.match(line)), None)
+    if start is None:
+        _reference_error("current Manifest file section has no illustrative JSON example")
+    end = next((i for i in range(start + 1, len(file_section)) if _FENCE_CLOSE.match(file_section[i])), None)
+    if end is None:
+        _reference_error("current manifest example has no closing fence")
+    try:
+        example = json.loads("\n".join(file_section[start + 1:end]))
+    except json.JSONDecodeError:
+        _reference_error("current manifest example is not valid JSON")
+    if not isinstance(example, dict):
+        _reference_error("current manifest example must be an object")
+    example_fields = sorted(_dotted_keys(example))
+    if set(example_fields) - set(fields):
+        _reference_error("current manifest example names fields absent from the normative table")
+    return {
+        **facts,
+        "complete_schema_example_fields": [],
+        "manifest_example_fields": example_fields,
+        "fields": fields,
+        "name_kebab_case_prose": "kebab-case" in text,
+        "name_only_required": True,
+        "wrong_type_ignored_fields": [],
     }
 
 

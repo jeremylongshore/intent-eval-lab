@@ -1,0 +1,83 @@
+{
+  "change_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "deviation_report_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "notice_manifest_sha256": "b9cd15e3cd7f30ebdae3a9f908ee67bf830916ebfc79423844bac166a5963cf1",
+  "measured_at": "2026-06-01T00:00:00Z",
+  "valid_until": "2026-09-01T00:00:00Z",
+  "advisory": {
+    "started_at": "2026-05-01T00:00:00Z",
+    "observed_through": "2026-06-01T00:00:00Z",
+    "continuous": true
+  },
+  "deterministic_folds": {
+    "total": 10000,
+    "agreed": 10000
+  },
+  "artifacts": {
+    "agreement": {
+      "url": "https://example.org/agreement",
+      "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "published_at": "2026-06-01T01:00:00Z"
+    },
+    "shadow_log": {
+      "url": "https://example.org/shadow_log",
+      "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "published_at": "2026-06-01T01:00:00Z"
+    },
+    "false_reject_report": {
+      "url": "https://example.org/false_reject_report",
+      "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "published_at": "2026-06-01T01:00:00Z"
+    },
+    "p0_report": {
+      "url": "https://example.org/p0_report",
+      "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "published_at": "2026-06-01T01:00:00Z"
+    }
+  },
+  "security_checks_day_zero": true,
+  "rollback": {
+    "strategy": "append-only-supersession",
+    "implemented": true,
+    "tested": true,
+    "tested_at": "2026-05-31T00:00:00Z",
+    "receipt": {
+      "url": "https://example.org/rollback",
+      "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "published_at": "2026-06-01T01:00:00Z"
+    }
+  },
+  "coverage_disposition": null,
+  "approvals": {
+    "cto": {
+      "approved": true,
+      "manifest_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "signed_at": "2026-06-01T02:00:00Z",
+      "decision_record": {
+        "url": "https://example.org/cto",
+        "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "published_at": "2026-06-01T02:00:00Z"
+      }
+    },
+    "ciso": {
+      "approved": true,
+      "manifest_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "signed_at": "2026-06-01T02:00:00Z",
+      "decision_record": {
+        "url": "https://example.org/ciso",
+        "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "published_at": "2026-06-01T02:00:00Z"
+      }
+    },
+    "vp_devrel": {
+      "approved": true,
+      "manifest_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "signed_at": "2026-06-01T02:00:00Z",
+      "decision_record": {
+        "url": "https://example.org/vp_devrel",
+        "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "published_at": "2026-06-01T02:00:00Z"
+      }
+    }
+  }
+}

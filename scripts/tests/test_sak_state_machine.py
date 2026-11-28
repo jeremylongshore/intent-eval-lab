@@ -42,7 +42,12 @@ def _state_machine(ssm: ModuleType, state: str, **pre_overrides: object) -> dict
             "decision_record_ref": "044-AT-DECR",
         },
     }
+    pre.update(json.loads((REPO_ROOT / "scripts/tests/fixtures/sak-community-notice-valid.json").read_text()))
+    pre["flip_evidence"] = json.loads((REPO_ROOT / "scripts/tests/fixtures/sak-flip-evidence.json").read_text())
     pre.update(pre_overrides)
+    if isinstance(pre.get("flip_evidence"), dict):
+        for approval in pre["flip_evidence"]["approvals"].values():
+            approval["manifest_sha256"] = ssm.flip_manifest_sha256(pre)
     return {
         "machine": "SAK advisory -> blocking flip (Phase 4)",
         "current_state": state,
@@ -103,7 +108,7 @@ def test_dispositions_resolved_passes_with_zero_p0(ssm: ModuleType) -> None:
 
 
 def test_flip_passes_with_all_preconditions_met(ssm: ModuleType) -> None:
-    decision = ssm.evaluate(_state_machine(ssm, "READY-TO-FLIP"), ssm.FLIP_EVENT)
+    decision = ssm.evaluate(_state_machine(ssm, "READY-TO-FLIP"), ssm.FLIP_EVENT, at="2026-07-01")
     assert decision.allowed is True
     assert decision.to_state == "BLOCKING"
 
@@ -175,12 +180,11 @@ def test_subfloor_coverage_rejected_without_ceiling(ssm: ModuleType) -> None:
     assert any("(a)" in r for r in decision.reasons)
 
 
-def test_subfloor_coverage_permitted_with_calendar_ceiling(ssm: ModuleType) -> None:
-    decision = ssm.evaluate(
-        _state_machine(ssm, "READY-TO-FLIP", coverage_corpus_pass_pct=98.0),
-        ssm.FLIP_EVENT,
-        allow_calendar_ceiling=True,
-    )
+def test_subfloor_coverage_requires_reviewed_calendar_disposition(ssm: ModuleType) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP", coverage_corpus_pass_pct=99.4)
+    assert ssm.evaluate(sm, ssm.FLIP_EVENT, allow_calendar_ceiling=True, at="2026-07-01").rejected
+    _quarantine(ssm, sm)
+    decision = ssm.evaluate(sm, ssm.FLIP_EVENT, allow_calendar_ceiling=True, at="2026-07-01")
     assert decision.allowed is True
     assert decision.to_state == "BLOCKING"
 
@@ -319,3 +323,292 @@ def test_invalid_state_machine_missing_required_field_rejected(ssm: ModuleType, 
     bad_path.write_text(json.dumps(bad), encoding="utf-8")
     errors = ssm.validate_state_file(str(bad_path), ssm.SCHEMA_PATH)
     assert errors != []
+
+
+def test_flip_without_community_notice_is_refused_even_with_calendar_ceiling(ssm: ModuleType) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP", community_notice=None)
+    decision = ssm.evaluate(sm, ssm.FLIP_EVENT, allow_calendar_ceiling=True, at="2026-07-01")
+    assert decision.rejected
+    assert any("community_notice" in reason for reason in decision.reasons)
+
+
+def _review_notice(ssm: ModuleType, sm: dict) -> None:
+    notice = sm["preconditions"]["community_notice"]
+    notice["vp_devrel_review"]["manifest_sha256"] = ssm.notice_manifest_sha256(notice)
+    sm["preconditions"]["flip_evidence"]["notice_manifest_sha256"] = ssm.notice_manifest_sha256(notice)
+    _approve_flip(ssm, sm)
+
+
+@pytest.mark.parametrize("ceiling", [False, True])
+@pytest.mark.parametrize(
+    "at,allowed",
+    [
+        (None, False),
+        ("invalid", False),
+        ("2026-06-15T00:00:00", False),
+        ("2026-06-14T23:59:59Z", False),
+        ("2026-06-15T00:00:00Z", True),
+        ("2026-06-14T19:00:00-05:00", True),
+    ],
+)
+def test_notice_window_is_fourteen_full_days(ssm: ModuleType, at: str | None, allowed: bool, ceiling: bool) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP")
+    if ceiling:
+        sm["preconditions"]["coverage_corpus_pass_pct"] = 99.4
+        _quarantine(ssm, sm)
+    decision = ssm.evaluate(sm, ssm.FLIP_EVENT, at=at, allow_calendar_ceiling=ceiling)
+    assert decision.allowed is allowed
+
+
+@pytest.mark.parametrize("surface", ["kernel_changelog", "marketplace_changelog", "pinned_issue", "fix_it_guide"])
+def test_every_publication_surface_is_required(ssm: ModuleType, surface: str) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP")
+    del sm["preconditions"]["community_notice"]["artifacts"][surface]
+    _review_notice(ssm, sm)
+    assert ssm.evaluate(sm, ssm.FLIP_EVENT, at="2026-07-01", allow_calendar_ceiling=True).rejected
+
+
+@pytest.mark.parametrize(
+    "path,value",
+    [
+        (("not_before",), "2026-06-14T23:59:59Z"),
+        (("not_before",), "2026-08-01T00:00:00Z"),
+        (("artifacts", "fix_it_guide", "published_at"), "2026-06-02T00:00:00Z"),
+        (("artifacts", "pinned_issue", "pinned_at"), "2026-05-31T00:00:00Z"),
+        (("artifacts", "pinned_issue", "pinned_at"), "2026-06-30T00:00:00Z"),
+        (("artifacts", "kernel_changelog", "published_at"), "9999-12-31T00:00:00Z"),
+        (("vp_devrel_review", "signed_at"), "2026-05-31T23:59:59Z"),
+        (("vp_devrel_review", "signed_at"), "2026-07-02T00:00:00Z"),
+        (("notifications", 0, "sent_at"), "2026-05-31T23:59:59Z"),
+        (("notifications", 0, "sent_at"), "2026-07-02T00:00:00Z"),
+        (("notifications", 0, "sent_at"), "2026-06-02T00:00:00Z"),
+        (("artifacts", "kernel_changelog", "url"), "file:///not-public"),
+        (("artifacts", "kernel_changelog", "url"), "https:///missing-host"),
+        (("artifacts", "kernel_changelog", "url"), "https://user:fixture@example.org/receipt"),
+        (("artifacts", "kernel_changelog", "published_at"), "2026-06-01"),
+        (("artifacts", "kernel_changelog", "published_at"), "2026-06-01T00:00:00"),
+        (("change_sha256",), "d" * 64),
+        (("deviation_report", "sha256"), "d" * 64),
+        (("notifications",), []),
+        (("affected_authors",), ["fixture-author", "missed-author"]),
+    ],
+)
+def test_notice_evidence_cannot_be_overridden_by_calendar_ceiling(ssm: ModuleType, path: tuple, value: object) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP")
+    node = sm["preconditions"]["community_notice"]
+    for key in path[:-1]:
+        node = node[key]
+    node[path[-1]] = value
+    _review_notice(ssm, sm)
+    decision = ssm.evaluate(sm, ssm.FLIP_EVENT, at="2026-07-01", allow_calendar_ceiling=True)
+    assert decision.rejected
+    assert any("community_notice" in reason and "049-AT-DECR" in reason for reason in decision.reasons)
+
+
+def test_notice_review_does_not_survive_a_changed_artifact(ssm: ModuleType) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP")
+    sm["preconditions"]["community_notice"]["artifacts"]["fix_it_guide"]["sha256"] = "e" * 64
+    decision = ssm.evaluate(sm, ssm.FLIP_EVENT, at="2026-07-01")
+    assert decision.rejected
+    assert any("manifest_sha256" in reason for reason in decision.reasons)
+
+
+def test_notice_delivery_inventory_is_exact_and_allows_reviewed_empty_scope(ssm: ModuleType) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP")
+    notice = sm["preconditions"]["community_notice"]
+    notice["notifications"].append(copy.deepcopy(notice["notifications"][0]))
+    _review_notice(ssm, sm)
+    assert ssm.evaluate(sm, ssm.FLIP_EVENT, at="2026-07-01").rejected
+    notice["notifications"] = []
+    notice["affected_authors"] = []
+    _review_notice(ssm, sm)
+    assert ssm.evaluate(sm, ssm.FLIP_EVENT, at="2026-07-01").allowed
+
+
+def test_emit_uses_transition_time_and_preserves_state_when_notice_is_early(ssm: ModuleType) -> None:
+    state = {"state_machine": _state_machine(ssm, "READY-TO-FLIP")}
+    before = copy.deepcopy(state)
+    with pytest.raises(ssm.TransitionError, match="public notice window"):
+        ssm.emit(state, ssm.FLIP_EVENT, at="2026-06-14T23:59:59Z")
+    assert state == before
+    emitted = ssm.emit(state, ssm.FLIP_EVENT, at="2026-06-15T00:00:00Z")
+    assert emitted["state_machine"]["current_state"] == "BLOCKING"
+    assert emitted["state_machine"]["transition_history"][-1][
+        "community_notice_manifest_sha256"
+    ] == ssm.notice_manifest_sha256(state["state_machine"]["preconditions"]["community_notice"])
+    assert state == before
+
+
+def test_emitted_notice_receipt_is_schema_valid(ssm: ModuleType, tmp_path: Path) -> None:
+    state = json.loads((REPO_ROOT / "SAK-STATE.json").read_text())
+    state["state_machine"] = _state_machine(ssm, "READY-TO-FLIP")
+    emitted = ssm.emit(state, ssm.FLIP_EVENT, at="2026-07-01T00:00:00Z")
+    path = tmp_path / "state.json"
+    path.write_text(json.dumps(emitted))
+    assert ssm.validate_state_file(str(path)) == []
+    emitted["state_machine"]["transition_history"][-1]["community_notice_manifest_sha256"] = "invalid"
+    path.write_text(json.dumps(emitted))
+    assert ssm.validate_state_file(str(path))
+
+
+def _approve_flip(ssm: ModuleType, sm: dict) -> None:
+    pre = sm["preconditions"]
+    for approval in pre["flip_evidence"]["approvals"].values():
+        approval["manifest_sha256"] = ssm.flip_manifest_sha256(pre)
+
+
+def _quarantine(ssm: ModuleType, sm: dict) -> None:
+    artifact = {"url": "https://example.org/quarantine", "sha256": "e" * 64, "published_at": "2026-06-01T01:00:00Z"}
+    sm["preconditions"]["flip_evidence"]["coverage_disposition"] = {
+        "decision": "flip-with-quarantine",
+        "reviewed_at": "2026-06-01T00:30:00Z",
+        "decision_record": artifact,
+        "quarantine_report": artifact,
+        "corpus_size": 10000,
+        "passed_files": 9940,
+        "quarantined_files": [f"synthetic/{i}.md" for i in range(20)],
+        "quarantine_mode": "advisory-only",
+    }
+    _approve_flip(ssm, sm)
+
+
+@pytest.mark.parametrize(
+    "field", ["flip_evidence", "coverage_corpus_pass_pct", "shadow_days_complete", "shadow_deviation_pct"]
+)
+def test_missing_flip_inputs_fail_closed(ssm: ModuleType, field: str) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP")
+    del sm["preconditions"][field]
+    assert ssm.evaluate(sm, ssm.FLIP_EVENT, at="2026-07-01", allow_calendar_ceiling=True).rejected
+
+
+@pytest.mark.parametrize("value", ["true", 1, [], {}, None])
+def test_governance_truthiness_is_not_approval(ssm: ModuleType, value: object) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP")
+    sm["preconditions"]["governance_signoff"]["cto"] = value
+    assert ssm.evaluate(sm, ssm.FLIP_EVENT, at="2026-07-01").rejected
+
+
+@pytest.mark.parametrize("value", ["0", False, -1, float("nan"), float("inf"), {}, []])
+def test_bad_p0_types_rejected_without_exception(ssm: ModuleType, value: object) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP")
+    sm["preconditions"]["open_p0_count"] = value
+    assert ssm.evaluate(sm, ssm.FLIP_EVENT, at="2026-07-01").rejected
+
+
+@pytest.mark.parametrize(
+    "path,value",
+    [
+        (("advisory", "started_at"), "2026-05-02T00:00:01Z"),
+        (("advisory", "continuous"), False),
+        (("deterministic_folds", "total"), 0),
+        (("deterministic_folds", "agreed"), 9999),
+        (("rollback", "tested"), False),
+        (("rollback", "implemented"), False),
+        (("rollback", "strategy"), "mutate-original"),
+        (("rollback", "tested_at"), "2026-07-02T00:00:00Z"),
+        (("security_checks_day_zero",), False),
+        (("valid_until",), "2026-06-30T23:59:59Z"),
+        (("measured_at",), "2026-07-02T00:00:00Z"),
+        (("change_sha256",), "a" * 64),
+        (("deviation_report_sha256",), "a" * 64),
+        (("notice_manifest_sha256",), "a" * 64),
+        (("artifacts", "agreement", "url"), "https:///missing-host"),
+        (("artifacts", "shadow_log", "published_at"), "2026-07-02T00:00:00Z"),
+        (("approvals", "cto", "signed_at"), "2026-05-31T00:00:00Z"),
+        (("approvals", "ciso", "approved"), False),
+    ],
+)
+def test_ratified_gate_failures_cannot_be_waived(ssm: ModuleType, path: tuple, value: object) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP", coverage_corpus_pass_pct=99.4)
+    _quarantine(ssm, sm)
+    node = sm["preconditions"]["flip_evidence"]
+    for key in path[:-1]:
+        node = node[key]
+    node[path[-1]] = value
+    _approve_flip(ssm, sm)
+    result = ssm.evaluate(sm, ssm.FLIP_EVENT, at="2026-07-01", allow_calendar_ceiling=True)
+    assert result.rejected
+
+
+def test_exact_thirty_day_soak_boundary(ssm: ModuleType) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP")
+    sm["preconditions"]["flip_evidence"]["advisory"]["started_at"] = "2026-05-02T00:00:00Z"
+    _approve_flip(ssm, sm)
+    assert ssm.evaluate(sm, ssm.FLIP_EVENT, at="2026-07-01").allowed
+
+
+def test_changed_inputs_invalidate_every_governance_review(ssm: ModuleType) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP")
+    sm["preconditions"]["coverage_corpus_pass_pct"] = 99.8
+    result = ssm.evaluate(sm, ssm.FLIP_EVENT, at="2026-07-01")
+    assert result.rejected
+    assert sum("approval does not bind" in r for r in result.reasons) == 3
+
+
+@pytest.mark.parametrize(
+    "path,value",
+    [
+        (("corpus_size",), 0),
+        (("passed_files",), 10001),
+        (("passed_files",), 9941),
+        (("quarantined_files",), []),
+        (("quarantined_files",), ["same.md", "same.md"]),
+        (("quarantined_files",), [f"synthetic/{i}.md" for i in range(50)]),
+        (("quarantine_mode",), "blocking"),
+        (("decision",), "extend"),
+        (("reviewed_at",), "2026-05-30T00:00:00Z"),
+        (("decision_record", "published_at"), "2026-07-02T00:00:00Z"),
+    ],
+)
+def test_coverage_disposition_cannot_hide_unsafe_or_inconsistent_scope(
+    ssm: ModuleType, path: tuple, value: object
+) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP", coverage_corpus_pass_pct=99.4)
+    _quarantine(ssm, sm)
+    node = sm["preconditions"]["flip_evidence"]["coverage_disposition"]
+    for key in path[:-1]:
+        node = node[key]
+    node[path[-1]] = value
+    _approve_flip(ssm, sm)
+    assert ssm.evaluate(sm, ssm.FLIP_EVENT, at="2026-07-01", allow_calendar_ceiling=True).rejected
+
+
+def test_coverage_exception_does_not_accept_inadequate_retained_corpus(ssm: ModuleType) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP", coverage_corpus_pass_pct=98.0)
+    _quarantine(ssm, sm)
+    sm["preconditions"]["flip_evidence"]["coverage_disposition"]["passed_files"] = 9800
+    _approve_flip(ssm, sm)
+    result = ssm.evaluate(sm, ssm.FLIP_EVENT, at="2026-07-01", allow_calendar_ceiling=True)
+    assert any("retained corpus" in reason for reason in result.reasons)
+
+
+@pytest.mark.parametrize("value", [None, [], "invalid", False])
+def test_direct_flip_calls_refuse_malformed_state(ssm: ModuleType, value: object) -> None:
+    assert ssm.can_flip(value, at="2026-07-01").rejected
+    assert ssm.evaluate(value, ssm.FLIP_EVENT, at="2026-07-01").rejected
+
+
+@pytest.mark.parametrize("value", [None, [], "invalid", False])
+def test_direct_flip_calls_refuse_malformed_preconditions(ssm: ModuleType, value: object) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP")
+    sm["preconditions"] = value
+    assert ssm.can_flip(sm, at="2026-07-01").rejected
+
+
+def test_calendar_flag_must_be_boolean(ssm: ModuleType) -> None:
+    assert ssm.can_flip(_state_machine(ssm, "READY-TO-FLIP"), at="2026-07-01", allow_calendar_ceiling="false").rejected
+
+
+def test_flip_transition_records_bound_evidence_digest(ssm: ModuleType) -> None:
+    state = {"state_machine": _state_machine(ssm, "READY-TO-FLIP")}
+    result = ssm.emit(state, ssm.FLIP_EVENT, at="2026-07-01")
+    assert result["state_machine"]["transition_history"][-1][
+        "flip_evidence_manifest_sha256"
+    ] == ssm.flip_manifest_sha256(state["state_machine"]["preconditions"])
+
+
+def test_unbounded_counts_are_refused_without_arithmetic_overflow(ssm: ModuleType) -> None:
+    sm = _state_machine(ssm, "READY-TO-FLIP", coverage_corpus_pass_pct=99.4)
+    _quarantine(ssm, sm)
+    sm["preconditions"]["flip_evidence"]["coverage_disposition"]["passed_files"] = 10**1000
+    assert ssm.evaluate(sm, ssm.FLIP_EVENT, at="2026-07-01", allow_calendar_ceiling=True).rejected

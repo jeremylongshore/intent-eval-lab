@@ -22,3 +22,10 @@ if command -v bd >/dev/null 2>&1; then
   if [ $_bd_exit -ne 0 ]; then exit $_bd_exit; fi
 fi
 # --- END BEADS INTEGRATION v1.0.3 ---
+
+# Repository-owned check. Keep outside the managed Beads section so a missing
+# bd executable, uninitialized database or Beads timeout cannot skip the scrub.
+_lab_root=$(git rev-parse --show-toplevel) || exit 2
+python3 "$_lab_root/scripts/public-surface-scan.py" --staged
+_lab_scrub_exit=$?
+if [ "$_lab_scrub_exit" -ne 0 ]; then exit "$_lab_scrub_exit"; fi

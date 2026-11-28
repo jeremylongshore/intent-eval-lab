@@ -1,0 +1,94 @@
+{
+  "description": "Unsigned synthetic vector; expected bytes and digest calculated independently with Python canonical JSON, not live evidence.",
+  "row": {
+    "bundle": {
+      "id": "01a12d68-b800-7000-8000-000000000000",
+      "eval_run_id": "01a12d68-b800-7000-8000-000000000000",
+      "created_at": "2026-10-12T00:00:00.000Z",
+      "predicate_uri_set": ["https://evals.intentsolutions.io/gate-result/v1"],
+      "row_count": 1,
+      "subject_set": [
+        {
+          "name": "synth:ci:synth-gate-1",
+          "digest": {
+            "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+          }
+        }
+      ],
+      "storage_key": "sha256:4d685c3895a1b35f55d29104514764c56a013b84ddc3a839e66217b3833525de",
+      "signing_mode": "rekor_production",
+      "rekor_log_indices": [],
+      "verification_status": "unverified",
+      "verification_last_checked_at": "2026-10-12T00:00:00.000Z"
+    },
+    "canonicalBundle": "{\"created_at\":\"2026-10-12T00:00:00.000Z\",\"eval_run_id\":\"01a12d68-b800-7000-8000-000000000000\",\"id\":\"01a12d68-b800-7000-8000-000000000000\",\"predicate_uri_set\":[\"https://evals.intentsolutions.io/gate-result/v1\"],\"rekor_log_indices\":[],\"row_count\":1,\"signing_mode\":\"rekor_production\",\"storage_key\":\"sha256:4d685c3895a1b35f55d29104514764c56a013b84ddc3a839e66217b3833525de\",\"subject_set\":[{\"digest\":{\"sha256\":\"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\"},\"name\":\"synth:ci:synth-gate-1\"}],\"verification_last_checked_at\":\"2026-10-12T00:00:00.000Z\",\"verification_status\":\"unverified\"}",
+    "gateResult": {
+      "gate_id": "synth:ci:synth-gate-1",
+      "gate_name": "synth-gate-1",
+      "gate_version": "1.0.0",
+      "gate_decision": "pass",
+      "gate_reasons": ["unsigned synthetic canonical vector"],
+      "coverage": {
+        "dimensions_evaluated": ["synthetic-dimension"],
+        "dimensions_skipped": []
+      },
+      "policy_ref": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:synthetic-policy",
+      "policy_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "input_hash": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "evaluated_at": "2026-10-12T00:00:00.000Z",
+      "runner": "synth-emitter@0.1.0",
+      "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "evidencePayload": [
+      {
+        "_type": "https://in-toto.io/Statement/v1",
+        "subject": [
+          {
+            "name": "synth:ci:synth-gate-1",
+            "digest": {
+              "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+            }
+          }
+        ],
+        "predicateType": "https://evals.intentsolutions.io/gate-result/v1",
+        "predicate": {
+          "gate_id": "synth:ci:synth-gate-1",
+          "gate_name": "synth-gate-1",
+          "gate_version": "1.0.0",
+          "gate_decision": "pass",
+          "gate_reasons": ["unsigned synthetic canonical vector"],
+          "coverage": {
+            "dimensions_evaluated": ["synthetic-dimension"],
+            "dimensions_skipped": []
+          },
+          "policy_ref": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:synthetic-policy",
+          "policy_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "input_hash": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "evaluated_at": "2026-10-12T00:00:00.000Z",
+          "runner": "synth-emitter@0.1.0",
+          "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      }
+    ],
+    "sourceSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "gateResults": [
+      {
+        "gate_id": "synth:ci:synth-gate-1",
+        "gate_name": "synth-gate-1",
+        "gate_version": "1.0.0",
+        "gate_decision": "pass",
+        "gate_reasons": ["unsigned synthetic canonical vector"],
+        "coverage": {
+          "dimensions_evaluated": ["synthetic-dimension"],
+          "dimensions_skipped": []
+        },
+        "policy_ref": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:synthetic-policy",
+        "policy_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "input_hash": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "evaluated_at": "2026-10-12T00:00:00.000Z",
+        "runner": "synth-emitter@0.1.0",
+        "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ]
+  }
+}

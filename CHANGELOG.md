@@ -11,6 +11,60 @@ Post-0.3.0 work: continuous-spec-compliance / Spec Authority Kernel (SAK) skelet
 
 ### Added
 
+#### Engineering index article extraction (2026-10-26)
+
+- Recover the engineering watcher's featured-article signal after the observed
+  first featured link used a `/research/` path. Select the recognized engineering
+  carousel or legacy main-content link; reject unsupported or ambiguous signals.
+- Preserve the exact legacy sentinel and frozen baseline hash. Capture-shape
+  checks accept both path layouts with a canonical-shaped markup heuristic;
+  the offline HTML parser performs the checks of the declared canonical URL.
+  Bound parser input to 4 MiB and 256 open elements; excess input is
+  indeterminate. Cache parser context and constrain repeated-main regex work.
+  No retained baseline, watcher timestamp or upstream content is promoted.
+  Refs `compile-then-govern-v0y`.
+
+#### Current reference layout recovery (2026-10-26)
+
+- Recover agent, plugin and marketplace reference extraction after upstream page
+  reorganization. Keep historical frozen outputs unchanged, reject ambiguous or
+  missing normative facts, and preserve marketplace strict-table result cells.
+  Capture the canonical manifest and marketplace reference URLs, with historical
+  title compatibility and creation-guide refusal. Requiredness omitted by the
+  current reference stays unspecified; no snapshot or kernel promotion is implied.
+  Refs `compile-then-govern-14z`; evidence and scope are recorded in
+  `000-docs/119-AT-RPRT-reference-layout-recovery-2026-10-26.md`.
+
+#### Phase A.0 analysis input guard (2026-10-19)
+
+- Check saved Arm A responses and Arm B proposals for explicit real-run flags;
+  refuse missing, ambiguous or simulated records even after a later real run
+  writes a new summary. Follow-up to PR #407's provenance review.
+- Refuse incomplete or incomparable registered cohorts, missing/non-finite
+  measurements and invalid computed statistics before emitting a decision.
+  Require fresh output paths and preserve existing historical evidence.
+- Label the retained estimators accurately and expose unresolved template and
+  Goodhart-audit differences. Compare the strict scalar threshold without
+  binary-rounding ambiguity. Historical baseline mismatches and DR-036 impact
+  remain under review in `bd_000-projects-436s`; this is not a new ratification.
+  Refs bead `bd_000-projects-1j6k`.
+
+#### Phase A.0 offline coverage (2026-10-19)
+
+- Exercise analysis pairing, best-K selection, decision arithmetic and scorer
+  tier/provenance behavior with nine offline contracts. Restore the existing
+  60% coverage floor inside the advisory Python CI lane; no exclusions or
+  branch-protection requirements change. Real-validator integration remains
+  separate. Refs bead `bd_000-projects-js4x`.
+
+#### Canonical dashboard producer (2026-10-12)
+
+- Bind complete kernel-valid statement payloads in signed `iel` bundle metadata;
+  reject payload, metadata and projection mutations before manifest assembly.
+- Pin the private CI emitter at kernel 0.10.0 through an npm lockfile, with twelve
+  offline contracts in PR and release CI. Preserve spec-integrity measurements,
+  tag-only signing, predicate URIs and consumer version-skew policy.
+
 #### Tri-link verifier correctness (2026-08-02)
 
 - Read bead descriptions through `bd show --json` so wrapped human output
