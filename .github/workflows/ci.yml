@@ -1,6 +1,9 @@
 name: CI
 
 on:
+  # Re-run the same validation on a selected branch or tag when push CI is absent.
+  # This event adds no jobs, permissions, publication or policy exceptions.
+  workflow_dispatch:
   push:
     branches: [main]
   # No `branches:` filter on purpose: with `branches: [main]` a stacked PR whose
@@ -21,10 +24,10 @@ jobs:
     name: Validate specs and docs
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 

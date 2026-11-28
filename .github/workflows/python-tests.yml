@@ -33,8 +33,8 @@ jobs:
     name: ruff lint + format
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - run: pip install --no-cache-dir 'ruff==0.16.9'
@@ -46,8 +46,8 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - run: pip install --no-cache-dir 'mypy==2.3.1' pyyaml 'pytest==9.1.1'
@@ -64,8 +64,8 @@ jobs:
     # marketplace checkout. The four real-validator integrations still skip when
     # that checkout is absent; synthetic adapter data is not integration evidence.
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Install deps
@@ -86,7 +86,7 @@ jobs:
           coverage report
       - name: Upload coverage to Codecov
         if: always()
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: python
@@ -112,8 +112,8 @@ jobs:
     name: pytest (scripts/ gate machinery)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       # jsonschema is load-bearing here, not optional: the SAK modules' own
@@ -131,8 +131,8 @@ jobs:
     name: Captured evidence byte preservation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - uses: actions/setup-node@v6
