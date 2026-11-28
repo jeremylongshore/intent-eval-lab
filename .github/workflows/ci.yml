@@ -1,7 +1,7 @@
 name: CI
 
 on:
-  # Re-run the same validation on an exact ref when automatic push CI is absent.
+  # Re-run the same validation on a selected branch or tag when push CI is absent.
   # This event adds no jobs, permissions, publication or policy exceptions.
   workflow_dispatch:
   push:
