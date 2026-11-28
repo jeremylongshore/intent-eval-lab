@@ -141,6 +141,13 @@ sequence:
 
 - [Incident and corruption-response runbook](./trace-intel-incident-runbook.md) — K10 severity classification, recovery procedures, postmortems and audit receipts; supplements existing estate incident authority.
 
+## Trace-intelligence audit artifacts
+
+- [A1 account repository audit](./trace-intel-A1-jeremylongshore-audit.md) — draft
+  census and pinned evidence references for 184 repositories. Owner sign-off and
+  the separate A2 organization audit remain required before A3 begins. The exact
+  filename is prescribed by bead `bd_000-projects-h08j.8.1`.
+
 ## Filing convention
 
 ```text
