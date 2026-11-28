@@ -1,11 +1,14 @@
 """Frozen sub-agent docs have two equivalent spellings for the model list."""
+
 import runpy
 from pathlib import Path
 
 import pytest
 
 
-model_facts = runpy.run_path(str(Path(__file__).resolve().parents[1] / "extract-agent-definition-projection.py"))["_model_facts"]
+model_facts = runpy.run_path(str(Path(__file__).resolve().parents[1] / "extract-agent-definition-projection.py"))[
+    "_model_facts"
+]
 
 
 def test_compact_alias_and_inherit_bullets():
